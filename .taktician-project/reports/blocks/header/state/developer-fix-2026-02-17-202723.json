@@ -1,0 +1,72 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-17-202723",
+  "status": "complete",
+  "blockName": "Header",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "filesModified": [
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMain.js",
+        "purpose": "FQA-001: Replaced Left/Right/Home/End navigation references from subMenuButtons to new allTopLevelItems array (selector: .header-main-item > button.header-main-item-button, .header-main-item > a). Added focusTopLevelItem() helper. Added keydown handler for plain link items so they also participate in Left/Right/Home/End traversal."
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMain.php",
+        "purpose": "FQA-002: Added role=\"menubar\" to the top-level <ul> nav items list."
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "purpose": "FQA-002: Added role: 'menubar' to useInnerBlocksProps first-argument object so the rendered <ul> has role=\"menubar\" in the editor."
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+        "purpose": "FQA-003: Added role=\"menuitem\" to the submenu trigger <button>. Added role=\"menuitem\" to ThemeLink call via new 'role' argument so the rendered plain <a> has role=\"menuitem\"."
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+        "purpose": "FQA-003: Added role=\"menuitem\" to the submenu trigger <button>. Added role=\"menuitem\" as a prop on the plain <Link> component (passed with // @ts-ignore since LinkProps does not include role; the attribute will be output on the rendered anchor via the component's forwardRef)."
+      },
+      {
+        "path": "parts/ThemeLink.php",
+        "purpose": "FQA-003 dependency: Added $role variable extraction from $args and output role=\"...\" attribute on the <a> element when provided, enabling HeaderMainItem to pass role=\"menuitem\" through get_template_part."
+      }
+    ],
+    "componentModifications": [
+      {
+        "component": "parts/ThemeLink.php",
+        "change": "Added optional $role argument. When provided, outputs role=\"{$role}\" on the <a> element. Backward compatible — existing usages unaffected."
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": []
+    },
+    "syncStatus": {
+      "verified": true
+    },
+    "testPage": {
+      "updated": false,
+      "url": "https://ign.localhost/test-header/",
+      "note": "No attribute or structural changes — test page content unchanged, no update needed"
+    },
+    "blockers": [],
+    "fixesApplied": [
+      {
+        "id": "FQA-001",
+        "description": "allTopLevelItems array built from .header-main-item > button.header-main-item-button, .header-main-item > a. All Left/Right/Home/End navigation on the menubar level now uses this array so plain link items are included. subMenuButtons still used exclusively for submenu open/close logic. Plain link items also get their own keydown handler for Left/Right/Home/End."
+      },
+      {
+        "id": "FQA-002",
+        "description": "role=\"menubar\" added to the <ul> in both HeaderMain.php and HeaderMain.tsx (via useInnerBlocksProps)."
+      },
+      {
+        "id": "FQA-003",
+        "description": "role=\"menuitem\" added to the <button aria-haspopup> in both PHP and TSX. ThemeLink.php extended with optional $role arg; HeaderMainItem.php passes role=\"menuitem\" to get_template_part. In TSX the Link component receives role=\"menuitem\" prop with @ts-ignore since LinkProps does not declare role."
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

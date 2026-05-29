@@ -1,0 +1,45 @@
+{
+  "summary": "Lock TestimonialsCarousel progress bar and navigation buttons to always use neon-green color, regardless of the page's accent color setting",
+  "currentImplementation": {
+    "progressBar": "Uses linear-gradient(90deg, var(--gradient-left) 0%, var(--gradient-right) 100%) in swiper.css (.swiper-pagination-progressbar .swiper-pagination-progressbar-fill). The --gradient-left and --gradient-right tokens are defined in colors.css and change per accent color class (.blue, .yellow, .orange, .purple, .green).",
+    "navigation": "Navigation buttons (.carousel-nav-btn) use the same linear-gradient(90deg, var(--gradient-left) 0%, var(--gradient-right) 100%) on their ::before pseudo-element for hover fill effect. Defined in swiper.css.",
+    "modalCloseButton": "The modal close button (.modal-close-btn) in TestimonialsCarousel.css also uses linear-gradient(90deg, var(--gradient-left) 0%, var(--gradient-right) 100%) on its ::before pseudo-element for hover effect.",
+    "colorTokens": [
+      "--gradient-left (defaults to --accent-color, which is rgba(212, 255, 69, 1) for neon-green)",
+      "--gradient-right (defaults to --color-blue, which is rgba(71, 203, 242, 1))",
+      "--accent-color (used indirectly via --gradient-left)"
+    ],
+    "sharedStyles": "swiper.css styles (.carousel-nav-btn and .swiper-pagination-progressbar) are shared across CardsCarousel, DynamicContentCarousel, GalleryCarousel, and TestimonialsCarousel. Changes to swiper.css would affect ALL carousel blocks."
+  },
+  "neonGreenValues": {
+    "gradientLeft": "rgba(212, 255, 69, 1)",
+    "gradientRight": "rgba(71, 203, 242, 1)",
+    "accentColor": "rgba(212, 255, 69, 1)",
+    "notes": "The neon-green gradient pair is: neon-green rgba(212, 255, 69, 1) to blue rgba(71, 203, 242, 1). This matches the :root defaults for --gradient-left and --gradient-right."
+  },
+  "fileChanges": [
+    {
+      "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.css",
+      "action": "modify",
+      "description": "Override --gradient-left and --gradient-right CSS custom properties on the .testimonials-carousel block wrapper to lock them to neon-green values, so all descendant elements (nav buttons, progress bar, modal close button) inherit the fixed values.",
+      "details": "Add a scoped rule: .testimonials-carousel { --gradient-left: rgba(212, 255, 69, 1); --gradient-right: rgba(71, 203, 242, 1); } at the top of the file. This approach overrides the generic gradient tokens at the block level without touching the shared swiper.css, ensuring only TestimonialsCarousel is affected while other carousel blocks continue to respect the page accent color.",
+      "affectsPhp": false
+    }
+  ],
+  "designDecisions": [
+    "Use a scoped CSS custom property override on .testimonials-carousel rather than hard-coding values in swiper.css. This preserves the shared carousel styles for other blocks (CardsCarousel, DynamicContentCarousel, GalleryCarousel) which should continue to respond to page accent colors.",
+    "Override --gradient-left and --gradient-right rather than replacing individual gradient declarations. This is more maintainable -- if the gradient syntax changes in swiper.css, the TestimonialsCarousel override still works.",
+    "The modal close button (.modal-close-btn) within TestimonialsCarousel will also be locked to neon-green because it inherits --gradient-left and --gradient-right from the .testimonials-carousel scope.",
+    "No PHP changes needed -- the color lock is purely CSS. The .testimonials-carousel class is already applied to the block wrapper in both PHP and TSX."
+  ],
+  "requiresQA": true,
+  "qaScope": "visual",
+  "qaChecklist": [
+    "Verify progress bar gradient shows neon-green to blue on a page with non-neon-green accent color (e.g., blue, orange, purple)",
+    "Verify navigation button hover gradient shows neon-green to blue on a page with non-neon-green accent color",
+    "Verify modal close button hover gradient shows neon-green to blue",
+    "Verify autoplay toggle button hover gradient shows neon-green to blue",
+    "Verify other carousel blocks (CardsCarousel, DynamicContentCarousel, GalleryCarousel) still respond to page accent color",
+    "Verify TestimonialsCarousel still looks correct on a neon-green (default) page"
+  ]
+}

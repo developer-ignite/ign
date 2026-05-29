@@ -1,0 +1,64 @@
+{
+  "agent": "planning",
+  "mode": "edit",
+  "timestamp": "2026-02-17-133534",
+  "output": {
+    "summary": "Make preset filter pills (when displayFilters is false) visually non-interactive: remove the X/close button and disable the hover gradient effect. Requires changes in PHP (initial render), JS (AJAX rebuild), and CSS (hover suppression).",
+    "fileChanges": [
+      {
+        "file": "blocks/Archive/Archive.php",
+        "action": "modify",
+        "description": "Add a preset-only active filter pills section that renders when displayFilters is false but presetFilters have values. Render pills WITHOUT the .archive-remove-filter div and WITH a distinguishing class (e.g., 'archive-preset-pill'). Also hide the 'Clear All' button in this context since presets cannot be cleared.",
+        "details": "After the existing active filters block (line ~339), add a new conditional block: if (!$displayFilters && !empty($preset_filters) && $has_selected_option). Render the same pill HTML structure but: (1) use a static <span> instead of <button> since they are non-interactive, (2) omit the .archive-remove-filter inner div, (3) add class 'archive-preset-pill' for CSS targeting, (4) omit the 'Clear All' button. The pills should still show the taxonomy term labels resolved from $taxonomy_terms_labels. The container should use class 'archive-preset-filters' instead of 'archive-active-filters' to avoid JS event delegation on it.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Archive/Archive.php",
+        "action": "modify",
+        "description": "Ensure the preset pills section is rendered even when $show_filters is false. Currently $show_filters requires displayFilters to be true, which gates the entire filter form. The preset pills need a separate rendering path outside the filter form conditional.",
+        "details": "Add the preset pills rendering block AFTER the closing endif of the filter form (line ~342), but still inside the archive-inner div. This way it renders independently of whether the filter form is shown. The conditional should be: if (!$displayFilters && !empty($preset_filters) && $has_selected_option). This ensures preset pills only appear when the interactive filter UI is hidden but preset filters are active.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Archive/Archive.js",
+        "action": "modify",
+        "description": "Update the buildButtons() function and AJAX response handling to support preset-only pills without remove buttons.",
+        "details": "In the buildButtons() function (line ~272), detect whether the archive is in preset-only mode by checking: (1) there is no active filters container (.archive-active-filters) but there IS a preset filters container (.archive-preset-filters), OR (2) check the section's displayFilters state. For preset-only mode, after AJAX responses, update the preset pills container (.archive-preset-filters) from the response HTML the same way active filters are updated (line ~125-129). The key difference: do NOT attach click handlers for removal to preset pills. Add a new selector constant: var presetFiltersSelector = '.archive-preset-filters'; In the AJAX response handler (loadResults), add logic to also replace .archive-preset-filters content from the response if it exists.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Archive/Archive.css",
+        "action": "modify",
+        "description": "Add styles for .archive-preset-pill to suppress hover effects and make pills appear as static labels.",
+        "details": "Add rules: (1) .archive-preset-pill should have cursor:default instead of cursor:pointer. (2) Override the hover gradient: .archive .archive-preset-filters .archive-preset-pill should NOT have the transition or background gradient properties. (3) Remove any hover state changes. The pills should maintain the same base visual style (border, rounded-full, padding, text size) but without interactive affordances. Suggested CSS:\n\n.archive .archive-preset-filters .archive-preset-pill {\n  cursor: default;\n  transition: none;\n  background: transparent;\n}\n\n.archive .archive-preset-filters .archive-preset-pill:hover {\n  background: transparent;\n  border-color: currentColor;\n  color: inherit;\n}",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "interaction",
+        "decision": "Preset filter pills use <span> elements instead of <button> since they are non-interactive display-only indicators",
+        "source": "user-request",
+        "evidence": "User specified preset filters cannot be removed, so interactive button semantics are inappropriate"
+      },
+      {
+        "id": "DEC-002",
+        "category": "styling",
+        "decision": "Preset pills use a separate container class (.archive-preset-filters) to avoid JS event delegation conflicts with interactive pills",
+        "source": "existing-pattern",
+        "evidence": "The JS uses .archive-active-filters for delegated click handlers that remove filters; preset pills must not trigger that behavior"
+      },
+      {
+        "id": "DEC-003",
+        "category": "interaction",
+        "decision": "No 'Clear All' button is shown alongside preset pills since presets are block-level configuration, not user-removable filters",
+        "source": "user-request",
+        "evidence": "User stated preset filters cannot be removed by the user"
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

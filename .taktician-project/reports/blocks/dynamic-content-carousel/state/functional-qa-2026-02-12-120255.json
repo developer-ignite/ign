@@ -1,0 +1,180 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-12-120255",
+  "status": "FAIL",
+  "blockName": "DynamicContentCarousel",
+  "output": {
+    "summary": {
+      "checksRun": 8,
+      "checksPassed": 6,
+      "checksFailed": 2,
+      "issuesFound": 2,
+      "critical": 0,
+      "major": 1,
+      "minor": 1
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "Build completes successfully with only pre-existing webpack performance warnings (bundle size). No TypeScript or compilation errors."
+      },
+      "lint": {
+        "status": "skipped",
+        "reason": "CSS-only refactoring, no TypeScript changes to lint"
+      },
+      "registration": {
+        "status": "pass",
+        "details": "Block files exist and are properly structured. DynamicContentCarousel.css was created and is auto-bundled by webpack."
+      },
+      "rendering": {
+        "status": "pass",
+        "details": "All 10 carousel instances render correctly. Page audit confirms proper structure: headings, navigation controls, pagination, swiper slides, and card content all present. Empty state handling works (section 5 has 0 children). Equal-height card layout preserved - cards stretch to fill swiper slides via .dynamic-content-carousel .swiper-slide > * { height: 100%; } rule."
+      },
+      "cssRefactoring": {
+        "status": "fail",
+        "issues": 1,
+        "details": "The CSS refactoring partially succeeded but contains a critical architectural error. See issue FQA-001."
+      },
+      "interactiveBehavior": {
+        "status": "pass",
+        "testsRun": [
+          {
+            "test": "Carousel navigation - next button advances slides",
+            "status": "pass",
+            "screenshot": "dynamic-content-carousel-next-slide-1440w.png"
+          },
+          {
+            "test": "Card hover zoom effect applies",
+            "status": "pass",
+            "screenshot": "dynamic-content-carousel-card-hover-1440w.png",
+            "note": "Hover zoom works despite duplication issue"
+          }
+        ]
+      },
+      "accessibility": {
+        "status": "pass",
+        "details": "Carousel ARIA structure intact: aria-labelledby on sections, data attributes for Swiper config present. Navigation controls and pagination found on all non-empty carousels."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "details": "Test page contains 10 block instances covering multiple content types (blog posts, team members, resources, policies), variations (with/without CTA, empty state, long heading, minimal config). All expected carousel features render."
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "cssRefactoring",
+        "severity": "major",
+        "description": "DynamicContentCarousel.css contains duplicated card hover zoom styles that should have been removed",
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.css",
+        "line": "6-23",
+        "evidence": "Lines 6-23 define .dynamic-content-carousel .card-post img and .dynamic-content-carousel .card-team-member img with transition, hover scale, and prefers-reduced-motion rules. These are duplicates of the generic .card-post img and .card-team-member img rules in body.css (lines 66-74).",
+        "planning": "Planning spec (fileChanges[0].details) states the block CSS file should contain ONLY the equal-height card chain rule (height: 100%). The card hover zoom and reduced-motion rules were supposed to be removed and handled generically in body.css.",
+        "impact": "CSS duplication - the compiled screen.css contains the card hover zoom rule twice (once block-scoped from DynamicContentCarousel.css, once generic from body.css). This increases bundle size unnecessarily and violates the DRY principle. Functionally it still works because CSS cascade means both rules apply the same effect, but it's architectural debt.",
+        "fix": "Remove lines 6-23 from blocks/DynamicContentCarousel/DynamicContentCarousel.css. Keep ONLY the equal-height rule (lines 1-4). The generic card hover zoom styles in body.css (lines 66-74) will automatically apply to cards within the carousel.",
+        "verification": "After removing, rebuild and verify: (1) compiled screen.css has only ONE instance of .card-post:hover img rule, (2) card hover zoom still works on test page, (3) DynamicContentCarousel.css contains only 4 lines (comment + equal-height rule)."
+      },
+      {
+        "id": "FQA-002",
+        "check": "cssRefactoring",
+        "severity": "minor",
+        "description": "Theme-wide prefers-reduced-motion rule exists in body.css but block-scoped reduced-motion override in DynamicContentCarousel.css creates redundancy",
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.css",
+        "line": "17-23",
+        "evidence": "DynamicContentCarousel.css lines 17-23 have a @media (prefers-reduced-motion: reduce) block that targets .dynamic-content-carousel .card-post img and .dynamic-content-carousel .card-team-member img. However, body.css lines 51-63 already have a theme-wide blanket rule that disables ALL transitions and animations via *, *::before, *::after { transition-duration: 0.01ms !important; }.",
+        "planning": "Planning spec design decision DEC-020 states: 'A blanket rule in body.css ensures no future CSS additions miss this.' The block-scoped override is unnecessary because the theme-wide rule already covers it.",
+        "impact": "Minor redundancy. The block-scoped rule will be removed when FQA-001 is fixed (both are part of the same hover zoom block that should be deleted).",
+        "fix": "Same fix as FQA-001 - remove lines 6-23 from DynamicContentCarousel.css.",
+        "verification": "After fix, verify prefers-reduced-motion still disables card hover transitions via the theme-wide rule in body.css."
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors",
+      "Block CSS file created and auto-bundled by webpack",
+      "Equal-height card layout preserved (height: 100% rule works)",
+      "All 10 carousel instances render correctly",
+      "Carousel navigation (next/prev buttons) functional",
+      "Carousel pagination present when configured",
+      "Card hover zoom effect works (despite duplication)",
+      "Empty state handling works (Featured Posts section has 0 children)",
+      "Long heading wraps properly without breaking layout",
+      "ARIA structure intact (aria-labelledby, data attributes)",
+      "Multiple content types supported (blog, team, resources, policies)",
+      "Theme-wide prefers-reduced-motion rule exists in body.css",
+      "Generic card hover zoom styles exist in body.css",
+      "swiper.css cleaned of .dynamic-content-carousel scoped styles",
+      "Archive.css cleaned of duplicated card hover zoom styles"
+    ],
+    "cssArchitectureVerification": {
+      "filesModified": {
+        "swiper.css": {
+          "status": "pass",
+          "verification": "Confirmed NO .dynamic-content-carousel selectors remain in swiper.css (grep returned no matches). Block-scoped styles successfully removed."
+        },
+        "body.css": {
+          "status": "pass",
+          "verification": "Generic card hover zoom styles exist at lines 66-74. Theme-wide prefers-reduced-motion rule exists at lines 51-63 with blanket animation-duration and transition-duration overrides."
+        },
+        "Archive.css": {
+          "status": "pass",
+          "verification": "Archive.css grep shows NO card-post or card-team-member hover zoom styles. Duplicated rules successfully removed. Only Archive-specific styles remain (blog card CTA hover, layout rules)."
+        },
+        "DynamicContentCarousel.css": {
+          "status": "fail",
+          "verification": "File contains 24 lines instead of expected 4. Includes unnecessary card hover zoom and reduced-motion rules that should be handled by body.css generic styles. See FQA-001."
+        }
+      },
+      "compiledOutput": {
+        "location": "public/css/screen.css",
+        "verification": "Equal-height rule found at line 73 (.dynamic-content-carousel .swiper-slide > * { height: 100%; }). Card hover zoom appears TWICE: once block-scoped (lines 77-84, 87-90) from DynamicContentCarousel.css, once generic from body.css.",
+        "duplicationCount": 2,
+        "expectedCount": 1
+      }
+    },
+    "screenshots": [
+      {
+        "name": "dynamic-content-carousel-default-1440w.png",
+        "purpose": "Full page render - all 10 carousel instances",
+        "viewport": "1440px",
+        "fullPage": true
+      },
+      {
+        "name": "dynamic-content-carousel-card-hover-1440w.png",
+        "purpose": "Card hover zoom effect verification",
+        "viewport": "1440px",
+        "fullPage": false
+      },
+      {
+        "name": "dynamic-content-carousel-next-slide-1440w.png",
+        "purpose": "Carousel navigation - slide advance",
+        "viewport": "1440px",
+        "fullPage": false
+      }
+    ],
+    "testPageAnalysis": {
+      "url": "https://ign.localhost/test-dynamic-content-carousel/",
+      "blockCount": 10,
+      "variations": [
+        "Blog posts carousel (5 slides)",
+        "Other Initiatives carousel with CTA (5 slides)",
+        "Team members carousel (3 slides)",
+        "Resources carousel (3 slides, no images)",
+        "Policies carousel (3 slides, no images)",
+        "Empty carousel (0 slides - Featured Posts)",
+        "Single-post carousel (h3 heading instead of h2)",
+        "Policies carousel (Hidden When Empty heading)",
+        "Long heading carousel (tests text wrapping)",
+        "Minimal carousel (navigation and pagination disabled)"
+      ],
+      "contentTypes": [
+        "card-post (blog posts)",
+        "card-team-member (team profiles)",
+        "card-resource (resources with taxonomy pills)",
+        "card-policy (policies with taxonomy pills)"
+      ],
+      "emptyStateHandling": "Section 5 (Featured Posts) has childCount: 0, properly handles empty query results"
+    }
+  },
+  "tokensUsed": 53000,
+  "questionsForUser": []
+}

@@ -1,0 +1,135 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-13-172220",
+  "status": "PASS",
+  "blockName": "Hero",
+  "output": {
+    "mode": "revision",
+    "previousDesignQa": {
+      "status": "PASS",
+      "issues": 0,
+      "file": ".taktician-project/reports/blocks/hero/state/design-qa-2026-02-13-151143.json"
+    },
+    "testPageUrl": "https://ign.localhost/test-hero-block/",
+    "figmaNodes": {
+      "primaryDesktop": "785:51426",
+      "primaryMobile": "785:52057",
+      "secondaryDesktop": "785:50945",
+      "secondaryMobile": "785:52116"
+    },
+    "tolerance": "2-4px (semantic)",
+    "revisionVerification": [
+      {
+        "change": "Gradient uses generic system (--gradient-left/--gradient-right)",
+        "status": "verified",
+        "evidence": "Hero.css uses --gradient-left and --gradient-right from colors.css generic gradient system. Radial gradients render with correct neon-green/blue color pairing in default state. No hero-specific gradient overrides remain in colors.css."
+      },
+      {
+        "change": "Gradient still bleeds beyond block boundaries",
+        "status": "verified",
+        "evidence": "All 12 hero sections have overflow-visible class. .top-gradient uses position: absolute with height: 150vw, extending far beyond each hero section. Screenshots confirm gradient is visually bleeding into spacer areas between hero blocks -- the green/yellow gradient wash is clearly visible in the 100vh spacer gaps."
+      },
+      {
+        "change": "Page no longer extends beyond footer",
+        "status": "verified",
+        "evidence": "overflow-y: clip on .wp-site-blocks clips absolutely positioned gradients at page boundary. Bottom-of-page screenshot shows content ending naturally -- the last hero gradient is visible but does not create extra scrollable space. Page scroll ends at the last DemoContainer content."
+      },
+      {
+        "change": "Test page has 100vh spacers between variations",
+        "status": "verified",
+        "evidence": "11 spacer blocks with height: 100vh are placed inside DemoContainers between hero variations. Spacers make gradient bleed effect clearly visible -- neon-green/blue gradient wash fills the spacer gaps, confirming the bleed works as designed."
+      },
+      {
+        "change": "PostHero gradients working (inherits via 'hero' class)",
+        "status": "verified-structural",
+        "evidence": "PostHero.php uses class='post-hero hero relative overflow-visible', inheriting .top-gradient rules from Hero.css. No separate test page for PostHero, but structural inheritance confirmed by functional QA."
+      }
+    ],
+    "compositionGate": {
+      "status": "PASS",
+      "notes": "Overall composition matches Figma across primary and secondary variations at desktop and mobile breakpoints. CSS refactor to generic gradient system produces visually identical output to pre-revision rendering."
+    },
+    "breakpointResults": {
+      "desktop-1440": {
+        "status": "PASS",
+        "browser": "chromium",
+        "observations": [
+          "Primary variation: Center-aligned heading in Anton font renders correctly. 'WELCOME TO IGNITE' eyebrow visible. Description text centered. QuickNavigation bar with dark charcoal background, dropdown, and GET SUPPORT button all render as per Figma.",
+          "Secondary variation ('Work at IGNITE'): Left-aligned content with 'CAREERS' eyebrow, heading, description, and 'VIEW OPEN POSITIONS' dark pill button -- matches Figma secondary desktop (785:50945).",
+          "Gradient bleed: Green/yellow gradient extends well beyond hero sections into spacer areas, matching the Figma design intent where gradients create a continuous ambient background effect.",
+          "Background image: Image with gradient mask fading from visible at top to transparent, blending into green/yellow gradient at bottom -- visually identical to Figma primary desktop (785:51426)."
+        ]
+      },
+      "mobile-375": {
+        "status": "PASS",
+        "browser": "chromium",
+        "observations": [
+          "Primary variation: Heading wraps naturally, QuickNavigation stacks vertically (title, dropdown, button). Matches Figma mobile (785:52057).",
+          "Secondary variation: Left-aligned content with button, appropriate font scaling. Layout is correct.",
+          "Gradient bleed visible between sections at mobile width, consistent with desktop behavior.",
+          "Full-page screenshot confirms all 12 hero variations render correctly at mobile width."
+        ]
+      }
+    },
+    "detailedChecks": {
+      "gradientColors": {
+        "status": "PASS",
+        "notes": "Generic gradient system correctly produces neon-green (left) and blue (right) radial gradients in default state. The 3-layer background (linear-gradient with accent-color, two radial-gradients) creates the same visual result as the previous hero-specific gradient code. Colors match Figma reference."
+      },
+      "gradientBleed": {
+        "status": "PASS",
+        "notes": "Critical requirement verified: gradient with height 150vw and z-index -10 extends well beyond hero section bounds. overflow-visible on hero sections allows the gradient to bleed freely into adjacent blocks. This is the same behavior as Figma where the gradient background extends far below the hero content area."
+      },
+      "pageOverflow": {
+        "status": "PASS",
+        "notes": "overflow-y: clip on .wp-site-blocks prevents gradient from extending scrollable area past content. Scrolling to page bottom lands at the last content block -- no extra whitespace or gradient extending the page."
+      },
+      "typography": {
+        "status": "PASS",
+        "notes": "No regression from previous PASS. Anton font for headings, uppercase eyebrow text, body font for descriptions all render correctly."
+      },
+      "colors": {
+        "status": "PASS",
+        "notes": "No regression. Dark charcoal QuickNavigation background, white text, gradient colors all match Figma."
+      },
+      "spacing": {
+        "status": "PASS",
+        "notes": "No regression. Spacing between elements (eyebrow, heading, description, QuickNavigation) matches Figma within tolerance."
+      },
+      "layout": {
+        "status": "PASS",
+        "notes": "No regression. Primary centered, secondary left-aligned. Max-width constraints match Figma."
+      },
+      "quickNavigation": {
+        "status": "PASS",
+        "notes": "No regression. Dark rounded container, grain texture overlay, dropdown with chevron, GET SUPPORT button all render correctly."
+      }
+    },
+    "regressionCheck": {
+      "status": "PASS",
+      "notes": "All visual elements from previous PASS state are preserved. CSS refactor changed gradient implementation but not visual output. No regressions detected in typography, colors, spacing, layout, or component rendering."
+    },
+    "issues": [],
+    "screenshots": {
+      "revision": {
+        "fullPage-1440": ".taktician-project/reports/blocks/hero/screenshots/2026-02-13-172330/hero-revision-1440w.png",
+        "fullPage-375": ".taktician-project/reports/blocks/hero/screenshots/2026-02-13-172330/hero-revision-375w.png",
+        "primary-detail-1440": ".taktician-project/reports/blocks/hero/screenshots/2026-02-13-172437/hero-revision-detail-primary-1440w.png",
+        "gradient-bleed-1440": ".taktician-project/reports/blocks/hero/screenshots/2026-02-13-172451/hero-revision-gradient-bleed-1440w.png",
+        "secondary-content-1440": ".taktician-project/reports/blocks/hero/screenshots/2026-02-13-172742/hero-revision-work-at-ignite-v2-1440w.png",
+        "footer-bottom-1440": ".taktician-project/reports/blocks/hero/screenshots/2026-02-13-172458/hero-revision-footer-1440w.png",
+        "page-end-1440": ".taktician-project/reports/blocks/hero/screenshots/2026-02-13-172606/hero-revision-page-end-1440w.png"
+      }
+    },
+    "pageAuditSummary": {
+      "totalHeroSections": 12,
+      "primaryVariations": 9,
+      "secondaryVariations": 3,
+      "allHaveGradient": true,
+      "allHaveOverflowVisible": true,
+      "allHaveAriaLabelledby": true
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

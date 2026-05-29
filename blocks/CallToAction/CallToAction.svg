@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Container with rounded feel represented by outer path -->
+	<path d="M1,5v14h22V5H1ZM22,18H2V6h20v12Z"/>
+
+	<!-- Eyebrow -->
+	<rect x="3" y="7" width="4" height="1"/>
+
+	<!-- Heading text (centered, prominent) -->
+	<rect x="3" y="9" width="12" height="2"/>
+
+	<!-- Description text -->
+	<rect x="3" y="12" width="10" height="1"/>
+
+	<!-- Buttons -->
+	<rect x="3" y="15" width="4" height="1"/>
+	<rect x="8" y="15" width="4" height="1"/>
+</svg>

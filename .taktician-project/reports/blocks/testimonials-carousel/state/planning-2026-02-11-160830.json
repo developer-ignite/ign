@@ -1,0 +1,56 @@
+{
+  "summary": "Two changes: (1) Make all testimonial cards equal height with the 'Watch the Video' link pinned to the bottom of each card. (2) Restyle the video modal close button to match the carousel navigation button style (circular, bordered, hover gradient).",
+  "fileChanges": [
+    {
+      "file": "parts/card-testimonial.php",
+      "action": "modify",
+      "description": "Ensure the card structure stretches to fill its parent height and the video button is always pinned to the bottom",
+      "details": "The card already uses `flex flex-col h-full` on the article and `flex-1` on the content div, and `mt-auto` on the button. The issue is that the outer wrapper div has `h-full` but the swiper-slide has `self-start` which prevents stretch. The card template itself is already correct for equal-height behavior -- the fix is in the parent slide class. However, we should also ensure the video button area always renders (even as empty space) so cards without videos align with those that have them. One approach: always render the button area but hide the button when there is no video, or simply rely on `mt-auto` + flex stretch from the parent. Since the card already has `mt-auto` on the button and `flex-1` on the content area, the card is already structured correctly -- the only fix needed is removing `self-start` from the swiper-slide.",
+      "affectsPhp": true
+    },
+    {
+      "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.php",
+      "action": "modify",
+      "description": "Remove `self-start` from the swiper-slide class to allow cards to stretch to equal height",
+      "details": "Change `<div class=\"swiper-slide self-start h-auto!\">` to `<div class=\"swiper-slide h-auto!\">`. The `self-start` class overrides the default stretch alignment that Swiper's flexbox wrapper provides, preventing cards from being equal height. Removing it allows the swiper-wrapper's `align-items: stretch` (via `h-auto!`) to take effect, making all slides the same height. The card's internal flex layout with `flex-1` on the content div and `mt-auto` on the video button will then push the button to the bottom.",
+      "affectsPhp": true
+    },
+    {
+      "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.php",
+      "action": "modify",
+      "description": "Restyle the video modal close button to match carousel-nav-btn styling",
+      "details": "Replace the current close button markup (`testimonial-video-close` with inline SVG) with a button that uses the `carousel-nav-btn` class pattern. The close button should be a circular bordered button (matching the nav button size and style) positioned at the top-right corner of the modal content area. Change from `absolute -top-12 right-0 text-white hover:text-accent` to use `carousel-nav-btn` class with an X icon SVG. Position it inside the modal content div at `absolute -top-5 -right-5 md:-top-6 md:-right-6 z-10` so it overlaps the corner of the video area. The SVG should use the same close (X) icon but sized to match the nav button icon size.",
+      "affectsPhp": true
+    },
+    {
+      "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.js",
+      "action": "no-change",
+      "description": "No JavaScript changes needed -- the close button selector `.testimonial-video-close` should be preserved on the new styled button so existing event listeners continue to work",
+      "details": "The JS references `.testimonial-video-close` for the close button click handler and focus management. As long as the class is preserved on the restyled button, no JS changes are required.",
+      "affectsPhp": false
+    }
+  ],
+  "attributeChanges": [],
+  "designDecisions": [
+    {
+      "category": "layout",
+      "question": "Should cards without a video button have empty space at the bottom to match the height of cards with a video button, or should the content simply expand to fill?",
+      "recommendation": "The content area (with `flex-1`) will expand to fill available space naturally. Cards without a video button will have the quote text area expand downward to fill. This is the standard behavior with flexbox stretch and is visually acceptable -- the cards will all be equal height regardless of whether they have a video button.",
+      "needsUserInput": false
+    },
+    {
+      "category": "layout",
+      "question": "Close button position: inside the video container corner (overlapping) or outside above the video?",
+      "recommendation": "Position the close button overlapping the top-right corner of the video container (using negative offsets like `-top-5 -right-5`). This is a common modal pattern and keeps the button visually connected to the content while being easy to reach. It also matches the visual weight of the carousel nav buttons.",
+      "needsUserInput": false
+    },
+    {
+      "category": "layout",
+      "question": "Close button size: should it match the carousel nav button exactly (w-10 h-10 md:w-12 md:h-12)?",
+      "recommendation": "Yes, use the same `carousel-nav-btn` class which provides `w-10 h-10 md:w-12 md:h-12` with the border, rounded-full, and hover gradient animation. This ensures visual consistency across the block.",
+      "needsUserInput": false
+    }
+  ],
+  "requiresQA": true,
+  "qaScope": "design"
+}

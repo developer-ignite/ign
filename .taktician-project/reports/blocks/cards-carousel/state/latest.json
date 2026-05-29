@@ -1,0 +1,15 @@
+{
+  "mode": "edit",
+  "blockName": "CardsCarousel",
+  "blockNameKebab": "cards-carousel",
+  "blockPath": "blocks/CardsCarousel/",
+  "reportPath": ".taktician-project/reports/blocks/cards-carousel/cards-carousel-report.md",
+  "stateDir": ".taktician-project/reports/blocks/cards-carousel/state",
+  "reportDir": ".taktician-project/reports/blocks/cards-carousel",
+  "testPage": {
+    "url": "https://ign.localhost/test-cards-carousel/"
+  },
+  "phase": "context-gathering",
+  "latestOutputs": {},
+  "timestamp": "2026-02-12T21:02:00Z"
+}

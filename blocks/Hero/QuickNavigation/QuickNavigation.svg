@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Quick navigation bar: title block, dropdown, button -->
+	<!-- Outer container bar -->
+	<path d="M1,6h22v12H1V6ZM2,7v10h20V7H2Z"/>
+	<!-- Title text block (filled) -->
+	<rect x="3" y="9" width="5" height="4"/>
+	<!-- Dropdown line (between blocks, bottom-aligned) -->
+	<rect x="9" y="12" width="7" height="1"/>
+	<!-- Button (filled) -->
+	<rect x="17" y="9" width="4" height="4"/>
+</svg>

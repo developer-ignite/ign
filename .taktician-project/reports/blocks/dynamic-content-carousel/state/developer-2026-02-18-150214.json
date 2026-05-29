@@ -1,0 +1,31 @@
+{
+  "agent": "developer",
+  "mode": "edit",
+  "timestamp": "2026-02-18-150214",
+  "block": "DynamicContentCarousel",
+  "change": "Replace before:bg-charcoal with before:bg-dark-pattern in dark mode classes",
+  "filesModified": [
+    "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+    "blocks/DynamicContentCarousel/DynamicContentCarousel.php"
+  ],
+  "changes": [
+    {
+      "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+      "line": 371,
+      "from": "before:bg-charcoal",
+      "to": "before:bg-dark-pattern"
+    },
+    {
+      "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.php",
+      "line": 184,
+      "from": "before:bg-charcoal",
+      "to": "before:bg-dark-pattern"
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "errors": 0,
+    "warnings": 8,
+    "notes": "Warnings are pre-existing in other blocks (Accordion, Archive, ContentWithMedia, FullWidthMedia, PostHero, Tabs) — not related to this change."
+  }
+}

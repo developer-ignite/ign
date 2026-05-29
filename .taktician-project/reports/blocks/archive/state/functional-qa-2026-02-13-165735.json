@@ -1,0 +1,276 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-13-165735",
+  "status": "PASS",
+  "blockName": "Archive",
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 9,
+      "checksFailed": 0,
+      "issuesFound": 1,
+      "critical": 0,
+      "major": 0,
+      "minor": 1
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "message": "Build completed successfully with expected bundle size warnings only"
+      },
+      "lint": {
+        "status": "pass",
+        "message": "Lint passed. Experimental API warnings are acceptable (ToggleGroupControl, ToggleGroupControlOption). No Archive-specific errors."
+      },
+      "registration": {
+        "status": "pass",
+        "details": {
+          "apiVersion": 3,
+          "name": "takt/archive",
+          "attributes": {
+            "darkMode": {
+              "type": "boolean",
+              "default": true,
+              "verified": true
+            }
+          },
+          "example": {
+            "darkMode": true,
+            "verified": true
+          }
+        }
+      },
+      "attributes": {
+        "status": "pass",
+        "darkModeAttribute": {
+          "defined": true,
+          "type": "boolean",
+          "default": true,
+          "tsxType": "darkMode: boolean",
+          "phpVariable": "$darkMode",
+          "usedInTsx": true,
+          "usedInPhp": true
+        }
+      },
+      "edgeCases": {
+        "status": "pass",
+        "tested": [
+          "Long heading (100+ chars) - wraps gracefully",
+          "Empty optional fields (no heading/eyebrow/buttons) - renders without errors",
+          "Light mode and dark mode variations",
+          "Different post types (post, resource, policy, team_member, testimonial)",
+          "Pagination mode vs load-more mode",
+          "Multiple column configurations (1, 3, 4 columns)"
+        ]
+      },
+      "interactiveBehavior": {
+        "status": "pass",
+        "testsRun": [
+          {
+            "test": "Dark mode resource card hover - btn-tertiary contrast",
+            "status": "pass",
+            "screenshot": "archive-resource-hover-dark-1440w.png",
+            "observation": "Card hovers to accent (neon-green), btn-tertiary text stays charcoal, excellent contrast"
+          },
+          {
+            "test": "Light mode resource card hover - btn-tertiary contrast",
+            "status": "pass",
+            "screenshot": "archive-resource-hover-light-1440w.png",
+            "observation": "White card hovers to accent, btn-tertiary stays charcoal, no white-on-white issue"
+          },
+          {
+            "test": "Light mode policy card hover - btn-tertiary contrast",
+            "status": "pass",
+            "screenshot": "archive-policy-hover-light-1440w.png",
+            "observation": "Same pattern as resource card - btn-tertiary maintains charcoal text on accent hover"
+          }
+        ],
+        "darkModeToggle": {
+          "status": "pass",
+          "verified": "BlockControls toolbar button with shadow icon appears in editor, toggles darkMode attribute"
+        }
+      },
+      "accessibility": {
+        "status": "pass",
+        "patternCompliance": "N/A - Archive block uses standard semantic HTML (section, form, select, button) without specific WAI-ARIA patterns like tabs/carousel",
+        "semanticHtml": {
+          "status": "pass",
+          "observations": [
+            "Section wrapper uses proper aria-labelledby linking to ThemeHeading ID",
+            "Form uses correct role='search' when displaySearch is true, role='form' otherwise",
+            "Select elements have proper labels via placeholder text and aria-label on parent",
+            "Button elements use aria-label for screen readers",
+            "Heading hierarchy follows h2 -> h3 pattern (ThemeHeading h2, card titles h3)"
+          ]
+        },
+        "keyboardNavigation": {
+          "status": "pass",
+          "observations": [
+            "All filters (select dropdowns) are keyboard accessible",
+            "Clear All button is keyboard accessible",
+            "Filter tag pills are keyboard accessible",
+            "Search input and submit button are keyboard accessible",
+            "Per-page select is keyboard accessible",
+            "Card links are keyboard accessible"
+          ]
+        },
+        "colorContrast": {
+          "status": "pass",
+          "observations": [
+            "Dark mode: white text on charcoal pseudo-element background - excellent contrast",
+            "Light mode: charcoal text on off-white page background - excellent contrast",
+            "Resource/policy cards dark mode: white text on charcoal card - excellent contrast",
+            "Resource/policy cards light mode: charcoal text on white card - excellent contrast",
+            "Card hover state: charcoal text on accent (neon-green) - excellent contrast",
+            "btn-tertiary hover fix prevents white-on-white and cream-on-green contrast issues",
+            "Dropdown arrows: white in dark mode, charcoal in light mode - correct contrast",
+            "Pagination: dark mode uses white text/buttons, light mode uses charcoal"
+          ]
+        }
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "observations": "No responsive duplication detected. Archive uses single DOM structure with CSS-based responsive layout changes."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "attributeExtraction": {
+          "status": "pass",
+          "manualExtractionFound": false,
+          "usesAutoExtractedVariables": true,
+          "camelCaseVariables": [
+            "$blockVariation",
+            "$darkMode",
+            "$displayFilters",
+            "$displayPerPage",
+            "$displaySearch",
+            "$maxColumns",
+            "$paginationMode",
+            "$postsPerPage"
+          ],
+          "docblockPresent": false,
+          "issue": "minor"
+        },
+        "structureSync": {
+          "status": "pass",
+          "observations": [
+            "Section wrapper: TSX uses useBlockProps with cn() for conditional classes, PHP uses theme_block_props(class_name())",
+            "darkMode conditional: TSX 'dark bg-transparent!': attributes.darkMode, PHP 'dark bg-transparent!' => $darkMode",
+            "data-dark-mode attribute: PHP has data-dark-mode=\"1\" or \"0\", TSX doesn't output this (editor-only, not needed)",
+            "Inner wrapper div: Both use conditional dark mode pseudo-element classes",
+            "ThemeHeading: TSX passes attributes directly, PHP uses get_template_part with array",
+            "Conditional rendering: PHP uses <?php if ( $condition ) : ?> pattern consistently"
+          ]
+        },
+        "classSync": {
+          "status": "pass",
+          "observations": [
+            "Section: 'archive py-gap-8' + conditional 'dark bg-transparent!' - synced",
+            "Container: 'container grid grid-cols-1 gap-gap-5' - synced",
+            "Inner wrapper: conditional dark mode pseudo-element classes - synced",
+            "data-pagination-mode attribute - synced",
+            "data-post-type attribute - synced"
+          ]
+        }
+      },
+      "innerBlocks": {
+        "status": "skipped",
+        "reason": "Archive block does not use inner blocks"
+      },
+      "specCompliance": {
+        "status": "pass",
+        "testPage": {
+          "url": "https://ign.localhost/test-archive/",
+          "blockInstancesFound": 14,
+          "blockInstancesExpected": 14,
+          "variationsCovered": [
+            "Blog archive - dark mode with all features",
+            "Blog archive - light mode",
+            "Team members archive - dark mode",
+            "Resources archive - dark mode",
+            "Resources archive - light mode",
+            "Policies archive - dark mode",
+            "Policies archive - light mode",
+            "Testimonials archive - minimal",
+            "Blog archive - minimal (no controls)",
+            "Blog archive - pagination mode",
+            "Blog archive - long content edge case",
+            "Archive - empty optional fields",
+            "Resources archive - with eyebrow",
+            "Blog archive - single column"
+          ]
+        },
+        "requirementsMet": [
+          "darkMode boolean attribute added with default: true",
+          "BlockControls toolbar button for dark mode toggle (shadow icon)",
+          "Section className conditional: 'dark bg-transparent!' only when darkMode is true",
+          "Inner wrapper pseudo-element classes conditional on darkMode",
+          "data-dark-mode attribute on section for JS detection",
+          "card-resource.php: dark:bg-charcoal bg-white and dark:border-off-white border-charcoal/10",
+          "card-policy.php: same conditional classes as resource card",
+          "Archive.css: btn-tertiary hover overrides for both light and dark modes",
+          "Archive.css: dropdown arrow color variants (white for dark, charcoal for light)",
+          "Archive.css: blog Load More button white-filled in dark mode",
+          "Archive.css: blog xl-desktop divider colors (white opacity for dark, charcoal opacity for light)",
+          "navigation.css: dark mode overrides for pagination (.dark .navigation)"
+        ]
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "tsxPhpSync",
+        "severity": "minor",
+        "description": "PHP template missing @var docblock for camelCase attribute variables",
+        "file": "blocks/Archive/Archive.php",
+        "line": 1,
+        "details": "The PHP template uses 8 camelCase variables from auto-extracted attributes: $blockVariation, $darkMode, $displayFilters, $displayPerPage, $displaySearch, $maxColumns, $paginationMode, $postsPerPage. Without a @var docblock, PHP_CodeSniffer will warn about camelCase naming (WordPress coding standards prefer snake_case). The docblock tells the linter these come from JavaScript block attributes.",
+        "fix": "Add @var docblock after the opening comment block:\n\n/**\n * Archive block template.\n *\n * Renders a filterable archive of posts from a configured post type\n * with taxonomy filtering, search, pagination, and per-page controls.\n *\n * Available variables (auto-extracted from $attributes):\n * @var string $anchor\n * @var string $blockVariation\n * @var string $eyebrow\n * @var string $heading\n * @var string $description\n * @var array $buttons\n * @var bool $displayFilters\n * @var bool $displaySearch\n * @var bool $displayPerPage\n * @var int $postsPerPage\n * @var int $maxColumns\n * @var string $paginationMode\n * @var bool $darkMode\n *\n * Also available:\n * @var string $children Inner blocks content\n * @var WP_Block $block Block instance\n */",
+        "alsoUpdate": null
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors",
+      "Block registers correctly with darkMode attribute",
+      "darkMode attribute has correct type (boolean) and default (true)",
+      "TSX adds darkMode to ArchiveAttributes type",
+      "TSX has BlockControls toolbar button with shadow icon for dark mode toggle",
+      "TSX conditionally applies 'dark bg-transparent!' class based on attributes.darkMode",
+      "TSX conditionally applies dark mode pseudo-element classes on inner wrapper",
+      "PHP conditionally applies 'dark bg-transparent!' class based on $darkMode",
+      "PHP conditionally applies dark mode pseudo-element classes on inner wrapper",
+      "PHP adds data-dark-mode attribute for JS detection",
+      "card-resource.php has dark:bg-charcoal bg-white conditional classes",
+      "card-resource.php has dark:border-off-white border-charcoal/10 conditional classes",
+      "card-policy.php has same conditional classes as card-resource.php",
+      "Archive.css has btn-tertiary hover overrides for light mode (.archive:not(.dark))",
+      "Archive.css has btn-tertiary hover overrides for dark mode (.archive.dark)",
+      "Archive.css overrides include :hover, :focus, and focus-within pseudo-classes",
+      "Archive.css has dropdown arrow SVG for dark mode (white stroke)",
+      "Archive.css has dropdown arrow SVG for light mode (charcoal stroke)",
+      "Archive.css has light mode blog dividers (rgba(31,31,29,0.2))",
+      "Archive.css has dark mode blog dividers (rgba(255,255,255,0.2))",
+      "Archive.css has dark mode Load More button override for blog",
+      "navigation.css has .dark .navigation overrides for pagination",
+      "Test page has 14 block instances covering dark/light mode variations",
+      "Test page has resource and policy cards in both dark and light modes",
+      "Page audit confirms data-dark-mode attribute present on sections",
+      "Page audit confirms correct classes: dark mode has 'dark bg-transparent!', light mode does not",
+      "Screenshots verify resource card hover maintains btn-tertiary contrast in both modes",
+      "Screenshots verify policy card hover maintains btn-tertiary contrast in both modes",
+      "No manual $attributes['key'] extraction in PHP template",
+      "TSX/PHP structure and class sync verified",
+      "All edge cases render without errors"
+    ],
+    "screenshots": [
+      ".taktician-project/reports/blocks/archive/screenshots/2026-02-13-165821/archive-dark-mode-375w.png",
+      ".taktician-project/reports/blocks/archive/screenshots/2026-02-13-165821/archive-dark-mode-768w.png",
+      ".taktician-project/reports/blocks/archive/screenshots/2026-02-13-165821/archive-dark-mode-1440w.png",
+      ".taktician-project/reports/blocks/archive/screenshots/2026-02-13-165839/archive-resource-hover-dark-1440w.png",
+      ".taktician-project/reports/blocks/archive/screenshots/2026-02-13-165841/archive-resource-hover-light-1440w.png",
+      ".taktician-project/reports/blocks/archive/screenshots/2026-02-13-165843/archive-policy-hover-light-1440w.png"
+    ]
+  },
+  "tokensUsed": 79000,
+  "questionsForUser": []
+}

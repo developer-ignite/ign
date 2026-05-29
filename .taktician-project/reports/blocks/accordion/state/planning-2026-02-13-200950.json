@@ -1,0 +1,105 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-13T20:09:50Z",
+  "status": "complete",
+  "severity": "none",
+  "output": {
+    "summary": "Add an optional FAQ SEO schema (JSON-LD FAQPage structured data) toggle to the Accordion block. When enabled, the block outputs a <script type=\"application/ld+json\"> containing Google-compliant FAQPage schema derived from the accordion items (question = summary/title text, answer = rendered inner block content). This requires a new boolean attribute in block.json, a ToggleControl in the TSX editor sidebar, and PHP logic to generate the JSON-LD output.",
+    "fileChanges": [
+      {
+        "file": "blocks/Accordion/block.json",
+        "action": "modify",
+        "description": "Add enableFaqSchema boolean attribute",
+        "details": "Add a new attribute `enableFaqSchema` with type boolean, default false. This controls whether the FAQ JSON-LD structured data script is output on the frontend.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Accordion/Accordion.tsx",
+        "action": "modify",
+        "description": "Add ToggleControl for FAQ schema in the Behavior panel",
+        "details": "1. Add `enableFaqSchema` to the AccordionAttributes type definition as `enableFaqSchema: boolean`.\n2. Add a new ToggleControl inside the existing 'Behavior' PanelBody, after the existing toggles. Label: 'Enable FAQ schema (SEO)'. Help text: 'Outputs FAQPage structured data for search engines'. The toggle sets the `enableFaqSchema` attribute.\n3. This is a simple sidebar toggle -- no visual changes to the editor preview are needed.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Accordion/Accordion.php",
+        "action": "modify",
+        "description": "Add JSON-LD FAQPage schema output when enableFaqSchema is true",
+        "details": "1. At the top of the file, add `$enableFaqSchema` to the docblock variables: `@var bool $enableFaqSchema`.\n2. After the closing `</section>` tag, add PHP logic that:\n   a. Checks `if (!empty($enableFaqSchema))`\n   b. Iterates over `$block->inner_blocks` to collect FAQ entries\n   c. For each inner block (takt/accordion-item), extracts:\n      - `name` (question): from `$inner_block->attributes['title']` -- use wp_strip_all_tags() to clean any formatting\n      - `acceptedAnswer.text` (answer): render the inner block's own inner blocks to get the answer content. Use `$inner_block->render()` then extract the content portion, OR iterate `$inner_block->inner_blocks` and render each, then use wp_strip_all_tags() to get plain text. The simpler approach: render each inner block's inner_blocks and strip tags.\n   d. Builds the JSON-LD structure:\n      ```json\n      {\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"FAQPage\",\n        \"mainEntity\": [\n          {\n            \"@type\": \"Question\",\n            \"name\": \"Question text from title\",\n            \"acceptedAnswer\": {\n              \"@type\": \"Answer\",\n              \"text\": \"Plain text answer from inner blocks content\"\n            }\n          }\n        ]\n      }\n      ```\n   e. Only includes items that have both a non-empty title AND non-empty content\n   f. Outputs: `<script type=\"application/ld+json\">{json}</script>` using wp_json_encode() with JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE flags\n   g. Skips output entirely if no valid FAQ items exist (all items empty)\n\nIMPORTANT IMPLEMENTATION DETAIL for extracting answer text:\n- The `$block->inner_blocks` gives access to WP_Block objects for each accordion-item\n- Each accordion-item's inner_blocks contain the actual content (core/paragraph, core/list, etc.)\n- To get the answer text: iterate each accordion item's inner_blocks, render them individually, then strip HTML tags\n- Use `wp_strip_all_tags()` to convert HTML to plain text for the schema\n- Use `trim()` to clean whitespace\n- Alternatively, Google allows limited HTML in answers (basic formatting), so the answer text CAN include simple HTML. However, plain text is safer and more universally compatible. Recommendation: use wp_strip_all_tags() for maximum compatibility.",
+        "affectsPhp": true
+      }
+    ],
+    "attributeChanges": [
+      {
+        "action": "add",
+        "name": "enableFaqSchema",
+        "type": "boolean",
+        "default": false,
+        "description": "When enabled, outputs FAQPage JSON-LD structured data for search engines using accordion item titles as questions and their content as answers"
+      }
+    ],
+    "designDecisions": [
+      {
+        "category": "behavior",
+        "question": "Where should the FAQ schema toggle be placed in the editor?",
+        "recommendation": "Inside the existing 'Behavior' PanelBody in InspectorControls, after the exclusiveMode and alwaysOneOpen toggles. This groups all behavioral settings together logically.",
+        "needsUserInput": false,
+        "source": "existing-pattern",
+        "evidence": "The Behavior panel already contains exclusiveMode and alwaysOneOpen toggles. FAQ schema is a behavioral/output setting, not visual."
+      },
+      {
+        "category": "behavior",
+        "question": "Should the answer text in the schema contain HTML or plain text?",
+        "recommendation": "Use wp_strip_all_tags() to output plain text answers. While Google technically accepts limited HTML in FAQ answers, plain text is more universally compatible, avoids potential validation issues, and is simpler to implement. The accordion content can contain paragraphs, lists, and buttons -- stripping tags produces clean text.",
+        "needsUserInput": false,
+        "source": "google-faq-spec",
+        "evidence": "Google's FAQ structured data documentation states the answer 'text' property should contain 'The full text of the answer'. Plain text is the safest format."
+      },
+      {
+        "category": "behavior",
+        "question": "Should items with empty title or empty content be included in the schema?",
+        "recommendation": "No. Only include items where both title (question) AND inner block content (answer) are non-empty after trimming. This prevents invalid schema entries that could cause Google validation warnings.",
+        "needsUserInput": false,
+        "source": "google-faq-spec",
+        "evidence": "Google requires both 'name' and 'acceptedAnswer.text' to be present and non-empty for valid FAQ structured data."
+      },
+      {
+        "category": "behavior",
+        "question": "Should the JSON-LD script be placed inside or outside the <section> element?",
+        "recommendation": "Place it immediately after the closing </section> tag. JSON-LD scripts are invisible to users and do not affect visual rendering. Placing it outside the section keeps the semantic HTML clean while ensuring the structured data is output as part of the block's render.",
+        "needsUserInput": false,
+        "source": "google-faq-spec",
+        "evidence": "Google recommends placing JSON-LD in the <head> or anywhere in the <body>. Since block rendering outputs to the body, placing it after the section element is valid and clean."
+      },
+      {
+        "category": "behavior",
+        "question": "Should the FAQ schema be available for both default and with-media variations?",
+        "recommendation": "Yes. The FAQ schema is content-driven (titles + answers), not layout-driven. Both variations contain accordion items with the same title/content structure, so the toggle should work identically for both.",
+        "needsUserInput": false,
+        "source": "existing-pattern",
+        "evidence": "Both variations share the same inner blocks structure (takt/accordion-item children)."
+      }
+    ],
+    "implementationNotes": {
+      "phpInnerBlockAccess": "The $block variable (WP_Block instance) is available in Accordion.php via the render_callback in inc/helpers/blocks.php. Access inner blocks via $block->inner_blocks. Each inner block is a WP_Block with ->attributes['title'] and ->inner_blocks for nested content.",
+      "googleFaqRequirements": [
+        "@context must be https://schema.org",
+        "@type must be FAQPage",
+        "mainEntity must be an array of Question objects",
+        "Each Question needs name (string) and acceptedAnswer (Answer object)",
+        "Each Answer needs @type: Answer and text (string)",
+        "Must have at least one valid Question to output the schema",
+        "Page should not be used for advertising purposes or have more than one FAQPage per page (Google guideline)"
+      ],
+      "edgeCases": [
+        "All accordion items have empty titles -- do not output schema at all",
+        "Some items have titles but empty content -- skip those items only",
+        "Content contains only whitespace after stripping tags -- treat as empty",
+        "Special characters in titles/content -- wp_json_encode handles escaping automatically",
+        "Multiple accordion blocks on same page with FAQ enabled -- each outputs its own script tag (Google handles multiple FAQ scripts)"
+      ]
+    },
+    "requiresQA": true,
+    "qaScope": "functional",
+    "qaDetails": "Verify the JSON-LD output is present in the page source when enableFaqSchema is true, and absent when false. Validate the JSON-LD structure matches Google's FAQPage spec. Test with accordion items that have various content types (paragraphs, lists). Verify empty items are excluded from the schema."
+  }
+}

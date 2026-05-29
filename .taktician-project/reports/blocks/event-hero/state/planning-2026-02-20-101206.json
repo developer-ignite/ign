@@ -1,0 +1,31 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-20-101206",
+  "blockName": "EventHero",
+  "mode": "edit",
+  "summary": "Change date/time text in EventHero block to use the heading font (Anton / font-heading). The date/time <p> element on line 289 (TSX) and line 154 (PHP) currently uses 'text-lg font-medium leading-[1.2] text-charcoal'. Replace with 'font-heading text-lg leading-[1.2] text-charcoal' — adding font-heading and removing font-medium (Anton has its own weight). Per project typography rules, do NOT add uppercase or italic classes to Anton text.",
+  "fileChanges": [
+    {
+      "file": "blocks/EventHero/EventHero.tsx",
+      "action": "modify",
+      "description": "Change date/time <p> element classes to use font-heading instead of font-medium",
+      "details": "Line 289: Change className from 'text-lg font-medium leading-[1.2] text-charcoal' to 'font-heading text-lg leading-[1.2] text-charcoal'. Remove font-medium since Anton has its own weight characteristics. Do NOT add uppercase or italic per project typography rules.",
+      "affectsPhp": false
+    },
+    {
+      "file": "blocks/EventHero/EventHero.php",
+      "action": "modify",
+      "description": "Change date/time <p> element classes to use font-heading instead of font-medium",
+      "details": "Line 154: Change class from 'text-lg font-medium leading-[1.2] text-charcoal' to 'font-heading text-lg leading-[1.2] text-charcoal'. Remove font-medium since Anton has its own weight. Do NOT add uppercase or italic per project typography rules.",
+      "affectsPhp": true
+    }
+  ],
+  "attributeChanges": [],
+  "designDecisions": [
+    "Only the date/time line gets font-heading. The venue and cost lines remain unchanged with their current body font styling (text-lg font-medium), as the user's request is specifically about date and time.",
+    "Removing font-medium when adding font-heading because Anton has inherent weight characteristics and font-medium would conflict or be redundant.",
+    "No uppercase or italic classes added per project typography rules for Anton font."
+  ],
+  "requiresQA": true,
+  "qaScope": "functional"
+}

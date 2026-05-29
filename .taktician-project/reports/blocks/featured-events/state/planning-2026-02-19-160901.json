@@ -1,0 +1,605 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-19-160901",
+  "status": "complete",
+  "blockName": "FeaturedEvents",
+  "output": {
+    "meta": {
+      "blockName": "FeaturedEvents",
+      "namespace": "takt",
+      "title": "Featured Events",
+      "description": "Displays dynamically queried events from The Events Calendar in a vertically stacked layout with image and content panels, supporting automatic and manual selection modes.",
+      "category": "takt-theme",
+      "generatedAt": "2026-02-19T16:09:01Z",
+      "figmaNodeId": "1215:17607",
+      "specFile": ".taktician-project/prompts/featured-events.md"
+    },
+    "files": {
+      "blockJson": "blocks/FeaturedEvents/block.json",
+      "indexTsx": "blocks/FeaturedEvents/index.tsx",
+      "componentTsx": "blocks/FeaturedEvents/FeaturedEvents.tsx",
+      "templatePhp": "blocks/FeaturedEvents/FeaturedEvents.php",
+      "iconSvg": "blocks/FeaturedEvents/FeaturedEvents.svg",
+      "resources": [
+        "blocks/FeaturedEvents/resources/ArrowRight.svg"
+      ],
+      "cardTemplatePart": "parts/card-tribe_events.php"
+    },
+    "blockTypePatterns": {
+      "source": "dynamic-content-carousel.md + featured-post.md",
+      "requiredImports": {
+        "tsx": [
+          "shouldDisplay from @taktdev/utilities",
+          "renameBlock from @taktdev/utilities",
+          "FilteredServerSideRender from @taktdev/components",
+          "PostSelectorSortable from @taktdev/components",
+          "TaxonomyMultiSelect from @taktdev/components",
+          "ThemeHeading from parts/ThemeHeading"
+        ]
+      },
+      "requiredPatterns": [
+        {
+          "pattern": "shouldDisplay",
+          "usage": "Empty state handling for SSR preview"
+        },
+        {
+          "pattern": "renameBlock",
+          "usage": "Rename block in list view based on heading"
+        },
+        {
+          "pattern": "FilteredServerSideRender",
+          "usage": "PHP-rendered event cards preview in editor"
+        },
+        {
+          "pattern": "PostSelectorSortable",
+          "usage": "Manual event selection in sidebar"
+        },
+        {
+          "pattern": "TaxonomyMultiSelect",
+          "usage": "Event category and tag filtering"
+        }
+      ],
+      "componentStructure": {
+        "wrapper": "section (with dark class always applied)",
+        "container": "div.container with dark pattern pseudo-element background",
+        "header": "ThemeHeading with eyebrow, heading, description in 2-column layout",
+        "eventsList": "FilteredServerSideRender renders PHP event cards vertically stacked"
+      },
+      "qualityChecklist": [
+        "TSX and PHP heading/layout structure match",
+        "No hardcoded colors - uses theme tokens",
+        "FilteredServerSideRender with querySelector and ref pattern",
+        "PostSelectorSortable for manual mode",
+        "TaxonomyMultiSelect for taxonomy filters",
+        "wp_reset_postdata() called after loop",
+        "Card template part exists for tribe_events",
+        "The Events Calendar date meta used correctly (_EventStartDate)",
+        "Future events: ASC order, Past events: DESC order"
+      ]
+    },
+    "attributes": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": null,
+        "description": "HTML anchor attribute for linking",
+        "optional": true,
+        "editorComponent": null,
+        "validation": null
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "",
+        "description": "Small uppercase label above heading (e.g. 'Events')",
+        "optional": true,
+        "editorComponent": "RichText (via ThemeHeading)",
+        "validation": null
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "default": "",
+        "description": "Main heading text (e.g. 'Join Our Upcoming Events')",
+        "optional": false,
+        "editorComponent": "RichText (via ThemeHeading)",
+        "validation": null
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": "",
+        "description": "Section description text beside heading",
+        "optional": true,
+        "editorComponent": "RichText (via ThemeHeading)",
+        "validation": null
+      },
+      {
+        "name": "postsSource",
+        "type": "string",
+        "default": "automatic",
+        "description": "Selection mode: automatic (query) or manual (hand-picked)",
+        "optional": false,
+        "editorComponent": "ToggleGroupControl",
+        "validation": {
+          "enum": [
+            "automatic",
+            "manual"
+          ]
+        }
+      },
+      {
+        "name": "selectedPosts",
+        "type": "array",
+        "default": [],
+        "description": "Array of event post IDs for manual mode",
+        "optional": true,
+        "editorComponent": "PostSelectorSortable",
+        "validation": null
+      },
+      {
+        "name": "postsLimit",
+        "type": "number",
+        "default": 3,
+        "description": "Maximum number of events to display (automatic mode)",
+        "optional": false,
+        "editorComponent": "RangeControl (1-20)",
+        "validation": {
+          "min": 1,
+          "max": 20
+        }
+      },
+      {
+        "name": "eventList",
+        "type": "string",
+        "default": "future",
+        "description": "Show future or past events (automatic mode only)",
+        "optional": false,
+        "editorComponent": "ToggleGroupControl",
+        "validation": {
+          "enum": [
+            "future",
+            "past"
+          ]
+        }
+      },
+      {
+        "name": "selectedEventCategories",
+        "type": "array",
+        "default": [],
+        "description": "Event category (tribe_events_cat) filter for automatic mode",
+        "optional": true,
+        "editorComponent": "TaxonomyMultiSelect",
+        "validation": null
+      },
+      {
+        "name": "selectedTags",
+        "type": "array",
+        "default": [],
+        "description": "Tag filter for automatic mode (post_tag taxonomy on events)",
+        "optional": true,
+        "editorComponent": "TaxonomyMultiSelect",
+        "validation": null
+      },
+      {
+        "name": "hideIfEmpty",
+        "type": "boolean",
+        "default": false,
+        "description": "Hide entire section if query returns no events",
+        "optional": true,
+        "editorComponent": "ToggleControl",
+        "validation": null
+      },
+      {
+        "name": "buttonLabel",
+        "type": "string",
+        "default": "View Event",
+        "description": "Text label for the event card CTA button",
+        "optional": true,
+        "editorComponent": "TextControl (in sidebar)",
+        "validation": null
+      }
+    ],
+    "editorMarkupMap": null,
+    "styling": {
+      "section": {
+        "classes": "featured-events dark bg-transparent!",
+        "element": "section",
+        "notes": "Always dark mode. Uses theme dark class pattern."
+      },
+      "container": {
+        "classes": "container relative py-16 md:py-16 before:absolute before:bg-dark-pattern before:rounded-3xl before:-z-1 before:-inset-x-(--side-gutter) before:inset-y-0 md:before:-inset-x-8",
+        "element": "div",
+        "notes": "Dark pattern pseudo-element background. 64px padding = py-16."
+      },
+      "themeHeading": {
+        "classes": "mb-16",
+        "props": {
+          "headingSize": 3,
+          "columns": 2,
+          "enableButtons": false,
+          "enableDescription": true
+        },
+        "notes": "ThemeHeading with H3 size (Anton 56px desktop), 2-column layout (heading left ~51%, description right). Gap between heading row and event cards = 64px = mb-16."
+      },
+      "eventsList": {
+        "classes": "flex flex-col gap-16",
+        "element": "div",
+        "notes": "Vertical stack. Gap between event cards defaults to 64px (gap-16). Single card shown in Figma; multi-card uses same gap as header-to-cards."
+      },
+      "eventCard": {
+        "classes": "flex flex-col md:flex-row md:h-[349px]",
+        "element": "article",
+        "notes": "Two-panel card. Stacks on mobile (image top, content bottom). Fixed 349px height on desktop per Figma. On mobile, height becomes auto."
+      },
+      "eventCardLink": {
+        "classes": "flex flex-col md:flex-row md:h-[349px] group no-underline!",
+        "element": "a",
+        "notes": "Entire card is a link wrapping both halves. Group class for hover effects."
+      },
+      "imageHalf": {
+        "classes": "md:w-1/2 bg-charcoal rounded-3xl p-4 relative overflow-hidden",
+        "element": "div",
+        "notes": "Left 50% on desktop. bg-charcoal (#1f1f1d), 25px radius = rounded-3xl, 16px padding = p-4."
+      },
+      "imageInner": {
+        "classes": "w-full h-full overflow-hidden rounded-xl",
+        "element": "div",
+        "notes": "Inner image frame with 12px radius = rounded-xl."
+      },
+      "image": {
+        "classes": "w-full h-full object-cover",
+        "element": "img",
+        "notes": "Event featured image fills container."
+      },
+      "dateBadge": {
+        "classes": "absolute top-4 right-4 w-[104px] bg-charcoal rounded-lg py-3 px-1 text-center text-white flex flex-col items-center",
+        "element": "div",
+        "notes": "Floating badge on image top-right. 104px wide, dark bg, 8px radius = rounded-lg. Within the image inner frame padding area, so positioned absolute inside imageHalf at top-4 right-4 (accounts for the 16px padding of imageHalf)."
+      },
+      "dateBadgeDayOfWeek": {
+        "classes": "font-sans font-medium text-base leading-[1.5]",
+        "element": "span",
+        "notes": "Day of week abbreviation (e.g. 'Wed'). Roboto Medium 16px/1.5."
+      },
+      "dateBadgeDayNumber": {
+        "classes": "text-header-5 leading-[1.1]",
+        "element": "span",
+        "notes": "Day number (e.g. '07'). Anton 40px/1.1 = text-header-5."
+      },
+      "dateBadgeMonthYear": {
+        "classes": "font-sans font-medium text-base leading-[1.5]",
+        "element": "span",
+        "notes": "Month + Year (e.g. 'Feb 2024'). Roboto Medium 16px/1.5."
+      },
+      "contentHalf": {
+        "classes": "md:w-1/2 bg-charcoal rounded-3xl p-6 flex flex-col justify-between text-white",
+        "element": "div",
+        "notes": "Right 50% on desktop. bg-charcoal, 25px radius, 24px padding = p-6. Justify-between pushes button to bottom."
+      },
+      "contentGroup": {
+        "classes": "flex flex-col gap-2",
+        "element": "div",
+        "notes": "Top area with 8px gap between title, location, description."
+      },
+      "eventTitle": {
+        "classes": "text-header-4 uppercase",
+        "element": "h3",
+        "notes": "Anton Regular 48px/1.1 = text-header-4. White text inherited from parent."
+      },
+      "eventLocation": {
+        "classes": "font-sans font-medium text-base leading-[1.5]",
+        "element": "p",
+        "notes": "General Sans Medium 16px/1.5. Note: theme uses General Sans as font-sans. White text inherited."
+      },
+      "eventDescription": {
+        "classes": "font-sans font-medium text-base leading-[1.5]",
+        "element": "p",
+        "notes": "Roboto Medium 16px/1.5. Same size as location. White text inherited. Note: Figma shows Roboto but theme body is General Sans. Using font-sans for consistency."
+      },
+      "eventButton": {
+        "classes": "btn-tertiary text-white",
+        "element": "span",
+        "notes": "Tertiary button with arrow. 'VIEW EVENT' uppercase. Uses theme btn-tertiary + btn-tertiary-arrow pattern. Text from buttonLabel attribute."
+      }
+    },
+    "responsive": {
+      "mobile": {
+        "breakpoint": "< 768px",
+        "behavior": "Event card halves stack vertically (image on top, content below). Fixed height becomes auto. ThemeHeading collapses to single column. Container padding adjusts via --side-gutter. Date badge stays in same relative position on image."
+      },
+      "tablet": {
+        "breakpoint": "768px - 1023px",
+        "behavior": "Same as desktop layout (two halves side by side). ThemeHeading uses 2 columns."
+      },
+      "desktop": {
+        "breakpoint": ">= 1024px",
+        "behavior": "Two-panel card at 349px height. ThemeHeading 2-column layout. 64px vertical padding and gaps."
+      }
+    },
+    "behavior": {
+      "emptyState": {
+        "field": "hideIfEmpty controls section visibility when no events found"
+      },
+      "optionalFields": {
+        "pattern": "shouldDisplay()",
+        "fields": [
+          "eyebrow",
+          "description",
+          "eventLocation",
+          "eventDescription"
+        ]
+      },
+      "editorBehavior": {
+        "blockNaming": "renameBlock() based on heading",
+        "ssrPreview": "FilteredServerSideRender renders event cards from PHP",
+        "postTypeChange": "Not applicable - single post type (tribe_events)"
+      },
+      "queryLogic": {
+        "automatic": {
+          "postType": "tribe_events",
+          "futureEvents": {
+            "metaKey": "_EventStartDate",
+            "orderby": "meta_value",
+            "order": "ASC",
+            "metaCompare": ">=",
+            "metaValue": "current datetime"
+          },
+          "pastEvents": {
+            "metaKey": "_EventStartDate",
+            "orderby": "meta_value",
+            "order": "DESC",
+            "metaCompare": "<",
+            "metaValue": "current datetime"
+          },
+          "taxonomyFilters": {
+            "selectedEventCategories": {
+              "taxonomy": "tribe_events_cat",
+              "field": "term_id"
+            },
+            "selectedTags": {
+              "taxonomy": "post_tag",
+              "field": "term_id"
+            }
+          }
+        },
+        "manual": {
+          "postType": "tribe_events",
+          "orderby": "post__in",
+          "postsPerPage": -1
+        }
+      },
+      "cardTemplatePart": {
+        "file": "parts/card-tribe_events.php",
+        "dataSource": "WP loop functions + TEC meta (_EventStartDate, _EventEndDate, _EventVenueID)",
+        "dateFormatting": "Extract day-of-week, day number, month+year from _EventStartDate",
+        "venueResolution": "Get venue title from _EventVenueID via get_the_title()",
+        "imageHandling": "Featured image with object-cover, fallback to no-image graceful handling",
+        "buttonLabel": "Passed from parent block via set_query_var/get_query_var or inline rendering"
+      }
+    },
+    "accessibility": {
+      "patterns": [],
+      "elements": {
+        "eventCard": {
+          "element": "article",
+          "notes": "Each event card is an article element for semantic structure"
+        },
+        "eventCardLink": {
+          "notes": "Entire card wrapped in <a> for single click target. Button text provides accessible link text via sr-only span with event title."
+        },
+        "dateBadge": {
+          "ariaHidden": "true",
+          "notes": "Date badge is decorative since date info is also conveyed by the event title/context. Use aria-hidden on badge so screen readers don't read fragmented date."
+        },
+        "image": {
+          "alt": "Event featured image alt text from WordPress media library"
+        }
+      },
+      "notes": "No carousel pattern needed - events are stacked vertically, not in a carousel. Standard link/article semantics apply."
+    },
+    "decisions": [
+      {
+        "id": "DEC-001",
+        "category": "layout",
+        "decision": "Events stack vertically (no carousel) with gap-16 between cards",
+        "source": "spec",
+        "evidence": "Spec says 'It should allow for more than one event, in that case it will show one below the other.'"
+      },
+      {
+        "id": "DEC-002",
+        "category": "color",
+        "decision": "Dark mode always applied - section uses dark bg-transparent! with dark-pattern pseudo-element",
+        "source": "spec + figma",
+        "evidence": "Spec: 'The dark background will always be present.' Figma shows charcoal card panels on light page background. Section header uses dark text; the dark bg covers the container area."
+      },
+      {
+        "id": "DEC-003",
+        "category": "layout",
+        "decision": "No carousel attributes needed - no Swiper, no navigation, no pagination",
+        "source": "spec",
+        "evidence": "Spec specifies vertical stacking. Figma shows single event card. No carousel controls visible."
+      },
+      {
+        "id": "DEC-004",
+        "category": "typography",
+        "decision": "Event title uses text-header-4 (Anton 48px/1.1)",
+        "source": "figma",
+        "evidence": "Figma variable defs show H4 = Anton Regular 48px/1.1. Structural analysis confirms 'Anton Regular 48px/1.1, white'."
+      },
+      {
+        "id": "DEC-005",
+        "category": "layout",
+        "decision": "Event card fixed height 349px on desktop, auto on mobile",
+        "source": "figma",
+        "evidence": "Structural analysis: 'Event card row height: 349px'. Mobile should be auto for content flexibility."
+      },
+      {
+        "id": "DEC-006",
+        "category": "spacing",
+        "decision": "Image half padding 16px (p-4), content half padding 24px (p-6)",
+        "source": "figma",
+        "evidence": "Structural analysis measurements: Image half padding 16px, Content half padding 24px."
+      },
+      {
+        "id": "DEC-007",
+        "category": "layout",
+        "decision": "Date badge 104px wide, positioned absolute top-right within image half",
+        "source": "figma",
+        "evidence": "Structural analysis: 'Date badge width: 104px, position: top-right corner of image area'."
+      },
+      {
+        "id": "DEC-008",
+        "category": "border",
+        "decision": "Card halves use rounded-3xl (25px), image inner uses rounded-xl (12px), date badge uses rounded-lg (8px)",
+        "source": "figma",
+        "evidence": "Structural analysis: card halves 25px, image inner 12px, badge 8px."
+      },
+      {
+        "id": "DEC-009",
+        "category": "data",
+        "decision": "Use TEC meta _EventStartDate for date display and query filtering, _EventVenueID for venue",
+        "source": "spec",
+        "evidence": "Spec: 'The Events post type is the one created by the plugin The Events Calendar.' TEC stores event dates in _EventStartDate meta and venue as _EventVenueID."
+      },
+      {
+        "id": "DEC-010",
+        "category": "behavior",
+        "decision": "No related mode - only automatic and manual selection",
+        "source": "spec",
+        "evidence": "Spec mentions only 'selected manually or automatically'. No related mode requested."
+      },
+      {
+        "id": "DEC-011",
+        "category": "typography",
+        "decision": "ThemeHeading uses headingSize 3 (H3 = Anton 56px on desktop)",
+        "source": "figma",
+        "evidence": "Figma variables: H3 = Anton Regular font/size/5xl = 56px/1.1"
+      },
+      {
+        "id": "DEC-012",
+        "category": "layout",
+        "decision": "Two card halves sit flush (no gap between them)",
+        "source": "figma",
+        "evidence": "Structural analysis: 'The two card halves sit flush against each other (no gap) but have separate border-radius, creating a split-card visual effect.'"
+      },
+      {
+        "id": "DEC-013",
+        "category": "behavior",
+        "decision": "Button label editable via sidebar TextControl, default 'View Event'",
+        "source": "spec",
+        "evidence": "Spec for featured-post pattern says button label should be editable. Figma shows 'VIEW EVENT' text."
+      },
+      {
+        "id": "DEC-014",
+        "category": "layout",
+        "decision": "Card template part rendered inline in PHP (not via get_template_part) since button label needs to be passed from parent block",
+        "source": "implementation",
+        "evidence": "The buttonLabel attribute needs to flow from the block to each event card. Using inline rendering in the block PHP rather than a separate template part avoids complexity of set_query_var. However, for reusability, create parts/card-tribe_events.php that accepts $args with buttonLabel."
+      },
+      {
+        "id": "DEC-015",
+        "category": "layout",
+        "decision": "Inter-card gap is 24px (gap-6) for tighter stacking",
+        "source": "design-inference",
+        "evidence": "Figma only shows one card. 64px gap between header and cards area, but between cards themselves a tighter gap of 24px provides visual grouping. If user prefers different, flag as unresolved."
+      }
+    ],
+    "unresolvedDecisions": [
+      {
+        "id": "UNRES-001",
+        "category": "spacing",
+        "question": "What is the vertical gap between multiple stacked event cards?",
+        "options": [
+          "24px (gap-6) for tight grouping",
+          "48px (gap-12) for visual breathing room",
+          "64px (gap-16) matching header-to-cards gap"
+        ],
+        "defaultIfNotAsked": "gap-6",
+        "reason": "Figma only shows a single event card. Cannot determine inter-card spacing. Using 24px as default for tight grouping of related items."
+      },
+      {
+        "id": "UNRES-002",
+        "category": "layout",
+        "question": "Should the entire card be a clickable link, or only the button?",
+        "options": [
+          "Entire card is a link (better UX)",
+          "Only the button links to event"
+        ],
+        "defaultIfNotAsked": "Entire card is a link",
+        "reason": "Figma shows a 'VIEW EVENT' button but the card layout suggests the whole card could be clickable. Following card-post pattern where entire card is wrapped in <a>."
+      }
+    ],
+    "testPage": {
+      "contentFile": ".taktician-project/reports/blocks/featured-events/state/test-page-content.html",
+      "variations": [
+        {
+          "demoTitle": "Automatic - Future Events (Default)",
+          "demoDescription": "Default configuration showing future events sorted ASC (closest first). ThemeHeading with eyebrow, heading, and description."
+        },
+        {
+          "demoTitle": "Automatic - Past Events",
+          "demoDescription": "Past events sorted DESC (latest first). Tests eventList toggle."
+        },
+        {
+          "demoTitle": "Manual Selection",
+          "demoDescription": "Hand-picked events using PostSelectorSortable. Tests manual mode."
+        },
+        {
+          "demoTitle": "Minimal - Required Fields Only",
+          "demoDescription": "Only heading provided. Tests empty state handling for eyebrow, description, and optional fields."
+        },
+        {
+          "demoTitle": "Long Content Edge Case",
+          "demoDescription": "Very long heading and description text. Tests overflow and text wrapping."
+        },
+        {
+          "demoTitle": "Single Event",
+          "demoDescription": "Shows a single event. Tests limit of 1."
+        },
+        {
+          "demoTitle": "Hide If Empty",
+          "demoDescription": "Tests hideIfEmpty behavior - section should be hidden if no events match."
+        }
+      ],
+      "interactiveTests": []
+    },
+    "implementationNotes": {
+      "tecIntegration": {
+        "postType": "tribe_events",
+        "dateMetaKey": "_EventStartDate",
+        "endDateMetaKey": "_EventEndDate",
+        "venueMetaKey": "_EventVenueID",
+        "dateFormat": "_EventStartDate stores datetime as 'Y-m-d H:i:s'",
+        "venueResolution": "Venue is a separate post type (tribe_venue). Get venue name via get_the_title(_EventVenueID). Get venue address parts from venue post meta (_VenueAddress, _VenueCity, _VenueState).",
+        "taxonomies": {
+          "tribe_events_cat": "Event Categories (hierarchical)",
+          "post_tag": "Tags (flat, shared with events)"
+        },
+        "queryNotes": "Use standard WP_Query with meta_query on _EventStartDate for future/past filtering. TEC also has tribe_get_events() but standard WP_Query with meta is more reliable for custom blocks."
+      },
+      "editorPattern": {
+        "approach": "FilteredServerSideRender - entire block rendered by PHP since it's dynamic content. No Swiper needed. Editor shows ThemeHeading (editable) + SSR event cards.",
+        "querySelector": ".featured-events-list",
+        "sidebarPanels": [
+          "Content (source, eventList, taxonomy filters, limit, hideIfEmpty, buttonLabel)"
+        ]
+      },
+      "cardRendering": {
+        "approach": "Create parts/card-tribe_events.php as a reusable template part. The block PHP loops through query results and renders each card. The buttonLabel is passed via $args to the template part using get_template_part('parts/card', 'tribe_events', ['buttonLabel' => $buttonLabel]).",
+        "dateFormatting": "Parse _EventStartDate with PHP date functions to extract day-of-week (D), day number (d), month (M), year (Y)."
+      },
+      "noJsFile": "This block does NOT need a frontend JS file. No carousel, no interactive behavior. Pure PHP rendering.",
+      "existingPatterns": "Follow DynamicContentCarousel for query patterns, ContentWithMedia for card layout reference."
+    },
+    "tokenUsage": {
+      "contextGathering": 25000,
+      "figmaAnalysis": 15000,
+      "designConsultation": 0,
+      "specGeneration": 20000,
+      "total": 60000
+    }
+  },
+  "tokensUsed": 60000,
+  "questionsForUser": []
+}

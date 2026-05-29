@@ -1,0 +1,84 @@
+{
+  "agent": "planning",
+  "status": "complete",
+  "timestamp": "2026-02-20-002019",
+  "output": {
+    "summary": "Restructure the desktop header layout so the logo spans both rows (utility row + nav row). The current code places the nav items <nav> OUTSIDE the flex row that contains the logo, so the logo can only stretch to match the utility row height. In Figma, the logo is a direct flex sibling of a right column that contains BOTH the utility row and the nav items row in a flex-col gap-24. The fix moves the desktop nav items into the right column on desktop, while keeping the mobile collapsible nav behavior unchanged. Also reverts self-center back to self-stretch and preserves the text-white fix.",
+    "figmaStructure": {
+      "description": "Figma node 441:28858 (Navigation) uses 'flex items-center justify-between px-32 py-16 rounded-[25px]'. It has two direct children: (1) Logo container at 57.69px tall, and (2) Right column at w-833px as 'flex flex-col gap-24 items-end'. The right column contains the utility row (search + separator + SEP link) and the nav items row. The logo vertically centers against the combined height of both rows via items-center on the parent. The overall nav bar is 98.2px tall.",
+      "navBarNode": "441:28858",
+      "logoNode": "441:28859",
+      "rightColumnNode": "441:28971",
+      "utilityRowNode": "441:28959",
+      "navRowNode": "441:28878"
+    },
+    "currentCodeStructure": {
+      "description": "The current code has: (A) a 'nav bar inner' div with 'flex items-center justify-between' containing the logo, the right column (utility row only), and mobile toggle. (B) A separate <nav> element BELOW this div containing the nav items with 'md:mt-6 md:items-end'. Because the <nav> is outside the flex row, the logo cannot stretch to match the combined height of utility + nav rows.",
+      "problem": "The logo's flex parent only contains the utility row on its right side. The nav items are a separate sibling below. So self-stretch on the logo only stretches it to match the utility row height, not the full two-row layout shown in Figma."
+    },
+    "fileChanges": [
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "action": "modify",
+        "description": "Restructure desktop layout so the logo spans both rows by moving the desktop nav items into the right column",
+        "details": "1. REVERT logo <a> class from 'self-center' back to 'self-stretch' (line 70). Keep 'text-white'. The full logo class should be: 'block self-stretch text-white w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px] focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2'.\n\n2. RESTRUCTURE the desktop right column: Currently the right column (line 77, 'hidden md:flex flex-col gap-6 items-end shrink') only contains the utility row. It needs to ALSO contain the desktop nav items row. Change its gap from gap-6 to gap-6 (24px = gap-6, matching Figma's gap-24px variable which is spacing-scale/6).\n\n3. MOVE the desktop nav items: The <nav> element (line 140-195) currently renders the nav <ul> for both desktop and mobile. For desktop, the nav items row needs to appear INSIDE the right column. The cleanest approach: duplicate the desktop nav items <ul> inside the right column (hidden on mobile via md:flex, the existing <ul> in <nav> already has the right classes), and hide the <nav>'s <ul> on desktop. HOWEVER, since the $children variable can only be output once, a better approach is:\n   - Keep the <nav> as-is for mobile (it already has max-md: collapsible behavior)\n   - On desktop, restructure so the <nav> is INSIDE the flex row alongside the logo. This means the 'nav bar inner' div needs to wrap both the logo AND a right-side div that contains (a) utility row and (b) the <nav> with nav items.\n   - The <nav> already has 'md:mt-6 md:items-end' — remove 'md:mt-6' since the gap will be handled by the parent flex-col gap-6.\n\nCONCRETE STRUCTURAL CHANGE in PHP:\n- The current structure is:\n  <div class='flex items-center justify-between'>  <!-- nav bar inner -->\n    <a> logo </a>\n    <div class='hidden md:flex flex-col gap-6 items-end shrink'> utility row </div>\n    <button> mobile toggle </button>\n  </div>\n  <nav> ... nav items ... </nav>\n\n- The NEW structure should be:\n  <div class='flex items-center justify-between'>  <!-- nav bar inner -->\n    <a> logo </a>\n    <div class='hidden md:flex flex-col gap-6 items-end shrink'>  <!-- right column -->\n      utility row\n      nav items row (desktop only, extracted from <nav>)\n    </div>\n    <button> mobile toggle </button>\n  </div>\n  <nav> ... mobile nav (collapsible, hidden on desktop) ... </nav>\n\nFor the nav items row inside the right column, render the same $children <ul> but ONLY on desktop. Since $children can only be echoed once, use this approach:\n- Move the ENTIRE <nav> element inside the right column div, AFTER the utility row div.\n- The <nav> already handles both desktop and mobile via responsive classes.\n- The right column div changes from 'hidden md:flex' to 'md:flex flex-col gap-6 items-end shrink' (remove 'hidden' since <nav> handles its own mobile visibility).\n- BUT the mobile toggle button needs to remain OUTSIDE this right column (it's a sibling at the same level as the logo).\n\nACTUAL CLEANEST APPROACH:\n- Wrap the right column AND the <nav> together in a single flex-col container that is the logo's sibling.\n- On desktop this container shows as flex-col with gap-6, containing utility row + nav.\n- On mobile, utility row is hidden, nav is collapsible.\n\nFINAL STRUCTURE:\n  <div class='flex items-stretch justify-between'>  <!-- nav bar inner: changed items-center to items-stretch -->\n    <a> logo (self-stretch text-white) </a>\n    <div class='flex flex-col md:gap-6 items-end shrink min-w-0'>  <!-- right column: always present, no 'hidden' -->\n      <div class='hidden md:flex gap-4 items-center justify-end'> utility row (desktop only, unchanged) </div>\n      <nav> ... (remove md:mt-6, it's handled by parent gap-6) ... </nav>\n    </div>\n    <button class='md:hidden ...'> mobile toggle (unchanged) </button>\n  </div>\n  <!-- NO more <nav> outside the flex row -->\n\nNOTE: Change the parent from 'items-center' to 'items-stretch' so the logo naturally stretches to the full height of the right column. The logo's self-stretch then works correctly.\n\nThe <nav> element needs class adjustment: remove 'md:mt-6' (replaced by parent's md:gap-6). Keep all other classes.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "action": "modify",
+        "description": "Mirror the same structural changes in the editor TSX component",
+        "details": "Apply the same restructuring as PHP:\n1. Revert logo classes from 'self-center' to 'self-stretch' in both ImageDropUploader (line 500) and logo <a> (line 511). Keep 'text-white'.\n2. Change 'nav bar inner' div (line 490) from 'flex items-center justify-between' to 'flex items-stretch justify-between'.\n3. Move the <nav> element (lines 602-685) to be INSIDE the right column div, after the utility row div.\n4. Change the right column div (line 518) from 'hidden md:flex flex-col gap-6 items-end shrink' to 'flex flex-col md:gap-6 items-end shrink min-w-0' (remove 'hidden', add 'min-w-0' to prevent overflow).\n5. Remove 'md:mt-6' from the <nav> className (line 605).\n6. Keep the mobile toggle button as a sibling of the logo and right column (it stays at the same level).",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "layout",
+        "question": "How should the logo span both rows (utility + nav)?",
+        "recommendation": "Move the <nav> element inside the right column div so it becomes a flex-col sibling of the utility row. Change the parent from items-center to items-stretch. The logo with self-stretch will then naturally fill the combined height of utility row + gap + nav row, matching the Figma layout where the logo is a direct sibling of the two-row right column.",
+        "source": "figma",
+        "evidence": "Figma node 441:28858 shows the Navigation container as 'flex items-center justify-between' with two children: (1) logo at 57.69px tall, (2) right column as 'flex flex-col gap-24' containing utility row and nav row. The logo vertically centers against the combined ~66px content height (utility row + 24px gap + nav row). Total nav bar: 98.2px with 16px padding top/bottom.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-002",
+        "category": "layout",
+        "question": "Should we use items-center or items-stretch on the nav bar inner flex container?",
+        "recommendation": "Use items-stretch. While Figma shows items-center, the practical effect is the same because: (a) the logo with self-stretch and max-h constraints will size correctly either way, and (b) items-stretch ensures the logo container fills the full height of the right column. The visual difference is negligible since the logo image is constrained by max-h-[58px] and object-contain. Using items-stretch is the simplest way to achieve the 'logo spans both rows' requirement without needing explicit height calculations.",
+        "source": "implementation",
+        "evidence": "The Figma uses items-center on node 441:28858, but in the implementation items-stretch is needed because the logo's actual visible size is controlled by the child constraints (**:max-h-[58px], **:object-contain). The <a> tag stretching to full height just means the clickable area spans both rows, which is good UX for a logo link.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-003",
+        "category": "color",
+        "question": "Logo text-white for inline SVG currentColor visibility",
+        "recommendation": "Preserve the text-white class added in revision 1. This is confirmed correct — inline SVGs use currentColor and need text-white on their container to be visible on the dark background.",
+        "source": "figma",
+        "evidence": "Figma shows white logo on charcoal background. Previous revision correctly identified and fixed this.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-004",
+        "category": "layout",
+        "question": "Should the right column gap be gap-6 (24px) matching Figma?",
+        "recommendation": "Use md:gap-6 on the right column. The current code already uses gap-6 on this div. Figma uses gap-24px (spacing-scale/6 = 24px) which maps to Tailwind gap-6. Apply this only on md: breakpoint since on mobile the utility row is hidden and the nav is collapsible.",
+        "source": "figma",
+        "evidence": "Figma node 441:28971 (right column) uses gap-[var(--spacing-scale/6,24px)].",
+        "needsUserInput": false
+      }
+    ],
+    "mobileConsiderations": {
+      "description": "On mobile, the layout is fundamentally different: the utility row is hidden (md:hidden), the nav is a collapsible panel, and the logo is small (26px max-h). The restructuring must not break mobile behavior. The <nav> element's max-md: collapsible classes (max-h-0, opacity-0, etc.) must continue to work. The mobile toggle button must remain visible and functional.",
+      "risks": [
+        "Moving <nav> inside the right column could break mobile toggle visibility if the right column has 'hidden' on mobile. Solution: remove 'hidden' from the right column, let child elements handle their own mobile visibility.",
+        "The mobile toggle button must remain a direct sibling at the same flex level as the logo, not nested inside the right column. Keep it as a third child of the nav bar inner div."
+      ]
+    },
+    "requiresQA": true,
+    "qaScope": "full"
+  }
+}

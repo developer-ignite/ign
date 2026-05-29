@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/button-row",
+  "title": "Button Row",
+  "category": "takt-theme",
+  "description": "Displays a row of buttons",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "typography": {
+      "textAlign": true
+    }
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "tagName": {
+      "type": "string",
+      "default": "p",
+      "enum": ["p", "div", "span", "li"]
+    },
+    "style": {
+      "type": "object",
+      "default": {
+        "typography": {
+          "textAlign": "left"
+        }
+      }
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 600,
+    "innerBlocks": [
+      {
+        "name": "takt/button",
+        "attributes": {
+          "button": {
+            "url": "#",
+            "variation": "primary",
+            "title": "Primary"
+          }
+        }
+      },
+      {
+        "name": "takt/button",
+        "attributes": {
+          "button": {
+            "url": "#",
+            "variation": "secondary",
+            "title": "Secondary"
+          }
+        }
+      }
+    ]
+  }
+}

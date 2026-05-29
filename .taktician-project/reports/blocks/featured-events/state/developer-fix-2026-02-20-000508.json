@@ -1,0 +1,45 @@
+{
+  "agent": "developer-fix",
+  "timestamp": "2026-02-20-000508",
+  "status": "complete",
+  "blockName": "FeaturedEvents",
+  "output": {
+    "issuesFixed": [
+      {
+        "id": "DQA-001",
+        "severity": "major",
+        "description": "Card title text-header-2 resolves to 60px on desktop via responsive --text-6xl scaling, but Figma specifies 48px.",
+        "fix": "Added `md:text-[3rem] md:leading-[1.1]` to the h3 on line 60 of parts/card-tribe_events.php. 3rem = 48px, locking the title at the correct Figma-specified size on desktop. Mobile retains the 48px base from --text-header-2 mobile value.",
+        "files": [
+          "parts/card-tribe_events.php"
+        ],
+        "resolution": "resolved"
+      },
+      {
+        "id": "DQA-002",
+        "severity": "major",
+        "description": "Date badge appeared at bottom-right instead of top-right. The inner frame used `flex items-end` (row direction), which pushed the badge to the bottom.",
+        "fix": "Changed `flex items-end` to `flex flex-col items-end` on line 37 of parts/card-tribe_events.php. With column direction, `items-end` right-aligns children and the badge naturally renders at the top of the column (first child), correctly placing it at top-right of the inner image frame.",
+        "files": [
+          "parts/card-tribe_events.php"
+        ],
+        "resolution": "resolved"
+      }
+    ],
+    "filesChanged": [
+      "parts/card-tribe_events.php"
+    ],
+    "validationResults": {
+      "passed": true,
+      "buildErrors": 0,
+      "buildWarnings": 8,
+      "syncErrors": 0,
+      "syncWarnings": 1,
+      "notes": "All warnings pre-existing in other blocks. Sync warning (TSX root InspectorControls vs PHP root section) is expected for this editor-controls-only pattern."
+    },
+    "screenshotPath": ".taktician-project/reports/blocks/featured-events/screenshots/detail/2026-02-20-000513/revision-3-verify-1440w.png",
+    "screenshotNotes": "1440px screenshot confirms: date badge renders at top-right of each image frame, card titles are visibly smaller and no longer dominating the content area."
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

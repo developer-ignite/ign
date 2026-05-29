@@ -1,0 +1,57 @@
+{
+  "agent": "planning",
+  "status": "complete",
+  "timestamp": "2026-02-13T03:00:00Z",
+  "output": {
+    "summary": "Fix two bugs: (1) Per-tab color not applied to wrapper background on desktop — selectTab() in Tabs.js always applies bg-accent-lighter instead of reading data-tab-color and adding the color class so the CSS custom-variant redefines --accent-color. (2) Mobile border disappears on open — the details element uses open:bg-accent which works, but open:border-accent alone does not visually persist the border because the border utility (border border-charcoal) competes with the open state color; needs explicit open:border to maintain border width plus open:border-accent for the color change.",
+    "fileChanges": [
+      {
+        "file": "blocks/Tabs/Tabs.js",
+        "action": "modify",
+        "description": "Update selectTab() to read data-tab-color from the active wrapper and apply the color class instead of (or in addition to) bg-accent-lighter. When data-tab-color is empty, fall back to bg-accent-lighter. Also clean up color classes from previously active wrappers.",
+        "details": "In the selectTab() function, lines 88-97:\n\n1. Define a list of valid color classes: ['neon-green', 'blue', 'green', 'yellow', 'orange', 'purple'].\n\n2. In the wrappers.forEach loop, for the ACTIVE wrapper (i === index):\n   a. Read the color: const tabColor = wrapper.dataset.tabColor || '';\n   b. Remove all color classes from the wrapper: validColors.forEach(c => wrapper.classList.remove(c));\n   c. If tabColor is non-empty AND is in the valid list, add the tabColor class to wrapper AND add bg-accent-lighter (which will resolve to the recolored accent via the CSS custom-variant).\n   d. If tabColor is empty, just add bg-accent-lighter (existing behavior, uses page accent).\n   e. Keep existing md:hidden removal and md:flex addition.\n\n3. For INACTIVE wrappers:\n   a. Remove all color classes: validColors.forEach(c => wrapper.classList.remove(c));\n   b. Remove bg-accent-lighter (existing behavior).\n   c. Keep existing md:hidden addition and md:flex removal.\n\n4. In setMobileMode(), also clean up color classes from all wrappers so they don't leak into mobile view:\n   wrappers.forEach(w => { validColors.forEach(c => w.classList.remove(c)); w.classList.remove('bg-accent-lighter'); });\n\nThe key insight: The CSS custom-variant system (e.g., .blue { --accent-color: var(--color-blue); --accent-color-lighter: var(--color-blue-lighter); }) means adding the color class like 'blue' to the wrapper will redefine --accent-color-lighter within that scope, so bg-accent-lighter will automatically resolve to the correct lighter shade of that color. No new CSS is needed.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Tabs/TabsItem/TabsItem.php",
+        "action": "modify",
+        "description": "Fix mobile border persistence on open state by ensuring the border width is explicitly maintained when open.",
+        "details": "On line 21 (the details element class_name array), the current classes include:\n  'open:bg-accent open:border-accent' => true,\n\nThe issue: 'border border-charcoal' sets both border-width (1px) and border-color (charcoal). When the details is opened, 'open:border-accent' only changes the border-color to the accent color, which should work. However, if there is a CSS specificity or cascade issue, the border may not visually appear.\n\nInvestigation suggests the actual problem may be that md:border-0 is being applied on mobile due to a CSS specificity issue, OR the open:border-accent is working but the visual change is too subtle. Let's verify the class list.\n\nLooking at the current classes:\n- 'border border-charcoal' - sets 1px border with charcoal color\n- 'open:bg-accent open:border-accent' - on open, changes bg and border color\n- 'md:border-0' - removes border on desktop\n\nThe md: prefix should only apply at >= 60rem (960px). On mobile (< 960px), md:border-0 should NOT apply. So the border should persist.\n\nPossible root cause: In Tailwind v4, the 'border' utility provides border-width but 'open:border-accent' only sets border-color. If there is a specificity battle where 'md:border-0' is somehow winning even on mobile, or if the border-color change to accent (which may be similar to the background) makes it look like the border disappeared.\n\nThe fix: Add 'open:border' explicitly to ensure border-width is re-asserted on open, alongside 'open:border-accent' for the color. Change:\n  'open:bg-accent open:border-accent' => true,\nTo:\n  'open:bg-accent open:border open:border-accent' => true,\n\nThis guarantees the 1px border is explicitly set when open, preventing any cascade issue from removing it.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Tabs/TabsItem/TabsItem.tsx",
+        "action": "modify",
+        "description": "Mirror the PHP border fix in the editor component for consistency.",
+        "details": "In the details element className cn() object (around line 108), change:\n  'open:bg-accent open:border-accent': true,\nTo:\n  'open:bg-accent open:border open:border-accent': true,\n\nThis mirrors the PHP fix so the editor preview matches the frontend.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "color",
+        "decision": "Use CSS custom-variant color classes on wrapper to redefine --accent-color-lighter, then bg-accent-lighter resolves automatically to the per-tab color",
+        "source": "existing-pattern",
+        "evidence": "colors.css defines .blue, .orange, .purple etc. as custom-variants that redefine --accent-color and --accent-color-lighter. The tab buttons already use this pattern (tabColor class on button element). Applying the same class to the wrapper gives bg-accent-lighter the correct color scope."
+      },
+      {
+        "id": "DEC-002",
+        "category": "border",
+        "decision": "Add explicit open:border to maintain border-width on mobile open state",
+        "source": "user",
+        "evidence": "User reports border disappearing on mobile open. Adding open:border re-asserts 1px border-width alongside open:border-accent color change, preventing any cascade/specificity loss."
+      },
+      {
+        "id": "DEC-003",
+        "category": "color",
+        "decision": "Clean up color classes from wrappers when switching tabs and when entering mobile mode to prevent color leaking",
+        "source": "existing-pattern",
+        "evidence": "The selectTab function already manages bg-accent-lighter add/remove. Color classes need the same lifecycle management to avoid stale color scopes on inactive wrappers or in mobile mode."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

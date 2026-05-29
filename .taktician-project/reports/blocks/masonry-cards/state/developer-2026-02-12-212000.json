@@ -1,0 +1,113 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12T21:20:00Z",
+  "status": "complete",
+  "output": {
+    "mode": "edit",
+    "summary": "Removed Gutenberg's default selection outline on TextCard and ImageCard by adding CSS override classes (after:!outline-none, after:!shadow-none, after:!border-none) to neutralize the ::after pseudo-element outline styles applied by WordPress editor.",
+    "filesModified": [
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/blocks/MasonryCards/TextCard/TextCard.tsx",
+        "change": "Added after:!outline-none after:!shadow-none after:!border-none to unconditional classes on line 54",
+        "linesBefore": "54",
+        "linesAfter": "54",
+        "reason": "Remove Gutenberg's default outline on ::after pseudo-element when TextCard is focused/selected in editor"
+      },
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/blocks/MasonryCards/ImageCard/ImageCard.tsx",
+        "change": "Added after:!outline-none after:!shadow-none after:!border-none to unconditional classes on line 82",
+        "linesBefore": "82",
+        "linesAfter": "82",
+        "reason": "Remove Gutenberg's default outline on ::after pseudo-element when ImageCard is focused/selected in editor"
+      }
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "codeChanges": {
+      "textCard": {
+        "location": "useBlockProps className, line 54",
+        "addedClasses": "after:!outline-none after:!shadow-none after:!border-none",
+        "condition": "Unconditional (applies to all TextCards, not just isTall)",
+        "purpose": "Neutralize Gutenberg's ::after outline/shadow/border on focused blocks"
+      },
+      "imageCard": {
+        "location": "useBlockProps className, line 82",
+        "addedClasses": "after:!outline-none after:!shadow-none after:!border-none",
+        "condition": "Unconditional (applies to all ImageCards, not just isTall)",
+        "purpose": "Neutralize Gutenberg's ::after outline/shadow/border on focused blocks"
+      }
+    },
+    "cssOverrides": {
+      "after:!outline-none": {
+        "generates": "outline: none !important",
+        "purpose": "Removes the outline property that Gutenberg applies to ::after on focused blocks",
+        "specificity": "!important flag ensures override of Gutenberg's higher-specificity selector"
+      },
+      "after:!shadow-none": {
+        "generates": "box-shadow: none !important",
+        "purpose": "Removes any box-shadow that Gutenberg might apply to ::after on focused blocks",
+        "specificity": "!important flag ensures override"
+      },
+      "after:!border-none": {
+        "generates": "border: none !important",
+        "purpose": "Removes any border that Gutenberg might apply to ::after on focused blocks",
+        "specificity": "!important flag ensures override"
+      }
+    },
+    "gutenbergDefault": {
+      "selector": ".block-editor-block-list__layout .block-editor-block-list__block:not([contenteditable=true]):focus:after",
+      "stylesNeutralized": [
+        "outline - Gutenberg applies outline styles for visual focus indication",
+        "box-shadow - May be applied for depth/focus effects",
+        "border - May be applied as part of selection outline"
+      ],
+      "note": "These styles are part of Gutenberg's block selection/focus UI. We're removing them to prevent visual clutter on the card ::after pseudo-element."
+    },
+    "unconditionalApplication": {
+      "reason": "Outline removal should apply to ALL cards (tall and non-tall) because the Gutenberg outline is unwanted on any card in this block",
+      "textCard": "Classes added to the always-true condition on line 54, so they apply regardless of isTall, masonryStyle, or columnCount",
+      "imageCard": "Classes added to the always-true condition on line 82, so they apply regardless of isTall, masonryStyle, or columnCount"
+    },
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Webpack performance warnings (asset size limits) - pre-existing, not related to changes"
+      ],
+      "details": "Build completed successfully with 'webpack compiled with 3 warnings'. All warnings are pre-existing performance recommendations. TypeScript compilation passed without errors."
+    },
+    "syncStatus": {
+      "verified": true,
+      "phpUnchanged": true,
+      "details": "PHP templates intentionally left unchanged. This is editor-only styling to remove Gutenberg's selection outline. The frontend does not load Gutenberg editor styles, so no PHP changes are needed."
+    },
+    "visualEffect": {
+      "before": "When a TextCard or ImageCard is focused/selected in the Gutenberg editor, Gutenberg's ::after outline appears on the block wrapper, creating unwanted visual clutter around the card",
+      "after": "When a TextCard or ImageCard is focused/selected in the Gutenberg editor, no outline appears on the ::after pseudo-element. The card remains visually clean.",
+      "note": "Gutenberg still provides other focus indicators (block toolbar, settings sidebar) so editors can still clearly see which block is selected"
+    },
+    "testing": {
+      "editorTesting": [
+        "Open Gutenberg editor and add TextCard and ImageCard blocks",
+        "Click to select/focus each card",
+        "Verify no outline appears around the card when selected",
+        "Verify the block toolbar and settings sidebar still indicate which block is selected",
+        "Test with both tall and non-tall cards to ensure outline removal works for all variants"
+      ],
+      "cssInspection": [
+        "Inspect a selected card's computed styles in browser dev tools",
+        "Check the ::after pseudo-element",
+        "Verify outline: none !important is applied",
+        "Verify box-shadow: none !important is applied",
+        "Verify border: none !important is applied"
+      ],
+      "frontendTesting": [
+        "View the test page at https://ign.localhost/test-masonry-cards/",
+        "Verify cards display normally on the frontend (frontend doesn't have ::after selection styles anyway)",
+        "Confirm no visual regression from the CSS changes"
+      ]
+    },
+    "blockers": [],
+    "componentModifications": []
+  }
+}

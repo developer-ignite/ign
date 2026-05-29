@@ -1,0 +1,66 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-20-022717",
+  "status": "complete",
+  "blockName": "EventHero",
+  "output": {
+    "fixMode": true,
+    "changesApplied": [
+      {
+        "file": "blocks/EventHero/block.json",
+        "description": "Removed useTopicColor attribute and its example entry",
+        "changes": [
+          "Deleted 'useTopicColor' boolean attribute from attributes object",
+          "Removed 'useTopicColor: false' from example.attributes"
+        ]
+      },
+      {
+        "file": "blocks/EventHero/EventHero.tsx",
+        "description": "Removed useTopicColor logic; changed external link button to btn-primary",
+        "changes": [
+          "Removed 'useTopicColor' from EventHeroAttributes type",
+          "Removed 'firstAccentColor' variable derivation (was only used for section gradient)",
+          "Kept 'categoryAccentColors' useSelect intact — still used for per-pill accent colors",
+          "Removed useTopicColor ToggleControl from InspectorControls PanelBody",
+          "Simplified useBlockProps className from cn({...conditional...}) to plain string 'event-hero hero relative overflow-visible'",
+          "Changed 'btn-tertiary' to 'btn-primary' on the external link <a> element"
+        ]
+      },
+      {
+        "file": "blocks/EventHero/EventHero.php",
+        "description": "Removed useTopicColor logic; changed external link button to btn-primary",
+        "changes": [
+          "Removed '@var bool $useTopicColor' from docblock",
+          "Removed $first_category and $first_accent_color variable declarations",
+          "Simplified theme_block_props() call from array with conditional accent color to plain string 'event-hero hero relative overflow-visible'",
+          "Changed 'btn-tertiary' to 'btn-primary' on the external link <a> element"
+        ]
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Pre-existing useSelect dependency warnings (same as PostHero — not block-specific)"
+      ]
+    },
+    "validationStatus": {
+      "passed": true,
+      "errors": 0,
+      "warnings": 1,
+      "warningDetails": [
+        "Root wrapper element mismatch (known false positive — same as PostHero)"
+      ]
+    },
+    "testPage": {
+      "url": "https://ign.localhost/test-event-hero/",
+      "pageId": 248,
+      "action": "updated",
+      "previousVariations": 6,
+      "currentVariations": 5,
+      "removedVariation": "With Topic Color Override (useTopicColor:true — attribute no longer exists)"
+    }
+  },
+  "tokensUsed": 12000,
+  "questionsForUser": []
+}

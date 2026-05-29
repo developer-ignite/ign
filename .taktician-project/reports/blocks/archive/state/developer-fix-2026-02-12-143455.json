@@ -1,0 +1,111 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12-143455",
+  "status": "complete",
+  "blockName": "Archive",
+  "mode": "fix",
+  "revision": 2,
+  "output": {
+    "summary": "Implemented two changes from planning: (1) Unified per-page query variable from post-type-specific names to single 'show_per_page' across PHP, JS, and query vars registration. (2) Fixed dropdown chevron arrows by adding !important to all background sub-properties to override the global bg-none! from forms.css.",
+    "filesModified": [
+      "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.php",
+      "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.js",
+      "/var/www/ign/wp-content/themes/ign/inc/functions/archive-query-vars.php",
+      "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.css"
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "fixesApplied": [
+      {
+        "file": "blocks/Archive/Archive.php",
+        "description": "Changed per-page query var from post-type-specific to unified 'show_per_page'",
+        "changes": [
+          "Line 119: Updated comment from 'Per-page from URL (namespaced by post type)' to 'Per-page from URL (unified query var)'",
+          "Line 120: Changed '$per_page_var = 'per_page_' . $post_type;' to '$per_page_var = 'show_per_page';'",
+          "The select name attribute on line 269 already uses $per_page_var, so it automatically picks up the new unified value"
+        ],
+        "impact": "URLs will now use ?show_per_page=20 instead of ?per_page_post=20, ?per_page_team_member=20, etc. This unifies the parameter across all archive post types."
+      },
+      {
+        "file": "blocks/Archive/Archive.js",
+        "description": "Changed per-page query var from post-type-specific to unified 'show_per_page'",
+        "changes": [
+          "Line 21: Changed 'var perPageVar = 'per_page_' + postType;' to 'var perPageVar = 'show_per_page';'",
+          "This affects loadFiltersFromUrl (line 316) which now looks for 'show_per_page' in URL params",
+          "The serializeForm function automatically serializes the select with name='show_per_page' correctly"
+        ],
+        "impact": "JavaScript now reads and writes the unified 'show_per_page' parameter for all archive types."
+      },
+      {
+        "file": "inc/functions/archive-query-vars.php",
+        "description": "Replaced five post-type-specific per_page vars with single 'show_per_page'",
+        "changes": [
+          "Lines 12-16: Removed individual query vars: 'per_page_post', 'per_page_team_member', 'per_page_resource', 'per_page_testimonial', 'per_page_policy'",
+          "Line 12: Added single query var: 'show_per_page'",
+          "This ensures WordPress recognizes 'show_per_page' as valid for get_query_var() retrieval"
+        ],
+        "impact": "WordPress will now accept and process ?show_per_page=X in archive URLs across all post types."
+      },
+      {
+        "file": "blocks/Archive/Archive.css",
+        "description": "Fixed dropdown chevron arrows by adding !important to all background sub-properties",
+        "changes": [
+          "Lines 126-133: Updated .archive select rule with comprehensive fix",
+          "Added background-repeat: no-repeat !important",
+          "Added background-position: right 16px center !important",
+          "Added background-size: 12px !important",
+          "Added !important to existing background-image property",
+          "Updated comment to explain root cause: global forms.css '@apply bg-none!' compiles to 'background: none !important' which overrides all background sub-properties"
+        ],
+        "rationale": "The global forms.css uses '@apply bg-none!' (line 128) which compiles to 'background: none !important'. The CSS 'background' shorthand resets ALL background sub-properties (image, repeat, position, size) with !important. This overrides both the global arrow definition and the archive-specific override. Adding !important to all four sub-properties allows them to compete with the global !important.",
+        "impact": "Dropdown arrows will now display correctly on all <select> elements within .archive context (filter dropdowns, per-page selector)."
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Webpack performance warnings (asset size limits) - informational only, no functional impact"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "PHP and JS both updated with matching 'show_per_page' variable. Query vars registration updated to match. CSS fix is isolated to Archive.css with proper scoping."
+    },
+    "testPage": {
+      "exists": true,
+      "url": "https://ign.localhost/test-archive/",
+      "pageId": 118,
+      "note": "Test page already has 11 Archive variations from previous revisions. No test page changes needed for this fix."
+    },
+    "blockers": [],
+    "notes": [
+      "Query var unification: URLs now use ?show_per_page=20 instead of post-type-specific parameters",
+      "Backward compatibility: Old bookmarked URLs with per_page_* params will be ignored (no errors), falling back to default postsPerPage from block attributes",
+      "Dropdown arrow fix: All four background sub-properties need !important because the global 'background: none !important' shorthand sets all of them with !important",
+      "The global forms.css bg-none! issue is a pre-existing bug that affects all selects theme-wide. The archive-specific fix is scoped to .archive select only to avoid side effects. A separate task should address the global issue.",
+      "CSS specificity: The .archive select rule with !important overrides the global forms.css bg-none! for this specific context",
+      "No TypeScript changes needed - this is a PHP/JS/CSS-only fix",
+      "Build passes without errors, ready for QA verification"
+    ],
+    "qaVerification": {
+      "functionalChecks": [
+        "Load test page at https://ign.localhost/test-archive/",
+        "Change per-page selector from 9 to 18 - verify URL updates to ?show_per_page=18 (not ?per_page_post=18)",
+        "Test on different archive variations (team_member, resource, policy) - all should use ?show_per_page=X",
+        "Verify dropdown arrows are visible on all <select> elements (filter dropdowns, per-page selector)",
+        "Test browser back/forward buttons - per-page state should persist via unified query var",
+        "Verify AJAX filtering updates URL with show_per_page parameter correctly"
+      ],
+      "visualChecks": [
+        "Inspect filter dropdowns - white chevron arrow should be visible at right edge",
+        "Inspect per-page selector - white chevron arrow should be visible",
+        "Arrows should be positioned 16px from right edge, vertically centered",
+        "Arrow size should be 12px",
+        "Arrows should not repeat (background-repeat: no-repeat)"
+      ]
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

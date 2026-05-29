@@ -1,0 +1,194 @@
+{
+  "agent": "design",
+  "timestamp": "2026-02-20-005307",
+  "status": "PASS",
+  "blockName": "Header",
+  "output": {
+    "mode": "qa",
+    "context": "Mobile menu fix — added max-md:flex-wrap to nav bar inner and max-md:w-full max-md:order-last to the right column so the mobile menu spans full width when opened.",
+    "contentComparison": {
+      "note": "Targeted QA for mobile menu fix — full visual comparison performed across all breakpoints and browsers"
+    },
+    "screenshotPaths": {
+      "implementation": {
+        "closedState": ".taktician-project/reports/blocks/header/screenshots/2026-02-20-004813/",
+        "openState": ".taktician-project/reports/blocks/header/screenshots/2026-02-20-005046/"
+      }
+    },
+    "figmaReferences": {
+      "desktopClosed": "785:34245",
+      "mobileClosed": "801:58305",
+      "mobileOpen": "811:61228"
+    },
+    "compositionGate": {
+      "status": "PASS",
+      "details": "All breakpoints pass composition check. Desktop header shows correct two-row layout with logo spanning both rows. Mobile closed state shows logo + hamburger correctly. Mobile open state shows full-width menu panel within the nav bar container, matching Figma design."
+    },
+    "criticalValidation": [
+      {
+        "id": "DQA-001",
+        "check": "Mobile menu full width when opened (375px)",
+        "status": "PASS",
+        "observation": "The mobile menu opens and the nav content (menu items, search, contact CTA) spans the full width of the dark nav bar container. The max-md:flex-wrap on the inner flex container causes the right column (with max-md:w-full max-md:order-last) to wrap below the logo/hamburger row and fill 100% width. The menu items, divider, search bar, and CTA text all extend to the full available width within the 32px horizontal padding, exactly as shown in the Figma mobile-open reference (811:61228). The menu is NOT squeezed into a narrow column.",
+        "figmaComparison": "Implementation matches Figma: both show the menu within the rounded-corner (25px) nav bar with 32px horizontal padding. Menu content fills the full container width."
+      },
+      {
+        "id": "DQA-002",
+        "check": "Mobile closed state (375px) — logo + hamburger correct",
+        "status": "PASS",
+        "observation": "At 375px, the dark rounded nav bar shows the IGNITE logo on the left (approximately 100px wide, 26px tall per max-md:**:max-h-[26px]) and the hamburger icon (three horizontal lines) on the right. The two elements are horizontally aligned and centered within the bar. Matches the Figma mobile-closed reference (801:58305)."
+      },
+      {
+        "id": "DQA-003",
+        "check": "Desktop (1440px) — no regressions, logo spans both rows",
+        "status": "PASS",
+        "observation": "At 1440px, the header shows a dark rounded nav bar with the IGNITE logo on the left spanning both the utility row (search + SEP link) and the navigation row (About, Health, Financial Wellbeing, Advocacy, Social, Student Voices). The logo appears approximately 58px tall (per md:**:max-h-[58px]) and is vertically centered across both rows. Navigation items are horizontally aligned with proper spacing. Matches the Figma desktop reference (785:34245)."
+      },
+      {
+        "id": "DQA-004",
+        "check": "Cross-browser consistency",
+        "status": "PASS",
+        "observation": "All three browsers (Chromium, Firefox, WebKit) render identically at all four breakpoints (375px, 768px, 1024px, 1440px). No visual differences detected in layout, spacing, typography, or color between any browser. The mobile-open state also renders consistently across all three browsers — menu spans full width in each."
+      }
+    ],
+    "breakpointChecks": {
+      "375px": {
+        "status": "PASS",
+        "browsers": [
+          "chromium",
+          "firefox",
+          "webkit"
+        ],
+        "closedState": "Logo (left) + hamburger (right) in dark rounded bar. Correct proportions and alignment. SEP link visible above nav bar where configured. Consistent across all browsers.",
+        "openState": "Full-width menu panel within nav bar. Shows divider, menu items (About with expanded submenu showing sub-items, Health, Financial Wellbeing, Advocacy, Social, Student Voices), search bar with icon, CTA text and Contact Us button. All content spans full available width within 32px padding. Close icon (X) replaces hamburger. Consistent across all browsers."
+      },
+      "768px": {
+        "status": "PASS",
+        "browsers": [
+          "chromium",
+          "firefox",
+          "webkit"
+        ],
+        "details": "At 768px (md breakpoint), the header transitions to desktop layout. Navigation items displayed horizontally. Logo spans both rows. Utility row visible with search and SEP link where configured. No layout issues observed."
+      },
+      "1024px": {
+        "status": "PASS",
+        "browsers": [
+          "chromium",
+          "firefox",
+          "webkit"
+        ],
+        "details": "Desktop layout with full navigation. All nav items visible horizontally. Logo properly sized and spanning both rows. No overflow or crowding issues."
+      },
+      "1440px": {
+        "status": "PASS",
+        "browsers": [
+          "chromium",
+          "firefox",
+          "webkit"
+        ],
+        "details": "Full desktop layout. Logo spans both utility and nav rows. Navigation items well-spaced. SEP link and search in utility row. Multiple test variations (full content, minimal, scroll behaviors, submenu alignment, overflow, long items, SEP-only) all render correctly."
+      }
+    },
+    "detailedMeasurements": [
+      {
+        "element": "Nav bar container",
+        "property": "border-radius",
+        "figmaValue": "25px",
+        "implementationValue": "25px (rounded-[25px])",
+        "difference": "0px",
+        "status": "PASS"
+      },
+      {
+        "element": "Nav bar container (mobile open)",
+        "property": "padding-x",
+        "figmaValue": "32px",
+        "implementationValue": "32px (px-8)",
+        "difference": "0px",
+        "status": "PASS"
+      },
+      {
+        "element": "Nav bar container (mobile open)",
+        "property": "padding-y",
+        "figmaValue": "16px top / 32px bottom",
+        "implementationValue": "16px (py-4) with menu-open:pt-8/pb-8 for collapsable content",
+        "difference": "0px",
+        "status": "PASS"
+      },
+      {
+        "element": "Logo (mobile)",
+        "property": "max-height",
+        "figmaValue": "~26px",
+        "implementationValue": "26px (max-md:**:max-h-[26px])",
+        "difference": "0px",
+        "status": "PASS"
+      },
+      {
+        "element": "Logo (desktop)",
+        "property": "max-height",
+        "figmaValue": "~58px",
+        "implementationValue": "58px (md:**:max-h-[58px])",
+        "difference": "0px",
+        "status": "PASS"
+      },
+      {
+        "element": "Menu items",
+        "property": "font-size",
+        "figmaValue": "16px",
+        "implementationValue": "16px (text-base)",
+        "difference": "0px",
+        "status": "PASS"
+      },
+      {
+        "element": "Menu items",
+        "property": "line-height",
+        "figmaValue": "1.16",
+        "implementationValue": "1.16 (leading-[1.16])",
+        "difference": "0",
+        "status": "PASS"
+      },
+      {
+        "element": "Menu items",
+        "property": "text-transform",
+        "figmaValue": "uppercase",
+        "implementationValue": "uppercase",
+        "difference": "none",
+        "status": "PASS"
+      },
+      {
+        "element": "Menu items gap (mobile)",
+        "property": "gap",
+        "figmaValue": "32px",
+        "implementationValue": "32px (gap-8)",
+        "difference": "0px",
+        "status": "PASS"
+      },
+      {
+        "element": "Active menu item color",
+        "property": "color",
+        "figmaValue": "#d4ff45 (neon green / accent)",
+        "implementationValue": "text-accent (accent color)",
+        "difference": "none",
+        "status": "PASS"
+      },
+      {
+        "element": "Nav bar background",
+        "property": "background-color",
+        "figmaValue": "#1e1e1c / #1f1f1d (charcoal)",
+        "implementationValue": "bg-charcoal",
+        "difference": "none",
+        "status": "PASS"
+      }
+    ],
+    "issues": [],
+    "issueCount": {
+      "critical": 0,
+      "major": 0,
+      "minor": 0,
+      "note": 0,
+      "total": 0
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

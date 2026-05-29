@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/quick-navigation",
+  "title": "Quick Navigation",
+  "category": "takt-theme",
+  "description": "A navigation dropdown with a submit button that redirects to the selected page",
+  "parent": ["takt/hero"],
+  "supports": {
+    "html": false,
+    "anchor": false,
+    "reusable": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "I Want Support With"
+    },
+    "links": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object"
+      }
+    },
+    "buttonText": {
+      "type": "string",
+      "default": "GET SUPPORT"
+    },
+    "dropdownBehavior": {
+      "type": "string",
+      "default": "first",
+      "enum": ["first", "placeholder", "random"]
+    },
+    "placeholder": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "attributes": {
+      "title": "I Want Support With",
+      "buttonText": "GET SUPPORT",
+      "links": [
+        { "id": "1", "label": "Taxes", "url": "/taxes" },
+        { "id": "2", "label": "Benefits", "url": "/benefits" }
+      ]
+    }
+  }
+}

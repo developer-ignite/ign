@@ -1,0 +1,40 @@
+{
+  "revision": 1,
+  "timestamp": "2026-02-19-140353",
+  "analysis": {
+    "mistake": "Logo was invisible on the rendered frontend (text appeared black on dark background) but Design QA marked it as PASS. Additionally, logo positioning was stretched to full height instead of centered as shown in Figma.",
+    "expected": "Logo should be visible with proper white color on dark background, and vertically centered (not stretched) as shown in Figma design.",
+    "rootCause": "Two issues: (1) Inline SVGs use currentColor which inherits from the CSS color property, not visual context. The logo container lacked explicit text-white class, causing SVG paths to render as black. (2) The logo container used self-stretch instead of self-center, making it fill the header height instead of remaining proportional. Neither the Planning Agent nor Design QA caught these issues because the Planning Agent didn't recognize the inline SVG pattern and Design QA's visual verification was insufficient.",
+    "rootCauseType": "missing-project-pattern",
+    "responsiblePhase": "design",
+    "moreDetails": "The Planning Agent said 'no code changes needed' for the logo, and Design QA reported PASS without verifying the logo was actually visible in screenshots. This is a compound failure: Planning Agent didn't understand inline SVG color inheritance requirements, and Design QA didn't perform rigorous visual verification (the logo's visibility should have been obvious in any screenshot)."
+  },
+  "suggestions": [
+    {
+      "type": "project-specific",
+      "action": "add",
+      "section": "Required Patterns",
+      "content": "**Inline SVG color rendering:** When using `theme_output_svg_or_img()` to render SVGs inline, the immediate container must have an explicit `text-white` or `text-{color}` class. Inline SVGs use `currentColor` which inherits from CSS `color` property, not from surrounding visual context. On dark backgrounds, omitting text color leaves SVG paths invisible (rendering as black text on dark background). Always pair inline SVGs with explicit text color matching the intended appearance.",
+      "rationale": "This prevents silent rendering failures where SVG logos appear invisible on dark backgrounds due to currentColor inheriting black text color.",
+      "implemented": true
+    },
+    {
+      "type": "general",
+      "action": "add",
+      "target": ".taktician/agents/design-agent.md",
+      "section": "Step 3: Detailed Visual Comparison",
+      "content": "**Visual verification must confirm element visibility:** When checking elements that render conditionally or use color inheritance (inline SVGs, text on colored backgrounds, logos), explicitly verify in the screenshot that the element is not just present but actually VISIBLE. A logo that doesn't render or renders in the same color as its background is a critical visual failure even if the code structure appears correct. If an element should be prominent but is invisible/illegible in the screenshot, report it as critical — do not mark as PASS.",
+      "rationale": "Design QA marked invisible elements as passing because it checked structure without verifying visibility. This rule ensures QA performs visual verification of actual rendered output, not just code structure.",
+      "implemented": false
+    },
+    {
+      "type": "general",
+      "action": "add",
+      "target": ".taktician/agents/planning-agent.md",
+      "section": "Phase 2: Analyze Figma Design",
+      "content": "**Inline SVG color pattern check:** When an element uses `theme_output_svg_or_img()` or similar inline SVG rendering (identified by SVG markup in theme code), verify in the spec that the wrapper has an explicit text color class. Inline SVGs use `currentColor` which requires CSS `color` property to be set. On dark backgrounds, confirm `text-white` or equivalent is applied to the SVG container, not just somewhere in the component hierarchy.",
+      "rationale": "This prevents Planning Agent from validating specifications that depend on inherited text color through the DOM tree, which fails when currentColor rendering is involved.",
+      "implemented": false
+    }
+  ]
+}

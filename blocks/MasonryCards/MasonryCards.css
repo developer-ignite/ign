@@ -1,0 +1,7 @@
+/* When any card in the grid has a small title (text-header-3),
+   force all sibling card titles to use the same small size */
+[role="list"]:has(.masonry-card-title.text-header-3) .masonry-card-title.text-header-1 {
+	font-size: var(--text-header-3);
+	line-height: var(--text-header-3--line-height);
+	font-weight: var(--text-header-3--font-weight);
+}

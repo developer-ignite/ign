@@ -1,0 +1,54 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12-223545",
+  "status": "complete",
+  "blockName": "PostHero",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Asset size limit warnings (editor.js 336 KiB) - expected for theme bundles"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "TSX and PHP structure re-verified after fixes. Both use auto-extracted attribute variables with fallback defaults. Unused variables removed from TSX."
+    },
+    "testPage": {
+      "created": true,
+      "url": "https://ign.localhost/blog/test-post-hero/",
+      "pageId": 181,
+      "verifiedBlockCount": 4
+    },
+    "blockers": [],
+    "fixesApplied": [
+      {
+        "id": "FQA-001",
+        "severity": "major",
+        "description": "PHP template manually extracted attributes from $attributes array instead of using auto-extracted variables",
+        "file": "blocks/PostHero/PostHero.php",
+        "action": "Replaced `$showExcerpt = $attributes['showExcerpt'] ?? false;` and `$useTopicColor = $attributes['useTopicColor'] ?? false;` with `$showExcerpt = $showExcerpt ?? false;` and `$useTopicColor = $useTopicColor ?? false;` to use auto-extracted variables with null-coalescing fallback."
+      },
+      {
+        "id": "FQA-002",
+        "severity": "major",
+        "description": "PHP template missing @var docblock for camelCase attribute variables",
+        "file": "blocks/PostHero/PostHero.php",
+        "action": "Updated docblock to document auto-extracted attribute variables: @var string|null $anchor, @var bool $showExcerpt, @var bool $useTopicColor."
+      },
+      {
+        "id": "FQA-003",
+        "severity": "minor",
+        "description": "Unused variables in PostHero.tsx: postId and featuredMediaId",
+        "file": "blocks/PostHero/PostHero.tsx",
+        "action": "Removed unused 'postId' from useSelect destructuring (now returns post directly). Removed unused 'featuredMediaId' variable (only featuredMediaUrl is used)."
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

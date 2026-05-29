@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/post-hero",
+  "title": "Post Hero",
+  "category": "takt-theme",
+  "description": "A full-width hero section for single post pages that automatically displays the post thumbnail, topic pill, title, optional excerpt, author, and publish date with gradient background.",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "showExcerpt": {
+      "type": "boolean",
+      "default": false
+    },
+    "useTopicColor": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "showExcerpt": false,
+      "useTopicColor": false
+    }
+  }
+}

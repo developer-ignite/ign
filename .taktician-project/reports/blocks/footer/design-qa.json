@@ -1,0 +1,291 @@
+{
+  "status": "FAIL",
+  "blockName": "Footer",
+  "figmaNode": "928:19448",
+  "figmaUrl": "https://www.figma.com/design/bpRK9A1l2nTbWfMg1pX5yK/IGN-%7C-WEBSITE--INTERNAL-?node-id=928-19448&m=dev",
+  "testPageUrl": "https://ign.localhost/test-footer/",
+  "tolerance": {
+    "mode": "semantic",
+    "pixelThreshold": "2-4px"
+  },
+  "summary": {
+    "breakpointsChecked": ["desktop-1440", "laptop-1024", "tablet-768", "mobile-375"],
+    "breakpointsSkipped": [],
+    "toleranceUsed": "semantic (2-4px)",
+    "issuesFound": 5,
+    "critical": 1,
+    "major": 2,
+    "minor": 2,
+    "notes": 0
+  },
+  "issues": [
+    {
+      "id": "DQA-001",
+      "severity": "critical",
+      "category": "layout",
+      "element": "Footer Nav + Footer Credits wrapper",
+      "breakpoint": "all",
+      "observation": "In Figma, the navigation links section and the credits bar are wrapped together inside a single container with rounded-[32px] corners, creating one continuous dark charcoal block with no gap between them. In the implementation, FooterNav and FooterCredits are separate blocks each with their own rounded-3xl (24px) corners, with a 16px gap between them showing the gradient background.",
+      "figmaValue": "Nav links and credits bar are children of a single flex-col container with bg-charcoal, rounded-[32px], no gap between them",
+      "implementationValue": "Nav links and credits bar are separate sibling blocks, each with rounded-3xl (24px), separated by gap-4 (16px)",
+      "difference": "Structural: two separate rounded containers vs one continuous container",
+      "withinTolerance": false,
+      "evidence": "Visible in all breakpoint screenshots -- gradient background is visible between nav and credits sections, whereas Figma shows continuous dark background",
+      "recommendation": "Wrap FooterNav and FooterCredits in a shared parent container with bg-charcoal rounded-[32px] overflow-hidden, and remove the individual bg-charcoal and rounded-3xl classes from FooterNav and FooterCredits. Alternatively, create a new inner block wrapper that contains both.",
+      "files": [
+        {
+          "path": "blocks/Footer/Footer.php",
+          "suggestion": "Add a wrapping div around FooterNav and FooterCredits inner blocks with class 'bg-charcoal rounded-[32px] overflow-hidden'"
+        },
+        {
+          "path": "blocks/Footer/Footer.tsx",
+          "suggestion": "The inner blocks structure needs adjustment to wrap footer-nav and footer-credits in a shared container"
+        },
+        {
+          "path": "blocks/Footer/FooterNav/FooterNav.php",
+          "suggestion": "Remove bg-charcoal and rounded-3xl from this block (parent wrapper handles it)"
+        },
+        {
+          "path": "blocks/Footer/FooterCredits/FooterCredits.php",
+          "suggestion": "Remove bg-charcoal and rounded-3xl from this block (parent wrapper handles it)"
+        }
+      ],
+      "verification": "After fix, nav links and credits should appear as one continuous dark section with 32px outer corner radius and no visible gap between them"
+    },
+    {
+      "id": "DQA-002",
+      "severity": "major",
+      "category": "border",
+      "element": "Footer Info section border-radius",
+      "breakpoint": "all",
+      "observation": "The top info section uses rounded-3xl (24px) but Figma specifies rounded-[25px].",
+      "figmaValue": "border-radius: 25px",
+      "implementationValue": "rounded-3xl = 24px",
+      "difference": "1px",
+      "withinTolerance": true,
+      "evidence": "1px difference is within 2-4px tolerance; visually indistinguishable",
+      "recommendation": "No action needed -- within tolerance. If pixel-perfect is desired, use rounded-[25px] instead of rounded-3xl.",
+      "files": [
+        {
+          "path": "blocks/Footer/FooterInfo/FooterInfo.php",
+          "line": 26,
+          "change": {
+            "from": "bg-charcoal rounded-3xl p-8 text-white",
+            "to": "bg-charcoal rounded-[25px] p-8 text-white"
+          }
+        }
+      ],
+      "verification": "Top info section corners should have 25px radius"
+    },
+    {
+      "id": "DQA-003",
+      "severity": "major",
+      "category": "typography",
+      "element": "Body text font family",
+      "breakpoint": "all",
+      "observation": "Figma specifies Roboto (Medium, 500 weight) for body text, link text, and credits text. The implementation uses General Sans (font-sans) which is the theme's design system font. This appears to be an intentional design system mapping decision.",
+      "figmaValue": "font-family: Roboto, weight: 500 (Medium)",
+      "implementationValue": "font-family: General Sans (via font-sans theme token), weight: 500 (font-medium)",
+      "difference": "Different font family (design system substitution)",
+      "withinTolerance": "N/A - design system decision",
+      "evidence": "All body text, link text, and contact information uses General Sans in the implementation screenshots vs Roboto in Figma",
+      "recommendation": "Verify with the design team that General Sans is the correct substitution for Roboto in the footer. If Roboto is specifically required for the footer (unlike the rest of the site), add a Roboto font import. Otherwise, this is acceptable as a design system mapping.",
+      "files": [],
+      "verification": "Confirm with design team whether General Sans substitution is acceptable"
+    },
+    {
+      "id": "DQA-004",
+      "severity": "minor",
+      "category": "spacing",
+      "element": "Address section gap between label and campus addresses",
+      "breakpoint": "desktop-1440",
+      "observation": "In Figma, the gap between the 'Address' heading and the campus address text below it is 12px (gap-[12px] on the Content wrapper). In the implementation, the gap is set via gap-3 (12px) on the flex-col container, which matches.",
+      "figmaValue": "gap: 12px between heading and content",
+      "implementationValue": "gap-3 = 12px",
+      "difference": "0px",
+      "withinTolerance": true,
+      "evidence": "Visual alignment appears correct in screenshots",
+      "recommendation": "No action needed",
+      "files": [],
+      "verification": "Spacing between Address heading and campus names is consistent"
+    },
+    {
+      "id": "DQA-005",
+      "severity": "minor",
+      "category": "layout",
+      "element": "Footer outer padding on mobile",
+      "breakpoint": "mobile-375",
+      "observation": "The implementation uses p-4 (16px) on mobile breakpoint. The Figma design specifies p-[32px] for the outer footer container. At 375px, this creates more edge padding in Figma than in the implementation. However, 32px padding at 375px width would leave only 311px of usable content width, which may be intentionally reduced in the implementation for better mobile usability.",
+      "figmaValue": "padding: 32px (all breakpoints in Figma static design)",
+      "implementationValue": "p-4 (16px) on mobile, p-8 (32px) on md+",
+      "difference": "16px on mobile",
+      "withinTolerance": false,
+      "evidence": "Visible in 375px screenshot - content extends closer to screen edges than Figma design shows",
+      "recommendation": "Verify with design team whether 16px padding on mobile is intentional for usability. If Figma's 32px is required, change p-4 to p-8 (but this would significantly reduce content width on mobile). The current 16px mobile padding is a reasonable responsive adaptation.",
+      "files": [
+        {
+          "path": "blocks/Footer/Footer.php",
+          "line": 13,
+          "change": {
+            "from": "footer relative overflow-hidden p-4 md:p-8",
+            "to": "footer relative overflow-hidden p-8"
+          }
+        }
+      ],
+      "verification": "Footer padding on mobile should match design intent"
+    }
+  ],
+  "passedChecks": [
+    {
+      "category": "color",
+      "element": "Footer gradient background",
+      "observation": "Background gradient matches Figma: linear-gradient(180deg, rgba(71,203,242,0) 6.73%, rgba(71,203,242,0.5) 100%) over off-white base. Colors are correct.",
+      "figmaValue": "linear-gradient(180deg, rgba(71,203,242,0) 6.73%, rgba(71,203,242,0.5) 100%) + rgb(251,246,226)",
+      "implementationValue": "linear-gradient(180deg, rgba(71,203,242,0) 6.73%, rgba(71,203,242,0.5) 100%), var(--color-off-white) where --color-off-white = rgba(251,246,226,1)"
+    },
+    {
+      "category": "color",
+      "element": "Dark sections background",
+      "observation": "All dark sections use bg-charcoal which maps to --color-charcoal: rgba(31,31,29,1). Figma specifies #1f1f1d which is the same value.",
+      "figmaValue": "#1f1f1d",
+      "implementationValue": "bg-charcoal = rgba(31,31,29,1) = #1f1f1d"
+    },
+    {
+      "category": "color",
+      "element": "Text color",
+      "observation": "All text within dark sections is white, matching Figma's color-brand-white.",
+      "figmaValue": "white (#ffffff)",
+      "implementationValue": "text-white"
+    },
+    {
+      "category": "typography",
+      "element": "Section headings font",
+      "observation": "Section headings (Address, Hours, Contact, Follow Us, About, etc.) use Anton font at 16px with 1.1 line-height, matching Figma exactly.",
+      "figmaValue": "font-family: Anton, font-size: 16px, line-height: 1.1",
+      "implementationValue": "font-heading (Anton) text-base (16px) leading-[1.1]"
+    },
+    {
+      "category": "typography",
+      "element": "Body text size and weight",
+      "observation": "Body text uses 12px font-size with medium (500) weight and 1.5 line-height, matching Figma values.",
+      "figmaValue": "font-size: 12px, font-weight: 500, line-height: 1.5",
+      "implementationValue": "text-xs (12px) font-medium (500) leading-normal (1.5)"
+    },
+    {
+      "category": "typography",
+      "element": "Sub-heading (EVENTS) style",
+      "observation": "The sub-heading uses 14px, medium weight, 1.1 line-height, uppercase -- matching Figma's eyebrow style.",
+      "figmaValue": "font-size: 14px, weight: 500, line-height: 1.1, uppercase",
+      "implementationValue": "text-sm (14px) font-medium leading-[1.1] uppercase"
+    },
+    {
+      "category": "typography",
+      "element": "Campus names bold weight",
+      "observation": "Campus names use font-bold, matching Figma's Roboto Bold specification.",
+      "figmaValue": "font-weight: bold (Roboto:Bold)",
+      "implementationValue": "font-bold (700)"
+    },
+    {
+      "category": "typography",
+      "element": "Credits links underline",
+      "observation": "Credits/legal links have underline decoration, matching Figma's text-decoration: underline.",
+      "figmaValue": "text-decoration: underline",
+      "implementationValue": "underline class on link elements"
+    },
+    {
+      "category": "spacing",
+      "element": "Inner section padding",
+      "observation": "All dark sections use p-8 (32px) padding, matching Figma's p-[32px]. Credits section uses px-8 py-4 (32px horizontal, 16px vertical), matching Figma's px-[32px] py-[16px].",
+      "figmaValue": "padding: 32px (info/nav), px: 32px py: 16px (credits)",
+      "implementationValue": "p-8 (info/nav), px-8 py-4 (credits)"
+    },
+    {
+      "category": "spacing",
+      "element": "Gap between sections",
+      "observation": "The gap between the info section and nav section is 16px (gap-4), matching Figma's gap-[16px].",
+      "figmaValue": "gap: 16px",
+      "implementationValue": "gap-4 (16px)"
+    },
+    {
+      "category": "spacing",
+      "element": "Nav column gap",
+      "observation": "Gap between navigation columns is 32px (gap-8), matching Figma's gap-[32px].",
+      "figmaValue": "gap: 32px",
+      "implementationValue": "gap-8 (32px)"
+    },
+    {
+      "category": "spacing",
+      "element": "Nav column item gap",
+      "observation": "Gap between nav link items is 8px (gap-2), matching Figma's gap-[8px].",
+      "figmaValue": "gap: 8px",
+      "implementationValue": "gap-2 (8px)"
+    },
+    {
+      "category": "spacing",
+      "element": "Social icons gap and size",
+      "observation": "Social icons are 24x24px with 12px gap between them, matching Figma exactly.",
+      "figmaValue": "icon size: 24x24px, gap: 12px",
+      "implementationValue": "w-6 h-6 (24x24px), gap-3 (12px)"
+    },
+    {
+      "category": "spacing",
+      "element": "Credits legal links gap",
+      "observation": "Gap between legal links is 24px (gap-6), matching Figma's gap-[24px].",
+      "figmaValue": "gap: 24px",
+      "implementationValue": "gap-6 (24px)"
+    },
+    {
+      "category": "layout",
+      "element": "Logo height",
+      "observation": "Logo height is 58px, matching Figma's h-[57.765px] (rounded to 58px).",
+      "figmaValue": "height: 57.765px",
+      "implementationValue": "h-[58px]"
+    },
+    {
+      "category": "layout",
+      "element": "Info right section width",
+      "observation": "The right info group (Hours, Contact, Follow Us) has a fixed width of 640px on large screens, matching Figma's w-[640px].",
+      "figmaValue": "width: 640px",
+      "implementationValue": "lg:w-[640px]"
+    },
+    {
+      "category": "layout",
+      "element": "Info right section column widths",
+      "observation": "Hours, Contact, and Follow Us columns are each w-48 (192px) on sm+, matching Figma's w-[192px].",
+      "figmaValue": "width: 192px each",
+      "implementationValue": "sm:w-48 (192px)"
+    },
+    {
+      "category": "layout",
+      "element": "Nav grid columns",
+      "observation": "Navigation uses a 6-column grid on large screens, matching the 6 columns in Figma.",
+      "figmaValue": "6 equal columns with flex-[1_0_0]",
+      "implementationValue": "grid-cols-6 on lg"
+    },
+    {
+      "category": "layout",
+      "element": "Credits three-column layout",
+      "observation": "Credits bar has three flex-1 sections (copyright, attribution, legal links), matching Figma's flex-[1_0_0] layout.",
+      "figmaValue": "3 equal flex columns",
+      "implementationValue": "3 flex-1 children"
+    },
+    {
+      "category": "layout",
+      "element": "Desktop outer padding",
+      "observation": "Footer outer padding is 32px on desktop (md+), matching Figma's p-[32px].",
+      "figmaValue": "padding: 32px",
+      "implementationValue": "md:p-8 (32px)"
+    }
+  ],
+  "screenshots": {
+    "figma": {
+      "desktop": "Figma screenshot from node 928:19448 (get_screenshot)"
+    },
+    "implementation": {
+      "desktop-1440": "footer/screenshots/footer-qa-1440w.png",
+      "laptop-1024": "footer/screenshots/footer-qa-1024w.png",
+      "tablet-768": "footer/screenshots/footer-qa-768w.png",
+      "mobile-375": "footer/screenshots/footer-qa-375w.png"
+    }
+  }
+}

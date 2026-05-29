@@ -1,0 +1,86 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-20-000751",
+  "status": "PASS",
+  "blockName": "FeaturedEvents",
+  "output": {
+    "mode": "qa",
+    "context": "Post-fix verification for revision 2 — verifying DQA-001 and DQA-002 fixes only",
+    "revisionCycle": 2,
+    "testPage": "https://ign.localhost/test-featured-events/",
+    "figmaNodeId": "1215:17607",
+    "contentComparison": {
+      "note": "Code was modified (fix applied) — full visual verification required"
+    },
+    "screenshotsCaptured": {
+      "browsers": [
+        "chromium",
+        "firefox",
+        "webkit"
+      ],
+      "widths": [
+        375,
+        768,
+        1024,
+        1440
+      ],
+      "path": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-20-000611",
+      "totalScreenshots": 12
+    },
+    "fixVerification": [
+      {
+        "issueId": "DQA-001",
+        "description": "Card title font size on desktop — was 60px (text-header-2), should be 48px per Figma",
+        "status": "FIXED",
+        "evidence": {
+          "visual": "In the 1440px Chromium screenshot, card titles ('Indie Game Developers Summit', 'Virtual Reality Expo 2026', etc.) are visibly smaller and more proportional to the card content area compared to the previous revision. The title size now matches the Figma reference where the title 'Event title heading' is approximately 48px tall and fits comfortably within the content half without overwhelming other elements.",
+          "code": "card-tribe_events.php line 60: class=\"text-header-2 md:text-[3rem] md:leading-[1.1]\" — md:text-[3rem] = 48px, md:leading-[1.1] matches Figma exactly"
+        },
+        "measurements": {
+          "element": "Card title (h3)",
+          "property": "font-size",
+          "figmaValue": "48px",
+          "implementationValue": "48px (md:text-[3rem])",
+          "difference": "0px",
+          "lineHeight": {
+            "figmaValue": "1.1",
+            "implementationValue": "1.1 (md:leading-[1.1])",
+            "difference": "0"
+          }
+        }
+      },
+      {
+        "issueId": "DQA-002",
+        "description": "Date badge position — was bottom-right, should be top-right per Figma",
+        "status": "FIXED",
+        "evidence": {
+          "visual": "In the 1440px Chromium screenshot, the date badges (showing day-of-week, day number, and month/year) are positioned at the top-right corner of the image panels. This matches the Figma design where the date badge sits at the top-right of the image area. In the Figma reference, the 'Wed 07 Feb 2024' badge is clearly in the top-right, and the implementation now matches this placement.",
+          "code": "card-tribe_events.php line 37: The image inner container uses 'flex flex-col items-end' which positions the date badge (a direct child) at the top of the flex column, aligned to the right via items-end. The image is absolutely positioned behind it, so the badge naturally flows to the top-right."
+        }
+      }
+    ],
+    "crossBrowserVerification": {
+      "chromium1440": "PASS — Both fixes verified: title is proportionally sized at ~48px, date badge in top-right position",
+      "firefox1440": "PASS — Consistent with Chromium rendering, title size and badge position match",
+      "webkit1440": "PASS — Consistent with Chromium rendering, title size and badge position match",
+      "mobileBreakpoints": "Card layout stacks vertically on mobile (375px, 768px). Title uses base text-header-2 size. Date badge remains top-right of image area on all breakpoints. No visual regressions observed."
+    },
+    "overallComposition": {
+      "status": "PASS",
+      "notes": "The event cards at 1440px match the Figma reference: two-panel horizontal layout with image on left and content on right, dark rounded card background, date badge top-right over the image, title at correct 48px size, location and description text below, CTA button anchored to bottom. The visual weight and proportions match the design."
+    },
+    "issuesFound": [],
+    "resolvedIssues": [
+      {
+        "id": "DQA-001",
+        "resolution": "FIXED — md:text-[3rem] md:leading-[1.1] applied, title is now 48px/1.1 on desktop matching Figma"
+      },
+      {
+        "id": "DQA-002",
+        "resolution": "FIXED — flex flex-col items-end positions date badge at top-right, matching Figma"
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

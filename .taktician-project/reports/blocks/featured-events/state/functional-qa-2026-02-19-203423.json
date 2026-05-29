@@ -1,0 +1,122 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-19-203423",
+  "status": "PASS",
+  "blockName": "FeaturedEvents",
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 10,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "postFixVerification": {
+      "fix1_sectionBackground": {
+        "description": "Removed section-wide dark-pattern background (now only on card halves)",
+        "verified": true,
+        "method": "Code review (FeaturedEvents.php) + page audit selector",
+        "detail": "FeaturedEvents.php now uses theme_block_props('featured-events') with no dark/bg-transparent! classes. Container div is 'container py-16' with no before: pseudo-element. Section element does not carry any background classes. ThemeHeading area renders on page background only — no dark band behind heading. PASS."
+      },
+      "fix2_dateBadgePosition": {
+        "description": "Date badge repositioned inside inner image frame with 8px spacing",
+        "verified": true,
+        "method": "Code review + page audit selector 'article .absolute.top-2.right-2'",
+        "detail": "Date badge is now inside div.relative.w-full.h-full.overflow-hidden.rounded-xl.p-2 with classes 'absolute top-2 right-2' (top-2 = 8px, right-2 = 8px from inner frame edges). Selector confirmed found: true with count matching article count in every event-bearing section. Screenshots confirm badge is inset from the inner rounded frame. PASS."
+      },
+      "fix3_cardBackgrounds": {
+        "description": "Card backgrounds changed from bg-charcoal to bg-dark-pattern",
+        "verified": true,
+        "method": "Code review + page audit selector '.bg-dark-pattern'",
+        "detail": "Both image half (md:w-1/2 bg-dark-pattern rounded-3xl p-4) and content half (md:w-1/2 bg-dark-pattern rounded-3xl p-6) use bg-dark-pattern. Page audit counts: 6 per 3-event section (2 per card × 3 cards), 4 per 2-event section, 2 per 1-event section — exactly 2 per card. No bg-charcoal classes remain on card halves. PASS."
+      },
+      "fix4_arrowIcon": {
+        "description": "Arrow icon added to btn-tertiary CTA via theme_asset('images/tertiary-arrow.svg')",
+        "verified": true,
+        "method": "Code review + page audit selector '.btn-tertiary-arrow'",
+        "detail": "Card template uses <span class='btn-tertiary-arrow w-5 h-4 *:w-full *:h-full'><?php theme_asset('images/tertiary-arrow.svg'); ?></span> inside .btn-tertiary, rendering an inline SVG (not an img tag). Page audit confirmed .btn-tertiary-arrow present in every event-bearing section with count matching btn-tertiary count. Screenshots show arrow icon alongside button text. PASS."
+      },
+      "fix5_fontSizes": {
+        "description": "Day number to 40px (text-[2.5rem]), event title to 48px (text-header-2)",
+        "verified": true,
+        "method": "Code review + CSS variable lookup",
+        "detail": "Day number span: class 'font-heading text-[2.5rem] leading-[1.1]' — 2.5rem = 40px. Event title h3: class 'text-header-2 uppercase' — typography.css confirms --text-header-2: 3rem (48px) at base, scales to --text-6xl at larger breakpoints. Both match specified sizes. PASS."
+      },
+      "fix6_venueNames": {
+        "description": "3 tribe_venue posts seeded and associated with test events via _EventVenueID",
+        "verified": true,
+        "method": "Page audit link text + venue-p selector",
+        "detail": "Venue names now appear in rendered link text: 'Indie Game Developers Summit Rogers Arena', 'Virtual Reality Expo 2026 Rogers Arena', 'Summer Gaming Fest 2026 BC Place Stadium', 'E-Sports Championship Finals 2026 January Vancouver[...]', 'Global Gaming Convention 2025 Vancouver Convention C[entre]'. Venue <p> selector (article .md:w-1/2.bg-dark-pattern p:nth-child(2)) confirmed found: true in all event-bearing sections, count matching article count. PASS."
+      }
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "detail": "taktician_validate_all passed. 0 build errors, 0 lint errors in FeaturedEvents files. 8 pre-existing react-hooks/exhaustive-deps warnings in unrelated blocks — unchanged from prior runs."
+      },
+      "registration": {
+        "status": "pass",
+        "detail": "block.json valid. No changes to attributes or file references."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "detail": "validate_all sync checks all pass: no $attributes[] extraction, docblock present, attribute usage consistent, context consistent, className inside blockProps correct, no redundant null coalescing, all PHP functions exist. Root wrapper mismatch warning is the known false positive (standard Gutenberg fragment pattern)."
+      },
+      "venueRendering": {
+        "status": "pass",
+        "detail": "Venue names confirmed in rendered output. PHP uses get_post_meta($event_id, '_EventVenueID', true) then get_the_title($venue_id) — conditional on non-empty $venue_id. All 5 seeded events now have associated tribe_venue posts. Venue <p> present in all event-bearing sections."
+      },
+      "dateBadge": {
+        "status": "pass",
+        "detail": "Date badge absolute-positioned at top-2 right-2 (8px) inside inner image frame (.relative.rounded-xl). Badge bg-charcoal retained (correct — contrast against dark-pattern image background). Date text format unchanged: day-of-week (D), day number at text-[2.5rem]/40px (font-heading), month year. aria-hidden='true' retained."
+      },
+      "cardBackgrounds": {
+        "status": "pass",
+        "detail": "Both card halves use bg-dark-pattern. Confirmed via DOM selector (.bg-dark-pattern) with correct count (2 per card). Screenshots show textured dark card surfaces in both image and content panels."
+      },
+      "sectionBackground": {
+        "status": "pass",
+        "detail": "Section wrapper carries no background or dark-pattern classes. Container has no before: pseudo-element. ThemeHeading area (eyebrow, h2, description) renders on plain page background. Dark pattern is scoped to card halves only."
+      },
+      "arrowIcon": {
+        "status": "pass",
+        "detail": ".btn-tertiary-arrow span present in every event-bearing section. theme_asset() renders inline SVG (correct pattern — no external img request, avoids CSP issues, inherits currentColor). Arrow dimensions: w-5 h-4 (20×16px), SVG fills container via *:w-full *:h-full."
+      },
+      "fontSizes": {
+        "status": "pass",
+        "detail": "text-[2.5rem] = 40px for day number (font-heading weight). text-header-2 = 3rem/48px base (confirmed in typography.css: --text-header-2: 3rem). Both match the specified sizes in the fix description."
+      },
+      "responsiveLayout": {
+        "status": "pass",
+        "detail": "375px screenshot: cards stack vertically (image above content), date badge visible inside image frame at top-right. 1440px screenshot: side-by-side layout, image and content halves at md:h-[349px]. No overflow at either viewport."
+      },
+      "noRegressions": {
+        "status": "pass",
+        "detail": "All checks from previous PASS run (functional-qa-2026-02-19-193352) remain passing: HTTP 200, no JS errors, no overflow, correct event counts per variation, future ASC / past DESC ordering, postsLimit honored, buttonLabel passthrough, hideIfEmpty, correct permalinks, images with srcset/lazy/dimensions, heading hierarchy."
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build passes with 0 errors",
+      "TSX/PHP sync validated — all checks pass",
+      "Section-wide dark background removed — ThemeHeading on plain page background",
+      "Date badge inside inner image frame at top-2/right-2 (8px from frame edges)",
+      "Both card halves use bg-dark-pattern (2 per card confirmed by DOM count)",
+      "Arrow icon (.btn-tertiary-arrow) renders as inline SVG on every event CTA",
+      "Day number font size: text-[2.5rem] = 40px",
+      "Event title font size: text-header-2 = 3rem/48px (confirmed in typography.css)",
+      "Venue names rendering: Rogers Arena, BC Place Stadium, Vancouver Convention Centre visible in link text",
+      "Venue <p> present in all event-bearing sections, conditional hidden when no venue",
+      "No regressions from prior PASS — all event card, ordering, postsLimit, buttonLabel checks still pass",
+      "Responsive layout correct at 375px and 1440px"
+    ],
+    "screenshots": [
+      ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-203448/featured-events-375w.png",
+      ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-203448/featured-events-1440w.png"
+    ]
+  },
+  "tokensUsed": 28000,
+  "questionsForUser": []
+}

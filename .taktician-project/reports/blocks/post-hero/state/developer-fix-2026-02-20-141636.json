@@ -1,0 +1,76 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-20-141738",
+  "status": "complete",
+  "blockName": "PostHero",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [
+      {
+        "path": "blocks/PostHero/PostHero.css",
+        "purpose": "New CSS file for PostHero gradient, scoped to .post-hero .top-gradient to avoid cross-block conflicts. Copied from Hero.css .top-gradient rule."
+      }
+    ],
+    "filesModified": [
+      {
+        "path": "blocks/PostHero/PostHero.php",
+        "change": "Removed 'hero' class from wrapper section. Changed 'post-hero hero relative overflow-visible' to 'post-hero relative overflow-visible'."
+      },
+      {
+        "path": "blocks/PostHero/PostHero.tsx",
+        "change": "Removed 'hero' class from editor wrapper. Changed 'post-hero hero relative overflow-visible' to 'post-hero relative overflow-visible' in the cn() call inside useBlockProps()."
+      }
+    ],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "react-hooks/exhaustive-deps in PostHero.tsx (pre-existing, not introduced by this change)",
+        "htmlStructureSync warning: false-positive due to InspectorControls as TSX root (pre-existing pattern across all blocks)"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "TSX and PHP both updated to remove 'hero' class. Structure is identical."
+    },
+    "testPage": {
+      "updated": false,
+      "url": "https://ign.localhost/blog/test-post-hero/",
+      "pageId": 181,
+      "notes": "No test page content changes needed — this was a CSS/class-name fix only. Existing test page remains valid."
+    },
+    "fixesApplied": [
+      {
+        "id": "FIX-001",
+        "description": "Created blocks/PostHero/PostHero.css with .post-hero .top-gradient rule copied from Hero.css, scoped to prevent cross-block conflicts.",
+        "files": [
+          "blocks/PostHero/PostHero.css"
+        ]
+      },
+      {
+        "id": "FIX-002",
+        "description": "Removed 'hero' class from PostHero.php wrapper (line 28). PostHero no longer depends on Hero.css for gradient styling.",
+        "files": [
+          "blocks/PostHero/PostHero.php"
+        ]
+      },
+      {
+        "id": "FIX-003",
+        "description": "Removed 'hero' class from PostHero.tsx useBlockProps className (line 115). TSX and PHP are in sync.",
+        "files": [
+          "blocks/PostHero/PostHero.tsx"
+        ]
+      }
+    ],
+    "blockers": [],
+    "impactNotes": {
+      "heroBlock": "No impact. Hero.css and Hero.js remain unchanged.",
+      "eventHeroBlock": "No impact. EventHero still has its own 'hero' class dependency (separate concern).",
+      "postHeroJs": "No impact. PostHero.js already targeted '.post-hero .top-gradient', not '.hero .top-gradient'.",
+      "buildSystem": "PostHero.css is automatically discovered by the webpack glob — no manual registration needed."
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

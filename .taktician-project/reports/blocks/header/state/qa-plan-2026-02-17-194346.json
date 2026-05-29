@@ -1,0 +1,85 @@
+{
+  "blockTypes": [
+    "navigation",
+    "interactive"
+  ],
+  "a11yPatterns": [
+    "menubar"
+  ],
+  "excluded": [
+    {
+      "rule": "common.DARK_THEME",
+      "reason": "Header only has dark (charcoal) variant, no light/dark toggle"
+    },
+    {
+      "rule": "navigation.PAGINATION",
+      "reason": "Header has no pagination"
+    },
+    {
+      "rule": "interactive.CAROUSEL",
+      "reason": "Header is not a carousel"
+    }
+  ],
+  "extra": [
+    {
+      "id": "CUSTOM-001",
+      "description": "Fixed header must be constrained to container width (--max-container) when position:fixed is active, not full viewport width",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-002",
+      "description": "Dropdown submenus must render above all other page content (z-index stacking verified visually with content scrolled behind header)",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-003",
+      "description": "Visible gap between dropdown panel and header bar (approximately 24px on desktop)",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-004",
+      "description": "Clicking inside the header but outside an open dropdown panel must close the dropdown",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-005",
+      "description": "Left/Right arrow keys navigate between top-level menu items when focus is on the menubar",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-006",
+      "description": "ArrowDown on a top-level menu button opens its submenu and focuses the first item",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-007",
+      "description": "ArrowUp on a top-level menu button opens its submenu and focuses the last item",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-008",
+      "description": "Left/Right arrow keys inside a submenu close it and move focus to the adjacent top-level item",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-009",
+      "description": "Home/End keys on the menubar move focus to first/last top-level item",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-010",
+      "description": "Escape key inside a submenu closes it and returns focus to the trigger button",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-011",
+      "description": "Tab key while submenu is open closes the submenu and moves focus to the next focusable element",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-012",
+      "description": "Hover bridge across the gap: mouse can travel from the trigger button to the dropdown panel without the dropdown closing",
+      "severity": "major"
+    }
+  ]
+}

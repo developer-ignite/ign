@@ -1,0 +1,49 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-20-135403",
+  "status": "complete",
+  "blockName": "Footer",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "filesModified": [
+      {
+        "path": "blocks/Footer/FooterInfo/FooterInfo.php",
+        "changes": [
+          "Line 59: Changed `esc_html( $addr['address'] )` to `wp_kses_post( $addr['address'] )` so <br> tags from RichText render as actual line breaks on the frontend"
+        ]
+      }
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Pre-existing lint warnings in unrelated blocks (react-hooks/exhaustive-deps) — not introduced by this change",
+        "Sync check: known false-positive root wrapper mismatch (InspectorControls vs section) — standard pattern for editor components with sidebar controls"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "note": "No TSX change needed. RichText with allowedFormats=[] already saves <br> on Enter. Only the PHP output escaping needed updating. Matches existing pattern used for hoursContent (line 76) and contactContent (line 86) in the same file."
+    },
+    "testPage": {
+      "updated": false,
+      "note": "No test page update needed — block content unchanged, only PHP output escaping modified"
+    },
+    "blockers": [],
+    "fixesApplied": [
+      {
+        "file": "blocks/Footer/FooterInfo/FooterInfo.php",
+        "line": 59,
+        "old": "echo esc_html( $addr['address'] );",
+        "new": "echo wp_kses_post( $addr['address'] );",
+        "reason": "esc_html() was converting <br> to &lt;br&gt; entities, preventing line breaks from rendering. wp_kses_post() allows safe HTML tags while still stripping dangerous content."
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/quick-link-item",
+  "title": "Quick Link Item",
+  "category": "takt-theme",
+  "description": "A single link card within a Quick Links block",
+  "supports": {
+    "html": false,
+    "anchor": false,
+    "reusable": false
+  },
+  "parent": ["takt/quick-links"],
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "postId": {
+      "type": "number"
+    },
+    "opensInNewTab": {
+      "type": "boolean",
+      "default": false
+    },
+    "accentColor": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "attributes": {
+      "title": "Health + Dental Overview",
+      "url": "/health-dental"
+    }
+  }
+}

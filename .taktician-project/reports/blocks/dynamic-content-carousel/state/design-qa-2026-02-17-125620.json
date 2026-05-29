@@ -1,0 +1,216 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-17-125620",
+  "status": "INCOMPLETE",
+  "blockName": "DynamicContentCarousel",
+  "output": {
+    "mode": "qa",
+    "figmaComparison": {
+      "status": "unavailable",
+      "reason": "Figma MCP tools (get_screenshot, get_metadata, get_design_context) are not available in this session. The Figma Desktop MCP server is not connected. A Figma URL was provided (node 785-33970), so direct design comparison is required but cannot be performed.",
+      "figmaUrl": "https://www.figma.com/design/bpRK9A1l2nTbWfMg1pX5yK/IGN-%7C-WEBSITE--INTERNAL-?node-id=785-33970&m=dev",
+      "figmaNodeId": "785-33970"
+    },
+    "contentComparison": {
+      "html": {
+        "changed": true,
+        "message": "Visual changes detected since previous screenshots (all 12 screenshots DIFFERENT from previous run). Full visual self-consistency audit performed."
+      }
+    },
+    "visualQaAction": "partial-visual-qa",
+    "reason": "Figma MCP unavailable — performed cross-browser visual self-consistency audit and implementation review. Cannot compare against Figma design.",
+    "testPage": {
+      "url": "https://ign.localhost/test-dynamic-content-carousel/",
+      "verified": true,
+      "hasContent": true
+    },
+    "screenshotPaths": {
+      "chromium-375": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/2026-02-17-125700/dynamic-content-carousel-chromium-375w.png",
+      "chromium-768": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/2026-02-17-125700/dynamic-content-carousel-chromium-768w.png",
+      "chromium-1024": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/2026-02-17-125700/dynamic-content-carousel-chromium-1024w.png",
+      "chromium-1440": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/2026-02-17-125700/dynamic-content-carousel-chromium-1440w.png",
+      "firefox-375": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/2026-02-17-125700/dynamic-content-carousel-firefox-375w.png",
+      "firefox-768": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/2026-02-17-125700/dynamic-content-carousel-firefox-768w.png",
+      "firefox-1024": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/2026-02-17-125700/dynamic-content-carousel-firefox-1024w.png",
+      "firefox-1440": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/2026-02-17-125700/dynamic-content-carousel-firefox-1440w.png",
+      "webkit-375": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/2026-02-17-125700/dynamic-content-carousel-webkit-375w.png",
+      "webkit-768": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/2026-02-17-125700/dynamic-content-carousel-webkit-768w.png",
+      "webkit-1024": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/2026-02-17-125700/dynamic-content-carousel-webkit-1024w.png",
+      "webkit-1440": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/2026-02-17-125700/dynamic-content-carousel-webkit-1440w.png"
+    },
+    "crossBrowserConsistency": {
+      "status": "PASS",
+      "summary": "All three browsers (Chromium, Firefox, WebKit) render identically at all four breakpoints (375, 768, 1024, 1440). No cross-browser visual discrepancies observed.",
+      "breakpoints": {
+        "375": {
+          "chromium": "consistent",
+          "firefox": "consistent",
+          "webkit": "consistent"
+        },
+        "768": {
+          "chromium": "consistent",
+          "firefox": "consistent",
+          "webkit": "consistent"
+        },
+        "1024": {
+          "chromium": "consistent",
+          "firefox": "consistent",
+          "webkit": "consistent"
+        },
+        "1440": {
+          "chromium": "consistent",
+          "firefox": "consistent",
+          "webkit": "consistent"
+        }
+      }
+    },
+    "visualSelfConsistencyAudit": {
+      "summary": "Without Figma comparison, performed a thorough visual consistency audit of the implementation across breakpoints and block variations. All carousel instances render correctly with proper dark background containers, typography, navigation controls, and responsive behavior.",
+      "overallComposition": {
+        "status": "PASS-self-consistent",
+        "observations": [
+          "Dark charcoal background container with rounded-3xl corners renders correctly on all instances",
+          "Container padding is visible and consistent across all block instances",
+          "Heading area properly positioned at top of each section with white text on dark background",
+          "Pagination progress bar and navigation arrows properly aligned in a horizontal bar between heading and carousel slides",
+          "Cards display in a horizontal carousel layout with proper slide sizing",
+          "No content overflow or clipping observed at any breakpoint",
+          "Cards maintain equal height within each carousel via CSS height chain"
+        ]
+      },
+      "layoutByBreakpoint": {
+        "desktop-1440": {
+          "status": "PASS-self-consistent",
+          "observations": [
+            "Approximately 3-4 cards visible per viewport width, consistent with typical carousel behavior",
+            "Dark background extends to proper width with rounded corners, inset from page edges",
+            "Navigation arrows are clearly visible white circles in top-right area",
+            "Pagination bar spans the space between autoplay toggle (if present) and navigation arrows",
+            "Heading text is white, large display font (Anton-style), consistent across all sections",
+            "Cards contain images at top, text content below, maintaining equal height",
+            "Proper horizontal gap between carousel slides"
+          ]
+        },
+        "tablet-1024": {
+          "status": "PASS-self-consistent",
+          "observations": [
+            "Layout properly adapts with approximately 3 cards visible",
+            "Dark background and rounded corners maintained",
+            "Navigation and pagination remain properly aligned",
+            "Cards maintain proper proportions and readability"
+          ]
+        },
+        "tablet-768": {
+          "status": "PASS-self-consistent",
+          "observations": [
+            "Approximately 2 cards visible per viewport",
+            "Container padding adjusts for narrower viewport",
+            "Heading stacks properly, no overflow",
+            "Navigation arrows and pagination bar remain functional and visible"
+          ]
+        },
+        "mobile-375": {
+          "status": "PASS-self-consistent",
+          "observations": [
+            "Single card visible per slide, cards take full width",
+            "Heading text scales down appropriately without overflow",
+            "Dark background extends edge-to-edge with proper side gutter inset via --side-gutter variable",
+            "Navigation elements remain accessible and properly positioned",
+            "Cards maintain readable text sizes and proper image aspect ratios",
+            "Long heading instances wrap gracefully across multiple lines without overflow"
+          ]
+        }
+      },
+      "blockVariations": {
+        "summary": "Multiple block instances visible covering diverse configurations: automatic/manual/related sources, multiple post types (blog, team, resources, policies), various carousel settings (autoplay, loop, navigation, pagination toggles).",
+        "keyObservations": [
+          "Standard blog carousel: renders with cards showing featured images, titles, and metadata",
+          "Team member carousel: displays with distinct neon-green/yellow card backgrounds, appropriate for team_member post type styling",
+          "Resource carousel: renders with proper card styling for resource post type",
+          "Policy carousel: renders with proper card styling for policy post type",
+          "Manual mode (Featured Posts section): shows section header with empty carousel area when no posts selected — expected behavior",
+          "Long heading section: very long heading wraps gracefully without overflow on all breakpoints",
+          "Minimal carousel (no nav/pagination): clean appearance without navigation or pagination elements",
+          "Autoplay carousel: autoplay toggle button visible as expected"
+        ]
+      },
+      "visualElements": {
+        "typography": {
+          "status": "self-consistent",
+          "observations": [
+            "Section headings use large bold display font (Anton-style), white color on dark background — consistent across all instances",
+            "Card titles are readable at all breakpoints with appropriate font weight",
+            "Body text/descriptions appear in regular weight, maintaining good readability",
+            "No visible text truncation or overflow issues at any breakpoint"
+          ]
+        },
+        "colors": {
+          "status": "self-consistent",
+          "observations": [
+            "Dark charcoal background (bg-charcoal) consistently applied as pseudo-element background on all instances",
+            "White text on dark background provides strong contrast ratio",
+            "Neon-green gradient visible on accent elements — CSS locks gradient colors via --gradient-left/--gradient-right custom properties",
+            "Team member cards show distinct neon-green/yellow card backgrounds — different card styling per post type",
+            "Navigation buttons appear as light-colored circles on dark background with adequate contrast"
+          ]
+        },
+        "spacing": {
+          "status": "self-consistent",
+          "observations": [
+            "Consistent vertical padding (py-18 / md:py-23 = 72px / 92px) on all instances",
+            "Heading-to-carousel spacing (mb-8 / md:mb-16 = 32px / 64px) uniform across sections",
+            "Pagination bar margin-bottom (mb-6 = 24px) consistent",
+            "Card gaps appear consistent across all carousel instances",
+            "Navigation button gap (gap-2 / md:gap-4 = 8px / 16px) consistent"
+          ]
+        },
+        "borderRadius": {
+          "status": "self-consistent",
+          "observations": [
+            "Dark background container uses rounded-3xl (24px) corners consistently on all instances",
+            "Card images have rounded corners consistent with theme card component patterns",
+            "Pagination bar uses rounded-full for pill-shape appearance"
+          ]
+        }
+      }
+    },
+    "issues": [],
+    "notes": [
+      {
+        "id": "DQA-N-001",
+        "severity": "note",
+        "category": "layout",
+        "element": "Featured Posts (manual mode empty)",
+        "breakpoint": "all",
+        "observation": "The manual-mode carousel section 'Featured Posts' renders the section wrapper and heading but shows an empty carousel area when no posts are selected. This is technically correct behavior, but visually appears as a dark section with just a heading.",
+        "recommendation": "Consider whether hideIfEmpty should be enabled by default for manual mode to avoid showing empty carousel sections."
+      },
+      {
+        "id": "DQA-N-002",
+        "severity": "note",
+        "category": "general",
+        "element": "Figma comparison",
+        "breakpoint": "all",
+        "observation": "Full Figma design comparison could not be performed because the Figma Desktop MCP server is not connected. Visual self-consistency passes — the block renders cleanly and consistently across all browsers and breakpoints — but pixel-level Figma comparison remains pending.",
+        "recommendation": "Re-run design QA when Figma MCP is available to complete the full visual comparison against the design file (node 785-33970)."
+      }
+    ],
+    "designChecklist": {
+      "typographyMatchesFigma": "INCOMPLETE — Figma MCP unavailable, cannot compare exact values",
+      "colorsUseThemeTokens": "PASS — CSS uses theme variables (--color-neon-green, --color-blue, bg-charcoal) rather than hardcoded hex",
+      "spacingMatchesFigma": "INCOMPLETE — Figma MCP unavailable, cannot compare exact values",
+      "layoutMatchesAtBreakpoints": "INCOMPLETE — Figma MCP unavailable, cannot compare layouts",
+      "aspectRatiosPreserved": "PASS — card images maintain consistent aspect ratios across all breakpoints",
+      "contentAlignmentMatchesDesign": "INCOMPLETE — Figma MCP unavailable",
+      "imagesHaveProperObjectFit": "PASS — images display without distortion at all breakpoints",
+      "hoverStatesOnButtons": "INCOMPLETE — cannot test hover states in static screenshots",
+      "focusStatesOnElements": "INCOMPLETE — cannot test focus states in static screenshots",
+      "smoothTransitions": "INCOMPLETE — cannot test transitions in static screenshots",
+      "gradientsBackgroundsImplemented": "PASS — neon-green gradient locked via CSS custom properties, dark charcoal background with rounded-3xl corners renders on all instances",
+      "allBlockVariationsWorking": "PASS — all carousel variations render correctly with appropriate content"
+    },
+    "crossBrowserNotes": "No cross-browser rendering differences detected. Chromium, Firefox, and WebKit produce visually identical output at all four breakpoints (375, 768, 1024, 1440)."
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

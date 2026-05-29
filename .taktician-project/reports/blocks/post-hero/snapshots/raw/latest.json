@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-02-25T23:00:44.825Z",
+  "hash": "a0c76650b1e1078faad4148ac3cc7ca4cf740959ddc6e8d68a2859cbf886cb94",
+  "data": {
+    "id": 181,
+    "title": "TEST: Post Hero",
+    "slug": "test-post-hero",
+    "status": "publish",
+    "content": "<!-- wp:takt/demo-container {\"title\":\"Default - Page Accent Color\",\"description\":\"Post Hero with default settings: page accent color for gradient, excerpt hidden, all auto-populated fields visible.\"} -->\n\t<!-- wp:takt/post-hero /-->\n<!-- /wp:takt/demo-container -->\n\n<!-- wp:takt/demo-container {\"title\":\"With Excerpt Shown\",\"description\":\"Post Hero with showExcerpt enabled to display the post excerpt between title and metadata.\"} -->\n\t<!-- wp:takt/post-hero {\"showExcerpt\":true} /-->\n<!-- /wp:takt/demo-container -->\n\n<!-- wp:takt/demo-container {\"title\":\"Topic Accent Color Override\",\"description\":\"Post Hero using the topic's accent color for the gradient system instead of the page accent color.\"} -->\n\t<!-- wp:takt/post-hero {\"useTopicColor\":true} /-->\n<!-- /wp:takt/demo-container -->\n\n<!-- wp:takt/demo-container {\"title\":\"Full Options - Excerpt + Topic Color\",\"description\":\"Post Hero with both showExcerpt and useTopicColor enabled.\"} -->\n\t<!-- wp:takt/post-hero {\"showExcerpt\":true,\"useTopicColor\":true} /-->\n<!-- /wp:takt/demo-container -->",
+    "contentLength": 1053
+  }
+}

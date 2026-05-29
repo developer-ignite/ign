@@ -1,0 +1,204 @@
+{
+  "agent": "developer",
+  "mode": "fix",
+  "timestamp": "2026-02-13T11:20:00Z",
+  "blockName": "Search",
+  "blockPath": "blocks/Search",
+  "status": "complete",
+  "summary": "Major restructuring of pagination: moved gray bar to nav-links container, current page uses gradient overlay, 8px gaps between elements, prev/next use mask-image with tertiary-arrow.svg for reliable arrow display",
+  "userRevisions": [
+    "Move gray bar from individual items to single continuous bar on nav-links",
+    "Current page uses gradient ::after overlay on top of gray bar",
+    "Add 8px gap between elements (gap-2)",
+    "Replace fragile background-image layering with mask-image technique for arrows",
+    "Use tertiary-arrow.svg for arrow icons"
+  ],
+  "changes": [
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ".nav-links",
+      "changes": [
+        "Added relative positioning",
+        "Changed gap-0 to gap-2 (8px gaps)",
+        "Added ::after pseudo-element for single continuous gray bar (4px, rgba(31,31,29,0.5), border-radius 10px, positioned at bottom: 0)"
+      ]
+    },
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ".page-numbers",
+      "changes": [
+        "REMOVED ::after pseudo-element (gray bar)",
+        "Kept transparent border for hover",
+        "Kept hover effect (gradient + border-color)"
+      ]
+    },
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ".page-numbers.current",
+      "changes": [
+        "CHANGED ::after from inheriting gray bar to gradient overlay",
+        "New ::after: positioned at bottom: -12px, z-index: 1, gradient background, 4px height, border-radius 10px",
+        "Overlays the nav-links gray bar exactly"
+      ]
+    },
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ".page-numbers.dots",
+      "changes": [
+        "REMOVED ::after override (no longer needed since gray bar is on nav-links)",
+        "Kept pointer-events-none"
+      ]
+    },
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ":is(.prev, .next)",
+      "changes": [
+        "REMOVED ::after pseudo-element (gray bar)",
+        "REMOVED text-white utility (not needed with mask-image approach)",
+        "ADDED ::before pseudo-element for arrow icon using mask-image",
+        "Changed from background-image layering to simple background: linear-gradient",
+        "Arrow icon: 14x11px white background with mask-image (tertiary-arrow.svg as data URI)"
+      ]
+    },
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ".prev",
+      "changes": [
+        "REMOVED old background-image data URI rules",
+        "ADDED ::before transform: scaleX(-1) to flip arrow left"
+      ]
+    },
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ".next",
+      "changes": [
+        "REMOVED old background-image data URI rules",
+        "Arrow uses default ::before (points right)"
+      ]
+    }
+  ],
+  "filesModified": [
+    "resources/css/screen/navigation.css"
+  ],
+  "buildStatus": "passed",
+  "architectureChanges": {
+    "grayBar_before": {
+      "approach": "Individual ::after on each .page-numbers and :is(.prev, .next)",
+      "problems": [
+        "Multiple ::after elements hard to align perfectly",
+        "Gaps between items broke continuity",
+        "Required careful positioning per element"
+      ]
+    },
+    "grayBar_after": {
+      "approach": "Single ::after on .nav-links container",
+      "benefits": [
+        "One continuous bar spanning entire width",
+        "Simpler to maintain (one element instead of many)",
+        "Container-level positioning (bottom: 0 with pb-3 creates space)"
+      ],
+      "implementation": ".nav-links::after positioned absolutely at bottom: 0, spans full width"
+    },
+    "currentPageIndicator_before": {
+      "approach": ".current::after changed background color from gray to gradient",
+      "problems": "Same bar as other items, just different color"
+    },
+    "currentPageIndicator_after": {
+      "approach": ".current::after is separate overlay with z-index: 1",
+      "benefits": [
+        "Gradient bar sits ON TOP of gray bar",
+        "Visually distinct from other items",
+        "Can have different styling (border-radius, etc.)"
+      ],
+      "implementation": "Positioned at bottom: -12px (negative of pb-3) to align with gray bar, z-index: 1 ensures it's on top"
+    },
+    "arrows_before": {
+      "approach": "background-image with multi-layer SVG data URI + gradient",
+      "problems": [
+        "Fragile layering (gradient could hide SVG)",
+        "background shorthand conflicts with background-image",
+        "SVG disappeared when properties conflicted"
+      ]
+    },
+    "arrows_after": {
+      "approach": "mask-image with ::before pseudo-element",
+      "benefits": [
+        "Separates arrow icon (mask) from background (gradient)",
+        "No layering conflicts",
+        "Reliable display",
+        "Easy to flip with transform: scaleX(-1)"
+      ],
+      "implementation": "::before has white background with mask-image (SVG shape), gradient is simple background property"
+    }
+  },
+  "technicalDetails": {
+    "grayBar": {
+      "element": ".nav-links::after",
+      "position": "absolute, bottom: 0",
+      "size": "width: 100%, height: 4px",
+      "style": "background: rgba(31, 31, 29, 0.5), border-radius: 10px",
+      "spacing": "pb-3 (12px) on nav-links creates space below items for bar"
+    },
+    "currentPageGradientOverlay": {
+      "element": ".page-numbers.current::after",
+      "position": "absolute, bottom: -12px (aligns with gray bar), left: 0",
+      "size": "width: 100%, height: 4px",
+      "style": "linear-gradient(90deg, neon-green, blue), border-radius: 10px, z-index: 1",
+      "alignment": "-12px offset matches pb-3 (12px) to position gradient exactly on top of gray bar"
+    },
+    "itemGaps": {
+      "property": "gap-2 on .nav-links",
+      "value": "8px (0.5rem)",
+      "effect": "Visual separation between all pagination items"
+    },
+    "arrowIcon": {
+      "element": "::before on :is(.prev, .next)",
+      "technique": "mask-image with white background",
+      "size": "14x11px",
+      "svg": "tertiary-arrow.svg (viewBox 0 0 21 16, right-pointing arrow)",
+      "prevFlip": "transform: scaleX(-1) on .prev::before",
+      "dataURI": "Inline SVG as data URI (URL-encoded)",
+      "maskProperties": "mask-image, mask-size: contain, mask-repeat: no-repeat, mask-position: center",
+      "webkitPrefix": "Included for Safari compatibility"
+    },
+    "positioning": {
+      "navLinks": "relative (anchors ::after gray bar)",
+      "pageNumbers": "relative (anchors .current::after overlay)",
+      "prevNext": "relative (anchors ::before arrow icon)"
+    }
+  },
+  "designSpecs": {
+    "grayBar": {
+      "position": "bottom of nav-links container",
+      "width": "100% (continuous across all items)",
+      "height": "4px",
+      "color": "rgba(31, 31, 29, 0.5)",
+      "borderRadius": "10px"
+    },
+    "gradientOverlay": {
+      "position": "on current page number, aligned with gray bar",
+      "width": "100% of current item",
+      "height": "4px",
+      "gradient": "90deg, neon-green → blue",
+      "borderRadius": "10px",
+      "zIndex": "1 (above gray bar)"
+    },
+    "itemGaps": {
+      "value": "8px between all items"
+    },
+    "arrows": {
+      "icon": "tertiary-arrow.svg (right-pointing)",
+      "size": "14x11px",
+      "color": "white (via background color with mask)",
+      "prevFlip": "horizontally flipped for left-pointing",
+      "background": "gradient (neon-green → blue)"
+    }
+  },
+  "verification": {
+    "build": "passed",
+    "warnings": "only expected performance warnings (bundle size)",
+    "tsxPhpSync": "verified",
+    "accessibility": "maintained (ARIA attributes, keyboard support, screen reader announcements)",
+    "visualIntegrity": "single continuous gray bar, gradient overlay on current item, arrows visible and reliable"
+  }
+}

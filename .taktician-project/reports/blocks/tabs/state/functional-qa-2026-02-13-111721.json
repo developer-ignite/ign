@@ -1,0 +1,289 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-13-111721",
+  "status": "PASS",
+  "blockName": "Tabs",
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 9,
+      "checksFailed": 0,
+      "issuesFound": 1,
+      "critical": 0,
+      "major": 0,
+      "minor": 1
+    },
+    "revisionContext": {
+      "revision": 4,
+      "bugsFixes": [
+        {
+          "id": "BUG-FIX-1",
+          "description": "Per-tab color now changes on desktop — JS reads data-tab-color from wrapper and applies color class alongside bg-accent-lighter",
+          "status": "VERIFIED",
+          "evidence": [
+            "tabs-per-tab-colors-default-1440w.png - Default tab shows page accent color",
+            "tabs-per-tab-colors-blue-1440w.png - Blue tab shows blue background on wrapper",
+            "tabs-per-tab-colors-orange-1440w.png - Orange tab shows orange background on wrapper",
+            "tabs-per-tab-colors-purple-1440w.png - Purple tab shows purple background on wrapper"
+          ],
+          "technicalVerification": "Page audit confirms data-tab-color attributes present on wrappers. JS in Tabs.js lines 90-110 correctly reads wrapper.dataset.tabColor and applies color class to active wrapper."
+        },
+        {
+          "id": "BUG-FIX-2",
+          "description": "Mobile border now persists on open — added open:border alongside open:border-accent on details element",
+          "status": "VERIFIED",
+          "evidence": [
+            "tabs-mobile-border-open-375w.png - Mobile accordion shows border when open"
+          ],
+          "technicalVerification": "TabsItem.php line 22 contains 'open:bg-accent open:border open:border-accent' which includes the border utility. Border is visible around open accordion items on mobile."
+        }
+      ],
+      "focusAreas": [
+        "Per-tab colors on desktop (1440px) - clicking through Default, Blue, Orange, Purple tabs",
+        "Default color tabs in Overview/Services sections",
+        "Mobile border visibility at 375px when accordion is open",
+        "Tab switching ensures no stale color classes remain",
+        "Sticky behavior still works on desktop",
+        "Keyboard navigation with arrow keys",
+        "ARIA attributes correctness"
+      ]
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "Build completed successfully with 3 webpack performance warnings (bundle size). No TypeScript errors."
+      },
+      "lint": {
+        "status": "warning",
+        "details": "Minor warning in Tabs.tsx line 94: React Hook useEffect has missing dependencies. This is existing technical debt, not introduced by this revision.",
+        "issues": [
+          {
+            "severity": "minor",
+            "file": "blocks/Tabs/Tabs.tsx",
+            "line": 94,
+            "description": "React Hook useEffect has missing dependencies: 'attributes.tabsColor', 'attributes.tabsDescription', 'attributes.tabsHeading', 'innerBlocksLength', and 'setAttributes'",
+            "impact": "Auto-fixable - does not affect functionality"
+          }
+        ]
+      },
+      "registration": {
+        "status": "pass",
+        "details": "9 takt/tabs block instances found on test page. Block registration verified."
+      },
+      "attributes": {
+        "status": "pass",
+        "details": "tabsColor attribute correctly synced from child tabColor values. Data attributes present in rendered HTML."
+      },
+      "edgeCases": {
+        "status": "pass",
+        "details": "Test page includes comprehensive edge cases: single tab, 8 tabs, long content, empty optional fields, per-tab colors, all tabs with descriptions."
+      },
+      "interactiveBehavior": {
+        "status": "pass",
+        "testsRun": [
+          {
+            "test": "Per-tab color switching - Default Color tab",
+            "status": "pass",
+            "screenshot": "tabs-per-tab-colors-default-1440w.png",
+            "details": "First tab (no tabColor set) uses page accent color. Wrapper has bg-accent-lighter but no color class."
+          },
+          {
+            "test": "Per-tab color switching - Blue Tab",
+            "status": "pass",
+            "screenshot": "tabs-per-tab-colors-blue-1440w.png",
+            "details": "Clicking Blue tab applies 'blue' class to wrapper. Background color changes to blue-lighter variant. No stale color classes from previous tab."
+          },
+          {
+            "test": "Per-tab color switching - Orange Tab",
+            "status": "pass",
+            "screenshot": "tabs-per-tab-colors-orange-1440w.png",
+            "details": "Clicking Orange tab removes blue class and applies 'orange' class. Background transitions to orange-lighter."
+          },
+          {
+            "test": "Per-tab color switching - Purple Tab",
+            "status": "pass",
+            "screenshot": "tabs-per-tab-colors-purple-1440w.png",
+            "details": "Clicking Purple tab removes orange class and applies 'purple' class. Background transitions to purple-lighter."
+          },
+          {
+            "test": "Default color tabs work correctly",
+            "status": "pass",
+            "screenshot": "tabs-default-color-1440w.png",
+            "details": "Overview section (no tabColor set) uses default accent-lighter background. No color class applied to wrapper."
+          },
+          {
+            "test": "Mobile border visible when open",
+            "status": "pass",
+            "screenshot": "tabs-mobile-border-open-375w.png",
+            "details": "Accordion item at 375px viewport shows border around open item. open:border utility is present and working."
+          },
+          {
+            "test": "Keyboard navigation - Arrow Down",
+            "status": "pass",
+            "screenshot": "tabs-keyboard-arrow-down-1440w.png",
+            "details": "Pressing ArrowDown from first tab moves focus and selection to second tab. Second tab panel becomes visible."
+          },
+          {
+            "test": "Sticky behavior on scroll",
+            "status": "pass",
+            "screenshot": "tabs-sticky-scroll-1440w.png",
+            "details": "Tablist remains sticky when scrolling through tall tab content. Position sticky with top offset working correctly."
+          }
+        ]
+      },
+      "accessibility": {
+        "status": "pass",
+        "details": "ARIA attributes correctly implemented. Tablist has aria-label, tab buttons have aria-controls linking to panel IDs.",
+        "patternCompliance": [
+          {
+            "pattern": "tabs",
+            "source": "manual-verification",
+            "status": "pass",
+            "checks": [
+              {
+                "check": "Tablist has aria-label",
+                "status": "pass",
+                "evidence": "Tabs.php line 32 sets aria-label using heading or 'Tabs' fallback"
+              },
+              {
+                "check": "Tab buttons have aria-controls",
+                "status": "pass",
+                "evidence": "Tabs.php line 52 sets aria-controls referencing panel ID in server-rendered HTML"
+              },
+              {
+                "check": "Tab buttons have aria-selected",
+                "status": "pass",
+                "evidence": "Tabs.php line 53 sets aria-selected='true' for first tab, 'false' for others"
+              },
+              {
+                "check": "Tab panels have role=tabpanel and aria-labelledby",
+                "status": "pass",
+                "evidence": "TabsItem.php line 41 sets id, role='tabpanel', aria-labelledby, and tabindex='0' on content div"
+              },
+              {
+                "check": "Keyboard navigation - ArrowDown/ArrowUp",
+                "status": "pass",
+                "evidence": "Tabs.js lines 134-142 implement vertical arrow key navigation with wrapping"
+              },
+              {
+                "check": "Keyboard navigation - Home/End",
+                "status": "pass",
+                "evidence": "Tabs.js lines 143-150 implement Home/End jump to first/last tab"
+              },
+              {
+                "check": "Mobile uses native details/summary",
+                "status": "pass",
+                "evidence": "TabsItem.php renders <details><summary> for native disclosure behavior on mobile"
+              }
+            ]
+          }
+        ]
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "details": "No responsive duplication detected. Single <details> element serves both desktop and mobile with CSS visibility control."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "TSX and PHP structure match. Both apply color class to wrapper and details element. Conditional classes synchronized.",
+        "attributeExtraction": "pass",
+        "notes": "TabsItem.php lines 2-5 correctly use auto-extracted variables with null coalescing. No manual $attributes[] assignments found."
+      },
+      "innerBlocks": {
+        "status": "pass",
+        "details": "Inner blocks (takt/tabs-item) render correctly. Content displays in panels. Template structure verified."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "details": "Test page variations match planning spec. 9 tab block instances covering all required scenarios including per-tab colors."
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-TABS-001",
+        "check": "lint",
+        "severity": "minor",
+        "description": "React Hook useEffect in Tabs.tsx has missing dependencies warning",
+        "file": "blocks/Tabs/Tabs.tsx",
+        "line": 94,
+        "fix": "Add missing dependencies to useEffect dependency array or use useCallback for setAttributes",
+        "alsoUpdate": null,
+        "note": "This is existing technical debt from the parent Tabs component, not introduced by the per-tab color feature. Does not affect functionality."
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors",
+      "Block registers correctly - 9 instances on test page",
+      "Per-tab color attribute saves and loads correctly",
+      "Per-tab color changes wrapper background on desktop via JS (Bug Fix #1 verified)",
+      "Mobile border persists when accordion is open (Bug Fix #2 verified)",
+      "Default color tabs (no tabColor set) use page accent color",
+      "Tab switching removes previous color classes correctly",
+      "No stale color classes remain on inactive wrappers",
+      "Sticky behavior works when scrolling tall content",
+      "Keyboard navigation - ArrowDown/ArrowUp moves between tabs",
+      "Keyboard navigation - Home/End jumps to first/last tab",
+      "Keyboard navigation - Enter/Space activates tab",
+      "ARIA attributes present in server-rendered HTML",
+      "Tablist has aria-label using heading text",
+      "Tab buttons have aria-controls linking to panel IDs",
+      "Tab buttons have aria-selected state",
+      "Tab panels have role=tabpanel and aria-labelledby",
+      "Mobile uses native details/summary for accessibility",
+      "JS removes tabpanel roles on mobile to avoid conflict",
+      "TSX and PHP structure synchronized",
+      "No responsive markup duplication",
+      "Edge cases tested: single tab, 8 tabs, long content, per-tab colors",
+      "Test page matches planning spec variations"
+    ],
+    "screenshots": {
+      "interactiveBehavior": [
+        {
+          "filename": "tabs-per-tab-colors-default-1440w.png",
+          "path": ".taktician-project/reports/blocks/tabs/screenshots/2026-02-13-111749/tabs-per-tab-colors-default-1440w.png",
+          "description": "Per-Tab Colors section - Default Color tab (inherits page accent)"
+        },
+        {
+          "filename": "tabs-per-tab-colors-blue-1440w.png",
+          "path": ".taktician-project/reports/blocks/tabs/screenshots/2026-02-13-111751/tabs-per-tab-colors-blue-1440w.png",
+          "description": "Per-Tab Colors section - Blue Tab selected, wrapper background is blue-lighter"
+        },
+        {
+          "filename": "tabs-per-tab-colors-orange-1440w.png",
+          "path": ".taktician-project/reports/blocks/tabs/screenshots/2026-02-13-111753/tabs-per-tab-colors-orange-1440w.png",
+          "description": "Per-Tab Colors section - Orange Tab selected, wrapper background is orange-lighter"
+        },
+        {
+          "filename": "tabs-per-tab-colors-purple-1440w.png",
+          "path": ".taktician-project/reports/blocks/tabs/screenshots/2026-02-13-111756/tabs-per-tab-colors-purple-1440w.png",
+          "description": "Per-Tab Colors section - Purple Tab selected, wrapper background is purple-lighter"
+        },
+        {
+          "filename": "tabs-mobile-border-open-375w.png",
+          "path": ".taktician-project/reports/blocks/tabs/screenshots/2026-02-13-111803/tabs-mobile-border-open-375w.png",
+          "description": "Mobile view at 375px - Accordion item open with border visible"
+        },
+        {
+          "filename": "tabs-keyboard-arrow-down-1440w.png",
+          "path": ".taktician-project/reports/blocks/tabs/screenshots/2026-02-13-111825/tabs-keyboard-arrow-down-1440w.png",
+          "description": "Keyboard navigation - Second tab selected after pressing ArrowDown"
+        },
+        {
+          "filename": "tabs-default-color-1440w.png",
+          "path": ".taktician-project/reports/blocks/tabs/screenshots/2026-02-13-111845/tabs-default-color-1440w.png",
+          "description": "Default color tabs - Overview section using page accent color"
+        },
+        {
+          "filename": "tabs-sticky-scroll-1440w.png",
+          "path": ".taktician-project/reports/blocks/tabs/screenshots/2026-02-13-111847/tabs-sticky-scroll-1440w.png",
+          "description": "Sticky tablist behavior - Tablist remains visible when scrolling content"
+        }
+      ]
+    },
+    "testPageUrl": "https://ign.localhost/test-tabs-2/",
+    "blockInstanceCount": 9,
+    "qaVerdict": "PASS - Both bug fixes verified and working correctly. Per-tab colors change wrapper background on desktop as expected. Mobile border persists when accordion is open. All keyboard navigation, ARIA attributes, and interactive behavior working as designed. Only minor lint warning (existing technical debt)."
+  },
+  "tokensUsed": 72036,
+  "questionsForUser": []
+}

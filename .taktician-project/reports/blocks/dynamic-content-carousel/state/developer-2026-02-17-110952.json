@@ -1,0 +1,98 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-17-110952",
+  "mode": "edit",
+  "status": "complete",
+  "blockName": "DynamicContentCarousel",
+  "output": {
+    "summary": "Added 'related' mode to postsSource attribute. In 'related' mode, the block queries posts that share taxonomy terms with the current post being viewed. Includes configurable fallback behavior and non-singular page handling per orchestrator guidance.",
+    "filesModified": [
+      {
+        "path": "blocks/DynamicContentCarousel/block.json",
+        "changes": [
+          "Added 'related' to postsSource enum: ['automatic', 'manual', 'related']",
+          "Added relatedFallbackToLatest attribute (boolean, default true) - controls fallback to latest posts when no related posts found",
+          "Added relatedNonSingularBehavior attribute (string enum ['hide', 'latest'], default 'hide') - controls behavior on homepage/archives per user decision on DEC-010"
+        ]
+      },
+      {
+        "path": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+        "changes": [
+          "Updated DynamicContentCarouselAttributes type to include relatedFallbackToLatest and relatedNonSingularBehavior",
+          "Added 'Related' option to Selection Mode toggle group",
+          "Added related mode controls section with Notice explaining behavior, postsLimit control, hideIfEmpty toggle, fallback toggle, and non-singular behavior toggle",
+          "Imported Notice component from @wordpress/components",
+          "Fixed pre-existing lint error: added id prop to BaseControl and refactored nested ternary in onChange handler"
+        ]
+      },
+      {
+        "path": "blocks/DynamicContentCarousel/DynamicContentCarousel.php",
+        "changes": [
+          "Added complete @var docblock for all attributes including new related mode attributes",
+          "Implemented related posts query logic: detects current post ID, collects terms from all configured taxonomies for the post type, builds tax_query with OR relation",
+          "Handles fallback to latest posts when relatedFallbackToLatest is true and no related posts exist",
+          "Handles non-singular context (homepage/archives) based on relatedNonSingularBehavior: 'hide' shows nothing, 'latest' falls back to latest posts",
+          "Excludes current post from results via post__not_in",
+          "Refactored automatic mode into separate elseif branch for clarity"
+        ]
+      }
+    ],
+    "attributesAdded": [
+      "relatedFallbackToLatest",
+      "relatedNonSingularBehavior"
+    ],
+    "attributesModified": [
+      "postsSource"
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": []
+    },
+    "validationStatus": {
+      "build": "pass",
+      "sync": "pass",
+      "registration": "pass",
+      "allChecks": "pass"
+    },
+    "testPage": {
+      "updated": true,
+      "url": "https://ign.localhost/test-dynamic-content-carousel/",
+      "pageId": 136,
+      "verifiedBlockCount": 16,
+      "variationsAdded": [
+        "Related Posts (Automatic Taxonomy Matching)",
+        "Related Resources",
+        "Related with Fallback Disabled",
+        "Related Non-Singular: Show Latest"
+      ]
+    },
+    "implementationNotes": [
+      "Related mode uses all taxonomies configured for the post type (from taxonomy_filters config) with OR relation for maximum relatedness matching",
+      "On singular pages with no shared taxonomy terms, fallback behavior is controlled by relatedFallbackToLatest attribute",
+      "On non-singular pages (homepage, archives), behavior is controlled by relatedNonSingularBehavior attribute per orchestrator guidance on DEC-010",
+      "Current post is always excluded from results when in related mode",
+      "Editor preview via FilteredServerSideRender works automatically - PHP handles the query logic",
+      "Fixed pre-existing lint error in manual mode BaseControl (missing id prop) and nested ternary expression"
+    ],
+    "editorControls": {
+      "relatedMode": [
+        "Informational Notice explaining automatic taxonomy matching",
+        "Number of items to display (postsLimit RangeControl)",
+        "Hide if empty toggle",
+        "Fall back to latest posts toggle (relatedFallbackToLatest)",
+        "Behavior on non-singular pages toggle (relatedNonSingularBehavior: hide/latest)"
+      ],
+      "hiddenInRelatedMode": [
+        "PostSelectorSortable (manual selection)",
+        "TaxonomyMultiSelect components (taxonomy filters)"
+      ]
+    },
+    "phpQueryLogic": {
+      "singularContext": "Queries posts sharing ANY taxonomy terms with current post using OR relation, excludes current post, falls back to latest if enabled and no matches found",
+      "nonSingularContext": "If relatedNonSingularBehavior is 'hide', shows nothing. If 'latest', falls back to latest posts of the selected type",
+      "taxonomyMapping": "Uses taxonomy_filters config per post type: post→category, team_member→department, resource→audience+resource_type, policy→policy_topic"
+    }
+  },
+  "tokensUsed": 0
+}

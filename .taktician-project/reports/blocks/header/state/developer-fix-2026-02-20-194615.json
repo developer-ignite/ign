@@ -1,0 +1,56 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-20-200652",
+  "status": "complete",
+  "blockName": "Header",
+  "output": {
+    "mode": "fix",
+    "revision": 4,
+    "planningFile": ".taktician-project/reports/blocks/header/state/planning-2026-02-20-153101.json",
+    "summary": "Implemented pt-8 top padding on the outer wrapper (always applied) and the new displayAboveContent boolean attribute for overlay/transparent-header mode. Changes touch all four files: block.json (new attribute), HeaderMain.php (docblock, variable extraction, outer wrapper classes, header-main div classes + data attribute), HeaderMain.tsx (type, outer wrapper, header-main div, ToggleControl in Behaviour panel), and HeaderMain.js (read data attribute, guard showSpacer() in updateScrollStatus and openMenu). Test page updated with new 'Display Above Content (Overlay Mode)' variation.",
+    "filesChanged": [
+      {
+        "file": "blocks/Header/HeaderMain/block.json",
+        "action": "modify",
+        "description": "Added displayAboveContent boolean attribute with default false"
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "action": "modify",
+        "description": "Added @var bool $displayAboveContent to docblock; added $displayAboveContent = !empty($displayAboveContent) extraction; updated outer wrapper to use class_name() with 'flex flex-col gap-2 pt-8' always and '-mb-[var(--header-main-height,0px)]' when displayAboveContent; added 'absolute left-0 right-0 z-200' and data-display-above-content attribute to .header-main div"
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "action": "modify",
+        "description": "Added displayAboveContent: boolean to HeaderMainAttributes type; added 'flex flex-col gap-2 pt-8' (always) and '-mb-[var(--header-main-height,0px)]' (conditional) to useBlockProps className; added 'absolute left-0 right-0 z-200' and data-display-above-content to header-main div; added ToggleControl for displayAboveContent in Behaviour PanelBody; ran bun run format to fix Prettier formatting"
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.js",
+        "action": "modify",
+        "description": "Added const displayAboveContent = !!parseInt(header.dataset.displayAboveContent, 10); guard; wrapped showSpacer() in updateScrollStatus with if (!displayAboveContent) condition; wrapped showSpacer() in openMenu with if (!displayAboveContent) condition"
+      }
+    ],
+    "testPageUpdated": {
+      "slug": "test-header",
+      "id": 114,
+      "added": "Display Above Content (Overlay Mode) variation with displayAboveContent:true, fixedOnScrollDesktop:true, fixedOnScrollMobile:true, with logo, SEP link, search, and 3 nav items"
+    },
+    "validation": {
+      "status": "pass",
+      "errors": 0,
+      "warnings": 12,
+      "warningNotes": "All 12 warnings are pre-existing in unrelated blocks (Accordion, Archive, ContentWithMedia, EventHero, FullWidthMedia, PostHero, Tabs react-hooks/exhaustive-deps). Two sync warnings for HeaderMain are pre-existing: structure difference (TSX uses InnerBlocks, PHP renders directly) and class_name() inside theme_block_props() (pattern already existed before this revision)."
+    },
+    "attributeChanges": [
+      {
+        "action": "add",
+        "name": "displayAboveContent",
+        "type": "boolean",
+        "default": false,
+        "description": "When enabled, the header uses position:absolute initially, overlaying the content below it. A negative bottom margin (-mb-[var(--header-main-height,0px)]) pulls subsequent content up under the header. Fixed-on-scroll still works on top: CSS transitions from absolute to fixed when .scrolling class is applied. showSpacer() is skipped when this is true since no layout shift compensation is needed."
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

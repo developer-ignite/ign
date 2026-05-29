@@ -1,0 +1,103 @@
+{
+  "name": "takt-starter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "wp-scripts start --webpack-src-dir=resources --output-path=public",
+    "build": "wp-scripts build --webpack-src-dir=resources --output-path=public",
+    "typecheck": "tsc --noEmit --skipLibCheck",
+    "lint": "eslint \"blocks/**/*.{ts,tsx}\" \"parts/**/*.{ts,tsx}\" --max-warnings=0 && prettier --check \"blocks/**/*.{ts,tsx,css}\" \"parts/**/*.{ts,tsx}\" \"resources/**/*.{ts,tsx,css,js}\"",
+    "lint:fix": "eslint \"blocks/**/*.{ts,tsx}\" \"parts/**/*.{ts,tsx}\" --fix",
+    "format": "prettier --write \"blocks/**/*.{ts,tsx,css}\" \"parts/**/*.{ts,tsx}\" \"resources/**/*.{ts,tsx,css,js}\"",
+    "format:check": "prettier --check \"blocks/**/*.{ts,tsx,css}\" \"parts/**/*.{ts,tsx}\" \"resources/**/*.{ts,tsx,css,js}\"",
+    "phpcs": "vendor/bin/phpcs",
+    "phpcbf": "vendor/bin/phpcbf",
+    "phpcs:fix": "vendor/bin/phpcbf",
+    "check": "bun run typecheck && bun run phpcs",
+    "check:ts": "bun run typecheck"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Takt",
+    "email": "developers@takt.com",
+    "url": "https://takt.com"
+  },
+  "contributors": [
+    {
+      "name": "Leandro Amorim"
+    }
+  ],
+  "license": "",
+  "description": "",
+  "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
+    "@babel/preset-typescript": "^7.27.1",
+    "@svgr/webpack": "^8.1.0",
+    "@tailwindcss/postcss": "^4.1.8",
+    "@taktdev/components": "1.0.3",
+    "@taktdev/utilities": "^1.0.1",
+    "@wordpress/block-editor": "^15.0.0",
+    "@wordpress/blocks": "^15.0.0",
+    "@wordpress/browserslist-config": "^6.24.0",
+    "@wordpress/components": "^30.0.0",
+    "@wordpress/compose": "^7.27.0",
+    "@wordpress/core-data": "^7.27.0",
+    "@wordpress/create-block": "^4.70.0",
+    "@wordpress/data": "^10.27.0",
+    "@wordpress/edit-post": "^8.27.0",
+    "@wordpress/edit-site": "^6.27.0",
+    "@wordpress/editor": "^14.27.0",
+    "@wordpress/hooks": "^4.27.0",
+    "@wordpress/i18n": "^6.0.0",
+    "@wordpress/icons": "^10.27.0",
+    "@wordpress/scripts": "^30.20.0",
+    "@wordpress/url": "^4.32.0",
+    "autoprefixer": "^10.4.21",
+    "babel-loader": "^10.0.0",
+    "browser-sync": "^2.29.3",
+    "browser-sync-webpack-plugin": "^2.3.0",
+    "copy-webpack-plugin": "^13.0.0",
+    "css-loader": "^7.1.2",
+    "dotenv": "^16.5.0",
+    "glob": "^11.0.2",
+    "mini-css-extract-plugin": "^2.9.2",
+    "path": "^0.12.7",
+    "postcss": "^8.5.4",
+    "postcss-import": "^16.1.1",
+    "postcss-loader": "^8.1.1",
+    "prettier": "^3.8.1",
+    "swiper": "^11.2.8",
+    "tailwindcss": "^4.1.8",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
+    "webpack": "^5.99.9",
+    "webpack-cli": "^6.0.1",
+    "webpack-remove-empty-scripts": "^1.1.1"
+  },
+  "peerDependencies": {
+    "@wordpress/block-editor": "^15.0.0",
+    "@wordpress/blocks": "^15.0.0",
+    "@wordpress/browserslist-config": "^6.24.0",
+    "@wordpress/components": "^30.0.0",
+    "@wordpress/compose": "^7.27.0",
+    "@wordpress/core-data": "^7.27.0",
+    "@wordpress/create-block": "^4.70.0",
+    "@wordpress/data": "^10.27.0",
+    "@wordpress/edit-post": "^8.27.0",
+    "@wordpress/edit-site": "^6.27.0",
+    "@wordpress/editor": "^14.27.0",
+    "@wordpress/hooks": "^4.27.0",
+    "@wordpress/i18n": "^6.0.0",
+    "@wordpress/icons": "^10.27.0",
+    "@wordpress/scripts": "^30.20.0"
+  },
+  "dependencies": {
+    "@wordpress/icons": "^10.27.0",
+    "flatpickr": "^4.6.13"
+  },
+  "browserslist": [
+    "extends @wordpress/browserslist-config"
+  ]
+}

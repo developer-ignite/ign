@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/main-wrapper",
+  "title": "Main",
+  "category": "takt-theme-template",
+  "description": "Wrapper for the page content",
+  "supports": {
+    "html": false,
+    "anchor": false,
+    "inserter": true
+  },
+  "textdomain": "takt"
+}

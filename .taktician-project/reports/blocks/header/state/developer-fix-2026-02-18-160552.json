@@ -1,0 +1,86 @@
+{
+  "agent": "developer",
+  "mode": "edit",
+  "timestamp": "2026-02-18-160552",
+  "planningFile": "planning-2026-02-18-155950.json",
+  "status": "completed",
+  "fixes": [
+    {
+      "id": "CHG-001",
+      "title": "Outline dotted instead of dashed",
+      "description": "Replaced all instances of focus-visible:outline-dashed with focus-visible:outline-dotted across HeaderMainItem.php, HeaderMainItem.tsx, HeaderMainSubItem.php, HeaderMainSubItem.tsx using replace_all.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+        "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+        "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.php",
+        "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.tsx"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "CHG-002",
+      "title": "Add focus-visible outline to all interactive elements in HeaderMain",
+      "description": "Added focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 to: desktop search submit button, mobile search submit button (via replace_all on shared class), SEP mobile button, SEP desktop CTA link, mobile hamburger toggle button (also added text-white per CHG-004), logo link (both ImageDropUploader and anchor via replace_all), mobile CTA link. In both PHP and TSX.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.php",
+        "blocks/Header/HeaderMain/HeaderMain.tsx"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "CHG-003",
+      "title": "Spacer hidden by default, toggled by JS",
+      "description": "Added hidden class to the header-main-spacer div in HeaderMain.php and HeaderMain.tsx. In HeaderMain.js, introduced showSpacer(height) and hideSpacer() helpers that toggle hidden/block classes alongside setting the height. updateScrollStatus() calls showSpacer when transitioning into fixed mode and hideSpacer when returning to normal flow (with guard for mobile menu open + fixedScrollMobile). openMenu() also calls showSpacer when forcing fixed mode on mobile.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.php",
+        "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "blocks/Header/HeaderMain/HeaderMain.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "CHG-004",
+      "title": "Mobile hamburger button text-white in TSX",
+      "description": "Added text-white to the mobile toggle button className in HeaderMain.tsx (it was only on the SVG child elements). PHP already had text-white on the button. Both PHP and TSX now have text-white on the button element itself.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.tsx"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "CHG-005",
+      "title": "Keep header fixed when mobile menu is open",
+      "description": "In openMenu(): when !isDesktop() && fixedScrollMobile, force header.classList.add('scrolling', 'scrolling-up'), remove 'scrolling-down', and call showSpacer(header.offsetHeight). In updateScrollStatus(): when menu-open class is present and !isDesktop(), skip adding scrolling-down class (the if-block for scrolling-down now wraps in: if (!menuIsOpen || isDesktop())). The hideSpacer() call in the else-branch is also guarded: not called if menuIsOpen && !isDesktop() && fixedScrollMobile.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "CHG-006",
+      "title": "Mobile menu max-height constrained to viewport",
+      "description": "In HeaderMain.php: replaced menu-open:max-h-[2000px] with menu-open:max-h-[calc(100dvh-var(--fixed-offset,80px))] and added menu-open:overflow-y-auto. In HeaderMain.tsx: updated the isMenuOpen cn-branch from max-md:overflow-hidden + max-h via absence to explicit max-md:max-h-[calc(100dvh-var(--fixed-offset,80px))] max-md:opacity-100 max-md:pointer-events-auto max-md:overflow-y-auto.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.php",
+        "blocks/Header/HeaderMain/HeaderMain.tsx"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "CHG-007",
+      "title": "Mobile nav padding always-on",
+      "description": "In HeaderMain.php: moved pt-4 pb-8 from menu-open: conditional variants to always-on max-md: base classes (max-md:pt-4 max-md:pb-8) and removed menu-open:pt-4 menu-open:pb-8. In HeaderMain.tsx: moved max-md:pt-4 max-md:pb-8 from the isMenuOpen cn-branch to the always-true base string. The max-h-0 overflow-hidden keeps padding invisible when menu is closed.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.php",
+        "blocks/Header/HeaderMain/HeaderMain.tsx"
+      ],
+      "status": "done"
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "errors": 0,
+    "warnings": 9,
+    "warningDetails": "All warnings are in unrelated blocks (Accordion, Archive, ContentWithMedia, FullWidthMedia, PostHero, Tabs). The htmlStructureSync warning for HeaderMain is expected — TSX editor view intentionally differs from PHP frontend rendering."
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "agent": "planning",
+  "status": "complete",
+  "timestamp": "2026-02-11T16:53:58Z",
+  "output": {
+    "summary": "Move the video modal inside each <section> element (remove the static singleton guard), restructure the close button to use normal document flow with right-alignment above the video (no absolute positioning), and add overflow-y scrolling to the modal content area for short viewports. Rework JS to scope modal operations per-section instead of using a single global modal.",
+    "fileChanges": [
+      {
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.php",
+        "action": "modify",
+        "description": "Move modal inside <section>, remove static guard, restructure close button layout, add scrollability",
+        "details": "1. REMOVE the static $testimonial_modal_rendered guard (lines 112-116) and the corresponding endif (line 139). 2. MOVE the modal <div> to just before the closing </section> tag (line 110), so it lives INSIDE the section. Each block instance will now render its own modal. 3. RESTRUCTURE the modal inner wrapper: change from `relative w-full max-w-4xl mx-4` to `w-full max-w-4xl mx-4` (remove `relative`). Add `overflow-y-auto max-h-full py-8` to this wrapper so the entire inner content scrolls when the viewport is too short. 4. RESTRUCTURE the close button: Remove `absolute -top-12 right-0 md:-top-14 z-10` classes. Instead, wrap the close button in a `flex justify-end mb-3` container div so it sits in normal flow, right-aligned above the video area. The button keeps its `modal-close-btn` class and the SVG icon. 5. The outer modal div keeps `fixed inset-0 z-[9999] flex items-center justify-center` but the inner wrapper changes to allow scrolling.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.js",
+        "action": "modify",
+        "description": "Rework JS to scope modal per-section instead of using a single global modal",
+        "details": "1. REMOVE the single global modal query: `document.querySelector('.testimonial-video-modal')` and the single `videoContainer`/`closeBtn` references (lines 44-46). 2. CHANGE video button click handler: Instead of delegating to a single global modal, each `.testimonial-video-btn` click should find the modal within the same `<section>` ancestor using `btn.closest('section.testimonials-carousel').querySelector('.testimonial-video-modal')`. 3. REFACTOR openModal/closeModal: These functions should accept the modal element as a parameter (or use a `currentModal` variable that tracks which modal is open). The `openModal(modal, videoSource, videoUrl, testimonialName)` function finds `.testimonial-video-container` and `.testimonial-video-close` within the passed modal. 4. CHANGE closeModal: Should reference the currently-open modal (tracked via a module-level `let currentModal = null` variable). 5. CHANGE Escape key handler: Check `currentModal` instead of the single `modal` reference; call closeModal on whichever modal is currently open. 6. CHANGE focus trap: Scope to `currentModal` instead of the single `modal`. 7. CHANGE close button binding: Instead of binding once to a single closeBtn, bind close buttons inside each section or use event delegation. Best approach: use event delegation on `document` for `.testimonial-video-close` clicks. 8. CHANGE click-outside-to-close: Instead of binding to a single modal, use event delegation or bind to each modal. Best approach: bind in openModal and unbind in closeModal, or use a document-level click handler that checks `currentModal`. 9. UPDATE scale transition selectors: The current code uses `modal.querySelector('.relative')` to toggle scale-95/scale-100. Since we removed `relative` from the inner wrapper, update the selector to use a specific class like `.testimonial-modal-content` added to the inner wrapper div.",
+        "affectsPhp": false
+      },
+      {
+        "file": "resources/css/screen/swiper.css",
+        "action": "no-change",
+        "description": "No changes needed to .modal-close-btn styles -- the existing styles work correctly for normal-flow positioning. The button already has inline-flex, sizing, border, and colors defined.",
+        "details": "The .modal-close-btn class (lines 93-105) uses inline-flex, fixed sizing (w-10 h-10 / md:w-12 md:h-12), border, rounded-full, and color styles. These all work correctly whether the button is absolutely positioned or in normal flow. No CSS changes required.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "layout",
+        "decision": "Move modal inside <section> so each block instance owns its own modal",
+        "source": "user-request",
+        "evidence": "User explicitly requested: 'Move the video modal inside the <section> element -- each block instance should have its own modal (remove the static guard)'"
+      },
+      {
+        "id": "DEC-002",
+        "category": "layout",
+        "decision": "Close button uses flex justify-end in a wrapper div above the video, not absolute positioning",
+        "source": "user-request",
+        "evidence": "User explicitly requested: 'Right-align the close button above the video area. It should NOT be absolutely positioned overlapping the video -- it should be in normal flow, aligned to the right above the video container.'"
+      },
+      {
+        "id": "DEC-003",
+        "category": "layout",
+        "decision": "Use a flex justify-end wrapper div with mb-3 spacing below close button row",
+        "source": "existing-pattern",
+        "evidence": "Standard pattern for right-aligned elements in normal flow. The mb-3 (12px) provides visual separation between the close button and the video area without being too large."
+      },
+      {
+        "id": "DEC-004",
+        "category": "layout",
+        "decision": "Modal inner wrapper gets overflow-y-auto and max-h-full with py-8 for scroll padding",
+        "source": "user-request",
+        "evidence": "User requested: 'Add scrollability to the modal when the viewport is too short to fit the video -- the modal content area needs overflow-y: auto / scrollbars so users can scroll to see the full video.'"
+      },
+      {
+        "id": "DEC-005",
+        "category": "behavior",
+        "decision": "JS uses a module-level currentModal variable to track which modal is open, and scopes all operations to that modal",
+        "source": "implementation-requirement",
+        "evidence": "With per-section modals, the JS can no longer reference a single global modal. A currentModal variable allows Escape key, click-outside, and focus-trap handlers to operate on whichever modal is currently open."
+      },
+      {
+        "id": "DEC-006",
+        "category": "behavior",
+        "decision": "Video button finds its modal via btn.closest('section').querySelector('.testimonial-video-modal') rather than document-level query",
+        "source": "implementation-requirement",
+        "evidence": "Each section now has its own modal. The button must find the modal within its own section ancestor to open the correct one."
+      },
+      {
+        "id": "DEC-007",
+        "category": "layout",
+        "decision": "Add .testimonial-modal-content class to the inner wrapper div for JS targeting, replacing the fragile .relative selector",
+        "source": "implementation-requirement",
+        "evidence": "Current JS uses modal.querySelector('.relative') to toggle scale transitions. Since we're removing the `relative` class from the inner wrapper, we need a stable class name for JS to target."
+      }
+    ],
+    "phpChanges": {
+      "currentStructure": "Modal is rendered AFTER </section> with a static guard so only one modal exists on the page. Close button is absolutely positioned with -top-12 above the video area.",
+      "newStructure": "Modal is rendered INSIDE <section>, before </section>. No static guard -- each block instance gets its own modal. Close button is in a flex justify-end wrapper div in normal document flow above the video. Inner wrapper has overflow-y-auto for scrollability.",
+      "modalHtmlChanges": [
+        "Remove static $testimonial_modal_rendered guard and its if/endif",
+        "Move modal div to just before </section> closing tag",
+        "Inner wrapper: change from 'relative w-full max-w-4xl mx-4 scale-95 transition-transform duration-300' to 'testimonial-modal-content w-full max-w-4xl mx-4 overflow-y-auto max-h-full py-8 scale-95 transition-transform duration-300'",
+        "Close button: Remove 'absolute -top-12 right-0 md:-top-14 z-10', wrap in '<div class=\"flex justify-end mb-3\">...</div>'",
+        "Close button keeps: 'testimonial-video-close modal-close-btn' classes"
+      ]
+    },
+    "jsChanges": {
+      "currentApproach": "Single global modal queried via document.querySelector('.testimonial-video-modal'). openModal/closeModal reference this single element. Event listeners bound once to this single modal.",
+      "newApproach": "Module-level `let currentModal = null` tracks the active modal. Each video button finds its section's modal. openModal sets currentModal, closeModal clears it. Escape/click-outside/focus-trap all reference currentModal.",
+      "specificChanges": [
+        "Replace single modal/videoContainer/closeBtn declarations with `let currentModal = null; let lastFocusedElement = null;`",
+        "openModal(modal, videoSource, videoUrl, testimonialName): set currentModal = modal, find videoContainer and closeBtn within modal",
+        "closeModal(): operate on currentModal, then set currentModal = null",
+        "Video button click: find modal via btn.closest('section').querySelector('.testimonial-video-modal'), call openModal with it",
+        "Close button: use event delegation -- document.addEventListener('click', e => { if (e.target.closest('.testimonial-video-close')) closeModal(); })",
+        "Click outside: document-level handler checks if click target is the currentModal overlay itself",
+        "Escape key: check currentModal !== null instead of checking single modal classes",
+        "Focus trap: scope to currentModal",
+        "Scale transition: use '.testimonial-modal-content' selector instead of '.relative'"
+      ]
+    },
+    "requiresQA": true,
+    "qaScope": "functional",
+    "qaChecklist": [
+      "Video modal opens when clicking 'Watch the Video' button on any testimonial card",
+      "Modal opens within the correct section (inspect DOM to verify modal is inside <section>)",
+      "Close button appears right-aligned above the video, in normal document flow (not overlapping video)",
+      "Close button click closes the modal",
+      "Clicking outside the video area (on the dark overlay) closes the modal",
+      "Escape key closes the modal",
+      "Body scroll is locked when modal is open",
+      "Body scroll is restored when modal is closed",
+      "Focus moves to close button when modal opens",
+      "Focus returns to the video button when modal closes",
+      "Focus trap works (Tab cycles within modal)",
+      "Modal is scrollable when viewport height is too short for the video content",
+      "Multiple TestimonialsCarousel blocks on the same page each have their own modal and work independently",
+      "YouTube embed videos load and play correctly in modal",
+      "File-based videos load and play correctly in modal",
+      "Video content is cleared after modal close transition completes",
+      "Scale transition (scale-95 -> scale-100) still works on open/close"
+    ]
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "agent": "design",
+  "timestamp": "2026-02-13-194620",
+  "status": "FAIL",
+  "blockName": "Header",
+  "output": {
+    "contentComparison": {
+      "html": {
+        "changed": true,
+        "codeModified": true,
+        "canSkipTests": false,
+        "message": "First visual QA run - no previous snapshot to compare"
+      }
+    },
+    "visualQaAction": "full-visual-qa",
+    "compositionGate": "FAIL",
+    "compositionNotes": "The header's logo at desktop width is massively oversized. In Figma, the logo (icon + wordmark) is approximately 215px wide by 58px tall, sitting compactly on the left side. In the implementation, the logo (an SVG bee) has no max-height constraint on desktop and stretches to fill the entire two-row height of the header, resulting in a logo approximately 500px tall that dominates half the header width. This is the primary critical issue. The nav items and utility row (search, SEP link) are positioned correctly in the right column but the overall composition is drastically different from Figma due to the logo scaling.",
+    "breakpointsAnalyzed": [
+      "375",
+      "768",
+      "1024",
+      "1440"
+    ],
+    "browsersAnalyzed": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "crossBrowserNotes": "All three browsers (Chromium, Firefox, WebKit) render identically. The oversized logo issue is consistent across all browsers. No browser-specific discrepancies observed.",
+    "findings": [
+      {
+        "id": "DQA-001",
+        "severity": "critical",
+        "category": "layout",
+        "element": "Logo (desktop)",
+        "breakpoint": "desktop (1024+)",
+        "figmaValue": "Logo ~215px wide x ~58px tall, compact in left column",
+        "implementationValue": "Logo stretches to full two-row height (~500px tall), dominates left half of header",
+        "difference": "Logo is roughly 8-9x the intended height on desktop",
+        "withinTolerance": false,
+        "recommendation": "Add a max-height constraint on the logo for desktop. The Figma design shows the logo at approximately 58px tall. The CSS class 'self-stretch **:h-full' causes the logo to fill the full container height. Add a desktop max-height such as 'md:**:max-h-[58px]' or similar constraint to keep the logo proportional. The current mobile constraint 'max-md:**:max-h-[26px]' is correct per Figma (25.6px), but desktop needs its own constraint.",
+        "files": [
+          {
+            "path": "blocks/Header/HeaderMain/HeaderMain.php",
+            "line": 74,
+            "change": {
+              "from": "class=\"block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px]\"",
+              "to": "class=\"block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px]\""
+            }
+          },
+          {
+            "path": "blocks/Header/HeaderMain/HeaderMain.tsx",
+            "line": 603,
+            "change": {
+              "from": "className=\"block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px]\"",
+              "to": "className=\"block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px]\""
+            }
+          }
+        ],
+        "verification": "After fix, the logo should appear compact (~58px tall) on the left side of the header bar at desktop widths, matching the Figma proportions where the logo sits beside the right-side column containing search/SEP link and nav items."
+      },
+      {
+        "id": "DQA-002",
+        "severity": "minor",
+        "category": "spacing",
+        "element": "Submenu dropdown gap from header bar",
+        "breakpoint": "desktop",
+        "figmaValue": "Submenu dropdown positioned at top-full with negative left margin (-ml-6 for left alignment)",
+        "implementationValue": "md:top-full md:mt-4 md:-ml-6 applied in HeaderMainItem.php line 76",
+        "difference": "Within tolerance - the mt-4 (16px) gap between nav text and dropdown panel is visually reasonable. Figma shows the dropdown immediately below the nav bar's bottom edge.",
+        "withinTolerance": true,
+        "recommendation": "The 16px gap (mt-4) appears acceptable. Cannot precisely verify against Figma since the dropdown is shown as an overlay in the design. Note: the key change item #2 ('submenu dropdown has appropriate gap') appears correctly implemented."
+      },
+      {
+        "id": "DQA-003",
+        "severity": "note",
+        "category": "alignment",
+        "element": "Submenu text alignment with parent menu item",
+        "breakpoint": "desktop",
+        "figmaValue": "Submenu text left-aligns approximately with parent menu item text, dropdown has -ml-6 (negative margin to compensate for padding)",
+        "implementationValue": "md:-ml-6 class present on submenu container (HeaderMainItem.php line 76), p-6 padding on dropdown",
+        "difference": "N/A - implementation matches design intent",
+        "withinTolerance": true,
+        "recommendation": "The negative margin (-ml-6) compensates for the dropdown's p-6 padding, so submenu text visually aligns with the parent item text. This matches the Figma design. Key change #3 verified as correct."
+      },
+      {
+        "id": "DQA-004",
+        "severity": "note",
+        "category": "color",
+        "element": "Focus-visible outlines",
+        "breakpoint": "all",
+        "figmaValue": "White focus outlines for visibility on dark background",
+        "implementationValue": "focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 present on nav links and buttons (HeaderMainItem.php lines 51, 60)",
+        "difference": "N/A - correctly implemented",
+        "withinTolerance": true,
+        "recommendation": "Focus-visible outlines are white with 2px width and 2px offset. Key change #4 verified as present in the code. Cannot visually verify focus states in static screenshots (interactive state)."
+      },
+      {
+        "id": "DQA-005",
+        "severity": "note",
+        "category": "typography",
+        "element": "Search placeholder",
+        "breakpoint": "all",
+        "figmaValue": "Search placeholder text is uppercase 'SEARCH', input accepts normal case",
+        "implementationValue": "placeholder:uppercase class with normal-case on the input itself (HeaderMain.php line 103)",
+        "difference": "N/A - correctly implemented",
+        "withinTolerance": true,
+        "recommendation": "The search input uses placeholder:uppercase for display and normal-case for typed text. Key change #5 verified as correct."
+      },
+      {
+        "id": "DQA-006",
+        "severity": "note",
+        "category": "layout",
+        "element": "Fixed header width",
+        "breakpoint": "all",
+        "figmaValue": "Fixed header should maintain full viewport width",
+        "implementationValue": "Scrolling classes apply left-0 right-0 for fixed positioning (HeaderMain.php lines 59-64)",
+        "difference": "N/A - correctly implemented in code",
+        "withinTolerance": true,
+        "recommendation": "The fixed header uses left-0 right-0 to maintain full width. Key change #6 verified in code. Cannot visually verify scroll behavior in static full-page screenshots."
+      },
+      {
+        "id": "DQA-007",
+        "severity": "note",
+        "category": "layout",
+        "element": "Mobile header layout",
+        "breakpoint": "375",
+        "figmaValue": "Compact header bar with small logo (~26px), hamburger toggle, SEP button above nav",
+        "implementationValue": "Mobile screenshots show compact header with SEP button, hamburger menu, and logo. Logo correctly constrained via max-md:**:max-h-[26px]",
+        "difference": "Mobile layout matches Figma design proportions",
+        "withinTolerance": true,
+        "recommendation": "Mobile layout appears correct. The SEP button, logo, and hamburger toggle are all properly sized and positioned."
+      },
+      {
+        "id": "DQA-008",
+        "severity": "minor",
+        "category": "spacing",
+        "element": "Desktop nav items gap",
+        "breakpoint": "desktop (1440)",
+        "figmaValue": "32px gap between nav items (gap-8 / spacing-scale-8)",
+        "implementationValue": "md:gap-8 (32px) applied to nav list (HeaderMain.php line 154)",
+        "difference": "Matches Figma. Visually verified in desktop screenshots - nav items (ABOUT, HEALTH, FINANCIAL WELLBEING, ADVOCACY, SOCIAL, STUDENT VOICES) are evenly spaced across the bottom row of the header.",
+        "withinTolerance": true,
+        "recommendation": "No change needed."
+      }
+    ],
+    "designChecklist": {
+      "typography": "PASS - Font families (General Sans Medium for nav items, Roboto Medium for SEP/submenu), sizes (16px nav, 14px search), weights, line-heights, and uppercase transforms all match Figma values",
+      "colors": "PASS - Background #1e1e1c (charcoal), white text, #d4ff45 (neon-green) for active/expanded items all match",
+      "spacing": "PASS (with logo exception) - Padding 32px horizontal, 16px vertical, 24px gap between rows, 32px gap between nav items all match Figma",
+      "layout": "FAIL - Desktop logo is critically oversized. All other layout elements (two-row structure, right-aligned utility row, nav row) are correctly structured",
+      "mobileLayout": "PASS - Mobile SEP button, compact header bar, hamburger toggle, collapsible nav panel all match Figma",
+      "borderRadius": "PASS - 25px nav bar, 12px submenu dropdown, full-round SEP button all match",
+      "interactiveStates": "UNVERIFIED - Hover, focus, and scroll behaviors cannot be fully verified in static screenshots. Code inspection shows correct classes present.",
+      "crossBrowser": "PASS - Chromium, Firefox, and WebKit all render identically"
+    },
+    "screenshots": {
+      "chromium": {
+        "375": ".taktician-project/reports/blocks/header/screenshots/header-chromium-375w.png",
+        "768": ".taktician-project/reports/blocks/header/screenshots/header-chromium-768w.png",
+        "1024": ".taktician-project/reports/blocks/header/screenshots/header-chromium-1024w.png",
+        "1440": ".taktician-project/reports/blocks/header/screenshots/header-chromium-1440w.png"
+      },
+      "firefox": {
+        "375": ".taktician-project/reports/blocks/header/screenshots/header-firefox-375w.png",
+        "768": ".taktician-project/reports/blocks/header/screenshots/header-firefox-768w.png",
+        "1024": ".taktician-project/reports/blocks/header/screenshots/header-firefox-1024w.png",
+        "1440": ".taktician-project/reports/blocks/header/screenshots/header-firefox-1440w.png"
+      },
+      "webkit": {
+        "375": ".taktician-project/reports/blocks/header/screenshots/header-webkit-375w.png",
+        "768": ".taktician-project/reports/blocks/header/screenshots/header-webkit-768w.png",
+        "1024": ".taktician-project/reports/blocks/header/screenshots/header-webkit-1024w.png",
+        "1440": ".taktician-project/reports/blocks/header/screenshots/header-webkit-1440w.png"
+      }
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

@@ -1,0 +1,257 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-09-120303",
+  "status": "FAIL",
+  "blockName": "Tabs",
+  "output": {
+    "summary": {
+      "breakpointsChecked": ["desktop-1440", "laptop-1024", "tablet-768", "mobile-375"],
+      "breakpointsSkipped": [],
+      "toleranceUsed": "semantic (2-4px)",
+      "figmaNodesCompared": ["785:34910", "807:58405", "785:33971"],
+      "issuesFound": 7,
+      "critical": 0,
+      "major": 3,
+      "minor": 3,
+      "notes": 1,
+      "overallMatch": "Good structure, layout correct, but typography sizing mismatch on tab titles and content panel heading needs attention"
+    },
+    "testPageVerification": {
+      "status": "pass",
+      "url": "https://ign.localhost/test-tabs/",
+      "blockInstancesFound": 6,
+      "variations": ["Yellow accent (4 tabs with full content)", "Blue accent (3 tabs)", "Minimal (2 tabs)", "Many tabs (8 tabs)", "Long content", "Green accent"],
+      "observation": "Test page contains 6 block instances covering multiple accent colors, tab counts, and content variations. All structural elements present."
+    },
+    "issues": [
+      {
+        "id": "DQA-001",
+        "severity": "major",
+        "category": "typography",
+        "element": "Desktop tab button title",
+        "breakpoint": "desktop-1440",
+        "figmaValue": "Anton 40px (font/size/3xl = 40px) with line-height 1.1",
+        "implementationValue": "text-header-5 = var(--text-2xl) = 1.5rem (24px) at >= 48rem, with line-height 1.2",
+        "difference": "16px font-size difference (24px vs 40px); line-height 1.2 vs 1.1",
+        "withinTolerance": false,
+        "observation": "Tab button titles on desktop are visually smaller than the Figma design. Figma specifies font/size/3xl (40px) but the implementation uses text-header-5 which resolves to 24px on desktop. The planning spec describes this as '40px on desktop' but the actual CSS token does not deliver 40px.",
+        "recommendation": "The tab button title should use a larger header size. Options: (A) Use text-header-3 which resolves to text-3xl (30px) on desktop -- still 10px short. (B) Create a responsive override for tab button titles to use a larger size. (C) Re-evaluate the header scale mapping. The Figma 3xl token (40px) should map to a theme token that actually delivers ~40px. Consider using text-header-2 (48px) or adding a custom text-[40px] / text-[2.5rem] class specifically for tab titles.",
+        "files": [
+          {
+            "path": "blocks/Tabs/Tabs.php",
+            "line": 51,
+            "change": {
+              "from": "font-heading text-header-5 w-full",
+              "to": "font-heading text-header-3 sm:text-header-2 w-full (or equivalent to reach ~40px desktop)"
+            }
+          },
+          {
+            "path": "blocks/Tabs/Tabs.tsx",
+            "line": 146,
+            "change": {
+              "from": "font-heading text-header-6 md:text-header-5 flex-1",
+              "to": "font-heading text-header-6 md:text-header-3 flex-1 (adjust to match ~40px desktop)"
+            }
+          }
+        ],
+        "verification": "Tab button titles should appear as bold Anton text at approximately 40px on desktop, matching the visual weight shown in Figma node 785:34910"
+      },
+      {
+        "id": "DQA-002",
+        "severity": "major",
+        "category": "typography",
+        "element": "Mobile tab title (accordion header)",
+        "breakpoint": "mobile-375",
+        "figmaValue": "Anton 32px (font/size/2xl = 32px) with line-height 1.1",
+        "implementationValue": "text-header-6 = var(--text-xl) = 1.25rem (20px) with line-height 1.2",
+        "difference": "12px font-size difference (20px vs 32px)",
+        "withinTolerance": false,
+        "observation": "On mobile, accordion header titles are noticeably smaller than the Figma design. Figma specifies 32px (font/size/2xl) but the implementation uses text-header-6 which resolves to text-xl (20px). Comparing the 375px screenshot to Figma node 785:33971, the mobile titles appear significantly smaller relative to the viewport width.",
+        "recommendation": "Use a larger typography token for mobile tab titles. text-header-6 (20px) is too small. Consider text-header-3 (32px on base) which directly matches the Figma 32px value.",
+        "files": [
+          {
+            "path": "blocks/Tabs/Tabs.php",
+            "line": 84,
+            "change": {
+              "from": "font-heading text-header-6 flex-1",
+              "to": "font-heading text-header-3 flex-1 (to reach 32px on mobile)"
+            }
+          },
+          {
+            "path": "blocks/Tabs/Tabs.tsx",
+            "line": 146,
+            "change": {
+              "from": "font-heading text-header-6 md:text-header-5 flex-1",
+              "to": "font-heading text-header-3 md:text-header-X flex-1 (where X matches 40px desktop)"
+            }
+          }
+        ],
+        "verification": "Mobile accordion titles should be approximately 32px, matching the visual weight in Figma node 785:33971"
+      },
+      {
+        "id": "DQA-003",
+        "severity": "major",
+        "category": "spacing",
+        "element": "Desktop tab button inactive height",
+        "breakpoint": "desktop-1440",
+        "figmaValue": "h-[140px] fixed height for inactive tabs (from Figma CSS: h-[140px])",
+        "implementationValue": "PHP uses no fixed height class on inactive buttons; JS toggles h-[140px]. Check: PHP line 41 has no h-[140px] class in the static class list",
+        "difference": "PHP template missing h-[140px] on inactive tab buttons; only JS toggles it",
+        "withinTolerance": false,
+        "observation": "Looking at the PHP template (Tabs.php line 36-55), inactive tab buttons do NOT have the h-[140px] class in their static CSS classes. The JS (Tabs.js line 67) toggles 'h-[140px]' dynamically. However, before JS initializes, all tabs will be auto-height. This means on initial page render before JS runs, inactive tabs may not have the correct 140px height, causing a layout shift. The Figma screenshots show a clear fixed-height for inactive tabs.",
+        "recommendation": "Add h-[140px] to the default PHP class list for inactive tab buttons, and let JS remove it when a tab becomes active. This ensures correct rendering before JS initializes.",
+        "files": [
+          {
+            "path": "blocks/Tabs/Tabs.php",
+            "line": 41,
+            "change": {
+              "from": "tabs-button border-l border-t border-b border-charcoal rounded-l-3xl p-6 flex flex-col gap-6 items-start justify-center w-full text-left transition-colors cursor-pointer",
+              "to": "tabs-button border-l border-t border-b border-charcoal rounded-l-3xl p-6 h-[140px] flex flex-col gap-6 items-start justify-center w-full text-left transition-colors cursor-pointer"
+            }
+          }
+        ],
+        "verification": "Inactive tab buttons should have a fixed 140px height on desktop, matching Figma node 785:34910"
+      },
+      {
+        "id": "DQA-004",
+        "severity": "minor",
+        "category": "border",
+        "element": "Desktop tab button border-radius",
+        "breakpoint": "desktop-1440",
+        "figmaValue": "rounded-bl-[25px] rounded-tl-[25px] (25px left corners only)",
+        "implementationValue": "rounded-l-3xl (Tailwind 3xl = 24px in TW4 default)",
+        "difference": "1px (24px vs 25px)",
+        "withinTolerance": true,
+        "observation": "The left corner radius is 24px (rounded-l-3xl) vs Figma's 25px. This 1px difference is within tolerance and visually imperceptible.",
+        "recommendation": "No action needed. Within semantic tolerance."
+      },
+      {
+        "id": "DQA-005",
+        "severity": "minor",
+        "category": "border",
+        "element": "Content panel border-radius",
+        "breakpoint": "desktop-1440",
+        "figmaValue": "rounded-[25px] (25px all corners)",
+        "implementationValue": "rounded-3xl (24px)",
+        "difference": "1px (24px vs 25px)",
+        "withinTolerance": true,
+        "observation": "Content panel border radius is 24px vs Figma's 25px. Within tolerance.",
+        "recommendation": "No action needed. Within semantic tolerance."
+      },
+      {
+        "id": "DQA-006",
+        "severity": "minor",
+        "category": "typography",
+        "element": "Tab title line-height",
+        "breakpoint": "desktop-1440",
+        "figmaValue": "line-height: 1.1 (on all heading styles in Figma)",
+        "implementationValue": "line-height: 1.2 (from --text-header-X--line-height: 1.2)",
+        "difference": "0.1 line-height unit difference",
+        "withinTolerance": false,
+        "observation": "All heading styles in Figma use line-height 1.1, but the theme's header utilities use 1.2. This affects all header sizes across the block. While individually small, on large text (40px heading) this is a 4px per-line difference which can be noticeable on multi-line titles.",
+        "recommendation": "This appears to be a theme-level decision (all headers use 1.2). Consider whether to adjust globally or accept the minor difference. If the design system deliberately chose 1.2, this is acceptable. If not, update typography.css line-height tokens.",
+        "files": [
+          {
+            "path": "resources/css/screen/typography.css",
+            "line": 17,
+            "change": {
+              "from": "--text-header-5--line-height: 1.2;",
+              "to": "--text-header-5--line-height: 1.1; (if design system should match Figma)"
+            }
+          }
+        ],
+        "verification": "Check if other blocks also rely on the 1.2 line-height. This change would be global."
+      },
+      {
+        "id": "DQA-007",
+        "severity": "note",
+        "category": "color",
+        "element": "Accent color system for tab-specific colors",
+        "breakpoint": "all",
+        "figmaValue": "Active tab bg: #ffd24c (yellow), #47cbf2 (blue), #f26d45 (orange/red). Content panel bg: #ffedb7 (yellow-lighter), #b5eafa (blue-lighter).",
+        "implementationValue": "Uses CSS custom properties: bg-accent (--accent-color), bg-accent-lighter (--accent-color-lighter). Colors vary by accent class on section.",
+        "difference": "Implementation uses dynamic accent color system which is correct approach. Specific hex values match the theme color tokens: yellow=#ffd24c matches --color-yellow, blue=#47cbf2 matches --color-blue, yellow-lighter=#ffedb7 matches --color-yellow-lighter, blue-lighter=#b5eafa matches --color-blue-lighter.",
+        "withinTolerance": true,
+        "observation": "The accent color system correctly maps Figma pillar colors to CSS custom properties. The implementation approach of using bg-accent and bg-accent-lighter is a clean, maintainable solution that matches the Figma annotation: 'Colour will change based on the pillar.' Verified that color values match the tokens in colors.css.",
+        "recommendation": "No action needed. Color system is well-implemented."
+      }
+    ],
+    "passedChecks": [
+      {
+        "check": "Overall layout structure",
+        "breakpoints": ["desktop-1440", "laptop-1024"],
+        "observation": "Two-column layout with tab buttons on left and content panel on right matches Figma design. Tab buttons list and content panel are equal width (flex-1)."
+      },
+      {
+        "check": "Mobile accordion pattern",
+        "breakpoints": ["mobile-375", "tablet-768"],
+        "observation": "On mobile, tabs correctly transform into accordion items with plus/minus toggle icons. Full-width rounded boxes with border and accent background when open."
+      },
+      {
+        "check": "ThemeHeading area",
+        "breakpoints": ["desktop-1440", "mobile-375"],
+        "observation": "Header area with eyebrow, heading, description, and buttons renders correctly in two-column layout on desktop and stacked layout on mobile."
+      },
+      {
+        "check": "Tab button active state styling",
+        "breakpoints": ["desktop-1440"],
+        "observation": "Active tab button correctly shows accent color background, description text below title, and auto height (no fixed 140px constraint). Matches Figma behavior annotation."
+      },
+      {
+        "check": "Content panel styling",
+        "breakpoints": ["desktop-1440"],
+        "observation": "Content panel has correct accent-lighter background, rounded-3xl corners, and p-6 padding. Sub-section structure with headings, learn more links, and dividers is present."
+      },
+      {
+        "check": "Tab button border treatment (desktop)",
+        "breakpoints": ["desktop-1440"],
+        "observation": "Tab buttons correctly have left, top, and bottom borders only (no right border). This creates the visual connection where the active tab button appears to merge with the content panel."
+      },
+      {
+        "check": "Mobile accordion toggle icons",
+        "breakpoints": ["mobile-375"],
+        "observation": "Plus/minus icons are present using CSS border-b technique. Rotation transition works for open/close toggle."
+      },
+      {
+        "check": "Multiple accent color variations",
+        "breakpoints": ["desktop-1440", "mobile-375"],
+        "observation": "Test page shows yellow, blue, and green accent variations. All render with correct accent colors on active tabs and content panels."
+      },
+      {
+        "check": "Many tabs edge case",
+        "breakpoints": ["desktop-1440", "mobile-375"],
+        "observation": "8-tab variation (All Services) renders correctly. Tab buttons stack vertically without overflow issues. Mobile accordion handles many items gracefully."
+      },
+      {
+        "check": "Long content in tab panels",
+        "breakpoints": ["desktop-1440", "mobile-375"],
+        "observation": "Long content variation with detailed text, bold text, and multiple sub-sections renders correctly in both desktop panel and mobile accordion."
+      },
+      {
+        "check": "Responsive breakpoint transition",
+        "breakpoints": ["tablet-768", "laptop-1024"],
+        "observation": "At 768px (md breakpoint), the layout switches from accordion to tab mode as expected. The 1024px view shows the two-column tab layout correctly."
+      },
+      {
+        "check": "Buttons in header area",
+        "breakpoints": ["desktop-1440", "mobile-375"],
+        "observation": "CTA buttons in the header area match Figma. Filled button (charcoal bg, white text, pill shape) and outline button (charcoal border, transparent bg) are correctly implemented via ThemeHeading component."
+      }
+    ],
+    "screenshots": {
+      "implementation": {
+        "desktop-1440": ".taktician-project/reports/blocks/tabs/screenshots/tabs-qa-1440w.png",
+        "laptop-1024": ".taktician-project/reports/blocks/tabs/screenshots/tabs-qa-1024w.png",
+        "tablet-768": ".taktician-project/reports/blocks/tabs/screenshots/tabs-qa-768w.png",
+        "mobile-375": ".taktician-project/reports/blocks/tabs/screenshots/tabs-qa-375w.png"
+      },
+      "figma": {
+        "desktop1-785:34910": "Yellow accent variation with full content, sub-sections, and learn more links",
+        "desktop2-807:58405": "Blue accent variation with bullet list content",
+        "mobile-785:33971": "Mobile accordion with orange/red accent, expanded third tab"
+      }
+    }
+  },
+  "tokensUsed": 35000,
+  "questionsForUser": []
+}

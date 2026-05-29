@@ -1,0 +1,48 @@
+{
+  "blockTypes": [
+    "static",
+    "image"
+  ],
+  "a11yPatterns": [],
+  "excluded": [
+    {
+      "rule": "common.DARK_THEME",
+      "reason": "Block inherits PostHero light-on-gradient pattern; no dark variant specified in spec"
+    },
+    {
+      "rule": "image.GALLERY",
+      "reason": "Single hero image only, not a gallery"
+    },
+    {
+      "rule": "image.LIGHTBOX",
+      "reason": "Hero image is decorative background, no lightbox needed"
+    }
+  ],
+  "extra": [
+    {
+      "id": "CUSTOM-001",
+      "description": "When start and end dates are on the same day, the date should display once with both start and end times (not repeat the date)",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-002",
+      "description": "External URL button should only render when the event has _EventURL meta populated",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-003",
+      "description": "Venue name should only render when the event has a valid _EventVenueID with a venue post that has a title",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-004",
+      "description": "Event date/time formatting should use WordPress i18n date functions (date_i18n) for locale-aware output",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-005",
+      "description": "When event has no featured image, the hero should still render correctly without the masked background image",
+      "severity": "major"
+    }
+  ]
+}

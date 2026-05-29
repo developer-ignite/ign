@@ -1,0 +1,351 @@
+{
+  "agent": "design-structural",
+  "timestamp": "2026-02-09-112337",
+  "status": "complete",
+  "blockName": "Header",
+  "output": {
+    "diagram": "DESKTOP HEADER (default/closed state, 1376px wide)\n============================================================\n\n+------------------------------------------------------------------------------------------+\n| NAV WRAPPER                                                      flex-col, items-center  |\n|  +--------------------------------------------------------------------------------------+|\n|  | NAVIGATION BAR                     bg: #1e1e1c, rounded: 25px, px: 32px, py: 16px    ||\n|  |  +----------+                                                                        ||\n|  |  | LOGO     |    flex, gap: 9.541px, items-end                                       ||\n|  |  | (icon    |    icon: 66.844x57.685px                                               ||\n|  |  |  +text)  |    text: 148.601x57.685px                                              ||\n|  |  +----------+                                                                        ||\n|  |                                                                                      ||\n|  |  +-----------------------------------------------------------------------------------+|\n|  |  | RIGHT COLUMN                           flex-col, gap: 24px, items-end, w: 832.97px||\n|  |  |                                                                                   ||\n|  |  |  ROW 1 (utility bar)                   flex, gap: 16px, items-center, justify-end ||\n|  |  |  +---------------------+  +--+  +------------------------------------+            ||\n|  |  |  | SEARCH INPUT        |  |  |  | STUDENT ENGAGEMENT PLATFORM ->     |            ||\n|  |  |  | w: 250px            |  |__|  | Roboto Medium, 16px/1.16, #fff     |            ||\n|  |  |  | border-bottom: #fff |  line  | uppercase, gap: 8px + arrow icon   |            ||\n|  |  |  | General Sans Medium |  sep   | bg: none (link with external icon) |            ||\n|  |  |  | 14px/1.16, #fff     |       +------------------------------------+            ||\n|  |  |  | uppercase           |                                                          ||\n|  |  |  | icon: 19.2x19.2px   |                                                          ||\n|  |  |  | pb: 4px             |                                                          ||\n|  |  |  +---------------------+                                                          ||\n|  |  |                                                                                   ||\n|  |  |  ROW 2 (main nav)                     flex, gap: 32px, items-start, justify-end   ||\n|  |  |  +-------+ +-------+ +------------------+ +---------+ +-------+ +--------------+  ||\n|  |  |  | ABOUT | | HEALTH| | FINANCIAL        | |ADVOCACY | | SOCIAL| | STUDENT      |  ||\n|  |  |  |   v   | |   v   | | WELLBEING   v    | |    v    | |   v   | | VOICES       |  ||\n|  |  |  +-------+ +-------+ +------------------+ +---------+ +-------+ +--------------+  ||\n|  |  |  ^ General Sans Medium, 16px/1.16, #fff, uppercase                                ||\n|  |  |  ^ items with submenus have chevron (12.595x7.125px)                              ||\n|  |  |  ^ \"Student Voices\" has NO chevron (no submenu)                                   ||\n|  |  +-----------------------------------------------------------------------------------+|\n|  +--------------------------------------------------------------------------------------+|\n+------------------------------------------------------------------------------------------+\n\n\nDESKTOP SUBMENU (About expanded)\n============================================================\n\n  Submenu panel positioned BELOW the nav bar, offset to align with \"About\" nav item\n\n  +------------------------------+\n  | MENU DROPDOWN                |  bg: #1f1f1d, rounded: 12px, p: 24px\n  |  +---------------------------+\n  |  | MENU LIST                 |  flex-col, gap: 16px, w: 128px\n  |  |                           |\n  |  |  MENU ITEM                |  flex, gap: 12px, py: 8px\n  |  |  \"WHO WE ARE\"             |  Roboto Medium, 16px/1.16, #fff, uppercase\n  |  |                           |\n  |  |  MENU ITEM                |\n  |  |  \"OUR IMPACT\"             |\n  |  |                           |\n  |  |  MENU ITEM                |\n  |  |  \"WORK AT IGNITE\"         |\n  |  +---------------------------+\n  +------------------------------+\n\n  Active state: nav item text turns #d4ff45 (neon green), chevron rotates 180deg\n\n\nDESKTOP SUBMENU (Health expanded)\n============================================================\n\n  Same structure as About, but wider items and different position\n\n  +------------------------------+\n  | MENU DROPDOWN                |  bg: #1f1f1d, rounded: 12px, p: 24px\n  |  +---------------------------+\n  |  | MENU LIST                 |  flex-col, gap: 16px, w: 226px\n  |  |                           |\n  |  |  \"HEALTH + DENTAL OVERVIEW\"|\n  |  |  \"UNDERSTAND COVERAGE\"     |\n  |  |  \"OPT INTO PLANS\"          |\n  |  |  \"FILE A CLAIM\"            |\n  |  +---------------------------+\n  +------------------------------+\n\n  Note: Menu width adapts to content (128px for About, 226px for Health)\n  Position: left offset differs per menu (About: ~498px, Health: ~600px from left)\n\n\nMOBILE HEADER (closed state, 354px wide)\n============================================================\n\n+----------------------------------------------------+\n| MOBILE NAV WRAPPER       flex-col, gap: 8px        |\n|                                                     |\n|  +------------------------------------------------+|\n|  | SEP BUTTON (external link)                     ||\n|  | \"STUDENT ENGAGEMENT PLATFORM ->\"               ||\n|  | bg: #1f1f1d, rounded: 119.02px (pill)          ||\n|  | p: 16px, border: 1px solid #1f1f1d             ||\n|  | Roboto Medium, 16px/1.16, #fff, uppercase      ||\n|  | flex-1, justify-center, gap: 11.902px          ||\n|  +------------------------------------------------+|\n|                                                     |\n|  ^ gap: 8px                                        |\n|                                                     |\n|  +------------------------------------------------+|\n|  | NAV BAR (items-end aligned)                    ||\n|  | bg: #1e1e1c, rounded: 25px                     ||\n|  | px: 32px, py: 16px                             ||\n|  |                                                 ||\n|  |  +----------+              +--+                ||\n|  |  | LOGO     |              |==|  (hamburger)   ||\n|  |  | (smaller)|              +--+  27.648x15.36px ||\n|  |  | 99.844x                                      ||\n|  |  | 25.599px |                                   ||\n|  |  +----------+                                   ||\n|  +------------------------------------------------+|\n+----------------------------------------------------+\n\n\nMOBILE HEADER (open/expanded state)\n============================================================\n\n+----------------------------------------------------+\n| MOBILE NAV WRAPPER       flex-col, gap: 8px        |\n|                                                     |\n|  +------------------------------------------------+|\n|  | SEP BUTTON (same as closed)                    ||\n|  | \"STUDENT ENGAGEMENT PLATFORM ->\"               ||\n|  +------------------------------------------------+|\n|                                                     |\n|  +------------------------------------------------+|\n|  | NAV PANEL (expanded)                           ||\n|  | bg: #1e1e1c, rounded: 25px                     ||\n|  | px: 32px, pt: 16px, pb: 32px                   ||\n|  | flex-col, gap: 32px                             ||\n|  |                                                 ||\n|  |  +--------------------------------------------+||\n|  |  | HEADER ROW                flex-col, gap: 16px||\n|  |  |  +----------+          +--+                 ||\n|  |  |  | LOGO     |          |X |  (close icon)   ||\n|  |  |  +----------+          +--+  17.305x17.425px||\n|  |  |  ------------------------------------------ ||\n|  |  |  (divider line, full width)                  ||\n|  |  +--------------------------------------------+||\n|  |                                                 ||\n|  |  +--------------------------------------------+||\n|  |  | MENU ITEMS             flex-col, gap: 32px  ||\n|  |  |                                              ||\n|  |  |  +--ABOUT (expanded)--+ +--chevron(rotated)-+||\n|  |  |  | #d4ff45 (active)   | (rotate-180)        ||\n|  |  |  +-------------------------------------------+|\n|  |  |     +--SUBMENU--------+ pl: 24px, gap: 4px  ||\n|  |  |     |  WHO WE ARE     | py: 8px each item   ||\n|  |  |     |  OUR IMPACT     | Roboto Medium        ||\n|  |  |     |  WORK AT IGNITE | 16px/1.16, #fff      ||\n|  |  |     +-----------------+ uppercase             ||\n|  |  |                                              ||\n|  |  |  +--HEALTH------------+ +--chevron-----------+||\n|  |  |  +--FINANCIAL WELLBEING+ +--chevron-----------+||\n|  |  |  +--ADVOCACY-----------+ +--chevron-----------+||\n|  |  |  +--SOCIAL-------------+ +--chevron-----------+||\n|  |  |  STUDENT VOICES (no chevron)                  ||\n|  |  |  ^ justify-between for label+chevron pairs   ||\n|  |  +--------------------------------------------+||\n|  |                                                 ||\n|  |  +--------------------------------------------+||\n|  |  | SEARCH INPUT (same as desktop)              ||\n|  |  | border-bottom: #fff, full width             ||\n|  |  | icon 19.2px + \"SEARCH\" 14px/1.16            ||\n|  |  | General Sans Medium, #fff, uppercase        ||\n|  |  | pb: 8px (mobile) vs pb: 4px (desktop)       ||\n|  |  +--------------------------------------------+||\n|  |                                                 ||\n|  |  +--------------------------------------------+||\n|  |  | FOOTER SECTION         flex-col, gap: 16px  ||\n|  |  | \"Have an idea for a service or way we can   ||\n|  |  |  better serve you?\"                         ||\n|  |  | Roboto Medium, 16px/1.5, #fff               ||\n|  |  |                                              ||\n|  |  | +-------------+                              ||\n|  |  | | CONTACT US  |  bg: #fff, rounded: 119.02px ||\n|  |  | | p: 16px     |  Roboto Medium, 16px/1.16    ||\n|  |  | | #1f1f1d text|  uppercase                    ||\n|  |  | +-------------+                              ||\n|  |  +--------------------------------------------+||\n|  +------------------------------------------------+|\n+----------------------------------------------------+",
+
+    "measurements": [
+      { "element": "Desktop Navigation bar", "property": "background", "value": "#1e1e1c" },
+      { "element": "Desktop Navigation bar", "property": "border-radius", "value": "25px" },
+      { "element": "Desktop Navigation bar", "property": "padding-x", "value": "32px" },
+      { "element": "Desktop Navigation bar", "property": "padding-y", "value": "16px" },
+      { "element": "Desktop Navigation bar", "property": "width", "value": "1376px (full-width of container)" },
+      { "element": "Desktop Navigation bar", "property": "layout", "value": "flex, justify-between, items-center" },
+
+      { "element": "Logo (desktop)", "property": "icon-size", "value": "66.844x57.685px" },
+      { "element": "Logo (desktop)", "property": "text-size", "value": "148.601x57.685px" },
+      { "element": "Logo (desktop)", "property": "gap", "value": "9.541px" },
+      { "element": "Logo (desktop)", "property": "alignment", "value": "items-end" },
+
+      { "element": "Logo (mobile)", "property": "total-size", "value": "99.844x25.599px" },
+      { "element": "Logo (mobile)", "property": "icon-size", "value": "29.664x25.599px" },
+
+      { "element": "Right column (desktop)", "property": "width", "value": "832.974px" },
+      { "element": "Right column (desktop)", "property": "gap (between rows)", "value": "24px" },
+      { "element": "Right column (desktop)", "property": "alignment", "value": "items-end" },
+
+      { "element": "Utility row (desktop)", "property": "gap", "value": "16px" },
+      { "element": "Utility row (desktop)", "property": "alignment", "value": "items-center, justify-end" },
+
+      { "element": "Search input (desktop)", "property": "width", "value": "250px" },
+      { "element": "Search input (desktop)", "property": "border-bottom", "value": "1px solid #ffffff" },
+      { "element": "Search input (desktop)", "property": "padding-bottom", "value": "4px" },
+      { "element": "Search input (desktop)", "property": "icon-size", "value": "19.2x19.2px" },
+      { "element": "Search input (desktop)", "property": "gap (icon to text)", "value": "8px" },
+      { "element": "Search input (desktop)", "property": "font", "value": "General Sans Medium, 14px/1.16, #ffffff, uppercase" },
+
+      { "element": "Search input (mobile open)", "property": "width", "value": "full width" },
+      { "element": "Search input (mobile open)", "property": "padding-bottom", "value": "8px" },
+
+      { "element": "Vertical separator (desktop)", "property": "type", "value": "1px vertical line, #ffffff (rotated 90deg)" },
+
+      { "element": "SEP link (desktop)", "property": "font", "value": "Roboto Medium, 16px/1.16, #ffffff, uppercase" },
+      { "element": "SEP link (desktop)", "property": "gap (text to icon)", "value": "8px" },
+      { "element": "SEP link (desktop)", "property": "arrow-icon-size", "value": "12.264x12.264px" },
+
+      { "element": "Nav items row (desktop)", "property": "gap", "value": "32px" },
+      { "element": "Nav items row (desktop)", "property": "alignment", "value": "items-start, justify-end" },
+
+      { "element": "Nav item (desktop)", "property": "font", "value": "General Sans Medium, 16px/1.16, #ffffff, uppercase" },
+      { "element": "Nav item (desktop)", "property": "gap (text to chevron)", "value": "8px" },
+      { "element": "Nav item (desktop)", "property": "chevron-size", "value": "12.595x7.125px" },
+
+      { "element": "Nav item active (desktop)", "property": "color", "value": "#d4ff45 (neon green)" },
+      { "element": "Nav item active (desktop)", "property": "chevron-rotation", "value": "180deg (points up)" },
+
+      { "element": "Submenu dropdown (desktop)", "property": "background", "value": "#1f1f1d" },
+      { "element": "Submenu dropdown (desktop)", "property": "border-radius", "value": "12px" },
+      { "element": "Submenu dropdown (desktop)", "property": "padding", "value": "24px" },
+      { "element": "Submenu dropdown (desktop)", "property": "position", "value": "absolute, below nav bar" },
+
+      { "element": "Submenu list (desktop)", "property": "gap", "value": "16px" },
+      { "element": "Submenu item (desktop)", "property": "font", "value": "Roboto Medium, 16px/1.16, #ffffff, uppercase" },
+      { "element": "Submenu item (desktop)", "property": "padding-y", "value": "8px" },
+      { "element": "Submenu item (desktop)", "property": "gap (internal)", "value": "12px" },
+
+      { "element": "Submenu (About menu)", "property": "width", "value": "128px (content width)" },
+      { "element": "Submenu (Health menu)", "property": "width", "value": "226px (content width)" },
+
+      { "element": "Mobile SEP button", "property": "background", "value": "#1f1f1d" },
+      { "element": "Mobile SEP button", "property": "border", "value": "1px solid #1f1f1d" },
+      { "element": "Mobile SEP button", "property": "border-radius", "value": "119.02px (pill)" },
+      { "element": "Mobile SEP button", "property": "padding", "value": "16px" },
+      { "element": "Mobile SEP button", "property": "font", "value": "Roboto Medium, 16px/1.16, #ffffff, uppercase" },
+      { "element": "Mobile SEP button", "property": "gap (text to arrow)", "value": "11.902px" },
+      { "element": "Mobile SEP button", "property": "layout", "value": "flex-1, justify-center" },
+
+      { "element": "Mobile nav wrapper", "property": "gap (SEP to nav)", "value": "8px" },
+
+      { "element": "Mobile nav bar (closed)", "property": "background", "value": "#1e1e1c" },
+      { "element": "Mobile nav bar (closed)", "property": "border-radius", "value": "25px" },
+      { "element": "Mobile nav bar (closed)", "property": "padding-x", "value": "32px" },
+      { "element": "Mobile nav bar (closed)", "property": "padding-y", "value": "16px" },
+      { "element": "Mobile nav bar (closed)", "property": "layout", "value": "flex, justify-between, items-center" },
+
+      { "element": "Hamburger icon", "property": "size", "value": "27.648x15.36px" },
+      { "element": "Close icon", "property": "size", "value": "17.305x17.425px" },
+
+      { "element": "Mobile nav panel (open)", "property": "background", "value": "#1e1e1c" },
+      { "element": "Mobile nav panel (open)", "property": "border-radius", "value": "25px" },
+      { "element": "Mobile nav panel (open)", "property": "padding-x", "value": "32px" },
+      { "element": "Mobile nav panel (open)", "property": "padding-top", "value": "16px" },
+      { "element": "Mobile nav panel (open)", "property": "padding-bottom", "value": "32px" },
+      { "element": "Mobile nav panel (open)", "property": "gap (between sections)", "value": "32px" },
+
+      { "element": "Mobile header row", "property": "gap (logo to divider)", "value": "16px" },
+      { "element": "Mobile divider line", "property": "type", "value": "horizontal line, full width" },
+
+      { "element": "Mobile menu items", "property": "gap (between items)", "value": "32px" },
+      { "element": "Mobile menu items", "property": "layout", "value": "flex-col, items-start, full-width" },
+      { "element": "Mobile menu item", "property": "layout", "value": "flex, justify-between, items-center, full-width" },
+
+      { "element": "Mobile submenu list", "property": "padding-left", "value": "24px" },
+      { "element": "Mobile submenu list", "property": "gap (between items)", "value": "4px" },
+      { "element": "Mobile submenu item", "property": "padding-y", "value": "8px" },
+
+      { "element": "Mobile footer section", "property": "gap", "value": "16px" },
+      { "element": "Mobile footer text", "property": "font", "value": "Roboto Medium, 16px/1.5, #ffffff" },
+      { "element": "Mobile CTA button", "property": "background", "value": "#ffffff" },
+      { "element": "Mobile CTA button", "property": "border", "value": "1px solid #ffffff" },
+      { "element": "Mobile CTA button", "property": "border-radius", "value": "119.02px (pill)" },
+      { "element": "Mobile CTA button", "property": "padding", "value": "16px" },
+      { "element": "Mobile CTA button", "property": "font", "value": "Roboto Medium, 16px/1.16, #1f1f1d, uppercase" }
+    ],
+
+    "structure": {
+      "description": "The header is a complex multi-state navigation component with desktop and mobile variants. On desktop it's a single rounded bar with logo, utility row, and nav items. On mobile it's two separate elements: a pill-shaped external link button and a rounded nav bar that expands into a full menu panel.",
+      "root": "header",
+      "children": [
+        {
+          "name": "SEP Button (external link)",
+          "notes": "Visible on mobile only as a separate pill-shaped button above the nav bar. On desktop, this is a text link in the utility row inside the nav bar. Same content, different presentation.",
+          "possiblyOptional": true,
+          "element": "a (external link)"
+        },
+        {
+          "name": "Navigation Bar",
+          "element": "nav",
+          "children": [
+            {
+              "name": "Logo",
+              "notes": "SVG icon + text wordmark. Larger on desktop (57.685px tall), smaller on mobile (25.599px tall). Items aligned to bottom (items-end).",
+              "element": "a (home link)"
+            },
+            {
+              "name": "Desktop Right Column",
+              "notes": "Only visible on desktop. Contains utility row and main nav in a column layout with 24px gap.",
+              "children": [
+                {
+                  "name": "Utility Row",
+                  "notes": "Contains search input, vertical separator line, and SEP external link. Aligned right.",
+                  "children": [
+                    {
+                      "name": "Search Input",
+                      "notes": "250px wide on desktop, full-width on mobile. Border-bottom only. Search icon + placeholder text."
+                    },
+                    {
+                      "name": "Vertical Separator",
+                      "notes": "Thin vertical line between search and SEP link. Desktop only."
+                    },
+                    {
+                      "name": "SEP Link",
+                      "notes": "Text + external arrow icon. On desktop it's inline text; on mobile it's a pill button above the nav bar."
+                    }
+                  ]
+                },
+                {
+                  "name": "Nav Items Row",
+                  "notes": "Horizontal list of nav items with 32px gap. Right-aligned.",
+                  "children": [
+                    {
+                      "name": "Nav Item (with submenu)",
+                      "notes": "Repeated pattern: label text + chevron icon. Some items have submenus, some don't. Items with submenus: About, Health, Financial Wellbeing, Advocacy, Social. Without: Student Voices.",
+                      "innerBlock": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Hamburger/Close Toggle",
+              "notes": "Mobile only. Hamburger (3 lines) when closed, X when open."
+            },
+            {
+              "name": "Mobile Menu Panel",
+              "notes": "Visible only when mobile nav is open. Contains all nav items as vertical accordion, search, and footer CTA.",
+              "children": [
+                {
+                  "name": "Divider Line",
+                  "notes": "Horizontal separator below logo+close row."
+                },
+                {
+                  "name": "Mobile Nav Items (vertical)",
+                  "notes": "Full-width items stacked vertically with 32px gap. Each has label + chevron spread with justify-between. Clicking expands submenu inline with accordion behavior.",
+                  "children": [
+                    {
+                      "name": "Mobile Nav Item",
+                      "notes": "Same items as desktop but full-width with justify-between layout."
+                    },
+                    {
+                      "name": "Mobile Submenu (expanded)",
+                      "notes": "Shown inline below parent item with 24px left padding. Items have 4px gap between them. Active parent turns #d4ff45."
+                    }
+                  ]
+                },
+                {
+                  "name": "Search Input",
+                  "notes": "Same as desktop but full-width, with pb: 8px instead of 4px."
+                },
+                {
+                  "name": "Footer CTA",
+                  "notes": "Descriptive text + Contact Us pill button. Only visible in mobile menu.",
+                  "possiblyOptional": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    "possiblyOptional": [
+      {
+        "element": "SEP Button (Student Engagement Platform external link)",
+        "reason": "This is a separate external link that may not apply to all deployments of this header",
+        "visualEvidence": "Present in all design states but serves as an external CTA, not core navigation"
+      },
+      {
+        "element": "Mobile footer CTA section (text + Contact Us button)",
+        "reason": "Supplementary call-to-action in mobile menu, not part of core navigation",
+        "visualEvidence": "Only appears in mobile open state, contains separate CTA content"
+      },
+      {
+        "element": "Search input",
+        "reason": "Search functionality may not be present on all sites using this header",
+        "visualEvidence": "Present in both desktop and mobile but is a utility feature"
+      },
+      {
+        "element": "Vertical separator line (desktop utility row)",
+        "reason": "Decorative element between search and SEP link",
+        "visualEvidence": "Only visible when both search and SEP link are present"
+      }
+    ],
+
+    "innerBlocks": [
+      {
+        "name": "Nav Menu Item (with optional submenu)",
+        "suggestedSlug": "NOT an inner block - use WordPress menu system",
+        "reason": "Nav items come from WordPress menu registration, not Gutenberg inner blocks. The repeated pattern (label + optional chevron + optional submenu dropdown) represents a standard WordPress menu item with children. Should use wp_nav_menu() or similar, not inner blocks."
+      }
+    ],
+
+    "layoutRecommendations": {
+      "overallApproach": "Single HTML structure with responsive CSS (no duplicate HTML). Use CSS to show/hide desktop vs mobile elements.",
+      "desktopLayout": {
+        "navBar": "Flexbox with justify-between. Logo on left, right column on right.",
+        "rightColumn": "Flex column with 24px gap. Utility row on top, nav items row on bottom.",
+        "navItems": "Flex row with 32px gap, right-aligned.",
+        "submenuDropdown": "CSS position: absolute, positioned below the parent nav item. Use anchor positioning or position-try for viewport overflow prevention as specified. The dropdown panel has its own bg, border-radius, and padding."
+      },
+      "mobileLayout": {
+        "wrapper": "Flex column with 8px gap for SEP button + nav bar.",
+        "closedState": "Simple bar with logo + hamburger.",
+        "openState": "Expanded panel replaces the simple bar. Flex column with 32px gap between major sections (header, menu items, search, footer CTA).",
+        "accordion": "Menu items expand inline as accordions. Active item text turns neon green, chevron rotates 180deg. Submenu indented 24px left."
+      },
+      "responsiveStrategy": {
+        "breakpoint": "Desktop shows horizontal nav bar with dropdown submenus. Mobile shows hamburger that expands to full menu panel. Single breakpoint transition (likely around 1024px or when nav items overflow).",
+        "cssApproach": "Use CSS display/visibility to toggle between desktop and mobile views. Do NOT duplicate HTML elements.",
+        "submenuBehavior": {
+          "desktop": "Floating dropdown panel positioned absolutely below the nav bar, aligned to parent item. Backend option for left/right alignment with CSS position-try for viewport overflow prevention.",
+          "mobile": "Inline accordion expansion below parent item with left padding indentation."
+        }
+      },
+      "states": {
+        "desktopDefault": "All nav items white, chevrons pointing down",
+        "desktopSubmenuOpen": "Active item text: #d4ff45, chevron rotated 180deg, dropdown visible below nav bar",
+        "mobileClosed": "SEP button + nav bar with logo and hamburger",
+        "mobileOpen": "SEP button + expanded panel with close icon, divider, accordion menu, search, footer CTA"
+      },
+      "notes": [
+        "The SEP (Student Engagement Platform) link appears differently on desktop (text link in utility row) vs mobile (pill button above nav bar). Same element, different CSS presentation.",
+        "Logo has two sizes: desktop (~57px tall) and mobile (~26px tall). Consider using a responsive SVG or CSS size control.",
+        "Submenu dropdown width varies per menu content (128px for About, 226px for Health). Should use auto/min-width.",
+        "The nav bar uses rounded-[25px] consistently across all states and breakpoints.",
+        "Desktop submenu and mobile nav panel both use #1f1f1d background (slightly different from nav bar's #1e1e1c).",
+        "Mobile accordion submenu items have 4px gap between them, while desktop dropdown items have 16px gap.",
+        "Search input has different bottom padding: 4px on desktop, 8px on mobile."
+      ]
+    },
+
+    "breakpointsAnalyzed": ["desktop (1376px)", "mobile (354px)"],
+
+    "fonts": {
+      "navItems": {
+        "family": "General Sans",
+        "weight": "Medium",
+        "size": "16px",
+        "lineHeight": "1.16",
+        "transform": "uppercase",
+        "usage": "Main nav item labels (About, Health, etc.)"
+      },
+      "searchPlaceholder": {
+        "family": "General Sans",
+        "weight": "Medium",
+        "size": "14px",
+        "lineHeight": "1.16",
+        "transform": "uppercase",
+        "usage": "Search input placeholder text"
+      },
+      "submenuItems": {
+        "family": "Roboto",
+        "weight": "Medium (500)",
+        "size": "16px",
+        "lineHeight": "1.16",
+        "transform": "uppercase",
+        "usage": "Submenu dropdown items, SEP link text"
+      },
+      "mobileFooterText": {
+        "family": "Roboto",
+        "weight": "Medium (500)",
+        "size": "16px",
+        "lineHeight": "1.5",
+        "transform": "none (sentence case)",
+        "usage": "Mobile footer descriptive text"
+      },
+      "buttonText": {
+        "family": "Roboto",
+        "weight": "Medium (500)",
+        "size": "16px",
+        "lineHeight": "1.16",
+        "transform": "uppercase",
+        "usage": "Button labels (Contact Us, SEP button)"
+      }
+    },
+
+    "colors": {
+      "navBarBg": "#1e1e1c",
+      "submenuBg": "#1f1f1d",
+      "sepButtonBg": "#1f1f1d",
+      "textDefault": "#ffffff",
+      "textActive": "#d4ff45",
+      "ctaButtonBg": "#ffffff",
+      "ctaButtonText": "#1f1f1d",
+      "searchBorder": "#ffffff",
+      "sepButtonBorder": "#1f1f1d"
+    },
+
+    "iconography": {
+      "chevronDown": "12.595x7.125px, white, points down by default",
+      "chevronUp": "Same icon rotated 180deg, used for active/expanded state",
+      "searchIcon": "19.2x19.2px",
+      "externalArrow": "12.264x12.264px, diagonal arrow for external links",
+      "hamburger": "27.648x15.36px, 3 horizontal lines",
+      "closeX": "17.305x17.425px, X shape for closing mobile menu"
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

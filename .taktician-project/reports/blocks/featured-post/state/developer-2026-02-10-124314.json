@@ -1,0 +1,46 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-10-124314",
+  "status": "complete",
+  "blockName": "FeaturedPost",
+  "output": {
+    "mode": "build",
+    "filesCreated": [
+      { "path": "blocks/FeaturedPost/block.json", "purpose": "Block metadata with attributes: selectedPost, isReversed, reverseRows, darkMode, buttonLabel, headingSize, eyebrow" },
+      { "path": "blocks/FeaturedPost/index.tsx", "purpose": "Block registration with icon" },
+      { "path": "blocks/FeaturedPost/FeaturedPost.tsx", "purpose": "Editor component with PostSelectorSortable, useSelect for post data, toolbar controls, AdvancedRichText for eyebrow and button label" },
+      { "path": "blocks/FeaturedPost/FeaturedPost.php", "purpose": "Frontend PHP template with dynamic post data fetching, early return on missing/unpublished posts" },
+      { "path": "blocks/FeaturedPost/FeaturedPost.svg", "purpose": "24x24 block icon showing two-column layout with topic tag pill, heading, text, button, and image" }
+    ],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": ["Asset size warnings (editor.js 314 KiB, screen.js 342 KiB) - pre-existing, not related to this block"]
+    },
+    "syncStatus": {
+      "verified": true,
+      "details": "TSX and PHP structures match: section wrapper, container grid, content column with conditional col-start classes, topic tag row with pill and eyebrow, heading with dynamic tag, excerpt, button, media column with conditional order/col-start classes, image wrapper with conditional rounded corners"
+    },
+    "testPage": {
+      "created": true,
+      "url": "https://ign.localhost/test-featured-post/",
+      "pageId": 135,
+      "verifiedBlockCount": 8,
+      "variations": [
+        "Default (media left, post 122)",
+        "Reversed columns (media right, post 122, custom button label)",
+        "Dark mode (media left, post 121)",
+        "Dark mode reversed (media right, post 120, custom button label)",
+        "Custom long button label (post 119)",
+        "Small heading size H3 (post 122)",
+        "With eyebrow text (post 121)",
+        "Reverse rows (post 120)"
+      ]
+    },
+    "blockers": [],
+    "fixesApplied": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

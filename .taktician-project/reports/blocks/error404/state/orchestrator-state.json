@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "mode": "build",
+  "blockName": "Error404",
+  "blockNameKebab": "error404",
+  "blockPath": "blocks/Error404",
+  "reportDir": ".taktician-project/reports/blocks/error404",
+  "stateDir": ".taktician-project/reports/blocks/error404/state",
+  "phase": "review",
+  "status": "complete",
+  "revisionCycle": 1,
+  "maxRevisionCycles": 3,
+  "testPage": {
+    "url": "https://ign.localhost/test-error404/",
+    "pageId": 210,
+    "verifiedBlockCount": 6
+  },
+  "figma": {
+    "url": null,
+    "nodeId": null,
+    "availability": {
+      "desktop": "none",
+      "mobile": "none"
+    }
+  },
+  "guidance": {
+    "qualityExpectations": "relaxed",
+    "blockType": "error-404",
+    "figmaAvailability": {
+      "desktop": "none",
+      "mobile": "none"
+    }
+  },
+  "agentOutputs": [
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-17-111627",
+      "file": ".taktician-project/reports/blocks/error404/state/planning-2026-02-17-111627.json",
+      "status": "complete",
+      "summary": "Planning spec with 6 test variations. Adapted tokens: text-header-0, text-accent, mt-(--header-height), font-bold removed."
+    },
+    {
+      "agent": "developer",
+      "timestamp": "2026-02-17-113605",
+      "file": ".taktician-project/reports/blocks/error404/state/developer-2026-02-17-113605.json",
+      "status": "complete",
+      "summary": "All 5 block files created. Build passes. Test page created with 6 verified block instances."
+    },
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-17-113746",
+      "file": ".taktician-project/reports/blocks/error404/state/functional-qa-2026-02-17-113746.json",
+      "status": "PASS",
+      "summary": "11/11 checks passed. 1 note (placeholder URLs on test page). No issues requiring fixes."
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-17-114500",
+      "file": ".taktician-project/reports/blocks/error404/error404-report.md",
+      "status": "complete",
+      "summary": "Report generated with all sections. 11/11 QA checks passed, 5 design decisions documented."
+    },
+    {
+      "agent": "developer-fix",
+      "timestamp": "2026-02-17-115005",
+      "file": ".taktician-project/reports/blocks/error404/state/developer-fix-2026-02-17-115005.json",
+      "status": "complete",
+      "summary": "Removed text-accent from h1 in both TSX and PHP. Build passes."
+    },
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-17-115052",
+      "file": ".taktician-project/reports/blocks/error404/state/functional-qa-2026-02-17-115052.json",
+      "status": "PASS",
+      "summary": "Re-QA after fix: text-accent removed, sync intact, build clean."
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-17-115130",
+      "file": ".taktician-project/reports/blocks/error404/error404-report.md",
+      "status": "complete",
+      "summary": "Report updated: removed DEC-002 (accent color), added changelog entry for revision."
+    }
+  ],
+  "agentSessions": {
+    "planning": "acc7a93",
+    "developer": "a552c85",
+    "functionalQa": "ab113fd",
+    "report": "a7ad480"
+  },
+  "latestOutputs": {
+    "planning": ".taktician-project/reports/blocks/error404/state/planning-2026-02-17-111627.json",
+    "developer": ".taktician-project/reports/blocks/error404/state/developer-fix-2026-02-17-115005.json",
+    "functionalQa": ".taktician-project/reports/blocks/error404/state/functional-qa-2026-02-17-115052.json",
+    "designQa": null
+  },
+  "screenshots": {
+    "qaScreenshots": null,
+    "finalScreenshots": ".taktician-project/reports/blocks/error404/screenshots/2026-02-17-115128"
+  },
+  "unresolvedIssues": [],
+  "timestamps": {
+    "started": "2026-02-17-111538",
+    "lastUpdated": "2026-02-17T19:52:38.265Z"
+  },
+  "changeRequest": "Remove the accent color (text-accent) from the heading/title in both TSX and PHP."
+}

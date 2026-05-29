@@ -1,0 +1,1325 @@
+/* ==========================================================================
+   The Events Calendar — Theme Overrides
+
+   Remaps TEC's CSS custom properties and component styles to match
+   the theme's design system (General Sans, charcoal/neon-green palette,
+   pill buttons, off-white background).
+
+   Scoped to `.tribe-events` (archive views) and `.tec-block__single-event`
+   (single event) so overrides apply across all TEC pages.
+
+   TEC selectors use `.tribe-common .tribe-common-c-btn-border` and
+   `.tribe-events .tribe-events-c-*` (two+ class specificity), so
+   overrides must match or exceed that.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Custom Property Overrides
+   Set on both wrapper classes so derived vars like --tec-color-button-primary
+   resolve correctly within TEC's cascade.
+   -------------------------------------------------------------------------- */
+
+.tribe-events,
+.tec-block__single-event,
+.tribe-events .tribe-common,
+.tec-block__single-event .tribe-common {
+	/* Typography */
+	--tec-font-family-sans-serif: var(--font-sans);
+
+	/* Colors — primary */
+	--tec-color-text-primary: var(--color-charcoal);
+	--tec-color-text-secondary: var(--color-charcoal);
+	--tec-color-accent-primary: var(--color-charcoal);
+	--tec-color-accent-primary-hover: color-mix(in srgb, var(--color-charcoal) 80%, transparent);
+	--tec-color-accent-primary-active: color-mix(in srgb, var(--color-charcoal) 90%, transparent);
+	--tec-color-accent-primary-background: color-mix(in srgb, var(--color-charcoal) 7%, transparent);
+	--tec-color-accent-secondary: var(--color-charcoal);
+
+	/* Colors — buttons */
+	--tec-color-button-primary: var(--color-charcoal);
+	--tec-color-button-primary-hover: color-mix(in srgb, var(--color-charcoal) 85%, transparent);
+	--tec-color-button-primary-active: color-mix(in srgb, var(--color-charcoal) 90%, transparent);
+	--tec-color-button-secondary: var(--color-charcoal);
+
+	/* Colors — links */
+	--tec-color-link-accent: var(--color-charcoal);
+	--tec-color-link-accent-hover: color-mix(in srgb, var(--color-charcoal) 80%, transparent);
+	--tec-color-link-primary: var(--color-charcoal);
+
+	/* Colors — backgrounds */
+	--tec-color-background: var(--color-off-white);
+	--tec-color-background-secondary: color-mix(in srgb, var(--color-charcoal) 5%, transparent);
+	--tec-color-background-subscribe-list-item-hover: color-mix(
+		in srgb,
+		var(--color-charcoal) 5%,
+		transparent
+	);
+
+	/* Border radius — override TEC default (4px) to pill */
+	--tec-border-radius-default: 9999px;
+
+	/* Colors — borders */
+	--tec-color-border-default: color-mix(in srgb, var(--color-charcoal) 20%, transparent);
+	--tec-color-border-secondary: color-mix(in srgb, var(--color-charcoal) 12%, transparent);
+	--tec-color-border-active: var(--color-charcoal);
+
+	/* Colors — events bar background: transparent so bar lives on page bg */
+	--tec-color-background-events-bar: transparent;
+
+	/* Colors — search bar submit button */
+	--tec-color-background-events-bar-submit-button: var(--color-charcoal);
+	--tec-color-background-events-bar-submit-button-hover: color-mix(
+		in srgb,
+		var(--color-charcoal) 85%,
+		transparent
+	);
+	--tec-color-background-events-bar-submit-button-active: color-mix(
+		in srgb,
+		var(--color-charcoal) 90%,
+		transparent
+	);
+	--tec-color-text-events-bar-submit-button: var(--color-off-white);
+	--tec-color-text-events-bar-submit-button-hover: var(--color-off-white);
+	--tec-color-text-events-bar-submit-button-active: var(--color-off-white);
+}
+
+/* --------------------------------------------------------------------------
+   1b. Container Width Override
+   TEC's `.tribe-common-l-container.tribe-events-l-container` uses its own
+   max-width and padding. Override to match the theme's container system
+   (--max-container / --largest-width / --side-gutter from spacing.css).
+   Zero out TEC's internal padding so it doesn't double up with the theme
+   gutters already baked into --max-container.
+   -------------------------------------------------------------------------- */
+
+.tribe-common-l-container.tribe-events-l-container {
+	max-width: var(--largest-width) !important;
+	width: var(--max-container) !important;
+	margin-inline: auto !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+	/* TEC ships padding-bottom: 160px on every list/grid container, which
+	   stacks onto the next block's own top padding (typically 64px) and
+	   produces an oversized gap below the events list. Bring it down to
+	   the theme's standard section padding so the seam matches the rest
+	   of the site's vertical rhythm. */
+	padding-bottom: 4rem !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. Subscribe / Add to Calendar Button (btn-secondary style)
+   Outline pill with gradient fill animation on hover.
+   -------------------------------------------------------------------------- */
+
+/* Compound `.tribe-common.tribe-events` — both classes live on the SAME wrapper
+   element, not on separate ancestors. Using a compound selector matches correctly
+   and provides 3-class specificity to beat TEC's 2-class selectors.
+   !important on background properties because TEC injects CSS in <body> AFTER our
+   <head> stylesheet and its `background` shorthand resets all sub-properties. */
+.tribe-common.tribe-events .tribe-common-c-btn-border,
+.tec-block__single-event .tribe-common-c-btn-border {
+	border: 1px solid var(--color-charcoal);
+	border-radius: 9999px;
+	padding: 1rem 1.4375rem;
+	color: var(--color-charcoal);
+	font-family: var(--font-sans);
+	font-weight: 500;
+	font-size: var(--text-body-small);
+	text-transform: uppercase;
+	letter-spacing: var(--tracking-wider);
+	line-height: 1.125;
+	overflow: hidden !important;
+	--btn-gradient-opacity: 0;
+	background: linear-gradient(
+			90deg,
+			rgba(212, 255, 69, var(--btn-gradient-opacity)) 0%,
+			rgba(71, 203, 242, var(--btn-gradient-opacity)) 70%
+		)
+		!important;
+	background-size: 200% 100% !important;
+	background-position: 100% 0 !important;
+	transition:
+		--btn-gradient-opacity 0.3s ease,
+		background-position 0.3s ease,
+		border-color 0.3s ease,
+		color 0.3s ease;
+}
+
+.tribe-common.tribe-events .tribe-common-c-btn-border:hover,
+.tribe-common.tribe-events .tribe-common-c-btn-border:focus-visible,
+.tec-block__single-event .tribe-common-c-btn-border:hover,
+.tec-block__single-event .tribe-common-c-btn-border:focus-visible {
+	border-color: var(--color-charcoal);
+	color: var(--color-charcoal) !important;
+	/* Re-declare the full gradient on hover so TEC's body-injected
+	   `background:` shorthand can't reset our background-image */
+	background: linear-gradient(
+			90deg,
+			rgba(212, 255, 69, var(--btn-gradient-opacity)) 0%,
+			rgba(71, 203, 242, var(--btn-gradient-opacity)) 70%
+		)
+		!important;
+	background-size: 200% 100% !important;
+	background-position: 100% 0 !important;
+	animation: btn-gradient-sweep-secondary 1s ease forwards;
+}
+
+.tribe-common.tribe-events .tribe-common-c-btn-border:focus,
+.tec-block__single-event .tribe-common-c-btn-border:focus {
+	border-color: var(--color-charcoal);
+	color: var(--color-charcoal);
+}
+
+.tribe-events .tribe-events-c-subscribe-dropdown__button-text,
+.tec-block__single-event .tribe-events-c-subscribe-dropdown__button-text {
+	color: inherit;
+}
+
+.tribe-events .tribe-events-c-subscribe-dropdown__export-icon,
+.tribe-events .tribe-events-c-subscribe-dropdown__button-icon,
+.tec-block__single-event .tribe-events-c-subscribe-dropdown__export-icon,
+.tec-block__single-event .tribe-events-c-subscribe-dropdown__button-icon {
+	fill: currentColor;
+	stroke: currentColor;
+}
+
+/* Subscribe button hover — override TEC's high-specificity hover fill.
+   TEC's body-injected `.tribe-common .tribe-common-c-btn-border:hover` uses the
+   `background` shorthand (sets background-color + resets background-image).
+   We need !important to keep the gradient visible during the sweep animation. */
+.tribe-events .tribe-events-c-subscribe-dropdown .tribe-events-c-subscribe-dropdown__button:hover,
+.tribe-events .tribe-events-c-subscribe-dropdown .tribe-events-c-subscribe-dropdown__button:focus,
+.tribe-events
+	.tribe-events-c-subscribe-dropdown
+	.tribe-events-c-subscribe-dropdown__button:focus-within,
+.single-tribe_events
+	.tribe-events-c-subscribe-dropdown
+	.tribe-events-c-subscribe-dropdown__button:hover,
+.single-tribe_events
+	.tribe-events-c-subscribe-dropdown
+	.tribe-events-c-subscribe-dropdown__button:focus,
+.single-tribe_events
+	.tribe-events-c-subscribe-dropdown
+	.tribe-events-c-subscribe-dropdown__button:focus-within {
+	background: linear-gradient(
+			90deg,
+			rgba(212, 255, 69, var(--btn-gradient-opacity)) 0%,
+			rgba(71, 203, 242, var(--btn-gradient-opacity)) 70%
+		)
+		!important;
+	background-size: 200% 100% !important;
+	background-position: 100% 0 !important;
+	color: var(--color-charcoal) !important;
+}
+
+/* Subscribe button text — prevent focus outline and selection appearance.
+   The inner <button> gets focus when clicked; remove its outline so only
+   the outer pill border is visible. */
+.tribe-events .tribe-events-c-subscribe-dropdown .tribe-events-c-subscribe-dropdown__button-text,
+.tec-block__single-event
+	.tribe-events-c-subscribe-dropdown
+	.tribe-events-c-subscribe-dropdown__button-text {
+	-webkit-user-select: none;
+	user-select: none;
+	-webkit-appearance: none;
+	appearance: none;
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+/* Dropdown content panel — charcoal background matching header submenus */
+.tribe-events .tribe-events-c-subscribe-dropdown .tribe-events-c-subscribe-dropdown__content,
+.single-tribe_events
+	.tribe-events-c-subscribe-dropdown
+	.tribe-events-c-subscribe-dropdown__content {
+	border-radius: 0.75rem;
+	background-color: var(--color-charcoal) !important;
+	border: none !important;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+	min-width: 100%;
+}
+
+/* Dropdown list — rounded corners (not pill) with vertical padding to prevent clipping.
+   !important needed because --tec-border-radius-default: 9999px is applied via TEC's
+   late-loading selector. Charcoal bg to match the content panel. */
+.tribe-events .tribe-events-c-subscribe-dropdown .tribe-events-c-subscribe-dropdown__list,
+.single-tribe_events .tribe-events-c-subscribe-dropdown .tribe-events-c-subscribe-dropdown__list {
+	border-radius: 0.75rem !important;
+	overflow: visible;
+	padding: 1rem 0;
+	background-color: var(--color-charcoal) !important;
+	border: none !important;
+}
+
+/* Dropdown link — block-level with proper padding and hover transition.
+   White text on charcoal, neon-green on hover — matching header submenu links. */
+.tribe-events .tribe-events-c-subscribe-dropdown .tribe-events-c-subscribe-dropdown__list-item-link,
+.tec-block__single-event
+	.tribe-events-c-subscribe-dropdown
+	.tribe-events-c-subscribe-dropdown__list-item-link {
+	font-family: var(--font-sans);
+	font-weight: 500;
+	color: var(--color-white) !important;
+	text-decoration: none;
+	display: block !important;
+	padding: 0.5rem 1.4375rem !important;
+	transition: color 0.2s ease;
+}
+
+/* Dropdown item hover — neon-green text matching header submenu links */
+.tribe-events
+	.tribe-events-c-subscribe-dropdown
+	.tribe-events-c-subscribe-dropdown__list-item-link:hover,
+.tribe-events
+	.tribe-events-c-subscribe-dropdown
+	.tribe-events-c-subscribe-dropdown__list-item-link:focus,
+.tec-block__single-event
+	.tribe-events-c-subscribe-dropdown
+	.tribe-events-c-subscribe-dropdown__list-item-link:hover,
+.tec-block__single-event
+	.tribe-events-c-subscribe-dropdown
+	.tribe-events-c-subscribe-dropdown__list-item-link:focus {
+	color: var(--color-neon-green) !important;
+	background-color: transparent;
+}
+
+/* Dropdown list item — remove TEC's default padding so link controls spacing */
+.tribe-events .tribe-events-c-subscribe-dropdown .tribe-events-c-subscribe-dropdown__list-item,
+.tec-block__single-event
+	.tribe-events-c-subscribe-dropdown
+	.tribe-events-c-subscribe-dropdown__list-item {
+	padding: 0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Search Bar Input
+   Match theme form input: white bg, pill-shaped, with left padding for icon.
+   -------------------------------------------------------------------------- */
+
+/* Input control wrapper — relative position for the absolutely-placed icon */
+.tribe-common.tribe-events .tribe-events-c-search__input-control {
+	position: relative;
+}
+
+/*
+   Specificity battle: TEC's `.tribe-common--breakpoint-medium.tribe-common
+   .tribe-common-form-control-text__input` (3-class) loads AFTER our stylesheet.
+   Tailwind 4's input reset `input:not([type="checkbox"])...` has (0,10,1)
+   specificity via :not() pseudo-classes, setting `padding-inline` and
+   `background-color: transparent`. We use 5-class specificity + `!important`
+   on the Tailwind-conflicting properties (padding-inline, background-color).
+*/
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-common-form-control-text__input.tribe-events-c-search__input,
+.tribe-common.tribe-events .tribe-common-form-control-text__input.tribe-events-c-search__input {
+	font-family: var(--font-sans);
+	appearance: none;
+	background-color: white !important;
+	border: 1px solid var(--color-charcoal);
+	border-radius: 9999px;
+	padding-block: 0.75rem;
+	padding-inline-start: 2.75rem !important;
+	padding-inline-end: 1rem !important;
+	min-height: 3rem;
+	color: var(--color-charcoal);
+	font-size: 1rem;
+	line-height: 1;
+	outline: none;
+	box-shadow: none;
+	transition: border-color 0.2s ease;
+}
+
+.tribe-common.tribe-events
+	.tribe-common-form-control-text__input.tribe-events-c-search__input:focus {
+	border-color: var(--color-charcoal) !important;
+	outline: none;
+	box-shadow: 0 0 0 1px var(--color-charcoal);
+}
+
+.tribe-common.tribe-events
+	.tribe-common-form-control-text__input.tribe-events-c-search__input::placeholder {
+	color: inherit;
+	opacity: 0.5;
+}
+
+/* Search icon — positioned inside the input visually */
+.tribe-common.tribe-events .tribe-events-c-search__input-control-icon-svg {
+	position: absolute;
+	left: 1rem;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 1rem;
+	height: 1rem;
+	pointer-events: none;
+}
+
+.tribe-common.tribe-events .tribe-events-c-search__input-control-icon-svg path {
+	fill: var(--color-charcoal);
+	opacity: 0.5;
+}
+
+/* --------------------------------------------------------------------------
+   3b. Find Events Button (btn-primary style)
+   Filled pill with gradient sweep animation on hover.
+   Uses 3-class specificity to beat TEC's `.tribe-common .tribe-common-c-btn`
+   which sets border-radius: var(--tec-border-radius-default) later in cascade.
+   -------------------------------------------------------------------------- */
+
+.tribe-common.tribe-events .tribe-common-c-btn.tribe-events-c-search__button,
+.tribe-common.tribe-events button.tribe-events-c-search__button {
+	border: 1px solid var(--color-charcoal);
+	border-radius: 9999px;
+	padding: 0.75rem 1.5rem;
+	min-height: 3rem;
+	font-family: var(--font-sans);
+	font-weight: 500;
+	font-size: var(--text-body-small);
+	text-transform: uppercase;
+	letter-spacing: var(--tracking-wider);
+	line-height: 1.125;
+	color: var(--color-off-white);
+	overflow: hidden;
+	white-space: nowrap;
+	flex-shrink: 0;
+	--btn-gradient-color: var(--color-charcoal);
+	background:
+		linear-gradient(90deg, var(--btn-gradient-color), var(--btn-gradient-color)),
+		linear-gradient(90deg, var(--color-neon-green) 0%, var(--color-blue) 70%);
+	background-size:
+		100% 100%,
+		200% 100%;
+	background-position:
+		0 0,
+		100% 0;
+	transition:
+		--btn-gradient-color 0.3s ease,
+		background-position 0.3s ease,
+		border-color 0.3s ease,
+		color 0.3s ease;
+}
+
+.tribe-common.tribe-events .tribe-common-c-btn.tribe-events-c-search__button:hover,
+.tribe-common.tribe-events button.tribe-events-c-search__button:hover {
+	border-color: var(--color-charcoal);
+	color: var(--color-charcoal);
+	animation: btn-gradient-sweep-primary 1s ease forwards;
+}
+
+.tribe-common.tribe-events .tribe-common-c-btn.tribe-events-c-search__button:focus,
+.tribe-common.tribe-events button.tribe-events-c-search__button:focus {
+	border-color: var(--color-charcoal);
+	color: var(--color-off-white);
+}
+
+/* --------------------------------------------------------------------------
+   3c. Events Bar Container
+   Open layout — no box/border. Search + views sit side-by-side with a gap.
+   -------------------------------------------------------------------------- */
+
+/*
+   TEC's bar selector has 4 classes:
+   `.tribe-common--breakpoint-medium.tribe-events .tribe-events-header--has-event-search .tribe-events-c-events-bar`
+   We match that with the same compound selector + add the bar's own class.
+*/
+.tribe-common.tribe-events .tribe-events-header__events-bar.tribe-events-c-events-bar,
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-header--has-event-search
+	.tribe-events-c-events-bar {
+	background-color: transparent;
+	border: none;
+	border-radius: 0;
+	padding: 0;
+	margin-bottom: 0;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+/* Search container — transparent bg, fills available space */
+.tribe-common.tribe-events .tribe-events-c-events-bar__search-container {
+	flex: 1;
+	min-width: 0;
+	background-color: transparent;
+}
+
+/*
+   Mobile: below TEC's `--breakpoint-medium` the search container is an
+   absolutely-positioned dropdown (position: absolute in views-skeleton.css).
+   With the transparent bg above it floated invisibly over the event list,
+   so the Find Events button appeared to overlap the cards beneath it. Give
+   the dropdown a solid card surface + shadow so it reads as an intentional
+   panel. At md+ TEC switches it back to position: static (inline) and this
+   selector no longer matches, leaving the desktop layout untouched.
+*/
+.tribe-common.tribe-events:not(.tribe-common--breakpoint-medium)
+	.tribe-events-c-events-bar__search-container {
+	background-color: var(--color-off-white);
+	border: 1px solid var(--color-charcoal);
+	border-radius: 1rem;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+	/* TEC's default padding is `8px 21px 12px` (asymmetric). Equalize the
+	   gap between the input/button and all four card edges. */
+	padding: 1rem;
+}
+
+/* Pill the events-bar trigger button so its focus ring and any hover bg
+   are circular, not a square block. TEC ships it with border-radius:0. */
+.tribe-common.tribe-events .tribe-events-c-events-bar__search-button {
+	border-radius: 9999px;
+}
+
+/* Search form — row layout on tablet+, stacked on mobile.
+   At narrow viewports TEC sets the submit button to width: 100%, which
+   in a row layout collapses the input-group to width: 0 and renders the
+   button on top of the (invisible) typed text. Switching to a column
+   layout below the medium breakpoint gives input and button the full
+   form width with the button beneath the input. Gap matches the popover
+   card's 1rem edge padding so the inner spacing reads as a single rhythm. */
+.tribe-common.tribe-events .tribe-events-c-search.tribe-events-c-events-bar__search-form {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 1rem;
+}
+
+/* TEC ships a 24px margin-top on the Find Events button — meant for the
+   wider events-bar layout. Zero it so the stacked-mobile form gap is the
+   only thing controlling input-to-button spacing. */
+.tribe-common.tribe-events .tribe-events-c-events-bar__search-form .tribe-events-c-search__button {
+	margin-top: 0;
+}
+
+@media (min-width: 768px) {
+	.tribe-common.tribe-events .tribe-events-c-search.tribe-events-c-events-bar__search-form {
+		flex-direction: row;
+		align-items: center;
+	}
+}
+
+/* Input group — full width when stacked, grows to fill space at md+. */
+.tribe-common.tribe-events .tribe-events-c-search__input-group {
+	width: 100%;
+	min-width: 0;
+}
+
+@media (min-width: 768px) {
+	.tribe-common.tribe-events .tribe-events-c-search__input-group {
+		flex: 1;
+		width: auto;
+	}
+}
+
+/* WCAG AA touch targets on the events-bar trigger row.
+   TEC ships these icon buttons at 29×29 / 34×39 — too small for
+   reliable tap on mobile. Pad the hit area to 44×44 minimum without
+   touching the icon's visual size. */
+.tribe-common.tribe-events .tribe-events-c-events-bar__search-button,
+.tribe-common.tribe-events .tribe-events-c-view-selector__button {
+	min-width: 44px;
+	min-height: 44px;
+}
+
+/* --------------------------------------------------------------------------
+   3d. View Selector (List / Month / Day)
+   Handles both dropdown mode (mobile) and tabs mode (desktop).
+   -------------------------------------------------------------------------- */
+
+/* --- Dropdown toggle button (mobile view / narrow widths) ---
+   Bare icon, no chip. The 44×44 hit area is preserved via the touch-target
+   rule above; here we drop the border/background/padding so the icon reads
+   as a plain icon button and stays centered in its hit box. */
+.tribe-common.tribe-events .tribe-events-c-view-selector__button.tribe-common-c-btn__clear {
+	font-family: var(--font-sans);
+	font-weight: 500;
+	font-size: var(--text-body-small);
+	text-transform: uppercase;
+	letter-spacing: var(--tracking-wider);
+	color: var(--color-charcoal);
+	border: none;
+	border-radius: 0;
+	padding: 0;
+	background: transparent;
+	justify-content: center;
+	align-items: center;
+}
+
+/* TEC paints a 34×2px charcoal "active tab" indicator (`::before`) below the
+   button when the dropdown is open — visual noise on a mobile icon trigger.
+   Suppress it; the dropdown opening is feedback enough. */
+.tribe-common.tribe-events .tribe-events-c-view-selector__button::before {
+	display: none;
+}
+
+/* View selector button icon — TEC ships the SVG at ~10×10, too small to
+   read at the 44×44 hit target. Bump to a comfortable glyph size. */
+.tribe-common.tribe-events .tribe-events-c-view-selector__button-icon-svg {
+	width: 1.25rem;
+	height: 1.25rem;
+}
+
+/* View selector button icon */
+.tribe-events .tribe-events-c-view-selector__button-icon .tribe-common-c-svgicon__svg-fill {
+	fill: var(--color-charcoal);
+}
+
+/* Caret icon */
+.tribe-events
+	.tribe-events-c-view-selector__button-icon-caret-svg
+	.tribe-common-c-svgicon__svg-fill {
+	fill: var(--color-charcoal);
+}
+
+/* --- Dropdown panel (when used as a dropdown) --- */
+.tribe-common.tribe-events .tribe-events-c-view-selector__content {
+	border-radius: 0.75rem;
+	overflow: hidden;
+}
+
+/* --- Tabs mode (desktop) --- */
+
+/*
+   TEC injects its CSS in the document body (via tribe_asset), so it always
+   appears after <head> stylesheets. TEC breakpoint rules also use the compound
+   selector `.tribe-common--breakpoint-medium.tribe-events`. Adding `.tribe-common`
+   (already on the same element) provides one extra class of specificity to
+   reliably override TEC's rules.
+*/
+
+/* Wrapper: remove TEC default bottom border */
+.tribe-common.tribe-events .tribe-events-c-view-selector--tabs {
+	border-bottom: none;
+}
+
+/* Tabs-mode content panel: pill track matching the search input height */
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-view-selector--tabs
+	.tribe-events-c-view-selector__content {
+	background: transparent;
+	border: 1px solid color-mix(in srgb, var(--color-charcoal) 15%, transparent);
+	border-radius: 9999px;
+	box-shadow: none;
+	margin-top: 0;
+	padding: 0.25rem;
+	height: 3rem;
+	display: flex;
+	align-items: center;
+}
+
+/* Tab list — horizontal row */
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-view-selector--tabs
+	.tribe-events-c-view-selector__list {
+	display: flex;
+	align-items: center;
+	gap: 0.125rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* Individual tab item */
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-view-selector--tabs
+	.tribe-events-c-view-selector__list-item {
+	margin: 0;
+	padding: 0;
+	border-bottom: none;
+}
+
+/* Tab link — pill segment with btn-secondary gradient hover */
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-view-selector--tabs
+	.tribe-events-c-view-selector__list-item-link {
+	font-family: var(--font-sans);
+	font-weight: 500;
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: var(--tracking-wider);
+	color: color-mix(in srgb, var(--color-charcoal) 50%, transparent);
+	padding: 0.5rem 1rem;
+	border-radius: 9999px;
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
+	white-space: nowrap;
+	border: none;
+	/* btn-secondary gradient background (invisible until hover) */
+	--btn-gradient-opacity: 0;
+	background: linear-gradient(
+		90deg,
+		rgba(212, 255, 69, var(--btn-gradient-opacity)) 0%,
+		rgba(71, 203, 242, var(--btn-gradient-opacity)) 70%
+	);
+	background-size: 200% 100%;
+	background-position: 100% 0;
+	transition:
+		--btn-gradient-opacity 0.3s ease,
+		background-position 0.3s ease,
+		color 0.3s ease;
+}
+
+/* Inactive tab hover — gradient sweep matching btn-secondary */
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-view-selector--tabs
+	.tribe-events-c-view-selector__list-item:not(.tribe-events-c-view-selector__list-item--active)
+	.tribe-events-c-view-selector__list-item-link:hover {
+	color: var(--color-charcoal);
+	animation: btn-gradient-sweep-secondary 1s ease forwards;
+}
+
+/* Active tab — charcoal pill */
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-view-selector--tabs
+	.tribe-events-c-view-selector__list-item--active
+	.tribe-events-c-view-selector__list-item-link {
+	background-color: var(--color-charcoal) !important;
+	background-image: none !important;
+	color: var(--color-off-white) !important;
+	font-weight: 500 !important;
+	box-shadow: none !important;
+	border-bottom: none !important;
+	text-decoration: none !important;
+}
+
+/* Active tab — kill the ::after underline TEC adds */
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-view-selector--tabs
+	.tribe-events-c-view-selector__list-item--active
+	.tribe-events-c-view-selector__list-item-link::after {
+	display: none !important;
+}
+
+/* Active tab text + icon — force white to override TEC's charcoal */
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-view-selector--tabs
+	.tribe-events-c-view-selector__list-item--active
+	.tribe-events-c-view-selector__list-item-text {
+	color: var(--color-off-white) !important;
+}
+
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-view-selector--tabs
+	.tribe-events-c-view-selector__list-item--active
+	.tribe-common-c-svgicon__svg-fill {
+	fill: var(--color-off-white) !important;
+}
+
+/* Active tab item — remove any bottom border TEC adds */
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-view-selector--tabs
+	.tribe-events-c-view-selector__list-item--active {
+	border-bottom: none !important;
+	box-shadow: none !important;
+}
+
+/* Hide icons in tabs mode — text labels are sufficient */
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-view-selector--tabs
+	.tribe-events-c-view-selector__list-item-icon {
+	display: none;
+}
+
+/* View selector list item text */
+.tribe-events .tribe-events-c-view-selector__list-item-text {
+	font-family: var(--font-sans);
+	letter-spacing: var(--tracking-wider);
+	text-transform: uppercase;
+}
+
+/* View selector list item icons (dropdown mode) */
+.tribe-events .tribe-events-c-view-selector__list-item-icon .tribe-common-c-svgicon__svg-fill {
+	fill: var(--color-charcoal);
+}
+
+/* --------------------------------------------------------------------------
+   3e. Top Bar — Navigation Arrows, Datepicker, Today Button
+   Clean, cohesive bar below the search area.
+   -------------------------------------------------------------------------- */
+
+.tribe-common.tribe-events .tribe-events-header__top-bar.tribe-events-c-top-bar {
+	padding: 1rem 0 0.75rem;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	border-top: none;
+	border-bottom: none;
+}
+
+/* Navigation arrows — rounded circle buttons with gradient sweep hover */
+.tribe-common.tribe-events .tribe-events-c-top-bar__nav-link.tribe-common-c-btn-icon,
+.tribe-common.tribe-events .tribe-events-c-top-bar__nav-link--prev,
+.tribe-common.tribe-events .tribe-events-c-top-bar__nav-link--next {
+	width: 2.5rem;
+	height: 2.5rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid color-mix(in srgb, var(--color-charcoal) 20%, transparent);
+	border-radius: 9999px;
+	color: var(--color-charcoal);
+	overflow: hidden;
+	/* btn-secondary gradient background (invisible until hover) */
+	--btn-gradient-opacity: 0;
+	background: linear-gradient(
+		90deg,
+		rgba(212, 255, 69, var(--btn-gradient-opacity)) 0%,
+		rgba(71, 203, 242, var(--btn-gradient-opacity)) 70%
+	);
+	background-size: 200% 100%;
+	background-position: 100% 0;
+	transition:
+		--btn-gradient-opacity 0.3s ease,
+		background-position 0.3s ease,
+		border-color 0.3s ease,
+		color 0.3s ease;
+}
+
+.tribe-common.tribe-events .tribe-events-c-top-bar__nav-link.tribe-common-c-btn-icon:hover,
+.tribe-common.tribe-events .tribe-events-c-top-bar__nav-link--prev:hover,
+.tribe-common.tribe-events .tribe-events-c-top-bar__nav-link--next:hover {
+	border-color: var(--color-charcoal);
+	color: var(--color-charcoal);
+	animation: btn-gradient-sweep-secondary 1s ease forwards;
+}
+
+/* Nav arrow SVG stays charcoal on hover (gradient bg is light-colored) */
+.tribe-common.tribe-events
+	.tribe-events-c-top-bar__nav-link:hover
+	.tribe-common-c-svgicon__svg-fill,
+.tribe-common.tribe-events .tribe-events-c-top-bar__nav-link:hover path,
+.tribe-common.tribe-events .tribe-events-c-top-bar__nav-link:hover svg path {
+	fill: var(--color-charcoal) !important;
+}
+
+/* Nav arrow SVGs */
+.tribe-common.tribe-events .tribe-events-c-top-bar__nav-link-icon-svg {
+	width: 0.75rem;
+	height: 0.75rem;
+}
+
+.tribe-common.tribe-events .tribe-events-c-top-bar__nav-link-icon-svg path {
+	fill: var(--color-charcoal);
+	transition: fill 0.2s ease;
+}
+
+/* Nav list — horizontal row with gap */
+.tribe-common.tribe-events .tribe-events-c-top-bar__nav-list {
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* "Today" button — pill style matching arrow height (2.5rem)
+   Uses btn-secondary gradient sweep hover to match the site's button vocabulary.
+   `display: inline-flex !important` needed because TEC's breakpoint rule
+   `.tribe-common--breakpoint-medium.tribe-events .tribe-events-c-top-bar__today-button`
+   forces `display: block` (3-class specificity, later in cascade). Our `!important`
+   ensures flex centering works. On mobile (below breakpoint) TEC hides the button
+   via the a11y-hidden class before our selector can match. */
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-top-bar__today-button.tribe-common-c-btn-border-small {
+	font-family: var(--font-sans);
+	font-weight: 500;
+	font-size: var(--text-body-small);
+	text-transform: uppercase;
+	letter-spacing: var(--tracking-wider);
+	line-height: 1;
+	color: var(--color-charcoal);
+	border: 1px solid color-mix(in srgb, var(--color-charcoal) 20%, transparent);
+	border-radius: 9999px;
+	height: 2.5rem;
+	padding: 0 1.25rem;
+	display: inline-flex !important;
+	align-items: center;
+	text-decoration: none;
+	overflow: hidden;
+	/* btn-secondary gradient background (invisible until hover) */
+	--btn-gradient-opacity: 0;
+	background: linear-gradient(
+		90deg,
+		rgba(212, 255, 69, var(--btn-gradient-opacity)) 0%,
+		rgba(71, 203, 242, var(--btn-gradient-opacity)) 70%
+	);
+	background-size: 200% 100%;
+	background-position: 100% 0;
+	transition:
+		--btn-gradient-opacity 0.3s ease,
+		background-position 0.3s ease,
+		border-color 0.3s ease,
+		color 0.3s ease;
+}
+
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-top-bar__today-button.tribe-common-c-btn-border-small:hover,
+.tribe-common.tribe-common--breakpoint-medium.tribe-events
+	.tribe-events-c-top-bar__today-button.tribe-common-c-btn-border-small:focus-visible {
+	border-color: var(--color-charcoal);
+	color: var(--color-charcoal);
+	animation: btn-gradient-sweep-secondary 1s ease forwards;
+}
+
+/* Datepicker button (e.g. "Upcoming" dropdown) — styled as a clean text button.
+   Must also beat `.tribe-common-h3` (set on the button by TEC) which forces
+   a large heading size. Adding the heading class to our selector wins specificity. */
+.tribe-common.tribe-events button.tribe-common-h3.tribe-events-c-top-bar__datepicker-button {
+	font-family: var(--font-sans);
+	font-weight: 600;
+	font-size: 1.125rem;
+	line-height: 1.25;
+	color: var(--color-charcoal);
+	border: none;
+	background: transparent;
+	padding: 0.375rem 0;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	transition: opacity 0.2s ease;
+	cursor: pointer;
+}
+
+.tribe-common.tribe-events button.tribe-common-h3.tribe-events-c-top-bar__datepicker-button:hover {
+	opacity: 0.7;
+}
+
+/* Datepicker caret */
+.tribe-common.tribe-events .tribe-events-c-top-bar__datepicker-button-icon-svg {
+	width: 0.75rem;
+	height: 0.75rem;
+	transition: transform 0.2s ease;
+}
+
+.tribe-common.tribe-events
+	.tribe-events-c-top-bar__datepicker-button-icon-svg
+	.tribe-common-c-svgicon__svg-fill {
+	fill: var(--color-charcoal);
+}
+
+/* Datepicker wrapper — relative positioning so the absolutely-positioned
+   datepicker-container dropdown is anchored here, not on a distant ancestor */
+.tribe-common.tribe-events .tribe-events-c-top-bar__datepicker {
+	position: relative;
+}
+
+/* Hidden datepicker input — TEC uses `clip: rect(0,0,0,0)` for visual hiding but
+   the input still occupies layout space (width: 100%, left: 118px) causing horizontal
+   scroll on the parent. Collapse it so it can't overflow. */
+.tribe-common.tribe-events .tribe-events-c-top-bar__datepicker-input {
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	border: 0 !important;
+	left: 0 !important;
+	right: auto !important;
+}
+
+/* Datepicker calendar dropdown — must NOT clip the dropdown that renders inside */
+.tribe-common.tribe-events .tribe-events-c-top-bar__datepicker-container {
+	border-radius: 0.75rem;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+	/* Reset the global 9999px pill radius inside the datepicker so
+	   months/years/days get reasonable rounded corners, not capsules */
+	--tec-border-radius-default: 0.5rem;
+}
+
+/* Round corners on the datepicker dropdown itself (since the container can't use overflow:hidden) */
+.tribe-common.tribe-events .tribe-events-c-top-bar__datepicker-container .datepicker-dropdown {
+	border-radius: 0.75rem;
+	overflow: hidden;
+	min-width: 320px;
+	padding: 1rem;
+}
+
+/* Calendar selected day — charcoal pill.
+   Declared BEFORE .day.current so that when today is also the active day,
+   the neon-green "today" styling wins (later rule = higher cascade priority
+   at equal specificity). */
+.tribe-common.tribe-events .datepicker .day.active {
+	background: var(--color-charcoal) !important;
+	border-radius: 9999px !important;
+	color: var(--color-off-white) !important;
+	outline: none !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+.tribe-common.tribe-events .datepicker .day.active::before {
+	border: none !important;
+	box-shadow: none !important;
+}
+
+/* Override TEC's focused/focus outline on active days, months, years.
+   TEC injects CSS in <body> so at equal specificity it wins — use
+   .tribe-common compound class for extra specificity. */
+.tribe-common.tribe-events .datepicker .day.active.focused,
+.tribe-common.tribe-events .datepicker .day.active:focus,
+.tribe-common.tribe-events .datepicker .day.current.focused,
+.tribe-common.tribe-events .datepicker .day.current:focus,
+.tribe-common.tribe-events .datepicker .month.active.focused,
+.tribe-common.tribe-events .datepicker .month.active:focus,
+.tribe-common.tribe-events .datepicker .year.active.focused,
+.tribe-common.tribe-events .datepicker .year.active:focus {
+	outline: none !important;
+	outline-offset: 0 !important;
+	box-shadow: none !important;
+}
+
+/* Calendar "today" circle — neon-green pill.
+   TEC's datepicker uses `.day.current` for today. Declared AFTER .day.active
+   so it wins when both classes are present. TEC adds a ::before pseudo with
+   a 1px border on active/current days — explicitly remove it. */
+.tribe-common.tribe-events .datepicker .day.today,
+.tribe-common.tribe-events .datepicker .day.current {
+	background: var(--color-neon-green) !important;
+	border-radius: 9999px !important;
+	color: var(--color-charcoal) !important;
+	outline: none !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+.tribe-common.tribe-events .datepicker .day.today::before,
+.tribe-common.tribe-events .datepicker .day.current::before {
+	border: none !important;
+	box-shadow: none !important;
+}
+
+.tribe-common.tribe-events .datepicker .day:hover {
+	background: var(--color-neon-green) !important;
+	border-radius: 9999px !important;
+	color: var(--color-charcoal) !important;
+}
+
+/* Months and years views — fill the dropdown width */
+.tribe-common.tribe-events .datepicker .datepicker-months,
+.tribe-common.tribe-events .datepicker .datepicker-years {
+	width: 100%;
+}
+
+.tribe-common.tribe-events .datepicker .datepicker-months table,
+.tribe-common.tribe-events .datepicker .datepicker-years table {
+	width: 100%;
+}
+
+/* Grid layout for months/years — 4 equal columns */
+.tribe-common.tribe-events .datepicker .datepicker-months .datepicker-grid,
+.tribe-common.tribe-events .datepicker .datepicker-years .datepicker-grid {
+	display: grid !important;
+	grid-template-columns: repeat(4, 1fr) !important;
+	gap: 0.25rem !important;
+}
+
+.tribe-common.tribe-events .datepicker .datepicker-months .month,
+.tribe-common.tribe-events .datepicker .datepicker-years .year {
+	width: 100% !important;
+	height: auto !important;
+	padding: 0.5rem 0.25rem !important;
+	border-radius: 0.5rem !important;
+	line-height: 1.4 !important;
+	text-align: center;
+}
+
+.tribe-common.tribe-events .datepicker .datepicker-months .month:hover,
+.tribe-common.tribe-events .datepicker .datepicker-years .year:hover {
+	background: var(--color-neon-green) !important;
+	color: var(--color-charcoal) !important;
+	border-radius: 0.5rem !important;
+}
+
+.tribe-common.tribe-events .datepicker .datepicker-months .month.active,
+.tribe-common.tribe-events .datepicker .datepicker-months .month.focused,
+.tribe-common.tribe-events .datepicker .datepicker-years .year.active,
+.tribe-common.tribe-events .datepicker .datepicker-years .year.focused {
+	background: var(--color-charcoal) !important;
+	color: var(--color-off-white) !important;
+	border-radius: 0.5rem !important;
+	outline: none !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+/* Remove TEC's ::before border/shadow on active/focused months and years */
+.tribe-common.tribe-events .datepicker .datepicker-months .month.active::before,
+.tribe-common.tribe-events .datepicker .datepicker-months .month.focused::before,
+.tribe-common.tribe-events .datepicker .datepicker-years .year.active::before,
+.tribe-common.tribe-events .datepicker .datepicker-years .year.focused::before {
+	border: none !important;
+	box-shadow: none !important;
+}
+
+/*
+   Prevent horizontal overflow from TEC's negative-margin grid rows
+   (.tribe-common-g-row uses margin: -24px which overflows the container).
+   Scoped to the event list only — NOT on .tribe-events which would clip
+   the datepicker dropdown and other absolutely-positioned UI.
+*/
+.tribe-common.tribe-events .tribe-events-calendar-list {
+	overflow-x: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   3f. Focus Indicators
+   TEC's events-bar `:focus` sets `outline-style: auto` (the browser
+   default — a thick black ring) on the icon buttons, and several pills
+   have no theme-defined focus indicator so the browser default shows on
+   them too. Replace both with a single clean keyboard-only ring matching
+   the theme's charcoal palette. Use `:focus:not(:focus-visible)` to
+   suppress the outline only on mouse/tap focus — the more explicit form
+   so accessibility scanners can read the intent (and not flag a bare
+   `outline: none`); keyboard focus still renders the charcoal ring, so
+   WCAG 2.4.7 (Focus Visible) stays satisfied.
+   -------------------------------------------------------------------------- */
+
+.tribe-common.tribe-events .tribe-events-c-events-bar__search-button:focus:not(:focus-visible),
+.tribe-common.tribe-events button.tribe-events-c-search__button:focus:not(:focus-visible),
+.tribe-common.tribe-events
+	.tribe-events-c-view-selector__button.tribe-common-c-btn__clear:focus:not(:focus-visible),
+.tribe-common.tribe-events .tribe-events-c-top-bar__datepicker-button:focus:not(:focus-visible) {
+	outline: none;
+}
+
+.tribe-common.tribe-events .tribe-events-c-events-bar__search-button:focus-visible,
+.tribe-common.tribe-events button.tribe-events-c-search__button:focus-visible,
+.tribe-common.tribe-events
+	.tribe-events-c-view-selector__button.tribe-common-c-btn__clear:focus-visible,
+.tribe-common.tribe-events .tribe-events-c-top-bar__datepicker-button:focus-visible {
+	outline: 2px solid var(--color-charcoal);
+	outline-offset: 2px;
+	border-radius: 9999px;
+}
+
+/* --------------------------------------------------------------------------
+   4. Meta Section (Details / Venue)
+   -------------------------------------------------------------------------- */
+
+.tec-block__single-event .tribe-events-single-section-title {
+	font-family: var(--font-sans);
+	font-weight: 600;
+	font-size: var(--text-body-small);
+	text-transform: uppercase;
+	letter-spacing: var(--tracking-wider);
+	color: var(--color-charcoal);
+}
+
+.tec-block__single-event .tribe-events-meta-group {
+	font-family: var(--font-sans);
+}
+
+.tec-block__single-event .tribe-events-meta-label {
+	font-weight: 600;
+	color: var(--color-charcoal);
+}
+
+.tec-block__single-event .tribe-events-meta-value,
+.tec-block__single-event .tribe-venue,
+.tec-block__single-event .tribe-venue-location,
+.tec-block__single-event .tribe-address {
+	font-weight: 500;
+	color: var(--color-charcoal);
+}
+
+.tec-block__single-event .tribe-events-meta-group a {
+	color: var(--color-charcoal);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.tec-block__single-event .tribe-events-meta-group a:hover {
+	text-decoration-thickness: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Event Content / Description
+   -------------------------------------------------------------------------- */
+
+.tec-block__single-event .tribe-events-single-event-description {
+	font-family: var(--font-sans);
+	font-weight: 500;
+	font-size: var(--text-body);
+	line-height: 1.6;
+	color: var(--color-charcoal);
+}
+
+/* Underscore-run divider replacement (see event-content-format.php).
+   Long runs of `_` characters pasted from Microsoft Teams meeting
+   invites are converted to <hr class="event-content-divider"> at
+   the_content filter time; style as a thin charcoal rule. */
+.tec-block__single-event .tribe-events-content .event-content-divider {
+	border: 0;
+	border-top: 1px solid color-mix(in srgb, var(--color-charcoal) 20%, transparent);
+	margin: 1.25rem 0;
+}
+
+/* --------------------------------------------------------------------------
+   6. List / Archive View Typography
+   -------------------------------------------------------------------------- */
+
+.tribe-events .tribe-events-calendar-list__event-title a {
+	color: var(--color-charcoal);
+	text-decoration: none;
+}
+
+.tribe-events .tribe-events-calendar-list__event-title a:hover {
+	color: color-mix(in srgb, var(--color-charcoal) 70%, transparent);
+}
+
+/* Category chip: TEC reserves a 14×14 box on every chip for an icon
+   SVG. When the category has no icon the box still takes up space
+   and reads as leading whitespace before the chip label. Hide the
+   span when it has no children/content.
+   Specificity must match TEC's own four-class selector
+   (.tribe-events-calendar-list ... .tec-events-calendar-list__category-icon)
+   so the :empty rule actually wins the cascade. */
+.tribe-events-calendar-list
+	.tec-events-calendar-list__event-categories
+	.tec-events-calendar-list__category
+	.tec-events-calendar-list__category-icon:empty {
+	display: none;
+}
+
+/* --------------------------------------------------------------------------
+   7. Links — Generic
+   -------------------------------------------------------------------------- */
+
+.tec-block__single-event a,
+.tribe-events a {
+	color: var(--color-charcoal);
+	transition: color 0.2s ease;
+}
+
+/* --------------------------------------------------------------------------
+   8. List View — Event Featured Images (rounded corners)
+   Match the site's standard rounded image treatment (rounded-xl = 0.75rem).
+   The wrapper needs overflow:hidden so the <img> corners clip correctly.
+   -------------------------------------------------------------------------- */
+
+.tribe-events .tribe-events-calendar-list__event-featured-image-wrapper {
+	border-radius: 0.75rem;
+	overflow: hidden;
+}
+
+.tribe-events .tribe-events-calendar-list__event-featured-image-wrapper {
+	position: relative;
+	min-height: 12rem;
+}
+
+.tribe-events .tribe-events-calendar-list__event-featured-image-wrapper img {
+	position: absolute !important;
+	inset: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: cover !important;
+	aspect-ratio: auto !important;
+}
+
+/* Month view event images — rounded corners */
+.tribe-events .tribe-events-calendar-month__calendar-event-tooltip-image img {
+	border-radius: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   9. Month View — Event Tooltip / Popover
+   The tooltipster container inherits `--tec-border-radius-default: 9999px`
+   via its `.tribe-events` class, causing a pill-shaped tooltip. Override to
+   a reasonable rounded rectangle matching the site's dropdown panels.
+   -------------------------------------------------------------------------- */
+
+.tribe-events-tooltip-theme.tooltipster-sidetip {
+	border-radius: 0.75rem !important;
+	padding: 0 !important;
+}
+
+.tribe-events-tooltip-theme .tooltipster-box {
+	border-radius: 0.75rem !important;
+	overflow: hidden !important;
+	background: white !important;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.tribe-events-tooltip-theme .tooltipster-content {
+	overflow: visible !important;
+	border-radius: 0 !important;
+	padding: 0 !important;
+}
+
+/* Tooltip image — fill width, constrained height, rounded top corners */
+.tribe-events .tribe-events-calendar-month__calendar-event-tooltip-featured-image-wrapper {
+	width: 100% !important;
+	overflow: hidden;
+	max-height: 180px;
+}
+
+.tribe-events-calendar-month__calendar-event-tooltip-featured-image {
+	width: 100% !important;
+	height: 100% !important;
+	display: block;
+	object-fit: cover;
+}
+
+/* Tooltip text content — proper padding matching the site's card style */
+.tribe-events-calendar-month__calendar-event-tooltip-datetime,
+.tribe-events-calendar-month__calendar-event-tooltip-title,
+.tribe-events-calendar-month__calendar-event-tooltip-description {
+	padding-left: 1rem !important;
+	padding-right: 1rem !important;
+}
+
+.tribe-events-calendar-month__calendar-event-tooltip-datetime {
+	padding-top: 1rem !important;
+	font-size: 0.875rem;
+	color: color-mix(in srgb, var(--color-charcoal) 70%, transparent);
+}
+
+.tribe-events-calendar-month__calendar-event-tooltip-title {
+	font-family: var(--font-heading);
+	font-weight: 700;
+	font-size: 1.125rem;
+	line-height: 1.3;
+	margin-top: 0.25rem;
+}
+
+.tribe-events-calendar-month__calendar-event-tooltip-description {
+	font-size: 0.875rem;
+	line-height: 1.5;
+	color: color-mix(in srgb, var(--color-charcoal) 80%, transparent);
+	padding-bottom: 1.25rem !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. Loading Spinner — Hide the default TEC spinner
+   -------------------------------------------------------------------------- */
+
+.tec-block__single-event .tribe-events-ajax-loading {
+	display: none;
+}
+
+/* --------------------------------------------------------------------------
+   11. Calendar list event-row — clip article overflow (Bugherd #331)
+   --------------------------------------------------------------------------
+   TEC's `tribe-common-g-row--gutters` applies negative margins to the
+   article (e.g. `margin: 0 -21px`) so it visually extends edge-to-edge
+   while internal columns carry compensating padding. In the past-events
+   list view, the article sits inside a 275px wrapper that's a sibling
+   of the 54px date-tag column on the left. The negative margins expand
+   the article 42px past its wrapper, and on iOS Safari (and Chromium
+   under the same conditions) the inner image visually covers the date
+   label "MON 2 / THU 30" beneath it.
+
+   `overflow: hidden` on the wrapper clips the article's bleed back to
+   the wrapper bounds, leaving the date column legible without altering
+   TEC's internal column padding contract.
+   -------------------------------------------------------------------------- */
+
+.tribe-events-calendar-list__event-wrapper {
+	overflow: hidden;
+}

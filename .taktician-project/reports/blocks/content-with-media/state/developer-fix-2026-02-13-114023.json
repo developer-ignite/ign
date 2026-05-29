@@ -1,0 +1,71 @@
+{
+  "agent": "developer",
+  "mode": "fix",
+  "timestamp": "2026-02-13T11:40:23Z",
+  "block": "ContentWithMedia",
+  "status": "completed",
+  "summary": "Reverted PHP legacy fallback, created one-off migration script, migrated all legacy blocks in the database, and verified both test pages render correctly.",
+  "tasks": [
+    {
+      "task": "Revert PHP legacy fallback in ContentWithMedia.php",
+      "status": "completed",
+      "details": "Removed $legacyDescription, $legacyButtons, $hasLegacyContent variables and conditional logic. Restored hardcoded enableDescription=false and enableButtons=false in ThemeHeading call."
+    },
+    {
+      "task": "Create one-off migration script",
+      "status": "completed",
+      "details": "Created scripts/migrate-content-with-media.js (Node.js) and scripts/migrate-content-with-media.php (PHP/WP-CLI). Both support dry-run (default) and --apply modes. The JS version also supports stdin/stdout piping and WP REST API modes."
+    },
+    {
+      "task": "Build, test, run migration, verify",
+      "status": "completed",
+      "details": "Build passed. Dry-run test on sample content: migrated 2, skipped 1 (correct). Full migration on page 168 content: migrated 13, skipped 2 (correct -- Quick Video and Minimal Section had no description/buttons). Updated page 168 via taktician_wp_update. Block count verification: all 15 blocks present with correct InnerBlocks structure. Page audit on both pages passed."
+    }
+  ],
+  "filesChanged": [
+    {
+      "file": "blocks/ContentWithMedia/ContentWithMedia.php",
+      "action": "modified",
+      "changes": "Reverted legacy fallback: removed $legacyDescription, $legacyButtons, $hasLegacyContent. Restored hardcoded enableDescription=false, enableButtons=false."
+    },
+    {
+      "file": "scripts/migrate-content-with-media.js",
+      "action": "created",
+      "changes": "Node.js one-off migration script. Converts self-closing takt/content-with-media blocks with description/buttons attributes to open/close blocks with InnerBlocks (core/paragraph + takt/button-row). Supports dry-run, --apply, stdin/stdout, and WP REST API modes."
+    },
+    {
+      "file": "scripts/migrate-content-with-media.php",
+      "action": "created",
+      "changes": "PHP/WP-CLI version of migration script using parse_blocks/serialize_blocks. Supports dry-run and --apply modes via wp eval-file."
+    }
+  ],
+  "verification": {
+    "build": "passed",
+    "dryRunTest": {
+      "input": "3 sample blocks (2 with legacy attrs, 1 without)",
+      "result": "migrated 2, skipped 1"
+    },
+    "fullMigration": {
+      "page": "test-content-with-media-2 (ID 168)",
+      "result": "migrated 13, skipped 2",
+      "totalBlocks": 15
+    },
+    "pageAudit": {
+      "testContentWithMedia": {
+        "url": "https://ign.localhost/test-content-with-media/",
+        "pageId": 184,
+        "totalSections": 5,
+        "status": "PASS",
+        "details": "All 5 sections render correctly with headings, paragraphs, buttons, images, and video. Dark mode and H3 heading variants work as expected."
+      },
+      "testContentWithMedia2": {
+        "url": "https://ign.localhost/test-content-with-media-2/",
+        "pageId": 168,
+        "totalSections": 15,
+        "status": "PASS",
+        "details": "All 15 migrated sections render correctly. 13 sections have InnerBlocks content (discourse wrapper with paragraphs and/or buttons). 2 sections correctly have no content (Quick Video and Minimal Section). Dark mode (4 sections), reversed layout, single image, video types (file/youtube/vimeo), H3 heading size, and long content edge cases all verified."
+      }
+    }
+  },
+  "tokensUsed": 0
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/footer-nav",
+  "title": "Footer Navigation",
+  "category": "takt-theme",
+  "description": "Footer navigation links organized in columns",
+  "parent": ["takt/footer"],
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "reusable": false
+  },
+  "attributes": {
+    "anchor": { "type": "string" }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {},
+    "innerBlocks": [
+      {
+        "name": "takt/footer-nav-column",
+        "attributes": { "heading": "About" }
+      },
+      {
+        "name": "takt/footer-nav-column",
+        "attributes": { "heading": "Services" }
+      }
+    ]
+  }
+}

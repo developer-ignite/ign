@@ -1,0 +1,216 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-19-124237",
+  "status": "FAIL",
+  "blockName": "WideSocialMedia",
+  "output": {
+    "contentComparison": {
+      "rawContent": {
+        "changed": null,
+        "isNew": true,
+        "message": "No previous snapshot found — first QA run after developer change",
+        "codeModified": null,
+        "canSkipTests": false
+      },
+      "html": {
+        "changed": null,
+        "isNew": true,
+        "message": "No previous snapshot found",
+        "codeModified": null,
+        "canSkipTests": false
+      },
+      "checksSkipped": [],
+      "reason": "New snapshots — running full QA"
+    },
+    "summary": {
+      "checksRun": 12,
+      "checksPassed": 9,
+      "checksFailed": 3,
+      "issuesFound": 3,
+      "critical": 0,
+      "major": 2,
+      "minor": 1
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "taktician_validate_all passed. Build and lint clean for WideSocialMedia. Global lint warnings in unrelated blocks (Accordion, Archive, ContentWithMedia, etc.) are pre-existing and not caused by this change."
+      },
+      "lint": {
+        "status": "pass",
+        "details": "No lint errors in WideSocialMedia block files. Pre-existing react-hooks/exhaustive-deps warnings in other blocks are unrelated."
+      },
+      "registration": {
+        "status": "pass",
+        "details": "block.json registration valid. apiVersion 3, takt/wide-social-media-item name correct, file references resolve, childBlocks valid, attribute types correct."
+      },
+      "attributes": {
+        "status": "fail",
+        "issues": [
+          {
+            "check": "iconSlug attribute definition",
+            "status": "pass",
+            "detail": "iconSlug defined in block.json as type:string with no default (correct — undefined means not set)"
+          },
+          {
+            "check": "logoId attribute definition",
+            "status": "pass",
+            "detail": "logoId defined as type:number, default:null"
+          },
+          {
+            "check": "iconSlug tested on test page",
+            "status": "fail",
+            "detail": "EVERY item on the test page uses logoId:195 only — no item uses iconSlug. The primary new feature (IconPicker with iconSlug) is not exercised on the test page at the frontend PHP rendering level. The iconSlug path in PHP (file_get_contents from resources/) is never invoked by any test page item."
+          }
+        ]
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "taktician_validate_sync passed with only expected warnings. Root wrapper mismatches (TSX uses BlockControls/li wrapper vs PHP li) are correct — the automated tool sees BlockControls as the outermost TSX element which is a Gutenberg editor-only wrapper, not a frontend element. PHP correctly renders <li> as root frontend element. phpExtractPattern pass, phpDocblock pass, attributeUsage pass, contextConsistency pass, phpFunctionExistence pass.",
+        "syncDetails": {
+          "phpExtractPattern": "pass — no $attributes['key'] anti-pattern",
+          "phpDocblock": "pass — @var annotations present for all attributes",
+          "attributeUsage": "pass — iconSlug and logoId used consistently in TSX and PHP",
+          "contextConsistency": "pass — usesContext takt/wide-social-media/showLabel matches PHP $block->context usage",
+          "phpFunctionExistence": "pass — theme_output_svg_or_img, theme_block_props exist"
+        }
+      },
+      "iconSlugAttribute": {
+        "status": "pass",
+        "detail": "iconSlug attribute present in /var/www/ign/wp-content/themes/ign/blocks/WideSocialMedia/WideSocialMediaItem/block.json line 27, type:string, no default."
+      },
+      "tsxImports": {
+        "status": "pass",
+        "detail": "IconPicker and SuggestedIcon imported from @taktdev/components on line 13 of WideSocialMediaItem.tsx. Matches FooterInfoSocialItem.tsx pattern exactly."
+      },
+      "svgImports": {
+        "status": "pass",
+        "detail": "All 12 ReactComponent SVG imports present in WideSocialMediaItem.tsx: IconBluesky, IconFacebookAlt, IconFacebook, IconImdb, IconInstagram, IconLinkedin, IconPinterest, IconThreads, IconTiktok, IconVimeo, IconX, IconYoutube (lines 15-26)."
+      },
+      "suggestedIconsArray": {
+        "status": "pass",
+        "detail": "suggestedIcons array has exactly 12 entries matching FooterInfoSocialItem: bluesky, facebook, facebook-alt, imdb, instagram, linkedin, pinterest, threads, tiktok, vimeo, x, youtube. Labels match: Bluesky, Facebook, Facebook, IMDb, Instagram, LinkedIn, Pinterest, Threads, TikTok, Vimeo, X, YouTube."
+      },
+      "iconPickerOnChange": {
+        "status": "pass",
+        "detail": "onChange handler at TSX line 125-130 sets iconSlug: icon?.slug ?? undefined and logoId: icon?.mediaId ?? undefined. This correctly clears the other field when switching between slug-based and media-based icons, and sets both to undefined when cleared."
+      },
+      "phpIconSlugPriority": {
+        "status": "pass",
+        "detail": "PHP correctly prioritizes iconSlug over logoId. Lines 34-42: if (!empty($iconSlug)) reads SVG from resources/ folder, elseif (!empty($logoId)) falls back to theme_output_svg_or_img. Priority order is correct."
+      },
+      "phpSvgFileRead": {
+        "status": "fail",
+        "issues": [
+          {
+            "check": "PHP strips XML declaration from resource SVGs",
+            "status": "pass",
+            "detail": "PHP at line 38 uses preg_replace('/<\\?xml.*?\\?>\\s*/', '', $iconHtml) which correctly strips the XML declaration from SVG files read via file_get_contents. The resource SVG files (e.g. icon-instagram.svg) do NOT have XML declarations — they start directly with <svg>, so no stripping is needed."
+          },
+          {
+            "check": "XML declaration in logoId path output",
+            "status": "fail",
+            "detail": "The logoId fallback path uses theme_output_svg_or_img($logoId, false) which returns SVG file content from the WordPress media library. These SVGs contain an XML declaration (<?xml version=\"1.0\" encoding=\"UTF-8\"?>). This declaration appears in the rendered HTML as <!--?xml version=\"1.0\" encoding=\"UTF-8\"?--> (escaped by browser). 31 of 31 icon spans on the test page show this artifact. The PHP does NOT strip the XML declaration from the logoId path — only the iconSlug path strips it. This is a pre-existing issue with theme_output_svg_or_img and is not a regression of the current change, but is observable in rendered output."
+          }
+        ]
+      },
+      "phpLogoIdFallback": {
+        "status": "pass",
+        "detail": "PHP correctly falls back to theme_output_svg_or_img($logoId, false) when iconSlug is empty and logoId is set. All 9 test page variations confirm this path works — icons render (as SVG from media library, with XML declaration artifact noted above)."
+      },
+      "svgResourceFiles": {
+        "status": "pass",
+        "detail": "All 12 SVG resource files exist in /var/www/ign/wp-content/themes/ign/blocks/WideSocialMedia/WideSocialMediaItem/resources/: icon-bluesky.svg, icon-facebook.svg, icon-facebook-alt.svg, icon-imdb.svg, icon-instagram.svg, icon-linkedin.svg, icon-pinterest.svg, icon-threads.svg, icon-tiktok.svg, icon-vimeo.svg, icon-x.svg, icon-youtube.svg. None have XML declarations — they start directly with <svg>."
+      },
+      "testPageRendering": {
+        "status": "pass",
+        "details": "Page renders correctly at all breakpoints (375, 768, 1440px). 9 block instances found matching expected 9 variations. All items in DemoContainers. No stale markup or placeholders. Icon spans (.w-6.h-6.shrink-0) present in all 9 sections. Label spans (text-xs) present in sections with showLabel=true (sections 0-5, 8) and absent in sections with showLabel=false (sections 6-7). Anchor links present in all sections. Page structure: headings correct, showLabel:false hides labels correctly.",
+        "pageAuditSummary": {
+          "totalSections": 9,
+          "sectionsWithHeading": 7,
+          "sectionsWithoutHeading": 2,
+          "showLabelFalseSections": [
+            6,
+            7
+          ],
+          "iconSpanPresentAllSections": true,
+          "labelSpanAbsentInShowLabelFalseSections": true
+        }
+      },
+      "specCompliance": {
+        "status": "fail",
+        "detail": "The test page does not exercise the new iconSlug feature at all. All 9 test page block variations use logoId:195 only — none use iconSlug. The developer should add at least one test page variation that uses iconSlug (e.g. iconSlug:'instagram') to verify the iconSlug PHP rendering path on the frontend. The PHP code for iconSlug is correct by code review, but it cannot be verified via page audit without a live example."
+      },
+      "interactiveBehavior": {
+        "status": "skipped",
+        "reason": "No interactive elements — block is a static display element (social media links list)"
+      },
+      "accessibility": {
+        "status": "pass",
+        "details": "Links have aria-label from link.label field. Screen-reader text '(opens in new tab)' is rendered in sr-only span for all external links. Title attribute added to icon links when showLabel=false for tooltip. No keyboard interactive elements requiring ARIA pattern testing."
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "details": "No duplicated markup for responsive breakpoints found. Single DOM tree for both mobile and desktop."
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "specCompliance / attributes",
+        "severity": "major",
+        "description": "Test page has no iconSlug examples — the primary new feature is untested at the frontend PHP rendering level. All 9 variations use logoId:195 only. The iconSlug code path in PHP (reading SVG from resources/ directory) is never executed on the test page.",
+        "file": "test page: test-wide-social-media (page ID 193)",
+        "fix": "Update the test page to include at least one takt/wide-social-media-item with iconSlug set (e.g. {\"iconSlug\":\"instagram\",\"link\":{\"url\":\"https://instagram.com\",...}}). Ideally add a full demo container showing all 12 icon slugs. Remove logoId from those items so the iconSlug path is exclusively exercised."
+      },
+      {
+        "id": "FQA-002",
+        "check": "phpSvgFileRead / logoId path",
+        "severity": "minor",
+        "description": "XML declaration from media library SVGs appears as <!--?xml version=\"1.0\" encoding=\"UTF-8\"?--> in rendered HTML when using the logoId fallback path. This is output by theme_output_svg_or_img() which reads SVG files from the WordPress media library that include an XML declaration. The browser treats the XML PI as invalid HTML and converts it to a comment. This is a pre-existing behavior of theme_output_svg_or_img and is not a regression of the iconSlug change. The iconSlug path (resource SVGs) does not have this issue as those files have no XML declaration.",
+        "file": "blocks/WideSocialMedia/WideSocialMediaItem/WideSocialMediaItem.php",
+        "fix": "This is a pre-existing issue with theme_output_svg_or_img. Not introduced by this change. If a fix is desired, the PHP could strip the XML declaration from the logoId path output too: $iconHtml = preg_replace('/<\\?xml.*?\\?>\\s*/', '', $iconHtml); after the theme_output_svg_or_img call. However, since this is outside scope of the current change and the resource SVGs don't have this issue, this is informational only.",
+        "alsoUpdate": "inc/helpers/image-svg.php (if fixing at source)"
+      },
+      {
+        "id": "FQA-003",
+        "check": "attributes / iconSlug default",
+        "severity": "minor",
+        "description": "iconSlug attribute in block.json has no default value (undefined). The logoId attribute has default:null. This is an inconsistency — both attributes should have the same default behavior. PHP uses !empty() which handles both undefined and null consistently, so this is functional, but block.json could be more explicit.",
+        "file": "blocks/WideSocialMedia/WideSocialMediaItem/block.json line 27",
+        "fix": "Consider adding \"default\": null to iconSlug for consistency with logoId: \"iconSlug\": { \"type\": \"string\", \"default\": null }. Not strictly required — empty check works correctly either way."
+      }
+    ],
+    "passedChecks": [
+      "Build passes — no TypeScript or compilation errors",
+      "iconSlug attribute defined in block.json as type:string",
+      "TSX imports IconPicker and SuggestedIcon from @taktdev/components",
+      "All 12 SVG ReactComponent imports present in WideSocialMediaItem.tsx",
+      "suggestedIcons array has exactly 12 entries matching FooterInfoSocialItem exactly",
+      "IconPicker onChange handler sets iconSlug and logoId correctly (clears other field)",
+      "PHP prioritizes iconSlug over logoId (if/elseif structure)",
+      "PHP uses sanitize_file_name() on iconSlug before building file path (security correct)",
+      "PHP checks file_exists() before file_get_contents() (safe)",
+      "PHP uses preg_replace to strip XML declaration from resource SVGs (correct — resource SVGs don't have XML decls so no-op, but logic is correct)",
+      "PHP falls back to theme_output_svg_or_img when only logoId is set (backward compat verified on all 9 test page variations)",
+      "All 12 SVG resource files exist in WideSocialMediaItem/resources/",
+      "No SVG resource files contain XML declarations (they start directly with <svg>)",
+      "phpExtractPattern pass — no $attributes['key'] anti-pattern",
+      "phpDocblock pass — @var annotations for all attributes present",
+      "contextConsistency pass — usesContext/providesContext consistent",
+      "phpFunctionExistence pass — all called PHP functions exist",
+      "Test page has 9 block instances, all in DemoContainers, no stale markup",
+      "showLabel context correctly hides/shows labels on frontend (sections 6 and 7 have no label spans)",
+      "Icon spans present in all 9 sections",
+      "SR-only (opens in new tab) text present for all external links",
+      "Page renders at 375px, 768px, 1440px without errors"
+    ],
+    "screenshots": [
+      ".taktician-project/reports/blocks/wide-social-media/screenshots/2026-02-19-124231/wide-social-media-375w.png",
+      ".taktician-project/reports/blocks/wide-social-media/screenshots/2026-02-19-124231/wide-social-media-768w.png",
+      ".taktician-project/reports/blocks/wide-social-media/screenshots/2026-02-19-124231/wide-social-media-1440w.png"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

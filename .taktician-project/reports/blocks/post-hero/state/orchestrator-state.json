@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "mode": "edit",
+  "blockName": "PostHero",
+  "blockNameKebab": "post-hero",
+  "blockPath": "blocks/PostHero",
+  "reportDir": ".taktician-project/reports/blocks/post-hero",
+  "stateDir": ".taktician-project/reports/blocks/post-hero/state",
+  "phase": "review",
+  "status": "complete",
+  "revisionCycle": 0,
+  "maxRevisionCycles": 3,
+  "testPage": {
+    "url": "https://ign.localhost/blog/test-post-hero/",
+    "pageId": 181,
+    "verifiedBlockCount": 4
+  },
+  "figma": {
+    "url": "https://www.figma.com/design/bpRK9A1l2nTbWfMg1pX5yK/IGN-%7C-WEBSITE--INTERNAL-?node-id=669-33688&m=dev",
+    "nodeId": "669:33688",
+    "availability": {
+      "desktop": "available"
+    }
+  },
+  "guidance": {
+    "blockType": "hero",
+    "patternReferences": [
+      {
+        "block": "Hero",
+        "useFor": "secondary variation reference"
+      }
+    ],
+    "qualityExpectations": "standard",
+    "specContent": "Create a block called Post Hero. It will be based on the hero block type and the secondary variation of the existing Hero block. It should automatically get the post thumbnail for the background, the post topic for the pill (with topic color), the post title, optional excerpt, author and publish date. Default uses page accent color with option to use topic accent color."
+  },
+  "editContext": null,
+  "changeRequest": "Make the hero minimum height be min(700px, 100vh) and have its content aligned to the bottom of it.",
+  "agentOutputs": [
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-25-145657",
+      "file": ".taktician-project/reports/blocks/post-hero/state/planning-2026-02-25-145657.json"
+    },
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-25-145657",
+      "file": ".taktician-project/reports/blocks/post-hero/state/planning-2026-02-25-145657.json",
+      "summary": "CSS/layout change: min-height on .post-hero-inner, mt-auto on content for bottom alignment"
+    },
+    {
+      "agent": "developer",
+      "timestamp": "2026-02-25-145850",
+      "file": ".taktician-project/reports/blocks/post-hero/state/developer-2026-02-25-145850.json",
+      "summary": "Applied min-height CSS rule and mt-auto bottom alignment to PostHero.css, PostHero.tsx, PostHero.php. Build passes.",
+      "status": "complete"
+    },
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-25-150257",
+      "file": ".taktician-project/reports/blocks/post-hero/state/functional-qa-2026-02-25-150257.json",
+      "summary": "PASS: 10/10 checks passed. Min-height, bottom alignment, breakpoints, sync all verified. 0 issues.",
+      "status": "PASS"
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-25-151000",
+      "file": ".taktician-project/reports/blocks/post-hero/post-hero-report.md",
+      "summary": "Report updated with changelog, layout changes, QA results",
+      "status": "complete"
+    }
+  ],
+  "latestOutputs": {
+    "planning": ".taktician-project/reports/blocks/post-hero/state/planning-2026-02-25-145657.json",
+    "developer": ".taktician-project/reports/blocks/post-hero/state/developer-2026-02-25-145850.json",
+    "functionalQa": ".taktician-project/reports/blocks/post-hero/state/functional-qa-2026-02-25-150257.json",
+    "designQa": null
+  },
+  "screenshots": {
+    "qaScreenshots": ".taktician-project/reports/blocks/post-hero/screenshots",
+    "finalScreenshots": ".taktician-project/reports/blocks/post-hero/screenshots/2026-02-20-140718/"
+  },
+  "unresolvedIssues": [],
+  "timestamps": {
+    "started": "2026-02-25-145502",
+    "lastUpdated": "2026-02-25T23:11:39.062Z"
+  },
+  "agentSessions": {
+    "planning": "ab1c609",
+    "developer": "aad477f",
+    "functionalQa": "ad3aafd",
+    "report": "a15d9cb"
+  }
+}

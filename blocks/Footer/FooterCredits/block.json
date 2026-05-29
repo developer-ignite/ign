@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/footer-credits",
+  "title": "Footer Credits",
+  "category": "takt-theme",
+  "description": "Copyright, attribution, and legal links bar",
+  "parent": ["takt/footer"],
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "reusable": false
+  },
+  "attributes": {
+    "anchor": { "type": "string" },
+    "copyrightText": { "type": "string", "default": "" }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "copyrightText": "© 2025 IGNITE Student Union"
+    },
+    "innerBlocks": [
+      {
+        "name": "takt/footer-credits-item",
+        "attributes": { "link": { "title": "Privacy Policy", "url": "#" } }
+      },
+      {
+        "name": "takt/footer-credits-item",
+        "attributes": { "link": { "title": "Terms of Use", "url": "#" } }
+      }
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12-205938",
+  "status": "complete",
+  "blockName": "ContentWithMedia",
+  "mode": "fix",
+  "triggeredBy": "functional-qa-2026-02-12-205557",
+  "output": {
+    "summary": "Fixed all 4 QA issues: added id to BaseControl in TSX, added @var docblock for auto-extracted attributes in PHP, separated computed helpers from attribute declarations, and aligned variable documentation with block.json attributes.",
+    "issuesFixed": [
+      {
+        "id": "FQA-001",
+        "severity": "major",
+        "description": "BaseControl component has label but missing id property",
+        "fix": "Added id=\"video-url-control\" to BaseControl at line 319 of ContentWithMedia.tsx",
+        "file": "blocks/ContentWithMedia/ContentWithMedia.tsx",
+        "verified": true
+      },
+      {
+        "id": "FQA-002",
+        "severity": "major",
+        "description": "PHP template variable documentation pattern not followed",
+        "fix": "Added comprehensive @var docblock listing all 15 auto-extracted attribute variables from block.json. Variables were already auto-extracted by the theme's extract() in inc/helpers/blocks.php - the issue was lack of documentation, not manual extraction.",
+        "file": "blocks/ContentWithMedia/ContentWithMedia.php",
+        "verified": true
+      },
+      {
+        "id": "FQA-003",
+        "severity": "major",
+        "description": "Computed helper variables mixed with attribute documentation area",
+        "fix": "Separated computed helper variables ($hasImageMedia, $hasVideo, $hasMedia) below the @var docblock with a clear '// Computed helper variables.' comment. Aligned assignment operators for readability.",
+        "file": "blocks/ContentWithMedia/ContentWithMedia.php",
+        "verified": true
+      },
+      {
+        "id": "FQA-004",
+        "severity": "minor",
+        "description": "Missing @var docblock for auto-extracted camelCase attribute variables",
+        "fix": "Added full @var docblock covering all 15 attributes: $anchor, $isReversed, $reverseRows, $darkMode, $eyebrow, $heading, $description, $buttons, $mediaType, $imageLayout, $images, $videoSource, $videoFile, $videoId, $posterImage. Also documented $block (WP_Block instance).",
+        "file": "blocks/ContentWithMedia/ContentWithMedia.php",
+        "verified": true
+      }
+    ],
+    "filesModified": [
+      "blocks/ContentWithMedia/ContentWithMedia.tsx",
+      "blocks/ContentWithMedia/ContentWithMedia.php"
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "notes": "Build compiles with only pre-existing performance warnings (asset size limits)"
+    },
+    "lintStatus": {
+      "passed": true,
+      "contentWithMediaErrors": 0,
+      "contentWithMediaWarnings": 4,
+      "notes": "All 4 warnings are pre-existing: 3 experimental WP API warnings and 1 React Hook dependency warning. The @wordpress/no-base-control-with-label-without-id error is now resolved."
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "PHP and TSX remain in sync. PHP docblock now accurately reflects block.json attributes. No markup changes were needed - only documentation and the TSX id property."
+    },
+    "blockers": [],
+    "errors": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

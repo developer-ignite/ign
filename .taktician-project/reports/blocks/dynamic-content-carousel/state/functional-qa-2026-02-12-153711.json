@@ -1,0 +1,230 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-12-153711",
+  "status": "pass",
+  "blockName": "DynamicContentCarousel",
+  "qaType": "type-safety-fix-verification",
+  "output": {
+    "summary": {
+      "checksRun": 6,
+      "checksPassed": 6,
+      "checksFailed": 0,
+      "issuesFound": 1,
+      "critical": 0,
+      "major": 0,
+      "minor": 1,
+      "notes": "TypeScript type safety fix verified successfully. Build passes. Type guard pattern correctly implemented. Minor issue: unrelated CSS and padding changes included in same commit."
+    },
+    "checks": {
+      "typeCompilation": {
+        "status": "pass",
+        "description": "TypeScript compilation checked",
+        "finding": "DynamicContentCarousel.tsx no longer has type errors. The PostSelectorSortable onChange type error has been resolved.",
+        "preExistingErrors": [
+          "blocks/Archive/Archive.tsx(117,25): Type 'string | number' is not assignable to type 'string'",
+          "blocks/FeaturedPost/FeaturedPost.tsx(84,17): Property 'meta' does not exist on type",
+          "blocks/FeaturedPost/FeaturedPost.tsx(263,12): 'React' refers to a UMD global",
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx(77,8): Type 'string' is not assignable",
+          "blocks/TestimonialsCarousel/TestimonialsCarousel.tsx(163,27): Type 'number | number[]' is not assignable"
+        ],
+        "note": "Pre-existing TypeScript errors in other blocks are unrelated to this fix. TestimonialsCarousel has the same issue and will be fixed in a separate pipeline."
+      },
+      "build": {
+        "status": "pass",
+        "description": "Theme build succeeds",
+        "command": "bun run build",
+        "result": "webpack compiled with 3 warnings (performance recommendations only, pre-existing)",
+        "warnings": [
+          "asset size limit: js/editor.js (326 KiB)",
+          "entrypoint size limit: js/editor (328 KiB), js/screen (363 KiB), css/screen (262 KiB)",
+          "webpack performance recommendations"
+        ],
+        "note": "All warnings are pre-existing and unrelated to this change."
+      },
+      "typeGuardLogic": {
+        "status": "pass",
+        "description": "Type guard pattern correctly implemented",
+        "implementation": "Array.isArray(value) ? value : (value ? [value] : [])",
+        "verification": {
+          "case1": {
+            "input": "number[] (e.g., [1, 2, 3])",
+            "logic": "Array.isArray(value) evaluates to true",
+            "output": "value (passed through as-is)",
+            "status": "correct"
+          },
+          "case2": {
+            "input": "number (e.g., 42)",
+            "logic": "Array.isArray(value) is false, value is truthy",
+            "output": "[value] (wrapped in array)",
+            "status": "correct"
+          },
+          "case3": {
+            "input": "0, null, or undefined",
+            "logic": "Array.isArray(value) is false, value is falsy",
+            "output": "[] (empty array)",
+            "status": "correct"
+          }
+        },
+        "complianceWithSpec": "Matches planning spec CHG-001 exactly. Adapted from FeaturedPost.tsx pattern (inverse for multi-select mode).",
+        "note": "Type guard correctly coerces PostSelectorSortable's `number | number[]` return value into `number[]` as required by selectedPosts attribute type."
+      },
+      "testPageVerification": {
+        "status": "pass",
+        "description": "Test page contains block instances",
+        "testPageUrl": "https://ign.localhost/test-dynamic-content-carousel/",
+        "blockCount": 12,
+        "blockInstances": "12 instances of takt/dynamic-content-carousel found on test page",
+        "note": "Sufficient block instances for testing. No functional testing required (pure type safety fix)."
+      },
+      "fileModificationScope": {
+        "status": "pass-with-note",
+        "description": "Verify only intended files modified",
+        "filesChanged": [
+          {
+            "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+            "lines": "206-213",
+            "change": "Added type guard to PostSelectorSortable onChange handler",
+            "relevance": "intended"
+          },
+          {
+            "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+            "lines": "361-367, 376",
+            "change": "Padding changes: removed py-10 sm:py-16 from section, changed container padding from py-10 md:py-15 to py-18 md:py-23, changed before:-inset-y-8 to before:inset-y-0",
+            "relevance": "unrelated",
+            "severity": "minor",
+            "note": "These padding changes appear to be from a previous session (developer-color-2026-02-12-142017.json). Should have been committed separately."
+          },
+          {
+            "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.php",
+            "lines": "94-95",
+            "change": "Same padding changes as TSX (section and container)",
+            "relevance": "unrelated",
+            "severity": "minor",
+            "note": "PHP template matches TSX changes (TSX/PHP sync maintained), but unrelated to type safety fix."
+          },
+          {
+            "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.css",
+            "lines": "6-10",
+            "change": "Added color lock CSS: --gradient-left: var(--color-neon-green); --gradient-right: var(--color-blue);",
+            "relevance": "unrelated",
+            "severity": "minor",
+            "note": "Color lock CSS from previous session (planning-color-1739350800.json). Should have been committed separately."
+          }
+        ],
+        "recommendation": "The type safety fix is correct, but ideally the unrelated CSS and padding changes should have been committed in a separate commit. However, since these changes were made in previous sessions and this is a QA check (not a developer task), this is noted as a minor process issue rather than a blocker."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "description": "Verify fix matches planning specification",
+        "planningFile": ".taktician-project/reports/blocks/dynamic-content-carousel/state/planning-2026-02-12-153116.json",
+        "changeId": "CHG-001",
+        "complianceChecks": {
+          "file": {
+            "expected": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+            "actual": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+            "status": "match"
+          },
+          "lines": {
+            "expected": "204-211",
+            "actual": "206-213",
+            "status": "match (minor offset due to formatting)"
+          },
+          "implementation": {
+            "expected": "Array.isArray( value ) ? value : value ? [ value ] : []",
+            "actual": "Array.isArray( value ) ? value : value ? [ value ] : []",
+            "status": "exact match"
+          },
+          "typeGuardPattern": {
+            "expected": "Adapted from FeaturedPost.tsx lines 146-151 (inverse pattern for multi-select mode)",
+            "actual": "Correctly implements inverse pattern: Array.isArray check for multi-select (array) output",
+            "status": "match"
+          }
+        },
+        "note": "Implementation exactly matches planning specification CHG-001."
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "fileModificationScope",
+        "severity": "minor",
+        "description": "Unrelated CSS and padding changes included in the same working tree state as the type safety fix",
+        "files": [
+          "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx (padding changes at lines 361-367, 376)",
+          "blocks/DynamicContentCarousel/DynamicContentCarousel.php (padding changes at lines 94-95)",
+          "blocks/DynamicContentCarousel/DynamicContentCarousel.css (color lock at lines 6-10)"
+        ],
+        "recommendation": "These changes appear to be from previous sessions (color lock from planning-color-1739350800.json, padding adjustments). Ideally, unrelated changes should be committed separately for cleaner git history. However, this is a process issue, not a code correctness issue.",
+        "impact": "No impact on type safety fix correctness. Git history will show multiple logical changes in one commit if committed as-is.",
+        "action": "Note for developer: consider separating commits for type safety fix vs. visual/padding adjustments in future iterations."
+      }
+    ],
+    "passedChecks": [
+      "TypeScript compilation succeeds (DynamicContentCarousel.tsx type error resolved)",
+      "Build completes successfully (webpack compiled with only pre-existing warnings)",
+      "Type guard logic correctly handles all cases (array pass-through, number wrapping, falsy empty array)",
+      "Type guard pattern matches planning spec CHG-001 exactly",
+      "Test page contains 12 block instances (sufficient for testing)",
+      "Implementation matches specification from planning-2026-02-12-153116.json"
+    ],
+    "testsSkipped": {
+      "visualRegression": {
+        "reason": "Pure TypeScript type safety fix with no visual impact (per planning spec: noVisualImpact: true)",
+        "status": "intentional-skip"
+      },
+      "functionalBehavior": {
+        "reason": "Pure TypeScript type guard with no runtime behavior change (per planning spec: noFunctionalImpact: true). PostSelectorSortable already returns arrays in multi-select mode.",
+        "status": "intentional-skip"
+      },
+      "screenshots": {
+        "reason": "No screenshots needed for type-only fix (per planning testPlan.noScreenshotsNeeded: true)",
+        "status": "intentional-skip"
+      },
+      "accessibility": {
+        "reason": "No changes to rendered HTML or interactive behavior",
+        "status": "intentional-skip"
+      },
+      "innerBlocks": {
+        "reason": "Block has no inner blocks",
+        "status": "not-applicable"
+      },
+      "edgeCases": {
+        "reason": "Type guard logic covers all edge cases (array, number, falsy). No runtime testing required.",
+        "status": "intentional-skip"
+      },
+      "tsxPhpSync": {
+        "reason": "No changes to PHP template related to the type safety fix. Padding changes maintain sync.",
+        "status": "verified-by-inspection"
+      }
+    },
+    "verification": {
+      "typeErrorResolution": {
+        "before": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx: Type 'number | number[]' is not assignable to type 'number[]'",
+        "after": "No type errors for DynamicContentCarousel.tsx in `bun run check` output",
+        "status": "resolved"
+      },
+      "buildSuccess": {
+        "command": "bun run build",
+        "exitCode": 0,
+        "status": "pass"
+      },
+      "typeGuardCorrectness": {
+        "pattern": "Array.isArray(value) ? value : (value ? [value] : [])",
+        "handlesArrayInput": true,
+        "handlesNumberInput": true,
+        "handlesFalsyInput": true,
+        "matchesSpec": true,
+        "status": "correct"
+      }
+    },
+    "relatedIssues": {
+      "testimonialsCarousel": {
+        "note": "TestimonialsCarousel.tsx has the exact same PostSelectorSortable type issue at lines 163-167 (per bun run check output: blocks/TestimonialsCarousel/TestimonialsCarousel.tsx(163,27): Type 'number | number[]' is not assignable to type 'number[]'). Planning spec notes this will be fixed in a separate pipeline.",
+        "action": "No action required in this QA cycle. Documented for future fix."
+      }
+    },
+    "conclusion": "The TypeScript type safety fix has been successfully implemented and verified. The type guard correctly handles the `number | number[]` union type from PostSelectorSortable's onChange callback, coercing it to `number[]` as required by the selectedPosts attribute. Build passes, type errors resolved, implementation matches specification. Minor process note: unrelated CSS and padding changes from previous sessions are included in the working tree but do not affect the correctness of the type safety fix."
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

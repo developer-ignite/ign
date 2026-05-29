@@ -1,0 +1,86 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-09-202952",
+  "status": "complete",
+  "blockName": "Header",
+  "output": {
+    "mode": "fix",
+    "fixesApplied": [
+      {
+        "id": "FQA-R2-001",
+        "severity": "critical",
+        "description": "Removed @custom-variant not-menu-open from resources/css/screen/states.css (line 5). This variant was explicitly prohibited by the user.",
+        "file": "resources/css/screen/states.css",
+        "action": "Deleted the line: @custom-variant not-menu-open (&:where(:not(.menu-open), :not(.menu-open) *));"
+      },
+      {
+        "id": "FQA-R2-002",
+        "severity": "major",
+        "description": "Replaced not-menu-open: prefixed classes on the nav element in HeaderMain.php with default collapsed classes. The mobile nav is now collapsed by default (max-md:max-h-0 max-md:opacity-0 max-md:pointer-events-none max-md:overflow-hidden) and expanded via the menu-open: variant (menu-open:max-h-[2000px] menu-open:opacity-100 menu-open:pointer-events-auto menu-open:pt-4 menu-open:pb-8). This matches the TSX pattern.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "line": 130,
+        "action": "Replaced 'not-menu-open:max-md:max-h-0 not-menu-open:max-md:opacity-0 not-menu-open:max-md:pointer-events-none' with 'max-md:max-h-0 max-md:opacity-0 max-md:pointer-events-none max-md:overflow-hidden'"
+      },
+      {
+        "id": "FQA-R2-003",
+        "severity": "minor",
+        "description": "Fixed 8 prettier/prettier formatting errors in HeaderMain.tsx by running bun run lint:fix.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "action": "Ran bun run lint:fix which auto-fixed all prettier formatting issues"
+      },
+      {
+        "id": "FQA-R2-004",
+        "severity": "minor",
+        "description": "Removed unused clientId parameter from Header.tsx Edit function.",
+        "file": "blocks/Header/Header.tsx",
+        "line": 22,
+        "action": "Changed '{ clientId }: EditProps' to '{}: EditProps'"
+      },
+      {
+        "id": "FQA-R2-005",
+        "severity": "minor",
+        "description": "Added id props to BaseControl components in the Behaviour panel of HeaderMain.tsx.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "lines": [435, 468],
+        "action": "Added id='header-behaviour-desktop' and id='header-behaviour-mobile' to the two BaseControl components"
+      },
+      {
+        "id": "FQA-R2-006",
+        "severity": "minor",
+        "description": "Fixed prettier formatting error in HeaderMainItem.tsx (handled by lint:fix in FQA-R2-003).",
+        "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+        "action": "Auto-fixed by bun run lint:fix"
+      }
+    ],
+    "filesModified": [
+      { "path": "resources/css/screen/states.css", "change": "Removed @custom-variant not-menu-open line" },
+      { "path": "blocks/Header/HeaderMain/HeaderMain.php", "change": "Replaced not-menu-open: classes with default collapsed classes on nav element" },
+      { "path": "blocks/Header/Header.tsx", "change": "Removed unused clientId parameter" },
+      { "path": "blocks/Header/HeaderMain/HeaderMain.tsx", "change": "Added id props to BaseControl components, prettier auto-formatting applied" },
+      { "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx", "change": "Prettier auto-formatting applied" }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": ["asset size limit: editor.js (301 KiB)", "entrypoint size limit: js/editor (302 KiB), js/screen (331 KiB)", "webpack performance recommendations"]
+    },
+    "lintStatus": {
+      "headerBlockErrors": 0,
+      "headerBlockWarnings": 0,
+      "note": "All Header block files pass lint with zero errors and zero warnings"
+    },
+    "syncStatus": {
+      "verified": true,
+      "note": "PHP nav element now uses default-collapsed approach matching TSX React state pattern. Both use: collapsed by default, expanded via menu-open state/variant."
+    },
+    "blockers": [],
+    "issuesSkipped": [
+      {
+        "id": "FQA-R2-007",
+        "reason": "Observation/note only - search form duplication is an acceptable pattern used in both TSX and PHP, noted for potential future improvement"
+      }
+    ]
+  },
+  "tokensUsed": 15000,
+  "questionsForUser": []
+}

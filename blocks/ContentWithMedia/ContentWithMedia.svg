@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Left column: text content -->
+	<rect x="2" y="7" width="4" height="1"/>
+	<rect x="2" y="9" width="7" height="2"/>
+	<rect x="2" y="12" width="9" height="1"/>
+	<rect x="2" y="14" width="7" height="1"/>
+	<rect x="2" y="16" width="3" height="1"/>
+	<rect x="6" y="16" width="3" height="1"/>
+
+	<!-- Right column: multi-image collage -->
+	<rect x="12" y="7" width="10" height="6"/>
+	<rect x="12" y="14" width="5" height="3"/>
+	<rect x="18" y="14" width="4" height="3"/>
+
+	<!-- Section container -->
+	<path d="M0,5v14h24V5H0ZM23,18H1V6h22v12Z"/>
+</svg>

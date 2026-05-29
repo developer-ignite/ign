@@ -1,0 +1,40 @@
+{
+  "agent": "developer",
+  "mode": "fix",
+  "status": "complete",
+  "timestamp": "2026-02-17-160311",
+  "planningRef": "planning-2026-02-17-155619.json",
+  "output": {
+    "summary": "Consolidated preset filter pills into .archive-active-filters. Deleted the separate .archive-preset-filters container from PHP and JS. When displayFilters=true, preset terms now render as non-interactive <span class=\"archive-preset-pill\"> elements alongside interactive <button> pills inside .archive-active-filters. When displayFilters=false, no pills are shown at all. Updated CSS hide rule to account for preset spans.",
+    "filesChanged": [
+      {
+        "file": "blocks/Archive/Archive.php",
+        "changes": [
+          "Deleted .archive-preset-filters block (lines 350-366 in previous version)",
+          "Modified .archive-active-filters loop: for each selected term, renders <span class=\"archive-preset-pill\"> if term is a preset, or <button data-field data-value> if user-selected"
+        ]
+      },
+      {
+        "file": "blocks/Archive/Archive.js",
+        "changes": [
+          "Deleted presetFiltersSelector variable (line 6)",
+          "Deleted AJAX update block for .archive-preset-filters (lines 132-137)",
+          "Modified buildButtons(): now removes both button[data-field] and .archive-preset-pill elements before rebuild; renders preset values as <span class=\"archive-preset-pill\"> and user values as interactive <button>"
+        ]
+      },
+      {
+        "file": "blocks/Archive/Archive.css",
+        "changes": [
+          "Updated hide rule from .archive-active-filters:has(button:only-child) to .archive-active-filters:not(:has(button[data-field], .archive-preset-pill)) so bar shows when only preset spans are present",
+          "Moved .archive-preset-pill styles from .archive .archive-preset-filters scope to .archive .archive-active-filters scope"
+        ]
+      }
+    ],
+    "validationResults": {
+      "build": "passed",
+      "lint": "failed (24 pre-existing errors in MainWrapper, FullWidthMedia, TestimonialsCarousel — none in Archive)",
+      "sync": "passed",
+      "registration": "passed"
+    }
+  }
+}

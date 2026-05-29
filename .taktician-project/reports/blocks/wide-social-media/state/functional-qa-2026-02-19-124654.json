@@ -1,0 +1,89 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-19-124654",
+  "status": "PASS",
+  "blockName": "WideSocialMedia",
+  "output": {
+    "mode": "re-verification",
+    "fixesVerified": [
+      "FQA-001",
+      "FQA-003"
+    ],
+    "summary": {
+      "checksRun": 5,
+      "checksPassed": 5,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "checks": {
+      "testPageIconSlugItems": {
+        "status": "pass",
+        "details": "Test page now contains 2 new demo containers with 16 items that use iconSlug exclusively (no logoId). Container 1: 'IconPicker Slugs - All 12 Icons' with all 12 slugs (bluesky, facebook, facebook-alt, imdb, instagram, linkedin, pinterest, threads, tiktok, vimeo, x, youtube). Container 2: 'IconPicker Slugs - Icons Only (showLabel=false)' with 4 items (instagram, x, youtube, tiktok) and showLabel=false. Raw content confirmed via taktician_wp_raw_content. Total block instances now 11 (up from 9)."
+      },
+      "iconSlugPhpRendering": {
+        "status": "pass",
+        "details": "The iconSlug PHP path is confirmed to execute and render correctly on the frontend. Rendered HTML analysis shows 16 icon spans with clean SVG output (no XML declaration artifact) — these are the 16 new iconSlug items. The SVG elements start directly with <svg xmlns=...> confirming file_get_contents from resources/ is working and no XML declaration is present in the resource files. Sample rendered output: '<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 25 24\">...' (clean, no XML PI).",
+        "iconSlugSpansFound": 16,
+        "logoIdSpansFound": 31,
+        "xmlDeclarationArtifactInIconSlugSpans": false
+      },
+      "iconSlugDefaultNull": {
+        "status": "pass",
+        "details": "iconSlug attribute in block.json now has 'default': null at line 29, matching logoId's default:null. block.json now reads: {\"iconSlug\": {\"type\": \"string\", \"default\": null}}. FQA-003 resolved."
+      },
+      "logoIdBackwardCompat": {
+        "status": "pass",
+        "details": "All 9 original logoId-based test page variations continue to render correctly. 31 icon spans with logoId-path SVG output (with pre-existing XML declaration artifact from theme_output_svg_or_img — not a regression). Page audit shows sections 2-10 match expected link counts: 2, 4, 8, 3, 3, 1, 4, 3, 3 links respectively. Icon spans, label spans, and anchors all present as expected."
+      },
+      "validateAll": {
+        "status": "pass",
+        "details": "taktician_validate_all passed with 0 errors. Warnings are pre-existing react-hooks/exhaustive-deps in unrelated blocks (Accordion, Archive, ContentWithMedia, FullWidthMedia, PostHero, Tabs) and expected root-wrapper-element warnings for the WideSocialMedia block (TSX uses editor-only BlockControls/InspectorControls as outermost element; PHP correctly uses <li>/<aside> for frontend). No new issues introduced.",
+        "build": "pass",
+        "lint": "pass",
+        "sync": "pass",
+        "registration": "pass"
+      },
+      "showLabelFalseWithIconSlug": {
+        "status": "pass",
+        "details": "Section index 1 (IconPicker Slugs - Icons Only, showLabel=false) has 4 icon spans, 0 label spans — labels correctly hidden. Icon spans still present and rendered. Confirms iconSlug path works correctly in conjunction with showLabel=false context."
+      }
+    },
+    "resolvedIssues": [
+      {
+        "id": "FQA-001",
+        "previousStatus": "fail",
+        "currentStatus": "pass",
+        "resolution": "Two new demo containers added: 'IconPicker Slugs - All 12 Icons' (12 iconSlug items covering every supported slug) and 'IconPicker Slugs - Icons Only (showLabel=false)' (4 iconSlug items with labels hidden). PHP file_get_contents path verified to produce clean SVG output on the frontend. Total test page block instances increased from 9 to 11."
+      },
+      {
+        "id": "FQA-003",
+        "previousStatus": "minor",
+        "currentStatus": "pass",
+        "resolution": "iconSlug attribute in WideSocialMediaItem/block.json now has 'default': null, consistent with logoId."
+      }
+    ],
+    "openIssues": [
+      {
+        "id": "FQA-002",
+        "severity": "minor",
+        "status": "unchanged",
+        "description": "XML declaration from media library SVGs still appears as <!--?xml version=\"1.0\" encoding=\"UTF-8\"?--> in rendered HTML when using the logoId fallback path (31 spans affected). This is a pre-existing behavior of theme_output_svg_or_img, not a regression of this change. The new iconSlug path does not have this issue. Not in scope for this fix cycle."
+      }
+    ],
+    "newIssues": [],
+    "passedChecks": [
+      "Test page now has 16 items using iconSlug with no logoId",
+      "All 12 iconSlug resource SVG files render via file_get_contents — output is clean SVG with no XML declaration",
+      "showLabel=false works correctly with iconSlug items (icons show, labels hidden)",
+      "iconSlug attribute has default:null in block.json (consistent with logoId)",
+      "All 9 original logoId variations still render correctly (backward compat)",
+      "Build passes, lint passes, sync passes, registration passes (taktician_validate_all: 0 errors)",
+      "11 total block instances, all in DemoContainers, correct structure"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

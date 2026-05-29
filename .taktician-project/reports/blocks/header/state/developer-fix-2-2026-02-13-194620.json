@@ -1,0 +1,100 @@
+{
+  "envelope": {
+    "agent": "developer",
+    "blockName": "header",
+    "timestamp": "2026-02-14T04:18:00Z",
+    "status": "complete"
+  },
+  "output": {
+    "mode": "fix",
+    "summary": "Fixed critical design issue: re-added desktop logo max-height constraint (md:**:max-h-[58px]) to prevent logo from stretching too tall. The logo now displays at the correct ~58px height on desktop while maintaining the two-row span via self-stretch.",
+    "criticalIssueFixed": {
+      "id": "DQA-001",
+      "severity": "critical",
+      "category": "layout",
+      "element": "Logo (desktop)",
+      "problem": "Logo was massively oversized on desktop (~500px tall, 8-9x the intended height) because the max-height constraint was removed in the previous edit. The logo stretched to fill the entire two-row height of the header.",
+      "root_cause": "In the initial implementation of the 9 changes, I misunderstood the requirement 'logo spans into the two rows'. I removed the max-h-[58px] constraint thinking the logo should grow to fill the full row height. However, Figma shows the logo at ~58px tall which IS the correct two-row height. The logo should VISUALLY span the rows via the self-stretch property on the link container, but the IMAGE ITSELF should be constrained to 58px.",
+      "figma_value": "Logo ~215px wide x ~58px tall, compact in left column",
+      "implementation_before": "Logo stretched to ~500px tall, no max-height constraint on desktop",
+      "implementation_after": "Logo constrained to 58px tall via md:**:max-h-[58px], maintains self-stretch container",
+      "fix": "Re-added md:**:max-h-[58px] to logo classes in both PHP and TSX files"
+    },
+    "filesModified": [
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMain.php",
+        "line": 74,
+        "change": {
+          "from": "class=\"block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px]\"",
+          "to": "class=\"block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px]\""
+        },
+        "notes": "Added md:**:max-h-[58px] constraint to logo link element"
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "lines": [592, 603],
+        "change": {
+          "from": "className=\"block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px]\"",
+          "to": "className=\"block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px]\""
+        },
+        "notes": "Added md:**:max-h-[58px] constraint to both ImageDropUploader (line 592) and logo link (line 603)"
+      }
+    ],
+    "logoSizingExplanation": {
+      "desktop": {
+        "maxHeight": "58px (md:**:max-h-[58px])",
+        "rationale": "Matches Figma design where logo is ~58px tall, which equals the combined height of the utility row + nav row",
+        "classes": "self-stretch on container allows it to span the two-row height, but **:max-h-[58px] constrains the actual image"
+      },
+      "mobile": {
+        "maxHeight": "26px (max-md:**:max-h-[26px])",
+        "rationale": "Matches Figma design where mobile logo is ~25.6px tall",
+        "note": "Mobile constraint was already correct and unchanged"
+      },
+      "clarification": "The user's requirement 'logo spans into the two rows' means the logo CONTAINER (the <a> link) spans the rows via self-stretch, creating visual alignment. The logo IMAGE inside is constrained by max-height to prevent it from growing too large. This is the correct interpretation matching Figma."
+    },
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Asset size warnings (js/editor.js 348 KiB, js/screen.js) - pre-existing, not related to changes"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "phpTsxClassSync": "pass",
+      "details": {
+        "phpLogoLink": "Line 74: md:**:max-h-[58px] ✓",
+        "tsxImageDropUploader": "Line 592: md:**:max-h-[58px] ✓",
+        "tsxLogoLink": "Line 603: md:**:max-h-[58px] ✓"
+      },
+      "notes": "All three logo instances (PHP logo link, TSX ImageDropUploader placeholder, TSX logo link) now have identical classes including the desktop max-height constraint."
+    },
+    "designQaVerification": {
+      "issue": "DQA-001 - Desktop logo critically oversized",
+      "status": "FIXED",
+      "verification": "Logo will now display at ~58px height on desktop (1024px+) instead of stretching to ~500px. The self-stretch container allows the logo to span the two-row layout visually while the max-height keeps the actual logo image compact.",
+      "expectedResult": "Logo appears compact (~58px tall) on the left side of the header bar at desktop widths, matching Figma proportions where the logo sits beside the right-side column containing search/SEP link and nav items.",
+      "otherDesignIssues": {
+        "DQA-002": "Submenu gap - within tolerance, no fix needed",
+        "DQA-003": "Submenu text alignment - correct, no fix needed",
+        "DQA-004": "Focus outlines - correct, no fix needed",
+        "DQA-005": "Search placeholder - correct, no fix needed",
+        "DQA-006": "Fixed header width - correct, no fix needed",
+        "DQA-007": "Mobile layout - correct, no fix needed",
+        "DQA-008": "Desktop nav gap - correct, no fix needed"
+      }
+    },
+    "testPage": {
+      "url": "https://ign.localhost/test-header/",
+      "pageId": 114,
+      "note": "Test page unchanged. Logo max-height fix is a CSS-only change that will take effect immediately on page load."
+    },
+    "lessonsLearned": {
+      "misunderstanding": "Initially misunderstood 'logo spans into the two rows' to mean the logo should FILL the two-row height, leading to removal of max-h constraint.",
+      "correct_interpretation": "Logo CONTAINER spans rows via self-stretch for alignment, but logo IMAGE is constrained by max-height to maintain proportions per Figma.",
+      "importance_of_figma_values": "Always check Figma for exact pixel values. The ~58px logo height in Figma was the key indicator that max-height was needed."
+    },
+    "blockers": []
+  }
+}

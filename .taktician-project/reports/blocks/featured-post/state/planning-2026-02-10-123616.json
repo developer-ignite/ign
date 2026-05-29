@@ -1,0 +1,505 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-10-123616",
+  "status": "complete",
+  "blockName": "FeaturedPost",
+  "output": {
+    "meta": {
+      "blockName": "FeaturedPost",
+      "namespace": "takt",
+      "title": "Featured Post",
+      "description": "A content-with-media style section that features a selected blog post, showing its topic tag, title, excerpt, and featured image.",
+      "category": "takt-theme",
+      "generatedAt": "2026-02-10T12:36:16Z",
+      "figmaNodeId": "811:59175",
+      "specFile": null
+    },
+    "files": {
+      "blockJson": "blocks/FeaturedPost/block.json",
+      "indexTsx": "blocks/FeaturedPost/index.tsx",
+      "componentTsx": "blocks/FeaturedPost/FeaturedPost.tsx",
+      "templatePhp": "blocks/FeaturedPost/FeaturedPost.php",
+      "iconSvg": "blocks/FeaturedPost/FeaturedPost.svg"
+    },
+    "blockTypePatterns": {
+      "source": "content-with-media.md",
+      "requiredImports": {
+        "tsx": [
+          "import { shouldDisplay, cn, fetchMedia, renameBlock } from '@taktdev/utilities';",
+          "import { PostSelectorSortable } from '@taktdev/components';",
+          "import { ThemeHeading } from 'parts/ThemeHeading';",
+          "import { useSelect } from '@wordpress/data';",
+          "import { store as coreStore } from '@wordpress/core-data';"
+        ]
+      },
+      "requiredPatterns": [
+        { "pattern": "shouldDisplay", "usage": "Show placeholder content in editor when block is selected but post not yet chosen" },
+        { "pattern": "cn", "usage": "Conditional class names for isReversed, darkMode, reverseRows" },
+        { "pattern": "PostSelectorSortable", "usage": "Post selector in InspectorControls sidebar with limit=1 for single post selection" },
+        { "pattern": "useSelect + getEntityRecord", "usage": "Fetch selected post data (title, excerpt, featured image, categories) in editor" },
+        { "pattern": "renameBlock", "usage": "Rename block in list view to match selected post title" },
+        { "pattern": "fetchMedia", "usage": "Fetch post featured image media in editor" }
+      ],
+      "componentStructure": {
+        "wrapper": "section.featured-post",
+        "container": "div.container.grid"
+      },
+      "qualityChecklist": [
+        "Two-column grid: grid-cols-1 md:grid-cols-2",
+        "Column reversal via isReversed and md:col-start-* pattern (matching ContentWithMedia)",
+        "Toolbar button for column reversal (flipHorizontal icon)",
+        "Toolbar button for row reversal (flipVertical icon)",
+        "Toolbar button for dark mode (shadow icon)",
+        "Responsive stacking on mobile",
+        "Topic tag pill with accent color styling",
+        "Post title rendered as H2 with text-header-2",
+        "Post excerpt rendered as body text",
+        "Button links to the post permalink",
+        "Featured image with aspect-[4/3] and rounded-3xl",
+        "Dark mode with charcoal card pseudo-elements",
+        "shouldDisplay() for empty state in editor",
+        "TSX cn() and PHP class_name() have identical conditional logic"
+      ]
+    },
+    "attributes": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": null,
+        "description": "HTML anchor for the block",
+        "optional": true,
+        "editorComponent": null,
+        "validation": null
+      },
+      {
+        "name": "selectedPost",
+        "type": "number",
+        "default": null,
+        "description": "The ID of the selected blog post to feature",
+        "optional": false,
+        "editorComponent": "PostSelectorSortable (limit=1, postTypes=['post'])",
+        "validation": "Must be a valid published post ID"
+      },
+      {
+        "name": "isReversed",
+        "type": "boolean",
+        "default": false,
+        "description": "Reverses column order. false = media left (content right), true = media right (content left)",
+        "optional": true,
+        "editorComponent": "ToolbarButton (flipHorizontal icon)",
+        "validation": null
+      },
+      {
+        "name": "reverseRows",
+        "type": "boolean",
+        "default": false,
+        "description": "Reverses row order on mobile. false = media above content, true = content above media",
+        "optional": true,
+        "editorComponent": "ToolbarButton (flipVertical icon)",
+        "validation": null
+      },
+      {
+        "name": "darkMode",
+        "type": "boolean",
+        "default": false,
+        "description": "Enables dark mode with charcoal card backgrounds",
+        "optional": true,
+        "editorComponent": "ToolbarButton (shadow icon)",
+        "validation": null
+      },
+      {
+        "name": "buttonLabel",
+        "type": "string",
+        "default": "Learn More",
+        "description": "The label text for the CTA button that links to the post",
+        "optional": true,
+        "editorComponent": "RichText (inline, no formatting)",
+        "validation": null
+      },
+      {
+        "name": "headingSize",
+        "type": "string",
+        "default": "regular",
+        "description": "Controls the heading level. 'regular' renders H2 (text-header-2), 'small' renders H3 (text-header-3)",
+        "optional": true,
+        "editorComponent": "ToggleGroupControl in InspectorControls",
+        "validation": "enum: ['small', 'regular']"
+      }
+    ],
+    "dynamicData": {
+      "description": "This block is a dynamic/server-side rendered block for the frontend (PHP). The editor (TSX) uses useSelect to fetch post data live. The PHP template fetches the post data server-side.",
+      "postDataUsed": {
+        "title": "Rendered as the block heading (H2 or H3 depending on headingSize)",
+        "excerpt": "Rendered as the description text below the title",
+        "featuredImage": "Rendered in the media column with aspect-[4/3] and rounded corners",
+        "categories": "First category rendered as topic tag pill above the eyebrow area",
+        "permalink": "Used as the button URL"
+      },
+      "editorDataFetching": {
+        "pattern": "useSelect with getEntityRecord('postType', 'post', selectedPost, { _embed: true })",
+        "fields": "title.rendered, excerpt.rendered, _embedded['wp:featuredmedia'][0], _embedded['wp:term'][0] (categories)"
+      },
+      "phpDataFetching": {
+        "pattern": "get_post($selectedPost), get_the_excerpt($selectedPost), get_post_thumbnail_id($selectedPost), get_the_category($selectedPost), get_permalink($selectedPost)"
+      }
+    },
+    "styling": {
+      "section": {
+        "classes": "featured-post py-10 sm:py-16",
+        "conditionalClasses": {
+          "dark bg-transparent!": "darkMode === true"
+        },
+        "element": "section"
+      },
+      "container": {
+        "classes": "container grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10 sm:gap-y-16 items-stretch",
+        "conditionalClasses": {
+          "gap-y-8!": "darkMode === true"
+        },
+        "element": "div"
+      },
+      "contentColumn": {
+        "classes": "flex items-center",
+        "conditionalClasses": {
+          "md:col-start-1": "isReversed === true",
+          "md:col-start-2": "isReversed === false",
+          "relative text-white before:absolute before:bg-charcoal before:rounded-3xl before:-z-1 before:-inset-(--side-gutter) md:before:-inset-8": "darkMode === true"
+        },
+        "element": "div"
+      },
+      "contentInner": {
+        "classes": "grid grid-cols-1 h-fit",
+        "element": "div",
+        "description": "Inner wrapper for content elements (topic tag row, heading, description, button). Replaces ThemeHeading since we need custom layout with topic tag pill."
+      },
+      "topicTagRow": {
+        "classes": "flex gap-4 items-center not-last:mb-4",
+        "element": "div",
+        "description": "Row containing the topic tag pill and eyebrow text"
+      },
+      "topicTagPill": {
+        "classes": "inline-flex items-center justify-center px-2 py-1 rounded-full bg-accent-lighter border border-accent text-sm font-medium uppercase leading-[1.1] whitespace-nowrap shrink-0",
+        "element": "span",
+        "description": "Pill/badge showing the post's first category (topic). Uses accent color tokens so it adapts to section color scheme."
+      },
+      "eyebrowText": {
+        "classes": "uppercase text-sm font-medium leading-[1.1]",
+        "element": "span",
+        "description": "Optional eyebrow text next to the topic tag. This is NOT editable -- it comes from the post's category/topic name. Per the Figma, the eyebrow text area says 'Work Integrated Learning Initiative' which suggests it could be a second category or a custom field. However, analyzing the spec more carefully, this appears to be an editable eyebrow like the existing ContentWithMedia. Decision: keep it as an editable eyebrow field for flexibility."
+      },
+      "heading": {
+        "classes": "text-header-2 not-group-last:mb-8",
+        "conditionalClasses": {
+          "text-header-2": "headingSize === 'regular'",
+          "text-header-3": "headingSize === 'small'"
+        },
+        "element": "h2 or h3",
+        "description": "Post title rendered as heading. Not editable -- comes from selected post."
+      },
+      "descriptionWrapper": {
+        "classes": "group",
+        "element": "div"
+      },
+      "description": {
+        "classes": "not-last:mb-8 not-last:md:mb-12",
+        "element": "p",
+        "description": "Post excerpt. Not editable -- comes from selected post."
+      },
+      "buttonWrapper": {
+        "classes": "inline-flex flex-wrap gap-4 items-center",
+        "element": "div"
+      },
+      "button": {
+        "classes": "btn-primary",
+        "conditionalClasses": {
+          "btn-primary": "darkMode === false (light mode, charcoal button)",
+          "btn-primary": "darkMode === true (dark mode, white button -- handled by .dark .btn-primary CSS)"
+        },
+        "element": "a",
+        "description": "CTA button linking to the post. Label is editable (default: 'Learn More'). URL comes from post permalink."
+      },
+      "mediaColumn": {
+        "classes": "",
+        "conditionalClasses": {
+          "-order-1": "reverseRows === false",
+          "md:order-none md:row-start-1": "true",
+          "md:col-start-1": "isReversed === false",
+          "md:col-start-2": "isReversed === true",
+          "relative text-white before:absolute before:bg-charcoal before:rounded-3xl before:-z-1 before:-inset-(--side-gutter) md:before:-inset-8": "darkMode === true"
+        },
+        "element": "div"
+      },
+      "imageWrapper": {
+        "classes": "w-full aspect-[4/3] overflow-hidden",
+        "conditionalClasses": {
+          "rounded-3xl": "darkMode === false",
+          "rounded-xl": "darkMode === true"
+        },
+        "element": "div",
+        "description": "Container for the post featured image. Uses 4:3 aspect ratio matching ContentWithMedia single image layout."
+      },
+      "image": {
+        "classes": "w-full h-full object-cover",
+        "element": "img",
+        "description": "Post featured image. In TSX uses fetchMedia + ImageDropUploader (read-only display, no upload). In PHP uses wp_get_attachment_image."
+      },
+      "playOverlay": {
+        "description": "The Figma shows a play overlay on the image. Per spec, video is not needed. However, since the Figma consistently shows the play button overlay on all 4 variations, this may be decorative in the Figma mockup or the post may contain video content. Per spec: 'There is no need for video support.' -- we will NOT include a play button overlay."
+      }
+    },
+    "responsive": {
+      "mobile": {
+        "breakpoint": "< 768px",
+        "behavior": "Single column stack. Media appears above content by default (reverseRows=false). Topic tag pill and eyebrow remain in a horizontal row. Heading and text are full width. Dark mode uses -inset-(--side-gutter) for card pseudo-element padding."
+      },
+      "tablet": {
+        "breakpoint": "768px - 1023px",
+        "behavior": "Transitions to two-column grid at md (768px). Column order controlled by isReversed and md:col-start-* classes."
+      },
+      "desktop": {
+        "breakpoint": ">= 1024px",
+        "behavior": "Two-column grid with gap-x-16 (64px). Content vertically centered (items-center on content column wrapper). Dark mode uses -inset-8 for card pseudo-element padding."
+      }
+    },
+    "behavior": {
+      "emptyState": {
+        "noPostSelected": "Show InspectorControls panel prompting to select a post. In the content area, show placeholder text: 'Select a post to feature'. The block should still render the structure with shouldDisplay() showing placeholders.",
+        "postDeleted": "PHP template should check if post exists and is published. If not, skip rendering entirely."
+      },
+      "optionalFields": {
+        "pattern": "shouldDisplay()",
+        "fields": ["buttonLabel"]
+      },
+      "editorBehavior": {
+        "blockNaming": "Use renameBlock() to sync block name with selected post title",
+        "postPreview": "In the editor, fetch and display the selected post's title, excerpt, featured image, and first category in real-time using useSelect + getEntityRecord",
+        "buttonLabelEditing": "The button label is editable via RichText inline. Default is 'Learn More'. The button URL is not editable -- it always links to the selected post's permalink."
+      }
+    },
+    "accessibility": {
+      "section": {
+        "role": "region",
+        "ariaLabel": "From anchor or post title"
+      },
+      "topicTagPill": {
+        "role": "none (decorative span)",
+        "description": "Informational badge, no interactive role needed"
+      },
+      "button": {
+        "role": "link (anchor element)",
+        "ariaLabel": "Button label + ' - ' + post title (for context)"
+      },
+      "image": {
+        "alt": "Post featured image alt text (from WordPress media library)"
+      }
+    },
+    "decisions": [
+      {
+        "id": "DEC-001",
+        "category": "layout",
+        "decision": "Clone ContentWithMedia layout structure (two-column grid, isReversed via md:col-start-*, reverseRows, darkMode pattern)",
+        "source": "spec",
+        "evidence": "Spec says: 'apply all the rules that were used on the existing content with media block, you can basically clone it and then do the changes on top of it'"
+      },
+      {
+        "id": "DEC-002",
+        "category": "content",
+        "decision": "Replace editable heading with post title (read-only in editor, dynamic in PHP)",
+        "source": "spec",
+        "evidence": "Spec says: 'it will show the post title instead of having an editable title'"
+      },
+      {
+        "id": "DEC-003",
+        "category": "content",
+        "decision": "Replace editable description with post excerpt (read-only in editor, dynamic in PHP)",
+        "source": "spec",
+        "evidence": "Spec says: 'it will show the post excerpt instead of the description'"
+      },
+      {
+        "id": "DEC-004",
+        "category": "content",
+        "decision": "Replace eyebrow with topic tag pill showing first category name",
+        "source": "spec + figma",
+        "evidence": "Spec says: 'it will have a pill with the topic tag instead of an eyebrow'. Figma shows a rounded pill with green background and border containing 'Topic Tag Goes Here' (node 811:59179)"
+      },
+      {
+        "id": "DEC-005",
+        "category": "content",
+        "decision": "Button links to post permalink with editable label (default: 'Learn More')",
+        "source": "spec",
+        "evidence": "Spec says: 'the button will link to the post' and 'the button label should be editable, with Learn More as the default text'"
+      },
+      {
+        "id": "DEC-006",
+        "category": "media",
+        "decision": "Media column shows only post featured image, no video support, no gallery layout",
+        "source": "spec",
+        "evidence": "Spec says: 'the media is the post featured image. There is no need for video support.'"
+      },
+      {
+        "id": "DEC-007",
+        "category": "interaction",
+        "decision": "Use PostSelectorSortable component with limit=1 for single post selection in InspectorControls",
+        "source": "existing pattern",
+        "evidence": "PostSelectorSortable from @taktdev/components supports limit=1 which returns a single number (not array). Used in CBM DynamicContent block."
+      },
+      {
+        "id": "DEC-008",
+        "category": "color",
+        "decision": "Topic tag pill uses accent color tokens (bg-accent-lighter, border-accent) for automatic color scheme adaptation",
+        "source": "figma",
+        "evidence": "Figma node 811:59179 shows bg-[#eeffb5] (neon-green-20/lighter) with border-[#d4ff45] (neon-green). These map to accent-lighter and accent tokens, allowing automatic adaptation when section color is changed."
+      },
+      {
+        "id": "DEC-009",
+        "category": "layout",
+        "decision": "Image uses aspect-[4/3] matching ContentWithMedia single image layout",
+        "source": "figma + existing pattern",
+        "evidence": "Figma shows image at 624x677 (~0.92 ratio close to 4:3). ContentWithMedia single image uses aspect-[4/3]. Maintaining consistency."
+      },
+      {
+        "id": "DEC-010",
+        "category": "content",
+        "decision": "Do NOT use ThemeHeading component. Build custom content layout with topic tag pill, post title, excerpt, and button inline.",
+        "source": "spec + figma",
+        "evidence": "ThemeHeading expects editable RichText fields for eyebrow/heading/description/buttons. This block needs read-only post data display with a custom topic tag pill. Custom layout is more appropriate than trying to force ThemeHeading to work differently."
+      },
+      {
+        "id": "DEC-011",
+        "category": "content",
+        "decision": "Keep an optional editable eyebrow field alongside the topic tag pill",
+        "source": "figma",
+        "evidence": "Figma node 811:59178 shows both a topic tag pill AND an eyebrow text ('Work Integrated Learning Initiative') side by side. The eyebrow provides additional context beyond the topic tag. Making it editable allows flexibility."
+      },
+      {
+        "id": "DEC-012",
+        "category": "layout",
+        "decision": "No play button overlay on the featured image",
+        "source": "spec",
+        "evidence": "Spec explicitly states: 'There is no need for video support.' The play overlay in Figma appears to be a leftover from the ContentWithMedia component it was based on."
+      },
+      {
+        "id": "DEC-013",
+        "category": "content",
+        "decision": "Dark mode topic tag pill keeps its accent colors (no inversion needed) since the pill has its own background",
+        "source": "figma",
+        "evidence": "Figma dark variant (node 811:59232) shows the topic tag pill with the same neon-green background colors, even in dark mode. The pill text stays charcoal on the green background."
+      },
+      {
+        "id": "DEC-014",
+        "category": "content",
+        "decision": "In dark mode, eyebrow text color changes to white",
+        "source": "figma",
+        "evidence": "Figma dark variant (node 811:59236) shows eyebrow text with text-primary (white) color, while light variant (node 811:59183) shows charcoal color. The dark class handles this automatically."
+      }
+    ],
+    "unresolvedDecisions": [],
+    "testPage": {
+      "variations": [
+        {
+          "name": "Default - No Post Selected",
+          "purpose": "Tests empty state when no post is selected",
+          "attributes": {
+            "selectedPost": null
+          }
+        },
+        {
+          "name": "Light Mode - Media Left (Default)",
+          "purpose": "Full content with media on left, content on right",
+          "attributes": {
+            "selectedPost": "FIRST_PUBLISHED_POST_ID",
+            "isReversed": false,
+            "darkMode": false,
+            "buttonLabel": "Learn More"
+          }
+        },
+        {
+          "name": "Light Mode - Media Right (Reversed)",
+          "purpose": "Tests isReversed with media on right",
+          "attributes": {
+            "selectedPost": "FIRST_PUBLISHED_POST_ID",
+            "isReversed": true,
+            "darkMode": false,
+            "buttonLabel": "Read Full Story"
+          }
+        },
+        {
+          "name": "Dark Mode - Media Left",
+          "purpose": "Tests dark mode with charcoal card backgrounds",
+          "attributes": {
+            "selectedPost": "FIRST_PUBLISHED_POST_ID",
+            "isReversed": false,
+            "darkMode": true,
+            "buttonLabel": "Learn More"
+          }
+        },
+        {
+          "name": "Dark Mode - Media Right (Reversed)",
+          "purpose": "Tests dark mode + reversed columns",
+          "attributes": {
+            "selectedPost": "FIRST_PUBLISHED_POST_ID",
+            "isReversed": true,
+            "darkMode": true,
+            "buttonLabel": "Explore This Story"
+          }
+        },
+        {
+          "name": "Custom Button Label",
+          "purpose": "Tests custom button label text",
+          "attributes": {
+            "selectedPost": "FIRST_PUBLISHED_POST_ID",
+            "buttonLabel": "View Full Article on Our Blog"
+          }
+        },
+        {
+          "name": "Small Heading Size",
+          "purpose": "Tests headingSize='small' which renders H3 instead of H2",
+          "attributes": {
+            "selectedPost": "FIRST_PUBLISHED_POST_ID",
+            "headingSize": "small",
+            "buttonLabel": "Learn More"
+          }
+        },
+        {
+          "name": "With Eyebrow",
+          "purpose": "Tests the optional eyebrow text next to the topic tag",
+          "attributes": {
+            "selectedPost": "FIRST_PUBLISHED_POST_ID",
+            "eyebrow": "Work Integrated Learning Initiative",
+            "buttonLabel": "Learn More"
+          }
+        }
+      ]
+    },
+    "implementationNotes": {
+      "tsxEditor": {
+        "postDataFetching": "Use useSelect with getEntityRecord('postType', 'post', attributes.selectedPost, { _embed: true }) to fetch the selected post with embedded featured media and terms. Extract: post.title.rendered, post.excerpt.rendered (strip HTML tags for display), post._embedded['wp:featuredmedia'][0].id for fetchMedia, post._embedded['wp:term'][0][0] for first category (topic tag).",
+        "postSelector": "Use PostSelectorSortable from @taktdev/components in InspectorControls PanelBody. Set limit={1} and postTypes={['post']}. When limit=1, the component returns a single number (post ID), not an array.",
+        "contentDisplay": "Post title, excerpt, and topic tag are displayed as read-only text (not RichText). Only the buttonLabel uses RichText for inline editing. Use AdvancedRichText from @taktdev/components for the button label.",
+        "blockNaming": "Call renameBlock() whenever the selected post changes, using the post title as the block name.",
+        "featuredImage": "Use fetchMedia(post featured image ID) to get the image data, then display with ImageDropUploader in read-only mode (no onSelect handler) OR simply render an <img> tag since the image is not user-uploadable.",
+        "emptyState": "When no post is selected, show a placeholder message in the content area prompting the user to select a post from the sidebar."
+      },
+      "phpFrontend": {
+        "postDataFetching": "Use get_post($selectedPost) to verify the post exists and is published. Use get_the_title($selectedPost), get_the_excerpt($selectedPost), get_post_thumbnail_id($selectedPost), get_the_category($selectedPost), get_permalink($selectedPost).",
+        "topicTag": "Get first category with get_the_category($selectedPost). If category has accent_color meta, apply it as a class on the section or pill.",
+        "earlyReturn": "If $selectedPost is empty or the post doesn't exist/isn't published, return early without rendering.",
+        "buttonUrl": "Always use get_permalink($selectedPost) as the button URL.",
+        "featuredImage": "Use wp_get_attachment_image(get_post_thumbnail_id($selectedPost), 'large', false, ['class' => 'w-full h-full object-cover'])"
+      },
+      "blockJson": {
+        "renderCallback": "This block needs PHP server-side rendering for the dynamic post data. Use 'render' key in block.json pointing to 'FeaturedPost.php'.",
+        "example": "For block preview, use a placeholder image URL in a custom preview attribute structure."
+      }
+    },
+    "tokenUsage": {
+      "contextGathering": 0,
+      "figmaAnalysis": 0,
+      "designConsultation": 0,
+      "specGeneration": 0,
+      "total": 0
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

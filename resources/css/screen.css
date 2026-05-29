@@ -1,0 +1,25 @@
+@import "tailwindcss";
+@import "swiper/swiper.css";
+@import "swiper/modules/navigation.css";
+@import "swiper/modules/pagination.css";
+
+@import "screen/fonts.css";
+@import "screen/colors.css";
+@import "screen/typography.css";
+@import "screen/spacing.css";
+@import "screen/states.css";
+@import "screen/shadows.css";
+@import "screen/masks.css";
+
+@import "screen/navigation.css";
+@import "screen/button.css";
+@import "screen/body.css";
+@import "screen/discourse.css";
+@import "screen/forms.css";
+@import "screen/swiper.css";
+@import "screen/core-blocks.css";
+@import "screen/tribe-events.css";
+@import "screen/tec.css";
+@import "screen/animations.css";
+
+@source not "../../.taktician-project";

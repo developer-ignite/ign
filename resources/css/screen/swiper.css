@@ -1,0 +1,125 @@
+:root {
+	--swiper-pagination-top: 0;
+	--swiper-pagination-bottom: 0;
+	--swiper-pagination-color: currentColor;
+	--swiper-pagination-bullet-inactive-color: currentColor;
+	--swiper-pagination-bullet-opacity: 1;
+	--swiper-pagination-bullet-inactive-opacity: 0.2;
+	--swiper-pagination-bullet-size: 8px;
+	--swiper-pagination-bullet-horizontal-gap: 0;
+}
+
+.swiper-notification {
+	@apply sr-only;
+}
+
+.swiper-controls:has(.swiper-pagination-bullet:only-child):has(.prev.swiper-button-disabled):has(
+		.next.swiper-button-disabled
+	),
+.swiper-controls:not(:has(.swiper-pagination)):has(.prev.swiper-button-disabled):has(
+		.next.swiper-button-disabled
+	),
+.swiper-controls:has(.swiper-pagination-bullet:only-child):not(:has(.swiper-arrows)) {
+	@apply hidden;
+}
+
+/* Progress Bar Gradient - override Swiper defaults */
+.swiper-pagination-progressbar {
+	background: color-mix(in srgb, currentColor 50%, transparent) !important;
+	border-radius: 9999px;
+}
+
+.swiper-pagination-progressbar .swiper-pagination-progressbar-fill {
+	background: linear-gradient(
+		90deg,
+		var(--gradient-left) 0%,
+		var(--gradient-right) 100%
+	) !important;
+	height: 100% !important;
+	border-radius: 9999px;
+}
+
+/* Lock CardsCarousel gradient to neon-green regardless of page accent color */
+.cards-carousel {
+	--gradient-left: var(--color-neon-green);
+	--gradient-right: var(--color-blue);
+}
+
+/* Carousel Navigation Buttons - styled like secondary button */
+.carousel-nav-btn {
+	@apply inline-flex items-center justify-center
+    w-10 h-10 md:w-12 md:h-12
+    border border-charcoal dark:border-white
+    rounded-full
+    text-charcoal dark:text-white
+    cursor-pointer
+    overflow-hidden
+    relative;
+	isolation: isolate;
+}
+
+.carousel-nav-btn::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(90deg, var(--gradient-left) 0%, var(--gradient-right) 100%);
+	background-size: 200% 100%;
+	background-position: 100% 0;
+	opacity: 0;
+	z-index: -1;
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+}
+
+.carousel-nav-btn svg {
+	@apply w-5 h-5 md:w-6 md:h-6;
+	position: relative;
+}
+
+.carousel-nav-btn:hover:not(:disabled) {
+	@apply border-charcoal text-charcoal;
+}
+
+.carousel-nav-btn:hover:not(:disabled)::before {
+	opacity: 1;
+	animation: carousel-nav-gradient-sweep 1s ease forwards;
+}
+
+.carousel-nav-btn:disabled {
+	@apply opacity-50 cursor-not-allowed;
+}
+
+.carousel-nav-btn:focus-visible {
+	@apply ring-2 ring-white ring-offset-2 ring-offset-charcoal;
+}
+
+@keyframes carousel-nav-gradient-sweep {
+	0% {
+		opacity: 0;
+		background-position: 100% 0;
+	}
+	50% {
+		opacity: 1;
+		background-position: 100% 0;
+	}
+	100% {
+		opacity: 1;
+		background-position: 0% 0;
+	}
+}
+
+/* Respect prefers-reduced-motion: disable Swiper inline-style animations */
+@media (prefers-reduced-motion: reduce) {
+	.swiper-wrapper {
+		transition-duration: 0ms !important;
+	}
+
+	.carousel-nav-btn::before {
+		transition: none !important;
+		animation: none !important;
+	}
+
+	.swiper-pagination-progressbar .swiper-pagination-progressbar-fill {
+		transition: none !important;
+	}
+}

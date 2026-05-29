@@ -1,0 +1,89 @@
+{
+	"agent": "developer",
+	"timestamp": "2026-02-11-211206",
+	"status": "complete",
+	"blockName": "DemoContainer",
+	"output": {
+		"mode": "revision",
+		"filesModified": [
+			{
+				"path": "blocks/DemoContainer/DemoContainer.tsx",
+				"purpose": "Restructured markup to move inner blocks outside container div, allowing full-width content"
+			},
+			{
+				"path": "blocks/DemoContainer/DemoContainer.php",
+				"purpose": "Restructured markup to move inner blocks outside container div, allowing full-width content (PHP sync)"
+			}
+		],
+		"attributesAdded": [],
+		"attributesModified": [],
+		"buildStatus": {
+			"passed": true,
+			"errors": [],
+			"warnings": [
+				"No new warnings in DemoContainer files",
+				"Existing unrelated linter warnings in other blocks remain unchanged"
+			]
+		},
+		"syncStatus": {
+			"verified": true,
+			"note": "Both TSX and PHP updated with identical structural changes"
+		},
+		"structureChanges": {
+			"before": {
+				"description": "Inner blocks were nested inside the container div, limiting them to the container's max-width and padding",
+				"structure": "<div class=\"demo-container\">\n  <div class=\"container\">\n    <div class=\"header\">...</div>\n    <div class=\"inner-blocks\">...</div> <!-- trapped inside container -->\n  </div>\n</div>"
+			},
+			"after": {
+				"description": "Inner blocks are now direct children of the demo-container wrapper, with no width constraints",
+				"structure": "<div class=\"demo-container\">\n  <div class=\"container\">\n    <div class=\"header\">...</div>\n  </div>\n  <div class=\"inner-blocks\">...</div> <!-- free to use full width -->\n</div>"
+			}
+		},
+		"keyBenefits": [
+			{
+				"benefit": "Full-width capability",
+				"description": "Inner blocks can now utilize the full viewport width without being constrained by the container's padding or max-width"
+			},
+			{
+				"benefit": "Header stays contained",
+				"description": "The title and description header area remains properly contained and centered, maintaining readability"
+			},
+			{
+				"benefit": "Flexible content",
+				"description": "Inner blocks can choose to be full-width (e.g., hero sections, carousels) or contained (e.g., text blocks) based on their own styling"
+			},
+			{
+				"benefit": "Better block composition",
+				"description": "Allows proper nesting of full-width blocks within the demo container without layout conflicts"
+			}
+		],
+		"useCases": [
+			"Full-width hero blocks that need edge-to-edge backgrounds",
+			"Carousel blocks that need to show partial next/previous slides",
+			"Gallery blocks that break out of container constraints",
+			"Any block that implements its own container/padding logic"
+		],
+		"revisionsApplied": [
+			{
+				"change": "Move container div inside header conditional",
+				"implementation": "The container div now only wraps the header area (title + description), not the inner blocks",
+				"files": [
+					"blocks/DemoContainer/DemoContainer.tsx",
+					"blocks/DemoContainer/DemoContainer.php"
+				],
+				"details": "Header content stays contained for readability, while inner blocks can use full width"
+			},
+			{
+				"change": "Render inner blocks as direct children of demo-container wrapper",
+				"implementation": "InnerBlocks/children are now rendered directly under the demo-container div, after the optional header container",
+				"files": [
+					"blocks/DemoContainer/DemoContainer.tsx",
+					"blocks/DemoContainer/DemoContainer.php"
+				],
+				"details": "Inner blocks have no horizontal padding or max-width constraints from the demo-container"
+			}
+		],
+		"blockers": []
+	},
+	"tokensUsed": 79000
+}

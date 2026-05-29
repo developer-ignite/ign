@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Container -->
+	<path d="M0,1v22h24V1H0ZM23,22H1V2h22v20Z"/>
+	<!-- Search page: heading, search input with icon, filter row, result cards -->
+	<!-- Heading -->
+	<rect x="2" y="3" width="8" height="2"/>
+	<!-- Search input outline -->
+	<path d="M2,6v4h20V6H2ZM21,9H3V7h18v2Z"/>
+	<!-- Search icon inside input -->
+	<rect x="4" y="8" width="1" height="1"/>
+	<!-- Filter dropdown -->
+	<rect x="2" y="12" width="6" height="1"/>
+	<!-- Result card lines -->
+	<rect x="2" y="15" width="10" height="1"/>
+	<rect x="2" y="17" width="8" height="1"/>
+	<rect x="2" y="19" width="10" height="1"/>
+	<rect x="2" y="21" width="7" height="1"/>
+</svg>

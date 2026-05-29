@@ -1,0 +1,331 @@
+{
+  "agent": "functional-qa-rerun",
+  "timestamp": "2026-02-13-200931",
+  "status": "PASS",
+  "blockName": "Header",
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 10,
+      "checksFailed": 0,
+      "issuesFound": 4,
+      "critical": 0,
+      "major": 0,
+      "minor": 4,
+      "allPreviousIssuesResolved": true
+    },
+    "previousIssuesVerification": {
+      "FQA-001": {
+        "id": "FQA-001",
+        "severity": "major",
+        "description": "Manual attribute extraction anti-pattern in HeaderMain.php",
+        "status": "RESOLVED",
+        "verification": "Verified: HeaderMain.php lines 22-32 now use null coalescing on auto-extracted variables ($logoId = $logoId ?? null). Manual $attributes['key'] pattern completely removed. @var docblock added (lines 5-19).",
+        "file": "blocks/Header/HeaderMain/HeaderMain.php"
+      },
+      "FQA-002": {
+        "id": "FQA-002",
+        "severity": "minor",
+        "description": "Missing @var docblock annotations in HeaderMain.php",
+        "status": "RESOLVED",
+        "verification": "Verified: Complete @var docblock present (lines 5-19) listing all 9 camelCase attribute variables with types.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.php"
+      },
+      "FQA-003": {
+        "id": "FQA-003",
+        "severity": "major",
+        "description": "Desktop search input uppercase bug",
+        "status": "RESOLVED",
+        "verification": "Verified: Desktop search input (line 103) now has 'normal-case placeholder:uppercase' matching mobile search (line 177). Critical UX bug fixed - user input will no longer be forced to uppercase.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.php"
+      },
+      "FQA-004": {
+        "id": "FQA-004",
+        "severity": "major",
+        "description": "Manual attribute extraction in HeaderMainItem.php",
+        "status": "RESOLVED",
+        "verification": "Verified: Manual extraction removed (previously lines 10-12). Now uses null coalescing on auto-extracted variables (lines 16-18). @var docblock added (lines 5-12).",
+        "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php"
+      },
+      "FQA-005": {
+        "id": "FQA-005",
+        "severity": "major",
+        "description": "Manual attribute extraction in HeaderMainSubItem.php",
+        "status": "RESOLVED",
+        "verification": "Verified: Manual extraction removed (previously line 10). Now uses null coalescing (line 14). @var docblock added (lines 5-10).",
+        "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.php"
+      },
+      "FQA-006": {
+        "id": "FQA-006",
+        "severity": "minor",
+        "description": "Missing @var docblock in HeaderMainItem.php",
+        "status": "RESOLVED",
+        "verification": "Verified: @var docblock present with all 3 camelCase variables documented.",
+        "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php"
+      },
+      "FQA-007": {
+        "id": "FQA-007",
+        "severity": "major",
+        "description": "Manual variable reassignments in DemoContainer.php",
+        "status": "RESOLVED",
+        "verification": "Verified: Variable reassignments removed (previously lines 14-15). Variables $title and $description now used directly with null coalescing (lines 12-13). Clean @var docblock (lines 5-8).",
+        "file": "blocks/DemoContainer/DemoContainer.php"
+      },
+      "FQA-008": {
+        "id": "FQA-008",
+        "severity": "minor",
+        "description": "Pre-existing lint error in Hero.tsx",
+        "status": "NOT_FIXED",
+        "verification": "Pre-existing issue in unrelated block. Not in scope for Header fixes.",
+        "file": "blocks/Hero/Hero.tsx"
+      },
+      "FQA-009": {
+        "id": "FQA-009",
+        "severity": "minor",
+        "description": "Pre-existing lint error in TestimonialsCarousel.tsx",
+        "status": "NOT_FIXED",
+        "verification": "Pre-existing issue in unrelated block. Not in scope for Header fixes.",
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.tsx"
+      },
+      "FQA-010": {
+        "id": "FQA-010",
+        "severity": "minor",
+        "description": "Experimental API usage warnings",
+        "status": "NOT_FIXED",
+        "verification": "Pre-existing warnings across entire theme. Not introduced by Header changes.",
+        "file": "various"
+      },
+      "FQA-011": {
+        "id": "FQA-011",
+        "severity": "minor",
+        "description": "Asset size warnings",
+        "status": "NOT_FIXED",
+        "verification": "Pre-existing build warnings. Not related to Header changes.",
+        "file": "webpack build output"
+      }
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "notes": "Build passes with pre-existing asset size warnings (js/editor.js 346 KiB). No errors introduced by fixes."
+      },
+      "lint": {
+        "status": "pass",
+        "notes": "No Header-related lint errors. Pre-existing errors in Hero and TestimonialsCarousel remain (out of scope)."
+      },
+      "registration": {
+        "status": "pass",
+        "notes": "Block registration validation passed. All schema, naming, file references, and attributes correct."
+      },
+      "attributes": {
+        "status": "pass",
+        "notes": "All attributes properly used. No unused attributes detected."
+      },
+      "edgeCases": {
+        "status": "pass",
+        "notes": "Test page includes comprehensive edge case coverage with 9 header instances."
+      },
+      "interactiveBehavior": {
+        "status": "pass",
+        "notes": "Keyboard navigation works correctly. Focus outlines visible. Fixed header behavior correct."
+      },
+      "accessibility": {
+        "status": "pass",
+        "notes": "Focus-visible outline styles present on all interactive elements. ARIA attributes correct."
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "notes": "No unnecessary markup duplication. Intentional duplicates properly scoped (desktop/mobile)."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "validationResult": {
+          "passed": true,
+          "checks": {
+            "phpExtractPattern": {
+              "status": "pass",
+              "issues": []
+            },
+            "phpDocblock": {
+              "status": "pass",
+              "issues": []
+            },
+            "htmlStructureSync": {
+              "status": "pass",
+              "issues": []
+            },
+            "attributeUsage": {
+              "status": "pass",
+              "issues": []
+            },
+            "contextConsistency": {
+              "status": "pass",
+              "issues": []
+            }
+          },
+          "totalIssues": 0,
+          "errors": [],
+          "warnings": []
+        },
+        "notes": "TSX/PHP sync validation PASSED with 0 issues. All manual attribute extraction removed. All @var docblocks present. Desktop and mobile search inputs have identical classes in PHP and TSX."
+      },
+      "innerBlocks": {
+        "status": "pass",
+        "notes": "Inner blocks render correctly. Test page shows proper nesting with various configurations."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "notes": "All 9 changes from planning spec implemented and verified."
+      }
+    },
+    "fixesVerified": [
+      {
+        "id": "FQA-003",
+        "category": "critical-bug",
+        "description": "Desktop search input uppercase bug fixed",
+        "before": "Desktop search had 'uppercase' class, forcing all user input to uppercase",
+        "after": "Desktop search now has 'normal-case placeholder:uppercase' - only placeholder is uppercase, user input remains normal case",
+        "verification": "Inspected HeaderMain.php line 103: class includes 'normal-case placeholder:uppercase'. Matches mobile search (line 177). Both desktop and mobile search inputs found on all 9 header instances via page audit.",
+        "impact": "Critical UX bug resolved. Users can now type lowercase letters in desktop search.",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.php"
+        ]
+      },
+      {
+        "id": "FQA-001",
+        "category": "convention-compliance",
+        "description": "Manual attribute extraction anti-pattern removed from HeaderMain.php",
+        "before": "6 instances of manual $var = $attributes['key'] pattern",
+        "after": "Uses null coalescing on auto-extracted variables: $logoId = $logoId ?? null",
+        "verification": "Inspected HeaderMain.php lines 22-32. No $attributes['key'] pattern found. All variables use null coalescing on auto-extracted values.",
+        "impact": "Code now follows project conventions. Automatic extraction via inc/helpers/blocks.php is properly utilized.",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.php"
+        ]
+      },
+      {
+        "id": "FQA-002",
+        "category": "code-quality",
+        "description": "@var docblock annotations added to HeaderMain.php",
+        "before": "Missing @var annotations for 9 camelCase variables",
+        "after": "Complete @var docblock with all 9 camelCase attribute variables and types",
+        "verification": "Inspected HeaderMain.php lines 5-19. @var docblock present with: $logoId (int|null), $sepLink (array), $searchLink (array), $mobileCtaText (string), $mobileCtaLink (array), $fixedOnScrollDesktop (bool), $hideOnScrollDownDesktop (bool), $fixedOnScrollMobile (bool), $hideOnScrollDownMobile (bool), $anchor (string).",
+        "impact": "Prevents PHP_CodeSniffer warnings about camelCase usage.",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.php"
+        ]
+      },
+      {
+        "id": "FQA-004",
+        "category": "convention-compliance",
+        "description": "Manual attribute extraction removed from HeaderMainItem.php",
+        "before": "3 instances of manual extraction",
+        "after": "Null coalescing on auto-extracted variables with @var docblock",
+        "verification": "Inspected HeaderMainItem.php. Manual extraction removed (previously lines 10-12). Lines 16-18 use null coalescing. @var docblock present (lines 5-12).",
+        "impact": "Code follows project conventions.",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php"
+        ]
+      },
+      {
+        "id": "FQA-005",
+        "category": "convention-compliance",
+        "description": "Manual attribute extraction removed from HeaderMainSubItem.php",
+        "before": "1 instance of manual extraction",
+        "after": "Null coalescing on auto-extracted variable with @var docblock",
+        "verification": "Inspected HeaderMainSubItem.php. Manual extraction removed (previously line 10). Line 14 uses null coalescing. @var docblock present (lines 5-10).",
+        "impact": "Code follows project conventions.",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.php"
+        ]
+      },
+      {
+        "id": "FQA-006",
+        "category": "code-quality",
+        "description": "@var docblock added to HeaderMainItem.php",
+        "before": "Missing @var annotation for $submenuAlignment",
+        "after": "@var docblock with all 3 camelCase variables",
+        "verification": "Inspected HeaderMainItem.php lines 5-12. @var docblock present.",
+        "impact": "Prevents PHP_CodeSniffer warnings.",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php"
+        ]
+      },
+      {
+        "id": "FQA-007",
+        "category": "convention-compliance",
+        "description": "Manual variable reassignments removed from DemoContainer.php",
+        "before": "Lines 14-15 reassigned $title/$description to $title_text/$description_text",
+        "after": "Variables used directly with null coalescing",
+        "verification": "Inspected DemoContainer.php. Reassignments removed. Lines 12-13 set defaults via null coalescing. Variables used directly throughout template (lines 25, 30, 34, 41).",
+        "impact": "Simplified code, follows auto-extraction pattern.",
+        "files": [
+          "blocks/DemoContainer/DemoContainer.php"
+        ]
+      }
+    ],
+    "remainingIssues": [
+      {
+        "id": "FQA-008",
+        "severity": "minor",
+        "category": "pre-existing",
+        "description": "Pre-existing lint error in Hero.tsx (BaseControl missing id)",
+        "file": "blocks/Hero/Hero.tsx",
+        "line": 221,
+        "reason": "Not related to Header block. Out of scope for this fix cycle.",
+        "blocksProduction": false
+      },
+      {
+        "id": "FQA-009",
+        "severity": "minor",
+        "category": "pre-existing",
+        "description": "Pre-existing lint error in TestimonialsCarousel.tsx (nested ternary)",
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.tsx",
+        "line": 164,
+        "reason": "Not related to Header block. Out of scope for this fix cycle.",
+        "blocksProduction": false
+      },
+      {
+        "id": "FQA-010",
+        "severity": "minor",
+        "category": "pre-existing",
+        "description": "38 experimental API usage warnings across theme",
+        "file": "various",
+        "reason": "Pre-existing warnings in multiple blocks. Not introduced by Header changes.",
+        "blocksProduction": false
+      },
+      {
+        "id": "FQA-011",
+        "severity": "minor",
+        "category": "pre-existing",
+        "description": "Asset size warnings for editor and screen bundles",
+        "file": "webpack build output",
+        "reason": "Pre-existing build warnings. Not related to Header changes.",
+        "blocksProduction": false
+      }
+    ],
+    "productionReadiness": {
+      "ready": true,
+      "criticalIssuesResolved": true,
+      "majorIssuesResolved": true,
+      "blockingIssues": 0,
+      "notes": "All 7 major Header-related issues have been resolved. The 4 remaining issues are pre-existing minor issues in unrelated blocks that do not block production deployment of the Header block."
+    },
+    "testPage": {
+      "url": "https://ign.localhost/test-header/",
+      "pageId": 114,
+      "blockCount": 9,
+      "verified": true,
+      "allHeadersHaveSearch": true
+    },
+    "codeQualityMetrics": {
+      "manualAttributeExtractions": 0,
+      "missingVarDocblocks": 0,
+      "phpTsxClassMismatches": 0,
+      "conventionViolations": 0
+    },
+    "rerunSummary": "All 7 major and minor Header-related issues from the initial QA run have been successfully resolved. The critical desktop search uppercase bug is fixed (FQA-003). All manual attribute extraction anti-patterns removed from 4 files (FQA-001, FQA-004, FQA-005, FQA-007). All @var docblocks added for camelCase variables (FQA-002, FQA-006). TSX/PHP sync validation passes with 0 issues. Build passes. Header block is production-ready."
+  },
+  "tokensUsed": 90980,
+  "questionsForUser": []
+}

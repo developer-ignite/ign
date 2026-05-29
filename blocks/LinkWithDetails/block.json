@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/link-with-details",
+  "title": "Link With Details",
+  "category": "takt-theme",
+  "description": "A simple inner block with a headline, description, and tertiary button link. Designed to be used inside tab panels.",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "headline": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "buttons": {
+      "type": "array",
+      "default": [
+        {
+          "url": "#",
+          "variation": "tertiary",
+          "title": "Learn More"
+        }
+      ]
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 800,
+    "attributes": {
+      "headline": "Undergraduate Programs",
+      "description": "Explore our diverse range of undergraduate degree programs designed to prepare you for a successful career.",
+      "buttons": [
+        {
+          "url": "#",
+          "variation": "tertiary",
+          "title": "View Programs"
+        }
+      ]
+    }
+  }
+}

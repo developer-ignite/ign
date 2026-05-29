@@ -1,0 +1,61 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-25-145905",
+  "status": "complete",
+  "blockName": "EventHero",
+  "output": {
+    "mode": "edit",
+    "filesCreated": [],
+    "filesModified": [
+      {
+        "path": "blocks/EventHero/EventHero.css",
+        "purpose": "Add min-height: min(700px, 100vh) and flex column justify-end to .event-hero-inner"
+      },
+      {
+        "path": "blocks/EventHero/EventHero.tsx",
+        "purpose": "Replace large top padding with pt-[var(--header-height)] on content layer div"
+      },
+      {
+        "path": "blocks/EventHero/EventHero.php",
+        "purpose": "Mirror same padding change from TSX for TSX/PHP sync"
+      }
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Pre-existing ESLint react-hooks/exhaustive-deps warnings in EventHero.tsx and other blocks (not introduced by this change)"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "Root wrapper mismatch warning is a known false positive (TSX uses Fragment+InspectorControls, PHP renders section directly)"
+    },
+    "testPage": {
+      "updated": false,
+      "url": "https://ign.localhost/test-event-hero/",
+      "pageId": 248,
+      "notes": "No block markup changes — CSS-only layout change, test page content unchanged"
+    },
+    "fixesApplied": [
+      {
+        "file": "blocks/EventHero/EventHero.css",
+        "change": "Added .event-hero-inner rule: min-height: min(700px, 100vh); display: flex; flex-direction: column; justify-content: flex-end;"
+      },
+      {
+        "file": "blocks/EventHero/EventHero.tsx",
+        "change": "Content layer div: replaced pt-[calc(var(--header-height)+180px)] sm:pt-[calc(var(--header-height)+280px)] with pt-[var(--header-height)]"
+      },
+      {
+        "file": "blocks/EventHero/EventHero.php",
+        "change": "Content layer div: replaced pt-[calc(var(--header-height)+180px)] sm:pt-[calc(var(--header-height)+280px)] with pt-[var(--header-height)]"
+      }
+    ],
+    "blockers": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

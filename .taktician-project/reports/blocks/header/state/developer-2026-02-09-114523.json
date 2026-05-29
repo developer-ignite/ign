@@ -1,0 +1,86 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-09-114523",
+  "status": "complete",
+  "blockName": "Header",
+  "output": {
+    "mode": "build",
+    "filesCreated": [
+      { "path": "blocks/Header/block.json", "purpose": "Block metadata - parent container" },
+      { "path": "blocks/Header/index.tsx", "purpose": "Block registration" },
+      { "path": "blocks/Header/Header.tsx", "purpose": "Editor component - parent container with sortBlocks + Appender" },
+      { "path": "blocks/Header/Header.php", "purpose": "Frontend template - simple container" },
+      { "path": "blocks/Header/Header.svg", "purpose": "Block icon (24x24)" },
+      { "path": "blocks/Header/HeaderMain/block.json", "purpose": "Block metadata - main nav section with scroll/logo/sep/search/cta attributes" },
+      { "path": "blocks/Header/HeaderMain/index.tsx", "purpose": "Block registration" },
+      { "path": "blocks/Header/HeaderMain/HeaderMain.tsx", "purpose": "Editor component - nav bar with logo, utility row, inner blocks, mobile menu" },
+      { "path": "blocks/Header/HeaderMain/HeaderMain.php", "purpose": "Frontend template - mirrors TSX with scroll data attributes, ARIA, mobile menu" },
+      { "path": "blocks/Header/HeaderMain/HeaderMain.js", "purpose": "Frontend JS - scroll detection, menu toggle, focus trapping, submenu keyboard nav" },
+      { "path": "blocks/Header/HeaderMain/HeaderMain.svg", "purpose": "Block icon (24x24)" },
+      { "path": "blocks/Header/HeaderMain/resources/MainMenuOpen.svg", "purpose": "Hamburger menu icon" },
+      { "path": "blocks/Header/HeaderMain/resources/MainMenuClose.svg", "purpose": "Close X icon" },
+      { "path": "blocks/Header/HeaderMain/resources/SearchIcon.svg", "purpose": "Magnifying glass icon" },
+      { "path": "blocks/Header/HeaderMain/resources/ChevronDown.svg", "purpose": "Chevron down arrow for submenus" },
+      { "path": "blocks/Header/HeaderMain/resources/ExternalArrow.svg", "purpose": "External link arrow icon" },
+      { "path": "blocks/Header/HeaderMain/HeaderMainItem/block.json", "purpose": "Block metadata - nav item with link + submenuAlignment" },
+      { "path": "blocks/Header/HeaderMain/HeaderMainItem/index.tsx", "purpose": "Block registration" },
+      { "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx", "purpose": "Editor component - link/button with optional submenu dropdown" },
+      { "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php", "purpose": "Frontend template - desktop button + mobile accordion, submenu dropdown" },
+      { "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.svg", "purpose": "Block icon (24x24)" },
+      { "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/block.json", "purpose": "Block metadata - submenu link item" },
+      { "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/index.tsx", "purpose": "Block registration" },
+      { "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.tsx", "purpose": "Editor component - submenu link with renameBlock" },
+      { "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.php", "purpose": "Frontend template - ThemeLink with hover styling" },
+      { "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.svg", "purpose": "Block icon (24x24)" }
+    ],
+    "cssModifications": [
+      {
+        "file": "resources/css/screen/states.css",
+        "change": "Added @custom-variant not-menu-open for collapsed mobile menu state"
+      }
+    ],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "CSS optimization warnings for gap variables (pre-existing)",
+        "Asset size limit warnings for editor.js bundle (pre-existing)"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "TSX and PHP produce matching HTML structure for all block levels"
+    },
+    "testPage": {
+      "created": true,
+      "url": "https://ign.localhost/test-header/",
+      "pageId": 114,
+      "verifiedBlockCount": 50,
+      "variationsIncluded": [
+        "Full Content (all fields, 6 nav items with submenus, SEP, search, mobile CTA)",
+        "Minimal Content (logo + 2 simple nav items only)",
+        "Hide on Scroll Down Desktop (tests scroll-down hiding)",
+        "Submenu Alignment Right (tests right-aligned dropdown)",
+        "Many Nav Items Overflow (8 nav items for wrap testing)",
+        "Long Submenu Items (tests auto-width dropdown with long text)"
+      ]
+    },
+    "blockers": [],
+    "fixesApplied": [],
+    "implementationNotes": [
+      "SEP link renders as separate pill button above nav bar on mobile (md:hidden) and inline text link in utility row on desktop -- driven by single attribute, two render paths",
+      "Search link styled as decorative link (not form input), links to search page",
+      "Submenu alignment attribute (left/right) controls CSS positioning, with position-try-fallbacks CSS property for viewport overflow",
+      "Mobile menu expands within nav bar using max-height transition with menu-open/not-menu-open variants",
+      "Desktop submenus use absolute positioning with JavaScript toggle for open/close, keyboard nav (ArrowDown/Up/Escape/Tab)",
+      "Mobile submenus use independent accordion pattern with separate mobile button elements",
+      "Scroll behavior follows header.md block-type doc sections 3-4: data attributes, CSS variables, rAF throttling, passive scroll listeners",
+      "Focus trapping with Tab wrap and Escape close for mobile menu",
+      "Inert attribute on mobile menu items when closed",
+      "No hardcoded colors - uses bg-charcoal, text-white, text-neon-green, border-white tokens"
+    ]
+  },
+  "tokensUsed": 45000,
+  "questionsForUser": []
+}

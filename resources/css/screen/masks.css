@@ -1,0 +1,49 @@
+.default-mask,
+:is(
+		.discourse,
+		.discourse-container,
+		.discourse-container-x,
+		.discourse-container-y,
+		.discourse-wide,
+		.discourse-wide-container,
+		.discourse-wide-container-x,
+		.discourse-wide-container-y,
+		.discourse-narrow,
+		.discourse-narrow-container,
+		.discourse-narrow-container-x,
+		.discourse-narrow-container-y
+	)
+	> figure
+	img {
+	mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><rect fill='white' style='x:0;y:0;width:100%25;height:calc(50%25 + 0.5px);rx:12px;ry:12px'/><rect fill='white' style='x:0;y:calc(50%25 - 0.5px);width:100%25;height:calc(50%25 + 0.5px);rx:12px;ry:12px'/></svg>");
+	mask-size: 100% 100%;
+	mask-repeat: no-repeat;
+}
+
+.mask-small {
+	mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><rect fill='white' style='x:0;y:0;width:100%25;height:calc(50%25 + 0.5px);rx:12px;ry:12px'/><rect fill='white' style='x:0;y:calc(50%25 - 0.5px);width:100%25;height:calc(50%25 + 0.5px);rx:12px;ry:12px'/></svg>");
+	mask-size: 100% 100%;
+	mask-repeat: no-repeat;
+}
+
+@media (min-width: 60rem) {
+	.default-mask,
+	:is(
+			.discourse,
+			.discourse-container,
+			.discourse-container-x,
+			.discourse-container-y,
+			.discourse-wide,
+			.discourse-wide-container,
+			.discourse-wide-container-x,
+			.discourse-wide-container-y,
+			.discourse-narrow,
+			.discourse-narrow-container,
+			.discourse-narrow-container-x,
+			.discourse-narrow-container-y
+		)
+		> figure
+		img {
+		mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><rect fill='white' style='x:0;y:0;width:100%25;height:calc(50%25 + 0.5px);rx:25px;ry:25px'/><rect fill='white' style='x:0;y:calc(50%25 - 0.5px);width:100%25;height:calc(50%25 + 0.5px);rx:25px;ry:25px'/></svg>");
+	}
+}

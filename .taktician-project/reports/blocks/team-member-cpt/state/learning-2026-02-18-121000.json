@@ -1,0 +1,28 @@
+{
+  "revision": 2,
+  "analysis": {
+    "mistake": "CPT block placeholders ended with ellipsis ('...'), name fields lost spacing when empty, first name field was not focusable when content was empty.",
+    "expected": "Placeholders should be plain text without trailing punctuation. Space between first and last name fields should always be visible. All name fields should be focusable even when empty.",
+    "rootCause": "Developer made reasonable but incorrect design interpretations: (1) assumed placeholder text should match form convention of ending with ellipsis, (2) used text-node spacer approach instead of flexbox gap for dual-field spacing, which became invisible when both fields were empty, (3) did not apply minimum width to RichText name fields, making them un-focusable when empty due to zero width.",
+    "rootCauseType": "design-interpretation",
+    "responsiblePhase": "development"
+  },
+  "suggestions": [
+    {
+      "type": "project-specific",
+      "action": "add",
+      "section": "Component Preferences",
+      "content": "CPT block inline editor placeholders must be plain text without trailing ellipsis or punctuation (e.g., 'First name' not 'First name...'). Placeholder text should be concise and action-oriented.",
+      "rationale": "Ellipsis in placeholders creates redundant visual noise in CPT block cards. Plain text improves authoring clarity and matches WordPress block editor conventions.",
+      "implemented": true
+    },
+    {
+      "type": "project-specific",
+      "action": "add",
+      "section": "Component Preferences",
+      "content": "Dual inline RichText name fields must use flex gap-2 flex-wrap on the wrapper and inline-block min-w-[6rem] on each RichText component. This ensures the gap remains visible even when both fields are empty, and keeps both fields focusable for editing.",
+      "rationale": "Flexbox gap is always rendered, unlike text-node spacers which disappear when empty. Minimum width prevents zero-width fields that cannot receive focus.",
+      "implemented": true
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12-145827",
+  "status": "complete",
+  "blockName": "Archive",
+  "mode": "fix",
+  "revision": 3,
+  "output": {
+    "summary": "Fixed missing spacing between filters and cards in the editor preview by adding className prop to FilteredServerSideRender component. This recreates the .archive-inner element's grid layout classes that are stripped when the component extracts innerHTML.",
+    "filesModified": [
+      "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.tsx"
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "fixesApplied": [
+      {
+        "file": "blocks/Archive/Archive.tsx",
+        "description": "Added className prop to FilteredServerSideRender to replicate the .archive-inner element's classes in the editor",
+        "changes": [
+          "Line 161-163: Changed from single-line <FilteredServerSideRender querySelector=\".archive-inner\" /> to multi-line with className prop",
+          "Added className=\"archive-inner grid grid-cols-1 gap-gap-4\" to match the PHP template's .archive-inner element classes"
+        ],
+        "rationale": "The FilteredServerSideRender component extracts the innerHTML (not outerHTML) of the querySelector target element ('.archive-inner'), which strips the element itself and its classes. The wrapper <div> that FilteredServerSideRender renders has no className by default, so the gap-gap-4 spacing between the filter bar and results grid was missing in the editor. By passing className='archive-inner grid grid-cols-1 gap-gap-4' to FilteredServerSideRender, the wrapper <div> receives these classes and the editor preview matches the frontend structure.",
+        "pattern": "This follows the established pattern in other blocks: TestimonialsCarousel uses className='swiper-parent overflow-hidden relative', DynamicContentCarousel uses className='swiper-parent overflow-hidden grid grid-cols-1 grid-rows-1', Form uses className='form-section-form'."
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": []
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "TSX editor preview now matches PHP frontend structure. The .archive-inner wrapper with grid layout and gap-gap-4 spacing is present in both contexts."
+    },
+    "testPage": {
+      "exists": true,
+      "url": "https://ign.localhost/test-archive/",
+      "pageId": 118,
+      "note": "Test page already has 11 Archive variations. No test page changes needed for this fix."
+    },
+    "blockers": [],
+    "notes": [
+      "FilteredServerSideRender extracts innerHTML from the querySelector target, stripping the target element itself",
+      "The className prop on FilteredServerSideRender is passed through to the wrapper <div> that contains the extracted content",
+      "The PHP template has: <div class='archive-inner grid grid-cols-1 gap-gap-4'>...",
+      "Without className, editor rendered: <div>... (no grid, no gap)",
+      "With className, editor renders: <div class='archive-inner grid grid-cols-1 gap-gap-4'>... (matches PHP)",
+      "The gap-gap-4 class provides vertical spacing between the filter bar and the results grid",
+      "The grid grid-cols-1 classes establish a single-column grid layout for the filter bar and results to stack vertically",
+      "Build passes without errors, ready for QA verification"
+    ],
+    "qaVerification": {
+      "editorChecks": [
+        "Open test page in WordPress editor at https://ign.localhost/wp-admin/post.php?post=118&action=edit",
+        "Select an Archive block",
+        "Verify spacing between filter bar and results grid matches the frontend",
+        "The gap between filters and cards should be gap-gap-4 (24px at default, responsive)",
+        "Compare editor preview to frontend rendering - spacing should match exactly"
+      ],
+      "visualChecks": [
+        "Filter bar and results grid should be stacked in a single column",
+        "Vertical spacing between filter bar and results should be visible and consistent",
+        "No layout regression - all other Archive block features should render correctly"
+      ]
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

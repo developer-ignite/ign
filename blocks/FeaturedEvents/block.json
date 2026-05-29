@@ -1,0 +1,74 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/featured-events",
+  "title": "Featured Events",
+  "category": "takt-theme",
+  "description": "Displays dynamically queried events from The Events Calendar in a vertically stacked layout with image and content panels, supporting automatic and manual selection modes.",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "postsSource": {
+      "type": "string",
+      "default": "automatic",
+      "enum": ["automatic", "manual"]
+    },
+    "selectedPosts": {
+      "type": "array",
+      "default": []
+    },
+    "postsLimit": {
+      "type": "number",
+      "default": 3
+    },
+    "eventList": {
+      "type": "string",
+      "default": "future",
+      "enum": ["future", "past"]
+    },
+    "selectedEventCategories": {
+      "type": "array",
+      "default": []
+    },
+    "selectedTags": {
+      "type": "array",
+      "default": []
+    },
+    "hideIfEmpty": {
+      "type": "boolean",
+      "default": false
+    },
+    "buttonLabel": {
+      "type": "string",
+      "default": "View Event"
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "eyebrow": "Events",
+      "heading": "Join Our Upcoming Events",
+      "description": "From career fairs to late-night study breaks, there's always something happening.",
+      "postsSource": "automatic",
+      "eventList": "future"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-18-113530",
+  "status": "complete",
+  "blockName": "TeamMemberCPT",
+  "output": {
+    "mode": "fix",
+    "filesModified": [
+      {
+        "path": "blocks/TeamMemberCPT/TeamMemberCPT.tsx",
+        "changes": [
+          "Added ImageDropUploader import from @taktdev/components",
+          "Removed manual featuredMediaUrl useSelect (coreStore.getMedia) — ImageDropUploader handles its own URL fetching via fetchMedia internally",
+          "Replaced static <img> / placeholder <div> in photo area with ImageDropUploader",
+          "onSelect calls editPost({ featured_media: selected.id || 0 }) to persist as post thumbnail",
+          "image prop passed as { id: featuredMediaId || null } to connect to current featured_media value"
+        ]
+      }
+    ],
+    "componentUsed": {
+      "name": "ImageDropUploader",
+      "source": "@taktdev/components",
+      "props": {
+        "image": "{ id: featuredMediaId || null } — connects to featured_media post attribute",
+        "onSelect": "editPost({ featured_media: selected.id || 0 })",
+        "className": "w-full!",
+        "imageClassName": "w-full! aspect-[395/317]! object-cover!",
+        "placeholderClassName": "w-full aspect-[395/317]"
+      },
+      "behavior": "Supports drag-and-drop file upload and click-to-open media library. Shows uploaded image when set; shows dark placeholder with image icon when unset. Handles its own image URL fetching via fetchMedia internally."
+    },
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "note": "Pre-existing lint errors in MainWrapper, FullWidthMedia, and TestimonialsCarousel unchanged. Zero new errors introduced."
+    },
+    "fixesApplied": [
+      "Replace static photo display with interactive ImageDropUploader in card preview body"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

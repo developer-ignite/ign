@@ -1,0 +1,132 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-20-135548",
+  "status": "PASS",
+  "blockName": "Footer",
+  "output": {
+    "summary": {
+      "checksRun": 5,
+      "checksPassed": 5,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "focusAreas": [
+      "br-tag-fix-in-hoursContent-and-contactContent",
+      "address-2-per-row-on-desktop",
+      "build-and-sync-validation",
+      "screenshots-all-widths"
+    ],
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "Build and lint pass with 0 errors. 10 pre-existing react-hooks/exhaustive-deps warnings in unrelated blocks (Accordion, Archive, ContentWithMedia, EventHero, FullWidthMedia, PostHero, Tabs) — not introduced by this change. Sync: all checks pass. Root wrapper mismatch warning (InspectorControls vs section) is a known false-positive for editor components using sidebar controls."
+      },
+      "brTagFix": {
+        "status": "pass",
+        "details": "Verified via raw block content and rendered HTML that <br> tags in hoursContent and contactContent render as actual HTML line breaks, not escaped &lt;br&gt; strings.",
+        "evidence": {
+          "rawContent": {
+            "longContentInstance": {
+              "hoursContent": "Monday through Friday:\\u003cbr\\u003e8:30am - 4:30pm\\u003cbr\\u003eSaturday:\\u003cbr\\u003e10:00am - 2:00pm...",
+              "note": "\\u003cbr\\u003e is JSON-escaped <br> — stored correctly in block attributes"
+            },
+            "fullContentInstance": {
+              "hoursContent": "Monday through Friday,\\n8:30am - 4:30pm",
+              "note": "Plain newlines in simple content — wp_kses_post passes these through as text nodes"
+            }
+          },
+          "renderedHTML": {
+            "hoursColumn": "<div class=\"text-xs font-medium leading-normal font-sans\">Monday through Friday:<br>8:30am – 4:30pm<br>Saturday:<br>10:00am – 2:00pm<br>Sunday:<br>Closed<br>Holiday Hours:<br>Please check our website for holiday-specific hours and closures</div>",
+            "contactColumn": "<div class=\"text-xs font-medium leading-normal font-sans\">Main Office: 416.675.5051<br>Student Services: 416.675.5052<br>email@verylongemailaddress.institution.com<br>support@verylongemailaddress.institution.com</div>",
+            "verdict": "Actual <br> tags present in rendered output — not escaped. wp_kses_post correctly allows <br> and renders it as a real HTML line break."
+          }
+        },
+        "renderMechanism": "PHP template uses wp_kses_post() for hoursContent and contactContent. wp_kses_post() allows <br> tags and outputs them unescaped, so the stored \\u003cbr\\u003e (JSON-decoded to <br>) renders as a real HTML line break in the browser."
+      },
+      "addressTwoPerRow": {
+        "status": "pass",
+        "details": "DOM audit confirms sm:flex-1 sm:min-w-48 class present on address items in all 5 instances that have address data. Full Content instance (index 0): 2 items — both appear in a single row at 1024px+. Long Content instance (index 2): 3 items — 2 on first row, 1 wraps to second row. Correct flex-wrap behavior. The fluid layout from the previous fix (sm:flex-1 sm:min-w-48 replacing sm:w-[calc(50%-1rem)]) remains intact."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "taktician_validate_all sync check passed with 0 errors. All attribute extractions use auto-extracted variables. PHP docblock annotations present. Known false-positive on root wrapper mismatch (InspectorControls fragment pattern)."
+      },
+      "responsiveLayout": {
+        "status": "pass",
+        "breakpoints": [
+          {
+            "width": 375,
+            "observation": "Mobile: all sections stack vertically. Long Content instance clearly shows Hours column with multi-line <br>-separated content — 'Monday through Friday:' on its own line followed by times, Saturday, Sunday, Holiday Hours. Each <br> creates a visible line break. Address items are in single-column stacked layout. Contact column similarly shows phone and email on separate lines. No overflow or escaped tag strings visible anywhere."
+          },
+          {
+            "width": 768,
+            "observation": "Tablet: right group (Hours/Contact/Follow Us) transitions to flex-row. <br> line breaks remain visible in Hours and Contact columns at this width — content is readable and not cramped. Address items start to flex-wrap side by side."
+          },
+          {
+            "width": 1024,
+            "observation": "Desktop mid: Full Content instance shows 2 address items cleanly side by side. Long Content instance shows 3 addresses with 2+1 wrap. Right group with Hours/Contact/Follow Us distributes evenly. <br> content in Hours and Contact columns renders correctly with line breaks creating clear visual separation between entries."
+          },
+          {
+            "width": 1440,
+            "observation": "Desktop wide: Same as 1024 observations — 2 address items per row confirmed in Full Content instance. Long Content instance 2+1 wrap. lg:flex-[0_1_auto] right group does not over-expand. <br>-based line breaks in Hours and Contact content are crisp and legible. No regressions visible across all 6 footer instances."
+          }
+        ]
+      }
+    },
+    "contentComparison": {
+      "html": {
+        "changed": true,
+        "previousHash": "4002522dbe9b84cb2f2a75fd6314013907493ca1ee8308389b8438688c65234f",
+        "currentHash": "67d59e8bf425cf3ed987af0718b26dead2ca2a627d610e6ca9750fc59781202d",
+        "codeModified": false,
+        "canSkipTests": false,
+        "reason": "HTML changed from previous snapshot — full QA run performed"
+      }
+    },
+    "screenshots": {
+      "directory": ".taktician-project/reports/blocks/footer/screenshots/2026-02-20-135519",
+      "browsers": [
+        "chromium",
+        "firefox",
+        "webkit"
+      ],
+      "widths": [
+        375,
+        768,
+        1024,
+        1440
+      ],
+      "files": [
+        "footer-chromium-375w.png",
+        "footer-chromium-768w.png",
+        "footer-chromium-1024w.png",
+        "footer-chromium-1440w.png",
+        "footer-firefox-375w.png",
+        "footer-firefox-768w.png",
+        "footer-firefox-1024w.png",
+        "footer-firefox-1440w.png",
+        "footer-webkit-375w.png",
+        "footer-webkit-768w.png",
+        "footer-webkit-1024w.png",
+        "footer-webkit-1440w.png"
+      ]
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build and lint pass with 0 errors",
+      "TSX/PHP sync passes with 0 errors",
+      "<br> tags in hoursContent render as real HTML line breaks (not escaped &lt;br&gt;) via wp_kses_post()",
+      "<br> tags in contactContent render as real HTML line breaks",
+      "Address items show 2 per row at 1024px and 1440px via sm:flex-1 sm:min-w-48",
+      "Long Content instance (3 addresses) wraps 2+1 correctly",
+      "Mobile 375px: <br> line breaks create visible line separation in Hours and Contact columns",
+      "Responsive layout intact across all 6 footer instances at all 4 breakpoints",
+      "12 screenshots captured across 3 browsers x 4 widths"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

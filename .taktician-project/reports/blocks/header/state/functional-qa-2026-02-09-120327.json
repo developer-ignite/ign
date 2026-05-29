@@ -1,0 +1,203 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-09-120327",
+  "status": "PASS",
+  "blockName": "Header",
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 9,
+      "checksFailed": 0,
+      "issuesFound": 3,
+      "critical": 0,
+      "major": 0,
+      "minor": 3,
+      "note": 0
+    },
+    "reRunContext": {
+      "previousQaReport": ".taktician-project/reports/blocks/header/state/functional-qa-2026-02-09-114800.json",
+      "developerFixReport": ".taktician-project/reports/blocks/header/state/developer-fix-2026-02-09-115918.json",
+      "previousIssueCount": 12,
+      "resolvedIssueCount": 12,
+      "newIssueCount": 3
+    },
+    "previousIssueVerification": {
+      "FQA-001": {
+        "status": "resolved",
+        "verification": "CRLF line endings in index.tsx files have been fixed. No prettier/prettier CRLF errors remain for Header block files. However, 1 new prettier formatting error found in HeaderMainItem.tsx:57 (space vs newline) -- tracked as new FQA-R001."
+      },
+      "FQA-003": {
+        "status": "resolved",
+        "verification": "states.css now contains exactly 4 custom variants: open, fixed, active, menu-open. No not-menu-open variant exists. HeaderMain.php uses default-state collapse approach (max-h-0 opacity-0 pointer-events-none by default, expanded via menu-open: variant)."
+      },
+      "FQA-004": {
+        "status": "resolved",
+        "verification": "Mobile toggle button in HeaderMain.tsx (line 692-697) now has aria-controls, aria-expanded, and aria-label attributes matching the PHP template."
+      },
+      "FQA-005": {
+        "status": "resolved",
+        "verification": "Logo link in PHP (line 58) has aria-label with site name + 'Home'. TSX (line 592) has aria-label with 'Home'. Both provide accessible name for the homepage link."
+      },
+      "FQA-006": {
+        "status": "resolved",
+        "verification": "HeaderMainItem.php button (line 53) has 'group' class. Chevron span (line 59) uses 'group-aria-expanded:rotate-180'. This correctly targets the parent button's aria-expanded state. TSX matches with group class on button and React state for rotation."
+      },
+      "FQA-007": {
+        "status": "resolved",
+        "verification": "No role='navigation' on any <nav> element in HeaderMain.php or HeaderMain.tsx. The <nav> element's implicit navigation role is sufficient."
+      },
+      "FQA-008": {
+        "status": "resolved",
+        "verification": "$children is output exactly ONCE in HeaderMain.php at line 133. Page audit confirms: Variation 1 (Full Content) has 18 links inside header-main (previously 55). Each submenu link appears exactly once. No duplication."
+      },
+      "FQA-009": {
+        "status": "resolved",
+        "verification": "HeaderMainItem.php has a SINGLE button element (line 51-62) and a SINGLE submenu container (line 65-74). No duplicate button or submenu with hidden/md:hidden visibility pairs. CSS responsive prefixes (md: and max-md:) handle desktop/mobile layout on the same elements."
+      },
+      "FQA-010": {
+        "status": "resolved",
+        "verification": "TSX and PHP now have structural parity. Both use: single <nav> with id and aria-label, single <ul> for nav items, single button per submenu item with group class, single submenu container with responsive classes. The TSX uses React state for submenu toggling while PHP relies on JS, but the HTML structure produced is equivalent."
+      },
+      "FQA-011": {
+        "status": "resolved",
+        "verification": "TSX nav bar (line 538-539) now includes 'transition-all' matching PHP (line 43). The fixed! vs fixed difference is intentional (documented in developer fix report) due to editor CSS specificity requirements."
+      },
+      "FQA-012": {
+        "status": "resolved",
+        "verification": "No content duplication. Page audit link counts: Variation 1 has 18 links in header-main (was 55). Variation 2 (Minimal) has 3 links. Variation 5 (Many Items) has 11 links. All counts match expected unique link counts. The SEP mobile pill (1 per variation with sepLink) is outside header-main but inside .header wrapper, which is the acceptable exception per spec (structurally different position)."
+      }
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "notes": "Build compiles successfully (webpack compiled with 3 warnings -- all size-related, pre-existing, no errors)"
+      },
+      "lint": {
+        "status": "warning",
+        "notes": "3 lint issues found in Header block files. All are minor and do not affect functionality.",
+        "issues": ["FQA-R001", "FQA-R002", "FQA-R003"]
+      },
+      "testPageVerification": {
+        "status": "pass",
+        "notes": "Test page contains 6 header block instances (7 .header elements, first is empty template part). Raw content verified with 6 <!-- wp:takt/header --> blocks matching spec variations. Real media (logoId: 6) used."
+      },
+      "registration": {
+        "status": "pass",
+        "notes": "All 4 blocks (Header, HeaderMain, HeaderMainItem, HeaderMainSubItem) register correctly with proper hierarchy and parent restrictions."
+      },
+      "attributes": {
+        "status": "pass",
+        "notes": "All spec-required attributes verified in block.json and confirmed on test page. Scroll behavior data attributes correctly set across all variations."
+      },
+      "accessibility": {
+        "status": "pass",
+        "notes": "All previous accessibility issues resolved. Mobile toggle has aria-controls, aria-expanded, aria-label. Logo link has aria-label. Chevron uses group-aria-expanded pattern correctly. No redundant role=navigation on nav elements. nav element has tabindex=-1 and aria-label. Submenu buttons have aria-haspopup, aria-expanded, aria-controls. SubItems have role=menuitem."
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "notes": "No duplication. $children rendered once. Single button + single submenu per nav item. Page audit confirms: Variation 1 Full Content has 18 links (was 55). SEP mobile pill is the only element that appears as two separate DOM elements (above nav bar vs inside utility row), which is the acceptable exception per spec (structurally different positions)."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "notes": "TSX and PHP produce matching HTML structure. Both: single nav with id/aria-label, single ul for items, single button per submenu item with 'group header-main-item-button' class, single submenu container with 'header-main-item-submenu' class. transition-all synced. fixed! (TSX) vs fixed (PHP) is documented intentional difference."
+      },
+      "cssAdditions": {
+        "status": "pass",
+        "notes": "No not-menu-open custom variant in states.css. Only 4 variants defined: open, fixed, active, menu-open. Mobile menu collapse uses default-state classes (max-h-0 opacity-0 pointer-events-none) with menu-open: variant for expansion."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "notes": "All spec requirements met. No content duplication. Single $children output. Responsive layout handled with CSS prefixes (md: / max-md:). SEP link appears as mobile pill and desktop text link (acceptable exception). Test page has 6 variations with proper attributes."
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-R001",
+        "check": "lint",
+        "severity": "minor",
+        "category": "formatting",
+        "description": "Prettier formatting error in HeaderMainItem.tsx:57 -- innerBlocksProps className line has a space where a newline + indentation is expected.",
+        "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+        "line": 57,
+        "fix": {
+          "type": "command",
+          "command": "bun run lint:fix"
+        }
+      },
+      {
+        "id": "FQA-R002",
+        "check": "lint",
+        "severity": "minor",
+        "category": "unused-variable",
+        "description": "Unused 'clientId' parameter in Header.tsx:22. The Edit function destructures clientId but does not use it directly (sortBlocks uses it indirectly via WordPress hooks).",
+        "file": "blocks/Header/Header.tsx",
+        "line": 22,
+        "fix": {
+          "type": "modify",
+          "note": "Either prefix with underscore (_clientId) or remove from destructuring if not needed."
+        }
+      },
+      {
+        "id": "FQA-R003",
+        "check": "lint",
+        "severity": "minor",
+        "category": "wp-component",
+        "description": "BaseControl in HeaderMain.tsx:430 has a 'label' property but no 'id' property. WordPress lint rule @wordpress/no-base-control-with-label-without-id requires both.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "line": 430,
+        "fix": {
+          "type": "add_attribute",
+          "note": "Add id='header-behaviour-mobile' to the BaseControl element at line 463."
+        }
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors (3 pre-existing size warnings)",
+      "No CRLF line ending issues in Header block files (FQA-001 resolved)",
+      "No not-menu-open custom variant in states.css (FQA-003 resolved)",
+      "All 4 blocks register correctly with proper hierarchy",
+      "All attributes defined with correct types and defaults",
+      "Test page has 6 variations with real media, matching spec",
+      "Mobile toggle has complete ARIA attributes in both TSX and PHP (FQA-004 resolved)",
+      "Logo link has aria-label for screen readers (FQA-005 resolved)",
+      "Chevron uses group-aria-expanded:rotate-180 correctly (FQA-006 resolved)",
+      "No redundant role=navigation on nav elements (FQA-007 resolved)",
+      "$children output exactly ONCE in HeaderMain.php (FQA-008/012 resolved)",
+      "Single button + single submenu per nav item in HeaderMainItem.php (FQA-009 resolved)",
+      "TSX and PHP produce matching HTML structure (FQA-010 resolved)",
+      "transition-all class synced between TSX and PHP (FQA-011 resolved)",
+      "Page audit confirms no link duplication: Variation 1 has 18 links (was 55 before fix)",
+      "Variation 2 (Minimal) correctly hides search, SEP, and CTA (3 links only)",
+      "Variation 3 (Hide on Scroll Down) has correct scroll behavior classes",
+      "Variation 4 (Right Alignment) has submenuAlignment right on submenu",
+      "Variation 5 (Many Items) renders all 8 nav items without duplication",
+      "Variation 6 (Long Submenu) renders long text items correctly",
+      "SEP mobile pill appears only on variations with sepLink (1 and 3)",
+      "Frontend JS properly handles unified submenu toggling (single handler for desktop/mobile)",
+      "JS uses requestAnimationFrame throttling and passive: true on scroll",
+      "JS implements Escape key, ArrowUp/Down keyboard navigation, focus trapping",
+      "JS properly manages inert attribute for mobile menu items"
+    ],
+    "linkCountVerification": {
+      "description": "Verified link counts per variation to confirm no duplication",
+      "variation1_fullContent": {
+        "headerMainLinks": 18,
+        "headerWrapperLinks": 19,
+        "expectedUniqueLinks": "logo(1) + searchDesktop(1) + sepDesktop(1) + 12 submenu items + studentVoices(1) + searchMobile(1) + contactUsCta(1) = 18 in header-main + sepMobilePill(1) outside = 19 in header wrapper",
+        "status": "MATCH"
+      },
+      "variation2_minimal": {
+        "headerMainLinks": 3,
+        "expectedUniqueLinks": "logo(1) + About(1) + Contact(1) = 3",
+        "status": "MATCH"
+      },
+      "variation5_manyItems": {
+        "headerMainLinks": 11,
+        "expectedUniqueLinks": "logo(1) + searchDesktop(1) + 8 nav items + searchMobile(1) = 11",
+        "status": "MATCH"
+      }
+    }
+  },
+  "tokensUsed": 50000,
+  "questionsForUser": []
+}

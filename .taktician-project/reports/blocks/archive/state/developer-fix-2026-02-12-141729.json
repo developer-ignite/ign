@@ -1,0 +1,76 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12-141729",
+  "status": "complete",
+  "blockName": "Archive",
+  "mode": "fix",
+  "output": {
+    "issue": {
+      "id": "DQA-R1-001",
+      "severity": "minor",
+      "description": "Search button SVG icon not rendering. The theme_block_asset('resources/IconSearch.svg') call was not outputting the SVG content because the file path was incorrect.",
+      "root_cause": "The webpack CopyWebpackPlugin copies files from blocks/*/resources/ to public/blocks/*/ (flattening the resources subfolder). The PHP code was calling theme_block_asset('resources/IconSearch.svg') but the file exists at public/blocks/Archive/IconSearch.svg (without the resources/ prefix)."
+    },
+    "filesModified": [
+      "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.php"
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "fixesApplied": [
+      {
+        "file": "blocks/Archive/Archive.php",
+        "description": "Fixed asset path references to match webpack output structure",
+        "changes": [
+          "Line 255: Changed theme_block_asset('resources/IconSearch.svg') to theme_block_asset('IconSearch.svg')",
+          "Line 307: Changed theme_block_asset('resources/loading.svg') to theme_block_asset('loading.svg') for consistency"
+        ],
+        "rationale": "The webpack.config.js CopyWebpackPlugin (lines 76-85) copies block resources folders but flattens them to the block root in the public directory. The 'to' path uses path.dirname(folder) which strips the 'resources' subdirectory. Files end up at public/blocks/Archive/IconSearch.svg, not public/blocks/Archive/resources/IconSearch.svg."
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": []
+    },
+    "verification": {
+      "svgFileExists": true,
+      "publicPath": "/var/www/ign/wp-content/themes/ign/public/blocks/Archive/IconSearch.svg",
+      "svgContent": "Valid SVG with currentColor fill, 24x24 viewBox, search icon magnifying glass path",
+      "buttonStructure": "button[type='submit'] with col-1 row-1 grid overlay positioning, mr-3 offset, *:w-6 *:h-auto for SVG sizing, pointer-events-auto, aria-label='Search'",
+      "expectedBehavior": "The SVG should now render inside the search button at the right edge of the input. It will inherit color from currentColor (white in dark mode context). The button submits the search form when clicked."
+    },
+    "relatedIssues": [
+      {
+        "description": "Loading spinner (loading.svg) had the same path issue, fixed preemptively",
+        "file": "blocks/Archive/Archive.php",
+        "line": 307
+      }
+    ],
+    "blockers": [],
+    "notes": [
+      "Root cause: Webpack config flattens resources/ folder to block root in public directory",
+      "The theme_block_asset() function looks for files in public/blocks/${blockName}/ + relative path",
+      "Other blocks (GalleryCarousel, Header, etc.) reference SVGs without subdirectory prefix, confirming this is the correct pattern",
+      "The IconSearch.svg file uses fill='currentColor' so it will adapt to the button's text color (white in dark mode)",
+      "The fix is minimal and surgical - only path references changed, no structural changes",
+      "Build passes without errors, ready for QA verification"
+    ],
+    "qaVerification": {
+      "functionalChecks": [
+        "Load test page at https://ign.localhost/test-archive/",
+        "Inspect search button in DOM - should contain <svg> element with search icon paths",
+        "Verify magnifying glass icon is visible at right edge of search input",
+        "Click search button - should submit form and trigger AJAX search",
+        "Check loading spinner also renders correctly (also uses same asset pattern)"
+      ],
+      "visualChecks": [
+        "Search icon should be white on dark charcoal background",
+        "Icon should be properly sized (24x24px, scaled to fit *:w-6 *:h-auto = 24px width)",
+        "Icon position should match Figma design (right edge of input, mr-3 offset)",
+        "Hover state should reduce opacity to 0.7 (Archive.css lines 138-140)"
+      ]
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

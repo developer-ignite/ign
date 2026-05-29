@@ -1,0 +1,188 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-17-202045",
+  "status": "FAIL",
+  "blockName": "Header",
+  "output": {
+    "summary": {
+      "checksRun": 9,
+      "checksPassed": 7,
+      "checksFailed": 2,
+      "issuesFound": 3,
+      "critical": 0,
+      "major": 2,
+      "minor": 1
+    },
+    "focusAreaResults": {
+      "fix1_headerWidth": "PASS",
+      "fix2_zIndex": "PASS",
+      "fix3_dropdownGap": "PASS",
+      "fix4_clickOutside": "PASS",
+      "fix5_keyboardNavigation": "FAIL"
+    },
+    "contentComparison": {
+      "rawContent": {
+        "changed": null,
+        "isNew": true,
+        "message": "No previous snapshot found — first QA run, full checks performed",
+        "codeModified": null,
+        "canSkipTests": false
+      },
+      "checksSkipped": [],
+      "reason": "First run — full QA performed"
+    },
+    "checks": {
+      "build": {
+        "status": "warning",
+        "notes": "Build compiles successfully. Lint errors exist in unrelated files (MainWrapper/index.tsx: prettier + rules-of-hooks; FullWidthMedia.tsx: no-base-control-with-label-without-id; TestimonialsCarousel.tsx: no-nested-ternary). No lint errors in Header block files.",
+        "headerBlockLintErrors": 0,
+        "unrelatedLintErrors": 24
+      },
+      "registration": {
+        "status": "pass",
+        "notes": "block.json schema valid, naming correct (takt/header), all file references exist, child blocks registered, attribute types valid."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "notes": "taktician_validate_all sync check passed. No PHP extract anti-pattern, docblocks present with @var annotations, HTML structure in sync, attribute usage consistent. TSX HeaderMainItem editor uses md:block on submenu when open; PHP uses hidden/block toggle via JS — structurally equivalent."
+      },
+      "attributes": {
+        "status": "pass",
+        "notes": "All block.json attributes correctly typed. fixedOnScrollDesktop, fixedOnScrollMobile, hideOnScrollDownDesktop, hideOnScrollDownMobile are booleans with false defaults. logoId is optional integer. sepLink, searchLink, mobileCtaLink are objects. mobileCtaText is a string. Data attributes on rendered HTML correctly reflect attribute values (verified via page_audit data-fixed-scroll-desktop, data-hide-scroll-down-desktop etc.)."
+      },
+      "edgeCases": {
+        "status": "pass",
+        "notes": "Minimal content (no submenus, no SEP link, no CTA) renders cleanly. Not-fixed variant (section 4) has no z-index classes — correct. SEP-link-only variant renders correctly. Many nav items (8) variant renders without layout errors."
+      },
+      "interactiveBehavior": {
+        "status": "pass",
+        "testsRun": [
+          {
+            "test": "Dropdown opens on button click",
+            "status": "pass",
+            "notes": "Clicking .header-main-item-button opens submenu; aria-expanded set to 'true', submenu gains 'block' class, loses 'hidden'.",
+            "screenshot": "header-dropdown-open-1440w.png"
+          },
+          {
+            "test": "Click outside (within header nav area) closes dropdown",
+            "status": "pass",
+            "notes": "Clicking .header-main nav element (outside submenu panel and outside trigger button) closes the open submenu. JS document click handler correctly checks clickedInsideSubmenu and clickedTrigger before closing.",
+            "screenshot": "header-click-outside-close-1440w.png"
+          },
+          {
+            "test": "Click on another top-level button closes prior dropdown",
+            "status": "pass",
+            "notes": "On desktop, click handler calls closeAllSubmenus() for all other buttons before opening the clicked one."
+          },
+          {
+            "test": "ArrowDown on trigger opens submenu and focuses first item",
+            "status": "pass",
+            "notes": "ArrowDown keydown on .header-main-item-button opens submenu and focuses items[0].",
+            "screenshot": "header-kb-arrowdown-submenu-1440w.png"
+          },
+          {
+            "test": "Mobile menu toggle",
+            "status": "pass",
+            "notes": "Mobile (375px) menu toggle button present. aria-expanded correctly set. menu-open class toggles header element.",
+            "screenshot": "header-mobile-default-375w.png"
+          }
+        ]
+      },
+      "accessibility": {
+        "status": "fail",
+        "patternCompliance": {
+          "pattern": "menubar",
+          "source": "manual",
+          "status": "partial",
+          "notes": "No taktician_a11y_test rule file exists for 'menubar' pattern — manual review performed.",
+          "passed": [
+            "ArrowDown on trigger button opens submenu and moves focus to first menuitem",
+            "ArrowUp on trigger button opens submenu and moves focus to last menuitem",
+            "ArrowDown/Up within open submenu cycles through menuitems",
+            "Home/End within open submenu jump to first/last menuitem",
+            "Escape within submenu closes it and returns focus to trigger button",
+            "Tab while submenu open closes submenu (line 387)",
+            "ArrowLeft/Right within submenu closes current and moves focus to prev/next top-level button",
+            "ArrowLeft/Right on trigger button moves focus to prev/next top-level button (with submenu close if open)",
+            "Home/End on trigger button moves focus to first/last top-level button",
+            "role='menu' on submenu container present",
+            "aria-haspopup='true' on trigger buttons",
+            "aria-expanded correctly toggled on open/close",
+            "aria-controls pointing to submenu id",
+            "aria-label on submenu (e.g. 'About submenu')",
+            "nav element has aria-label='Main Navigation'"
+          ],
+          "failed": [
+            "Left/Right arrow navigation on top-level buttons ONLY covers buttons with aria-haspopup (subMenuButtons array). Simple link items (no submenu) are excluded from Left/Right keyboard traversal. In the full-content header, 'Student Voices' is a plain link and is skipped when using Left/Right arrows from adjacent submenu buttons.",
+            "role='menubar' is absent on the top-level <ul>. WAI-ARIA menubar pattern requires role='menubar' on the containing list element and role='menuitem' on top-level interactive items."
+          ]
+        },
+        "issues": 2
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "notes": "Search form appears twice: once in the desktop utility row (hidden md:flex) and once in the mobile collapsible panel (md:hidden). This is an intentional layout pattern — the two forms serve genuinely different layout contexts (utility row vs. collapsible mobile panel). No JS cloning. Acceptable per duplication rules."
+      },
+      "innerBlocks": {
+        "status": "pass",
+        "notes": "Inner blocks structure correct: takt/header > takt/header-main > takt/header-main-item > takt/header-main-sub-item. Template lock not applied (items can be added/removed as expected). 9 header instances confirmed across 9 demo containers."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "notes": "All 5 focus areas from the planning spec addressed in code. 9 block instances present on test page in demo containers. No stale HTML markup. No placeholder media IDs."
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "accessibility",
+        "severity": "major",
+        "description": "Left/Right arrow keyboard navigation on the menubar is limited to buttons with submenus (subMenuButtons array, built from .header-main-item-button[aria-haspopup='true']). Plain link items (header-main-items without a submenu) are invisible to Left/Right traversal. In the full-content header 'Student Voices' is a plain link and is skipped — keyboard users cannot navigate to or from it using arrow keys, they must use Tab instead, breaking the WAI-ARIA menubar pattern.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.js",
+        "line": 293,
+        "fix": "Expand the top-level items array to include ALL focusable top-level items (both .header-main-item-button and plain .header-main-item > a[role!='menuitem']). Build a separate allTopLevelItems array: const allTopLevelItems = Array.from(header.querySelectorAll('.header-main-item > button.header-main-item-button, .header-main-item > a')); Use allTopLevelItems for Left/Right/Home/End navigation at the menubar level. Keep subMenuButtons only for submenu open/close logic.",
+        "alsoUpdate": null
+      },
+      {
+        "id": "FQA-002",
+        "check": "accessibility",
+        "severity": "major",
+        "description": "The top-level navigation <ul> element (rendered as <ul class='flex md:flex-row ...'>) has no role='menubar'. The WAI-ARIA Navigation Menubar pattern requires role='menubar' on the containing list. Without it, assistive technologies do not announce the menubar keyboard interaction model to users, defeating the purpose of implementing the WAI-ARIA pattern.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "line": 150,
+        "fix": "Add role='menubar' to the top-level <ul> element in HeaderMain.php (line 150) and the corresponding <ul {...innerBlocksProps} /> in HeaderMain.tsx (line 733). The attribute must also be added at render: in PHP: <ul role=\"menubar\" class=\"...\">; in TSX: pass role:'menubar' into the innerBlocksProps object or add it directly to the <ul> element.",
+        "alsoUpdate": "blocks/Header/HeaderMain/HeaderMain.tsx:733"
+      },
+      {
+        "id": "FQA-003",
+        "check": "accessibility",
+        "severity": "minor",
+        "description": "Individual top-level nav items do not have role='menuitem'. The WAI-ARIA menubar pattern expects role='menuitem' on each interactive item within the menubar (both trigger buttons and plain links). Currently the buttons have aria-haspopup but no explicit role, and the plain links have no role. This is a minor gap — browsers may infer roles, but explicit roles improve AT interoperability.",
+        "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+        "line": 35,
+        "fix": "Add role='menuitem' to both the <button> element (line 35-46) and the ThemeLink-rendered <a> element (via the 'className' or a dedicated role parameter) in HeaderMainItem.php. Mirror in HeaderMainItem.tsx button (line 127) and Link component (line 107).",
+        "alsoUpdate": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx:107,127"
+      }
+    ],
+    "passedChecks": [
+      "Build compiles successfully — no Header block TypeScript or compilation errors",
+      "Block registration valid (takt/header, takt/header-main, takt/header-main-item, takt/header-main-sub-item)",
+      "Fix 1 VERIFIED: Fixed header constrained to container width using left-1/2 -translate-x-1/2 w-(--max-container) when scrolling — confirmed in rendered class list for all fixed-scroll variants",
+      "Fix 2 VERIFIED: z-index md:z-200 present on header-main element for all fixed-scroll variants; submenus carry md:z-[210] class — confirmed via page_audit extraSelectors",
+      "Fix 3 VERIFIED: Dropdown gap is md:mt-6 (24px) between header bar and panel top — confirmed in HeaderMainItem.php line 53; hover bridge pseudo-element present (before:md:absolute before:md:bottom-full before:md:h-6) — confirmed via page_audit hover_bridge selector found on all submenu-bearing instances",
+      "Fix 4 VERIFIED: Click-outside handler checks clickedInsideSubmenu AND clickedTrigger separately (HeaderMain.js lines 482-484), closing dropdown when clicking anywhere in the nav outside the panel and its trigger — confirmed via interactive screenshot test",
+      "Fix 5 PARTIAL: ArrowDown/Up open submenu and navigate within it; ArrowLeft/Right within submenu close and move to adjacent button; Home/End within submenu navigate to first/last item; Escape closes and returns focus; Tab while submenu open closes it — all working. See FQA-001/FQA-002 for incomplete aspects.",
+      "TSX/PHP sync passes all automated checks",
+      "PHP template uses auto-extracted variables (no $attributes['key'] anti-pattern)",
+      "All @var docblock annotations present for camelCase attributes",
+      "Dropdown submenu z-index z-[210] confirmed on all submenu instances (page_audit extraSelectors)",
+      "Hover bridge pseudo-element (before:md:h-6) confirmed on all submenu instances",
+      "Test page has 9 header block instances, all inside demo containers",
+      "No placeholder media IDs (logoId:6 is a real image ID across all instances)",
+      "Markup duplication (dual search forms) is intentional and correctly structured",
+      "Mobile menu toggle with aria-expanded and focus trapping implemented correctly"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

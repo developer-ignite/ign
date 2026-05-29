@@ -1,0 +1,118 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-11-165843",
+  "status": "FAIL",
+  "blockName": "TestimonialsCarousel",
+  "output": {
+    "summary": {
+      "checksRun": 11,
+      "checksPassed": 10,
+      "checksFailed": 1,
+      "issuesFound": 1,
+      "critical": 1,
+      "major": 0,
+      "minor": 0
+    },
+    "checks": {
+      "build": {
+        "status": "warning",
+        "message": "Build succeeds but has bundle size warnings (expected, non-blocking)"
+      },
+      "typeCheck": {
+        "status": "fail",
+        "issues": 1
+      },
+      "modalPerSection": {
+        "status": "pass",
+        "message": "Each of 6 sections has exactly 1 modal instance"
+      },
+      "modalInsideSection": {
+        "status": "pass",
+        "message": "Modal is inside <section> element (PHP line 135)"
+      },
+      "closeButtonNotAbsolute": {
+        "status": "pass",
+        "message": "Close button is in flex justify-end wrapper (PHP line 120), not absolutely positioned"
+      },
+      "jsFindsModalInSection": {
+        "status": "pass",
+        "message": "JS correctly uses btn.closest('section.testimonials-carousel').querySelector('.testimonial-video-modal')"
+      },
+      "closeButtonAccessibility": {
+        "status": "pass",
+        "message": "Close button has aria-label, modal-close-btn class, and is focusable"
+      },
+      "scrollability": {
+        "status": "pass",
+        "message": "Modal content has overflow-y-auto and max-h-full classes (PHP line 119)"
+      },
+      "jsImplementation": {
+        "status": "pass",
+        "message": "JS uses optional chaining, event delegation, and module-level currentModal variable"
+      },
+      "scaleTransition": {
+        "status": "pass",
+        "message": "Scale transition correctly targets .testimonial-modal-content selector"
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-TC-001",
+        "check": "typeCheck",
+        "severity": "critical",
+        "description": "TypeScript compilation error: PostSelectorSortable onChange callback returns 'number | number[]' but selectedPosts attribute expects 'number[]'",
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.tsx",
+        "line": 160,
+        "context": "onChange={ ( value ) => setAttributes( { selectedPosts: value } ) }",
+        "fix": "Cast the value to number[] or handle both types: onChange={ ( value ) => setAttributes( { selectedPosts: Array.isArray( value ) ? value : [ value ] } ) }",
+        "alsoUpdate": null,
+        "blocksProduction": true,
+        "reason": "TypeScript compilation fails, preventing type safety and potentially breaking builds in strict mode"
+      }
+    ],
+    "passedChecks": [
+      "Build compiles successfully (with expected bundle size warnings)",
+      "Each section has its own modal (6 sections × 1 modal each = 6 modals total)",
+      "Modal is INSIDE the section element (verified in PHP template line 135)",
+      "Close button is NOT absolutely positioned - uses flex justify-end wrapper (PHP line 120)",
+      "JS correctly finds modal within section using closest() and querySelector()",
+      "Close button has aria-label=\"Close video\" (PHP line 123)",
+      "Close button has modal-close-btn class (PHP line 122)",
+      "Close button is focusable (button element)",
+      "Modal content has overflow-y-auto and max-h-full for scrollability (PHP line 119)",
+      "JS uses optional chaining (?.) for safe property access",
+      "JS uses event delegation for close button clicks",
+      "JS has module-level currentModal variable (line 44)",
+      "Scale transition correctly targets .testimonial-modal-content (JS lines 91-93, 115-116)"
+    ],
+    "revisionContext": {
+      "changes": [
+        "Video modal moved inside <section> element -- each block instance has its own modal (static guard removed)",
+        "Close button is now in normal document flow, right-aligned via flex justify-end wrapper above the video container (no longer absolutely positioned)",
+        "Modal inner wrapper has overflow-y-auto + max-h-full + py-8 for scrollability on short viewports",
+        "JS reworked from single global modal to per-section approach: btn.closest('section.testimonials-carousel').querySelector('.testimonial-video-modal'), module-level currentModal variable",
+        "Scale transition selector changed from .relative to .testimonial-modal-content"
+      ],
+      "focusAreas": [
+        "Each section has its own modal",
+        "Modal is INSIDE the section element",
+        "Close button is NOT absolutely positioned",
+        "JS correctly finds modal within the section",
+        "Close button accessibility attributes",
+        "Overflow and scroll classes present",
+        "Build passes",
+        "No JS errors"
+      ]
+    },
+    "testPage": {
+      "url": "https://ign.localhost/?page_id=144",
+      "pageId": 144,
+      "blockInstances": 6,
+      "verificationMethod": "taktician_page_audit + taktician_wp_raw_content",
+      "modalCount": 6,
+      "modalsPerSection": [1, 1, 1, 1, 1, 1]
+    }
+  },
+  "tokensUsed": 48000,
+  "questionsForUser": []
+}

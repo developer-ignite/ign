@@ -1,0 +1,32 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-13-174505",
+  "status": "complete",
+  "blockName": "Hero",
+  "output": {
+    "summary": "Add .neon-green gradient override to the generic gradient system in colors.css, following the existing pattern used by .blue, .yellow, .orange, .purple, and .green.",
+    "investigation": {
+      "currentGradientStructure": "The generic gradient system in colors.css (lines 143-172) defines :root defaults for --gradient-left (var(--accent-color)) and --gradient-right (var(--color-blue)), then per-accent-color overrides for .blue, .yellow, .orange, .purple, and .green. Each override sets --gradient-left and --gradient-right to a complementary color pair. The .neon-green class is missing from the gradient system, even though it exists as an accent color class (line 73-79) with its own --accent-color overrides.",
+      "existingGradientColors": [":root (default)", ".blue", ".yellow", ".orange", ".purple", ".green"],
+      "missingGradientColor": ".neon-green",
+      "neonGreenValue": "var(--color-neon-green) = rgba(212, 255, 69, 1)",
+      "neonGreenGradientPair": "Based on the old hero-specific code that defined .hero.neon-green: --gradient-left = var(--color-neon-green), --gradient-right = var(--color-blue). This matches the :root defaults since neon-green is the default accent color, but an explicit .neon-green class is needed for when neon-green is applied as an override on a page that has a different default accent color.",
+      "whyNeeded": "Without an explicit .neon-green gradient override, a page with a non-neon-green default accent that has a .neon-green section would get the wrong gradient colors. The .neon-green class correctly sets --accent-color, but --gradient-left and --gradient-right remain set to whatever the page default is. For example, on a .blue page, a .neon-green hero would get gradient-left=blue, gradient-right=neon-green instead of gradient-left=neon-green, gradient-right=blue."
+    },
+    "fileChanges": [
+      {
+        "file": "resources/css/screen/colors.css",
+        "action": "modify",
+        "description": "Add .neon-green gradient override to the generic gradient system",
+        "details": "Add after the :root block (line 147) and before the .blue block (line 149):\n\n.neon-green {\n  --gradient-left: var(--color-neon-green);\n  --gradient-right: var(--color-blue);\n}\n\nThis follows the exact same pattern as the other five color overrides. The color pair (neon-green left, blue right) matches the old hero-specific gradient that was being removed.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [],
+    "requiresQA": false,
+    "qaScope": "none"
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

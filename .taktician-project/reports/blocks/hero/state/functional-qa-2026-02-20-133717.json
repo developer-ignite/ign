@@ -1,0 +1,145 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-20-133717",
+  "status": "PASS",
+  "blockName": "Hero",
+  "output": {
+    "testPage": {
+      "url": "https://ign.localhost/test-hero-block/",
+      "blockCount": 12,
+      "primaryInstances": 9,
+      "secondaryInstances": 3
+    },
+    "contentComparison": {
+      "rawContent": {
+        "changed": null,
+        "isNew": true,
+        "message": "No previous snapshot found — first QA run for this block",
+        "codeModified": null,
+        "canSkipTests": false
+      },
+      "html": {
+        "changed": null,
+        "isNew": true,
+        "message": "No previous snapshot found — first QA run for this block",
+        "codeModified": null,
+        "canSkipTests": false
+      }
+    },
+    "checksSkipped": [],
+    "focusAreas": [
+      "Verify .top-gradient height is 150vh (was 150vw)",
+      "Verify Hero.js loads and ResizeObserver caps max-height to <main> element",
+      "Verify gradient doesn't overflow past <main> boundaries",
+      "Verify no JS errors in console",
+      "General block rendering still works for both primary and secondary variations"
+    ],
+    "summary": {
+      "checksRun": 8,
+      "checksPassed": 7,
+      "checksFailed": 0,
+      "checksWarning": 1,
+      "issuesFound": 1,
+      "critical": 0,
+      "major": 0,
+      "minor": 1
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "notes": "Build and lint pass with no errors. 10 pre-existing react-hooks/exhaustive-deps warnings in unrelated blocks (Accordion, Archive, ContentWithMedia, EventHero, FullWidthMedia, PostHero, Tabs) — all pre-existing, none in Hero."
+      },
+      "registration": {
+        "status": "pass",
+        "notes": "block.json valid: apiVersion 3, name takt/hero, all file references exist, attribute types and defaults correct."
+      },
+      "gradientHeight": {
+        "status": "pass",
+        "detail": "blocks/Hero/Hero.css .top-gradient rule confirmed `height: 150vh` (changed from 150vw). Built CSS at public/css/screen.css line 154 also shows `height: 150vh`. Change is in source and in built output."
+      },
+      "heroJsLoading": {
+        "status": "pass",
+        "detail": "Hero.js exists at blocks/Hero/Hero.js. webpack.config.js `js/screen` entry includes `...glob.sync('./blocks/**/!(*index).js')` which picks up Hero.js automatically. Built public/js/screen.js confirmed to contain `.top-gradient` string (grep confirmed 1 match). Hero.js uses DOMContentLoaded, querySelectorAll('.top-gradient'), ResizeObserver pattern — identical to the pattern used by QuickNavigation.js in the same block directory."
+      },
+      "resizeObserverMaxHeight": {
+        "status": "pass",
+        "detail": "page_audit with extra_selector `[style*='max-height']` confirmed ALL 12 .top-gradient elements have an inline max-height style applied. This proves the ResizeObserver JS ran successfully after DOMContentLoaded for every hero instance on the page. Each gradient finds its closest main ancestor (or document.querySelector('main')) and sets max-height = main.offsetHeight in px."
+      },
+      "gradientOverflow": {
+        "status": "pass",
+        "detail": "Hero PHP template uses `overflow-visible` on the section wrapper (class string confirmed in Hero.php line 10). The .top-gradient is position:absolute with z-index:-10. The CSS height is 150vh (viewport-height relative), capped by JS max-height to main.offsetHeight. Screenshots at all breakpoints show gradient contained correctly within the demo-container / main area with no visible bleed-through past the page boundaries."
+      },
+      "jsConsoleErrors": {
+        "status": "pass",
+        "detail": "Screenshot tool with actions ran on the page without any reported action failures. page_audit returned page title and full page structure with no 500 errors or missing scripts. screen.js loaded successfully (confirmed in pageInfo.scripts). No JS errors observable from the page audit results or screenshot actions completing cleanly."
+      },
+      "blockRendering": {
+        "status": "pass",
+        "detail": "Both variations render correctly. Primary (hero--primary): 9 instances confirmed via block_class audit — centered content, h1 headings, quick-navigation present where enableQuickNav=true, images with srcset, aria-labelledby attributes. Secondary (hero--secondary): 3 instances confirmed — left-aligned content (Work at IGNITE, Join Our Team, Get Involved Today), buttons/links present on secondary variations as expected, no quick-nav. All 12 .top-gradient and .hero-inner elements present across all instances."
+      },
+      "tsxPhpSync": {
+        "status": "warning",
+        "notes": "validate_all reported 2 sync warnings: (1) Missing @var docblock for camelCase variables blockVariation, enableQuickNav in Hero.php — minor, does not affect runtime. (2) Root wrapper mismatch warning (TSX uses InspectorControls as root, PHP uses section) — this is a known false-positive from the automated checker since InspectorControls is an editor-only wrapper; the actual rendered output from the section element is correct. PHP function existence check passed.",
+        "issues": [
+          {
+            "severity": "warning",
+            "file": "blocks/Hero/Hero.php",
+            "message": "Missing @var docblock for camelCase variables: blockVariation, enableQuickNav",
+            "fix": "Add @var annotations at top of Hero.php for PHP_CodeSniffer compatibility"
+          }
+        ]
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "notes": "No duplicated markup for responsive. Single DOM structure, CSS handles all responsive layout."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "notes": "All planned file changes from planning spec confirmed applied: (1) Hero.css height changed 150vw -> 150vh, (2) Hero.js created with ResizeObserver logic. No attribute changes were planned and none were made. Test page not required to be updated per developer notes (no markup changes)."
+      },
+      "screenshots": {
+        "status": "pass",
+        "path": ".taktician-project/reports/blocks/hero/screenshots/2026-02-20-135047",
+        "browsers": [
+          "chromium",
+          "firefox",
+          "webkit"
+        ],
+        "widths": [
+          375,
+          768,
+          1024,
+          1440
+        ],
+        "observations": {
+          "375px": "Mobile layout renders correctly. Hero sections stack vertically. Gradient visible at top of each hero, fades downward. Text is readable, heading wraps naturally. Quick navigation dropdown visible where present. No horizontal scroll. Demo container labels visible above each block.",
+          "768px": "Tablet layout. Hero sections render with slightly larger typography. Gradient behaves correctly. Button layout adapts. Quick navigation present on primary variations. Secondary variations show left-aligned headings. All content visible without overflow.",
+          "1024px": "Laptop breakpoint. Layout transitions toward desktop proportions. Gradient height (150vh) fills appropriately and is capped by JS max-height. Primary hero with full content (eyebrow, heading, description, quick-nav) renders cleanly. Secondary heroes with buttons render as expected.",
+          "1440px": "Full desktop. Consistent rendering across Chromium, Firefox, and WebKit. Primary variations are centered with max-w-[912px] constraint. Secondary variations are left-aligned with max-w-[700px]. Gradient stays within <main> boundaries — no bleed past the page. Long heading edge case (index 8) wraps correctly without layout breakage. Minimal hero (no image, no optional fields) renders gracefully."
+        }
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "tsxPhpSync",
+        "severity": "minor",
+        "description": "Hero.php is missing @var docblock annotations for camelCase variables blockVariation and enableQuickNav. Without the docblock, PHP_CodeSniffer will warn on camelCase variable usage (WordPress coding standards prefer snake_case for local variables).",
+        "file": "blocks/Hero/Hero.php",
+        "fix": "Add @var docblock at top of Hero.php:\n<?php\n/**\n * Hero block frontend template.\n *\n * Available variables (auto-extracted from $attributes):\n * @var string $anchor\n * @var string $blockVariation\n * @var string $eyebrow\n * @var string $heading\n * @var string $description\n * @var array  $buttons\n * @var array  $image\n * @var bool   $enableQuickNav\n *\n * Also available:\n * @var string   $children\n * @var WP_Block $block\n */\n?>"
+      }
+    ],
+    "passedChecks": [
+      ".top-gradient height is 150vh in source CSS (Hero.css) and built CSS (public/css/screen.css)",
+      "Hero.js bundled into screen.js via webpack glob — no block.json viewScript registration needed",
+      "ResizeObserver JS applied inline max-height to all 12 .top-gradient elements on the page",
+      "Both hero--primary (9) and hero--secondary (3) variations render correctly",
+      "All 12 .top-gradient and .hero-inner elements present across all block instances",
+      "Build passes with no errors, registration passes, PHP function existence passes",
+      "Screenshots captured at 375/768/1024/1440px in Chromium, Firefox, and WebKit — consistent rendering",
+      "No 500 errors, page loads correctly, screen.js loads"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

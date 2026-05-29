@@ -1,0 +1,56 @@
+node_modules
+vendor
+public
+.env
+.npmrc
+.mcp.json
+.claude/settings.local.json
+
+# Taktician core
+.taktician
+.taktician-project/.env
+# End Taktician core
+
+# Taktician skill symlinks
+.claude/skills/build-block
+.claude/skills/build-cpt-block
+.claude/skills/build-post-field
+.claude/skills/build-post-type
+.claude/skills/build-taxonomy-field
+.claude/skills/build-template
+.claude/skills/document-block-type
+.claude/skills/edit-block
+.claude/skills/edit-cpt-block
+.claude/skills/edit-post-field
+.claude/skills/edit-post-type
+.claude/skills/edit-taxonomy-field
+.claude/skills/edit-template
+.claude/skills/qa-block
+.claude/skills/setup-theme
+.claude/skills/taktician
+# End Taktician skill symlinks
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs (we only commit the source, not compiled files usually)
+# Uncomment these if your build folder is generated:
+# build/
+# public/
+# dist/
+
+# Environment & sensitive files
+.env
+.env.local
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary folders
+tmp/
+temp/

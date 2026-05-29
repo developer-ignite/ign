@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/featured-post",
+  "title": "Featured Post",
+  "category": "takt-theme",
+  "description": "A content-with-media style section that features a selected blog post, showing its topic tag, title, excerpt, and featured image.",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "selectedPost": {
+      "type": "number"
+    },
+    "isReversed": {
+      "type": "boolean",
+      "default": false
+    },
+    "reverseRows": {
+      "type": "boolean",
+      "default": false
+    },
+    "darkMode": {
+      "type": "boolean",
+      "default": false
+    },
+    "buttonLabel": {
+      "type": "string",
+      "default": "Learn More"
+    },
+    "headingSize": {
+      "type": "string",
+      "default": "regular",
+      "enum": ["small", "regular"]
+    },
+    "eyebrow": {
+      "type": "string"
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "buttonLabel": "Learn More"
+    }
+  }
+}

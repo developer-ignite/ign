@@ -1,0 +1,168 @@
+{
+  "agent": "planning",
+  "status": "complete",
+  "severity": "none",
+  "timestamp": "2026-02-13T20:28:33Z",
+  "output": {
+    "summary": "Three changes to Wide Social Media block: (1) Fix right-alignment of links when heading is empty by adding md:ml-auto to the <nav> element, (2) Add showLabel boolean attribute (default true) on the parent block, passed via block context to child items, controlling label visibility, (3) When showLabel is false, add a title attribute to the <a> element in the child item so the social media name is available on hover.",
+    "fileChanges": [
+      {
+        "file": "blocks/WideSocialMedia/block.json",
+        "action": "modify",
+        "description": "Add showLabel boolean attribute (default true) and update providesContext to pass it to child blocks.",
+        "details": "Add attribute: \"showLabel\": { \"type\": \"boolean\", \"default\": true }. Update providesContext: { \"takt/wide-social-media/showLabel\": \"showLabel\" }.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/WideSocialMedia/WideSocialMedia.tsx",
+        "action": "modify",
+        "description": "Fix right-alignment of nav when heading is empty, add ToggleControl for showLabel in InspectorControls.",
+        "details": "1) Add md:ml-auto class to the <nav> element so links are always right-aligned regardless of heading presence. 2) Add InspectorControls import and a ToggleControl for the showLabel attribute. 3) Update the WideSocialMediaAttributes type to include showLabel?: boolean.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/WideSocialMedia/WideSocialMedia.php",
+        "action": "modify",
+        "description": "Fix right-alignment of nav when heading is empty.",
+        "details": "Add 'md:ml-auto' class to the <nav> element. This ensures that when no heading is rendered, the nav is pushed to the right side of the flex container. The parent div already has md:justify-between which works when both heading and nav are present, but when heading is absent the nav needs ml-auto to stay right-aligned.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/WideSocialMedia/WideSocialMediaItem/block.json",
+        "action": "modify",
+        "description": "Add usesContext to receive showLabel from parent block.",
+        "details": "Add \"usesContext\": [\"takt/wide-social-media/showLabel\"] to the child block's block.json.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/WideSocialMedia/WideSocialMediaItem/WideSocialMediaItem.tsx",
+        "action": "modify",
+        "description": "Conditionally show/hide label based on context, add title attribute to link when label is hidden.",
+        "details": "1) Add context to EditProps type: context: { 'takt/wide-social-media/showLabel'?: boolean }. 2) Read showLabel from context (default true). 3) Conditionally render the label RichText only when showLabel is true. 4) When showLabel is false, add a title attribute to the <a> element using the label value (attributes.label) so the name appears on hover. 5) In the editor, always show the label RichText for editing purposes but add a visual indicator (e.g., reduced opacity) when showLabel is false.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/WideSocialMedia/WideSocialMediaItem/WideSocialMediaItem.php",
+        "action": "modify",
+        "description": "Conditionally render label text and add title attribute to link when label is hidden.",
+        "details": "1) Read showLabel from block context: $showLabel = $block->context['takt/wide-social-media/showLabel'] ?? true. 2) Wrap the label <span> in a conditional: only render when $showLabel is true. 3) When $showLabel is false and $label is not empty, add title=\"{$label}\" to the <a> element. 4) When $showLabel is false and label is empty but linkTitle is available, use linkTitle as the title attribute instead."
+      }
+    ],
+    "attributeChanges": [
+      {
+        "action": "add",
+        "block": "takt/wide-social-media",
+        "name": "showLabel",
+        "type": "boolean",
+        "default": true,
+        "description": "Controls whether the social media name/label text is visible next to the icon. When false, a title attribute is added to the link for hover visibility."
+      }
+    ],
+    "contextChanges": [
+      {
+        "parentBlock": "takt/wide-social-media",
+        "childBlock": "takt/wide-social-media-item",
+        "contextKey": "takt/wide-social-media/showLabel",
+        "attribute": "showLabel",
+        "description": "Pass showLabel boolean from parent to child items so all items respect the same visibility setting."
+      }
+    ],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "layout",
+        "decision": "Add md:ml-auto to the <nav> element to ensure right-alignment when heading is absent",
+        "source": "user-request",
+        "evidence": "User reported links are not right-aligned when heading is empty. The flex container uses md:justify-between which requires two children to push the second right. With only the nav present, ml-auto achieves the desired right-alignment.",
+        "recommendation": "md:ml-auto on the <nav> is the cleanest CSS-only fix. It works both with and without the heading present.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-002",
+        "category": "behavior",
+        "decision": "Place showLabel attribute on the parent block (not child) and pass via context, so all items share the same visibility setting",
+        "source": "user-request",
+        "evidence": "User wants a single toggle to show/hide all labels. Placing on parent avoids per-item toggles and ensures consistency. This follows the same context pattern used by CardsCarousel (columns), CardsGrid (columns), and MasonryCards (masonryStyle).",
+        "recommendation": "Parent-level attribute with context is the established pattern in this codebase.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-003",
+        "category": "behavior",
+        "decision": "When showLabel is false, use the item's label attribute value as the link title. Fall back to link.title if label is empty.",
+        "source": "user-request",
+        "evidence": "User request #3 specifies adding title attribute so users can see the name on hover. The label attribute is the most user-facing name (e.g., 'Facebook'), while link.title may contain a longer description.",
+        "recommendation": "Priority: label > link.title for the title attribute value.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-004",
+        "category": "behavior",
+        "decision": "In the editor (TSX), always show the label RichText for editing even when showLabel is false, but with reduced opacity to indicate it will be hidden on the frontend",
+        "source": "existing-pattern",
+        "evidence": "Editors need to be able to set/edit the label text even when it is hidden on the frontend. Showing it with visual distinction (opacity) communicates the hidden state while keeping it editable.",
+        "recommendation": "Use opacity-50 on the label span in editor when showLabel is false.",
+        "needsUserInput": false
+      }
+    ],
+    "implementationNotes": {
+      "rightAlignmentFix": {
+        "problem": "Parent div uses `md:flex-row md:justify-between`. When heading is not rendered, the <nav> is the only flex child and `justify-between` has no effect, causing left-alignment.",
+        "solution": "Add `md:ml-auto` to the <nav> element. With heading present, justify-between still works normally. Without heading, ml-auto pushes nav to the right.",
+        "filesAffected": ["WideSocialMedia.tsx", "WideSocialMedia.php"]
+      },
+      "showLabelToggle": {
+        "editorControl": "ToggleControl in InspectorControls PanelBody",
+        "panelTitle": "Display",
+        "toggleLabel": "Show social media names",
+        "help": "When disabled, only icons are shown. Names appear on hover.",
+        "filesAffected": ["block.json (parent)", "WideSocialMedia.tsx", "block.json (child)", "WideSocialMediaItem.tsx", "WideSocialMediaItem.php"]
+      },
+      "titleAttribute": {
+        "condition": "showLabel is false AND (label OR linkTitle is not empty)",
+        "value": "label || linkTitle (label takes priority)",
+        "phpImplementation": "$titleAttr = !$showLabel ? ($label ?: $linkTitle) : ''; Add title=\"{$titleAttr}\" to <a> when not empty.",
+        "tsxImplementation": "Add title prop to <a> when showLabel is false: title={!showLabel ? (attributes.label || attributes.link?.title || '') : undefined}",
+        "filesAffected": ["WideSocialMediaItem.tsx", "WideSocialMediaItem.php"]
+      }
+    },
+    "testPageUpdates": {
+      "newVariations": [
+        {
+          "demoTitle": "Labels Hidden (Icons Only via showLabel=false)",
+          "demoDescription": "showLabel is false. Icons display without text labels. Hover over each icon to see the title tooltip with the social media name.",
+          "attributes": { "heading": "Follow Us", "showLabel": false },
+          "purpose": "Tests the new showLabel=false behavior with title attributes on links"
+        },
+        {
+          "demoTitle": "Labels Hidden - No Heading",
+          "demoDescription": "showLabel is false and no heading. Tests right-alignment of icon-only links without heading.",
+          "attributes": { "showLabel": false },
+          "purpose": "Tests both fixes together: right-alignment without heading + hidden labels"
+        },
+        {
+          "demoTitle": "Labels Visible (Default showLabel=true)",
+          "demoDescription": "Default behavior with showLabel=true. Labels should display normally.",
+          "attributes": { "heading": "Follow Us", "showLabel": true },
+          "purpose": "Regression test ensuring default behavior is unchanged"
+        }
+      ],
+      "existingVariationToVerify": "With Icons - No Heading",
+      "existingVariationPurpose": "Verify the right-alignment fix: links should now be right-aligned even without a heading"
+    },
+    "requiresQA": true,
+    "qaScope": "functional",
+    "qaChecklist": [
+      "Links are right-aligned on desktop when heading is empty",
+      "Links are right-aligned on desktop when heading is present (no regression)",
+      "Mobile layout stacks correctly regardless of heading presence",
+      "showLabel=true shows label text (default behavior unchanged)",
+      "showLabel=false hides label text on frontend",
+      "showLabel=false adds title attribute to <a> element with label value",
+      "Hovering over icon-only link shows tooltip with social media name",
+      "Accessibility: aria-label still present on links when showLabel is false",
+      "Editor shows label with reduced opacity when showLabel is false",
+      "ToggleControl in inspector works correctly"
+    ]
+  }
+}

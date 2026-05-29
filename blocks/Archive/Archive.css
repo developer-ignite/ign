@@ -1,0 +1,267 @@
+/* Archive block styles */
+
+/* Filter remove button (X icon) */
+.archive-remove-filter {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	position: relative;
+}
+
+.archive-remove-filter::before,
+.archive-remove-filter::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 80%;
+	height: 2px;
+	background: currentColor;
+	border-radius: 1px;
+}
+
+.archive-remove-filter::before {
+	transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.archive-remove-filter::after {
+	transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* Hide active filters container when there are no interactive pills and no preset pills */
+.archive-active-filters:not(:has(button[data-field], .archive-preset-pill)) {
+	display: none;
+}
+
+/* Blog card alternating layout: swap image below text, CTA stays at bottom */
+/* Text-first starts at position 3 and alternates: 3, 5, 7, 9... */
+/* Only on desktop — on mobile all cards use default image-on-top layout */
+@media (min-width: 48rem) {
+	.archive[data-post-type="post"]
+		.archive-results
+		.grid
+		> *:nth-child(2n + 3)
+		article
+		> :first-child {
+		order: 1;
+	}
+
+	.archive[data-post-type="post"]
+		.archive-results
+		.grid
+		> *:nth-child(2n + 3)
+		article
+		> :last-child {
+		order: 2;
+	}
+
+	/* Text-first cards: remove content top padding so pill is flush */
+	.archive[data-post-type="post"] .archive-results .grid > *:nth-child(2n + 3) .card-post-content {
+		padding-top: 0;
+	}
+}
+
+/* ── Blog post type: xl desktop layout overrides ── */
+@media (min-width: 1280px) {
+	/* 4-column grid with increased row gap; padding handles column spacing */
+	.archive[data-post-type="post"] .archive-results .grid {
+		grid-template-columns: repeat(4, 1fr) !important;
+		column-gap: 0 !important;
+		row-gap: 4rem;
+	}
+
+	/* First card spans 2 columns (featured) */
+	.archive[data-post-type="post"] .archive-results .grid > *:first-child {
+		grid-column: span 2;
+	}
+
+	/* Wider aspect ratio for the featured (first) card image */
+	.archive[data-post-type="post"] .archive-results .grid > *:first-child img {
+		aspect-ratio: 622 / 333;
+	}
+
+	/* Vertical dividers between cards via border-left + padding for 32px gap each side */
+	.archive[data-post-type="post"] .archive-results .grid > * {
+		padding-left: 2rem;
+		padding-right: 2rem;
+		border-left: 1px solid var(--color-charcoal);
+	}
+
+	.archive.dark[data-post-type="post"] .archive-results .grid > * {
+		border-left-color: white;
+	}
+
+	/* First-in-row: no divider, flush left */
+	/* Row 1 = :first-child, rows 2+ = every 4th item starting at 4 */
+	.archive[data-post-type="post"] .archive-results .grid > *:first-child,
+	.archive[data-post-type="post"] .archive-results .grid > *:nth-child(4n) {
+		border-left: none;
+		padding-left: 0;
+	}
+
+	/* Last-in-row: flush right (positions 3, 7, 11, 15…) */
+	.archive[data-post-type="post"] .archive-results .grid > *:nth-child(4n - 1) {
+		padding-right: 0;
+	}
+
+	/* Blog card: increase gap between content and CTA (Figma margin-7 = 96px) */
+	.archive[data-post-type="post"] .card-post article > :last-child {
+		padding-top: 4rem;
+	}
+}
+
+/* Blog card: tighter title line-height per Figma (1.1 vs theme default 1.2) */
+.archive[data-post-type="post"] .card-post h3 {
+	line-height: 1.1;
+}
+
+/* Blog card: accent color on CTA on parent group hover/focus-within */
+.archive .card-post .group:hover .card-post-cta,
+.archive .card-post .group:focus-within .card-post-cta {
+	color: var(--accent-color);
+}
+
+/* Resource card hover state */
+.archive .card-resource article {
+	transition:
+		background-color 0.2s,
+		border-color 0.2s,
+		color 0.2s;
+}
+
+/* Policy card hover state */
+.archive .card-policy article {
+	transition:
+		background-color 0.2s,
+		border-color 0.2s,
+		color 0.2s;
+}
+
+/* ── Dropdown arrow fix for dark mode ── */
+/* The global forms.css uses @apply bg-none! which compiles to 'background: none !important' */
+/* This shorthand overrides all background sub-properties with !important, wiping the arrow */
+/* Fix by adding !important to all background properties to compete with the global !important */
+.archive.dark select {
+	background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+	background-repeat: no-repeat !important;
+	background-position: right 16px center !important;
+	background-size: 12px !important;
+}
+
+/* Light mode dropdown arrow */
+.archive:not(.dark) select {
+	background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%231F1F1D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+	background-repeat: no-repeat !important;
+	background-position: right 16px center !important;
+	background-size: 12px !important;
+}
+
+/* ── Search submit button styling ── */
+.archive form button[type="submit"] {
+	transition: opacity 0.2s;
+}
+
+.archive form button[type="submit"]:hover {
+	opacity: 0.7;
+}
+
+/* ── btn-tertiary hover overrides in archive card context ── */
+/* Light mode: base btn-tertiary text should be charcoal on white cards */
+.archive:not(.dark) .card-resource .btn-tertiary,
+.archive:not(.dark) .card-policy .btn-tertiary {
+	color: var(--color-charcoal);
+}
+
+/* Light mode: when card hovers to accent, keep btn-tertiary charcoal */
+.archive:not(.dark) .card-resource .group:hover .btn-tertiary,
+.archive:not(.dark) .card-resource .group:hover .btn-tertiary:hover,
+.archive:not(.dark) .card-resource .group:hover .btn-tertiary:focus,
+.archive:not(.dark) .card-resource .group:focus-within .btn-tertiary,
+.archive:not(.dark) .card-policy .group:hover .btn-tertiary,
+.archive:not(.dark) .card-policy .group:hover .btn-tertiary:hover,
+.archive:not(.dark) .card-policy .group:hover .btn-tertiary:focus,
+.archive:not(.dark) .card-policy .group:focus-within .btn-tertiary {
+	color: var(--color-charcoal) !important;
+}
+
+/* Dark mode: override btn-tertiary component hover to prevent contrast issues */
+/* Cover hover, focus, and group-hover states (but NOT base state to avoid charcoal-on-charcoal) */
+.archive.dark .card-resource .btn-tertiary:hover,
+.archive.dark .card-resource .btn-tertiary:focus,
+.archive.dark .card-resource .group:hover .btn-tertiary,
+.archive.dark .card-resource .group:hover .btn-tertiary:hover,
+.archive.dark .card-resource .group:hover .btn-tertiary:focus,
+.archive.dark .card-resource .group:focus-within .btn-tertiary,
+.archive.dark .card-policy .btn-tertiary:hover,
+.archive.dark .card-policy .btn-tertiary:focus,
+.archive.dark .card-policy .group:hover .btn-tertiary,
+.archive.dark .card-policy .group:hover .btn-tertiary:hover,
+.archive.dark .card-policy .group:hover .btn-tertiary:focus,
+.archive.dark .card-policy .group:focus-within .btn-tertiary {
+	color: var(--color-charcoal) !important;
+}
+
+/* Suppress btn-tertiary underline on hover in card context (entire card is clickable) */
+.archive .card-resource .btn-tertiary:hover,
+.archive .card-policy .btn-tertiary:hover {
+	text-decoration: none !important;
+}
+
+/* ── Active filter pill hover (secondary button style) ── */
+.archive .archive-active-filters button[data-field] {
+	transition:
+		background-color 0.2s,
+		background-position 0.3s,
+		border-color 0.2s,
+		color 0.2s;
+	--pill-gradient-opacity: 0;
+	background: linear-gradient(
+		90deg,
+		rgba(212, 255, 69, var(--pill-gradient-opacity)) 0%,
+		rgba(71, 203, 242, var(--pill-gradient-opacity)) 70%
+	);
+	background-size: 200% 100%;
+	background-position: 100% 0;
+}
+
+.archive .archive-active-filters button[data-field]:hover {
+	--pill-gradient-opacity: 1;
+	background-position: 0% 0;
+	border-color: transparent;
+	color: var(--color-charcoal);
+}
+
+.archive .archive-active-filters button[data-field]:hover .archive-remove-filter::before,
+.archive .archive-active-filters button[data-field]:hover .archive-remove-filter::after {
+	background: var(--color-charcoal);
+}
+
+/* ── Archive pagination: constrain nav-links bar to content width ── */
+.archive .archive-pagination .nav-links {
+	width: fit-content;
+}
+
+/* ── Per-page dropdown: align option padding with select padding ── */
+.archive select[data-type="per_page"] option {
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
+@property --pill-gradient-opacity {
+	syntax: "<number>";
+	initial-value: 0;
+	inherits: false;
+}
+
+/* ── Preset filter pills (always non-interactive) ── */
+.archive .archive-active-filters .archive-preset-pill {
+	cursor: default;
+	transition: none;
+	background: transparent;
+}
+
+.archive .archive-active-filters .archive-preset-pill:hover {
+	background: transparent;
+	border-color: currentColor;
+	color: inherit;
+}

@@ -1,0 +1,399 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-13-203400",
+  "status": "complete",
+  "blockName": "Footer",
+  "output": {
+    "summary": "Comprehensive review of the 9-block Footer hierarchy against the footer block-type doc checklist. Found 7 issues (0 critical, 4 major, 3 minor). Primary concerns: FooterNavColumn lacks aria-labelledby linking heading to its nav list, FooterInfo section headings use h3 without proper nav landmark structure, FooterNav PHP missing bg-charcoal/rounded classes (handled by parent wrapper but inconsistent with TSX), and the FooterCredits section uses sm: breakpoint instead of md: per the block-type doc pattern. Test page updated with DemoContainer wrappers and 6 required variations.",
+    "blockTypeReview": {
+      "checklistResults": [
+        {
+          "item": "Parent: Uses <footer> element (not <section>)",
+          "status": "pass",
+          "details": "Footer.tsx renders <footer> element. Footer.php also uses <footer> element."
+        },
+        {
+          "item": "Parent: No \"multiple\": false",
+          "status": "pass",
+          "details": "block.json has no \"multiple\" field."
+        },
+        {
+          "item": "Parent: Dark background color on parent",
+          "status": "pass",
+          "details": "Uses gradient background via inline style on the parent <footer>. The child blocks (FooterInfo, FooterNav, FooterCredits) each apply bg-charcoal."
+        },
+        {
+          "item": "Parent: TEMPLATE + REQUIRED pattern for block ordering",
+          "status": "pass",
+          "details": "Footer.tsx defines both TEMPLATE and REQUIRED arrays with footer-info, footer-nav, footer-credits."
+        },
+        {
+          "item": "Parent: useEffect + replaceInnerBlocks for enforcing order",
+          "status": "pass",
+          "details": "Footer.tsx has proper useEffect with replaceInnerBlocks."
+        },
+        {
+          "item": "Parent: No shouldDisplay()",
+          "status": "pass",
+          "details": "Footer always renders, no conditional display."
+        },
+        {
+          "item": "Parent: No Appender",
+          "status": "pass",
+          "details": "renderAppender: false is set. No Appender component imported."
+        },
+        {
+          "item": "Section: parent restriction",
+          "status": "pass",
+          "details": "FooterInfo, FooterNav, and FooterCredits all have parent: [\"takt/footer\"] in block.json."
+        },
+        {
+          "item": "Section: No \"multiple\": false",
+          "status": "pass",
+          "details": "No child blocks use \"multiple\": false."
+        },
+        {
+          "item": "Section: TEMPLATE ordering pattern",
+          "status": "pass",
+          "details": "FooterInfo has TEMPLATE for footer-info-social. FooterNav uses TEMPLATE for nav columns. FooterCredits uses template for credits items."
+        },
+        {
+          "item": "Section: renderAppender: false",
+          "status": "pass",
+          "details": "All section blocks set renderAppender: false."
+        },
+        {
+          "item": "Navigation Containers: <nav> element with aria-label",
+          "status": "pass",
+          "details": "FooterInfoSocial uses <nav aria-label=\"Social Media Links\">. FooterNav uses <nav aria-label=\"Footer Navigation\">. FooterCredits uses <nav aria-label=\"Legal Links\">."
+        },
+        {
+          "item": "Navigation Containers: <ul> as inner blocks wrapper",
+          "status": "pass",
+          "details": "FooterInfoSocial, FooterNavColumn, and FooterCredits all use <ul> for their inner blocks lists."
+        },
+        {
+          "item": "Navigation Containers: Appender component for adding items",
+          "status": "pass",
+          "details": "FooterInfoSocial, FooterNav, FooterNavColumn, and FooterCredits all import and render <Appender />."
+        },
+        {
+          "item": "Navigation Containers: orientation horizontal",
+          "status": "pass",
+          "details": "FooterInfoSocial uses orientation: 'horizontal'. FooterCredits uses orientation: 'horizontal'. FooterNavColumn uses vertical (correct for column layout)."
+        },
+        {
+          "item": "Link Items: <li> wrapper element",
+          "status": "pass",
+          "details": "FooterNavColumnItem, FooterCreditsItem, and FooterInfoSocialItem all render <li> wrapper."
+        },
+        {
+          "item": "Link Items: Link component with renameBlock",
+          "status": "pass",
+          "details": "FooterNavColumnItem and FooterCreditsItem use Link component with renameBlock. FooterInfoSocialItem uses custom LinkControl with renameBlock."
+        },
+        {
+          "item": "Link Items: validateLink={true}",
+          "status": "pass",
+          "details": "FooterNavColumnItem and FooterCreditsItem both set validateLink: true."
+        },
+        {
+          "item": "Link Items: PHP get_template_part('parts/ThemeLink')",
+          "status": "pass",
+          "details": "FooterNavColumnItem.php and FooterCreditsItem.php both use get_template_part('parts/ThemeLink')."
+        },
+        {
+          "item": "Link Items: PHP conditional render when URL is set",
+          "status": "pass",
+          "details": "FooterInfoSocialItem.php returns early if linkUrl is empty. ThemeLink.php has conditional rendering based on linkUrl."
+        },
+        {
+          "item": "Social Media Items: ImageOrInlineSvg for inline SVG rendering",
+          "status": "pass",
+          "details": "FooterInfoSocialItem.tsx imports and uses ImageOrInlineSvg."
+        },
+        {
+          "item": "Social Media Items: fetchMedia() for logo data",
+          "status": "pass",
+          "details": "FooterInfoSocialItem.tsx uses fetchMedia(attributes.logoId || null)."
+        },
+        {
+          "item": "Social Media Items: Custom LinkControl popover",
+          "status": "pass",
+          "details": "Uses Popover with LinkControl, ToggleControl, TextControl for title and aria-label."
+        },
+        {
+          "item": "Social Media Items: MediaUpload + MediaReplaceFlow in toolbar",
+          "status": "pass",
+          "details": "Both MediaUpload and MediaReplaceFlow are used in BlockControls."
+        },
+        {
+          "item": "Social Media Items: Logo panel in sidebar",
+          "status": "pass",
+          "details": "InspectorControls panel with MediaUpload for icon management."
+        },
+        {
+          "item": "Social Media Items: opensInNewTab defaults to true",
+          "status": "pass",
+          "details": "block.json default has opensInNewTab: true."
+        },
+        {
+          "item": "Social Media Items: PHP theme_output_svg_or_img()",
+          "status": "pass",
+          "details": "FooterInfoSocialItem.php uses theme_output_svg_or_img($logoId)."
+        },
+        {
+          "item": "Social Media Items: PHP sr-only span",
+          "status": "pass",
+          "details": "FooterInfoSocialItem.php has <span class=\"sr-only\"> with link title."
+        },
+        {
+          "item": "Copyright: Dynamic year",
+          "status": "pass",
+          "details": "TSX uses new Date().getFullYear(). PHP uses date('Y')."
+        },
+        {
+          "item": "Copyright: Copyright text editable via RichText",
+          "status": "pass",
+          "details": "FooterCredits.tsx uses RichText tagName=\"span\" for copyrightText."
+        },
+        {
+          "item": "Copyright: Legal links as inner blocks",
+          "status": "pass",
+          "details": "FooterCreditsItem is the inner block for legal links."
+        },
+        {
+          "item": "Copyright: Attribution link (Website by Takt)",
+          "status": "pass",
+          "details": "Both TSX and PHP render 'Website by' with Takt link."
+        },
+        {
+          "item": "Copyright: Mobile order (DOM): legal links, copyright, attribution",
+          "status": "pass",
+          "details": "DOM order in both TSX and PHP is: nav (legal links), copyright div, attribution div."
+        },
+        {
+          "item": "Copyright: Desktop order uses md: breakpoint prefix",
+          "status": "fail",
+          "details": "Block-type doc specifies md:order-1, md:order-2, md:order-3 but implementation uses sm:order-1, sm:order-2, sm:order-3. Should use md: prefix per the doc pattern."
+        },
+        {
+          "item": "Copyright: Attribution centered via md:mx-auto",
+          "status": "fail",
+          "details": "Uses sm:mx-auto instead of md:mx-auto. Same breakpoint mismatch as above."
+        },
+        {
+          "item": "Copyright: No flex-1 or shrink-0",
+          "status": "pass",
+          "details": "No flex-1 or shrink-0 on copyright section items."
+        },
+        {
+          "item": "Copyright: Desktop gap between columns (md:gap-6)",
+          "status": "fail",
+          "details": "Uses sm:gap-6 instead of md:gap-6. Breakpoint mismatch with block-type doc."
+        },
+        {
+          "item": "Quality: TSX and PHP produce identical HTML structure",
+          "status": "fail",
+          "details": "FooterNav.tsx includes bg-charcoal rounded-3xl classes on the <nav> element. FooterNav.php only has p-8 text-white (bg/rounded are handled by parent Footer.php wrapper div). While functionally equivalent on frontend (parent wrapper provides the styles), the TSX editor shows different styling than the PHP output structure. Also, Footer.tsx uses a <div> with inline <style> for editor, while Footer.php uses a manual wrapper <div class=\"bg-charcoal rounded-[32px]\"> to group nav+credits."
+        },
+        {
+          "item": "Quality: All navigation uses semantic <nav> with aria-label",
+          "status": "pass",
+          "details": "FooterInfoSocial, FooterNav, and FooterCredits all use <nav> with aria-label."
+        },
+        {
+          "item": "Quality: <ul>/<li> structure for link lists",
+          "status": "pass",
+          "details": "All list containers use <ul> and items use <li>."
+        },
+        {
+          "item": "Quality: Keyboard navigable",
+          "status": "pass",
+          "details": "All interactive elements are native <a> links, inherently keyboard accessible."
+        },
+        {
+          "item": "Quality: No hardcoded colors",
+          "status": "pass",
+          "details": "Uses theme CSS variables (--color-charcoal, --accent-color, --color-off-white) and Tailwind classes."
+        },
+        {
+          "item": "Quality: Responsive - mobile-first",
+          "status": "pass",
+          "details": "Uses mobile-first responsive classes (sm:, lg:, etc.)."
+        },
+        {
+          "item": "Accessibility: <footer> provides contentinfo landmark",
+          "status": "pass",
+          "details": "Parent renders as <footer> element, which implicitly provides contentinfo landmark role."
+        },
+        {
+          "item": "Accessibility: <nav> elements have aria-label",
+          "status": "pass",
+          "details": "All three <nav> elements have descriptive aria-label attributes."
+        },
+        {
+          "item": "Accessibility: Links follow Link pattern with descriptive text",
+          "status": "pass",
+          "details": "Nav links use title text. Social links use aria-label + sr-only span."
+        },
+        {
+          "item": "Accessibility: All required ARIA roles/states/properties applied",
+          "status": "pass",
+          "details": "Footer uses semantic HTML (<footer>, <nav>, <ul>, <li>, <a>) which provides implicit ARIA roles. Social media links have aria-label for icon-only links."
+        },
+        {
+          "item": "Accessibility: Accessibility patterns verified",
+          "status": "fail",
+          "details": "FooterNavColumn renders each column as a plain <div> without any grouping landmark. The heading (h3) is present but not programmatically associated with its list of links. The h3 has an id generated from anchor/metadata name, but the <ul> has no aria-labelledby pointing to it. This means screen readers see individual lists without understanding which heading they belong to."
+        }
+      ],
+      "accessibilityIssues": [
+        {
+          "id": "A11Y-001",
+          "severity": "major",
+          "description": "FooterNavColumn.php: The <ul> of navigation links is not programmatically associated with its column heading. The h3 has an id attribute but the <ul> has no aria-labelledby to link them. Screen readers cannot determine which heading a list of links belongs to.",
+          "fix": "Add aria-labelledby on the <ul> element pointing to the h3 id. In TSX, also add the same association. Ensure the id is always generated (even without anchor attribute) using a stable identifier."
+        },
+        {
+          "id": "A11Y-002",
+          "severity": "major",
+          "description": "FooterInfoSocialItem.php: When aria-label is empty (linkLabel is empty), the social media link falls back to the sr-only span with linkTitle for its accessible name. However, if linkTitle is also empty, the link has no accessible name at all. The early return only checks for empty URL, not for missing accessible name.",
+          "fix": "Add a check that either linkLabel or linkTitle is non-empty. If both are empty, either skip rendering or provide a fallback accessible name."
+        },
+        {
+          "id": "A11Y-003",
+          "severity": "major",
+          "description": "FooterCredits section: The breakpoint for reordering (sm:) does not match the block-type doc recommendation (md:). At the sm breakpoint (640px), mobile devices in landscape may show the desktop order, which could be unexpected. The doc explicitly specifies md: for the order switch.",
+          "fix": "Change sm:order-1, sm:order-2, sm:order-3 to md:order-1, md:order-2, md:order-3 in both TSX and PHP. Change sm:mx-auto to md:mx-auto. Change sm:gap-6 to md:gap-6. Change sm:flex-row to md:flex-row. Change sm:text-left to md:text-left. Change sm:justify-end to md:justify-end."
+        },
+        {
+          "id": "A11Y-004",
+          "severity": "minor",
+          "description": "FooterInfo.php: Section headings (h3 for Address, Hours, Contact, Follow Us) are used for visual grouping but the section itself does not use a landmark or grouping role. This is acceptable for visual grouping but could be improved for screen reader navigation.",
+          "fix": "This is a minor improvement. The h3 headings provide adequate structure. No change required unless we want to add role=\"group\" with aria-labelledby on each info section."
+        },
+        {
+          "id": "A11Y-005",
+          "severity": "major",
+          "description": "FooterNavColumn.tsx: The TSX editor renders columns as plain <div> but the h3 heading id is not generated in the editor. The id generation in PHP uses anchor or metadata name, but the TSX has no equivalent. This means the aria-labelledby association for the fix of A11Y-001 needs to also work in the editor.",
+          "fix": "In FooterNavColumn.tsx, generate a stable id for the heading (e.g., using clientId) and add aria-labelledby on the <ul> pointing to it."
+        },
+        {
+          "id": "A11Y-006",
+          "severity": "minor",
+          "description": "FooterInfo.tsx: The <section> element wrapping FooterInfo has no aria-label or aria-labelledby. While not strictly required (it is a child of footer, not a standalone landmark), adding a label would improve screen reader navigation within the footer.",
+          "fix": "Optional: Add aria-label=\"Contact Information\" or similar to the <section> element in both TSX and PHP."
+        },
+        {
+          "id": "A11Y-007",
+          "severity": "minor",
+          "description": "FooterNav.tsx has bg-charcoal rounded-3xl classes on the <nav> element but FooterNav.php does not (parent handles it). This visual inconsistency between editor and frontend could cause confusion during development but does not affect accessibility.",
+          "fix": "Align the classes between TSX and PHP. Either add bg-charcoal rounded-3xl to FooterNav.php or remove from FooterNav.tsx (since parent Footer.php wraps nav+credits in a shared container)."
+        }
+      ]
+    },
+    "fileChanges": [
+      {
+        "file": "blocks/Footer/FooterCredits/FooterCredits.tsx",
+        "action": "modify",
+        "description": "Change responsive breakpoints from sm: to md: for order, gap, layout, and text alignment",
+        "details": "Replace sm:order-1 with md:order-1, sm:order-2 with md:order-2, sm:order-3 with md:order-3, sm:mx-auto with md:mx-auto, sm:gap-6 with md:gap-6, sm:flex-row with md:flex-row, sm:text-left with md:text-left, sm:justify-end with md:justify-end",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Footer/FooterCredits/FooterCredits.php",
+        "action": "modify",
+        "description": "Change responsive breakpoints from sm: to md: for order, gap, layout, and text alignment",
+        "details": "Same changes as TSX: sm:order-3 -> md:order-3, sm:flex-row -> md:flex-row, sm:gap-6 -> md:gap-6, sm:order-1 -> md:order-1, sm:text-left -> md:text-left, sm:order-2 -> md:order-2, sm:mx-auto -> md:mx-auto, sm:justify-end -> md:justify-end",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumn.tsx",
+        "action": "modify",
+        "description": "Add aria-labelledby on <ul> linking to heading, generate stable heading id from clientId",
+        "details": "Add id={`footer-nav-col-${clientId}`} to the RichText h3 element. Add aria-labelledby={`footer-nav-col-${clientId}`} to the ul innerBlocksProps. This programmatically associates the nav links with their column heading for screen readers.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumn.php",
+        "action": "modify",
+        "description": "Add aria-labelledby on <ul> linking to the h3 heading id",
+        "details": "Ensure the h3 always has an id (generate from block instance hash or anchor). Add aria-labelledby on the <ul> pointing to that id. Use a reliable fallback id: $heading_id = !empty($attributes['anchor']) ? esc_attr($attributes['anchor']) . '-heading' : 'footer-nav-' . wp_unique_id() . '-heading';",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/FooterInfoSocialItem.php",
+        "action": "modify",
+        "description": "Add fallback accessible name check for social media links",
+        "details": "After the empty URL check, add a check that at least one of linkLabel or linkTitle is non-empty. If neither has content, the link would have no accessible name. Add a fallback: if linkTitle is empty, set it to 'Social media link'.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Footer/FooterNav/FooterNav.tsx",
+        "action": "modify",
+        "description": "Remove bg-charcoal rounded-3xl from <nav> to align with PHP (parent handles these styles)",
+        "details": "Change className from 'bg-charcoal rounded-3xl p-8 text-white' to 'p-8 text-white' on the <nav> element. The parent Footer.tsx already handles the background styling via inline <style> rules.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "testPagePlan": {
+      "contentFile": ".taktician-project/reports/blocks/footer/state/test-page-content.html",
+      "title": "Test: Footer",
+      "variations": [
+        {
+          "demoTitle": "Full Content (Figma Match)",
+          "demoDescription": "All fields populated with realistic content. All 6 nav columns, all 5 social links, logo, addresses, hours, contact info, and 3 legal links."
+        },
+        {
+          "demoTitle": "Minimal Content",
+          "demoDescription": "Only required fields populated. 1 nav column with 1 link, no social icons, no logo, minimal addresses. Tests empty state handling and shouldDisplay behavior."
+        },
+        {
+          "demoTitle": "Long Content",
+          "demoDescription": "Extended text in all fields. Long heading labels, long address entries, many hours lines, long email addresses, many nav links with very long titles. Tests overflow and text wrapping."
+        },
+        {
+          "demoTitle": "No Optional Fields",
+          "demoDescription": "No logo, no social label, empty hours and contact. Tests shouldDisplay() behavior for optional content sections."
+        },
+        {
+          "demoTitle": "Single Column Navigation",
+          "demoDescription": "Only 1 nav column with a few links. Tests layout when grid has minimal content."
+        },
+        {
+          "demoTitle": "Many Columns (8 Columns)",
+          "demoDescription": "8 nav columns to test grid wrapping behavior. Verifies the grid handles more than 6 columns gracefully."
+        }
+      ]
+    },
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "accessibility",
+        "decision": "Change FooterCredits responsive breakpoints from sm: to md: per block-type doc",
+        "source": "block-type-doc",
+        "evidence": "Footer block-type doc section 7 explicitly specifies md:order-1, md:order-2, md:order-3 with md:gap-6 and md:mx-auto"
+      },
+      {
+        "id": "DEC-002",
+        "category": "accessibility",
+        "decision": "Add aria-labelledby on FooterNavColumn <ul> to associate with heading",
+        "source": "accessibility-patterns/landmarks.md",
+        "evidence": "WAI-ARIA landmarks spec requires navigation regions to be labeled. While the parent <nav> has aria-label, individual columns within it need programmatic heading association for clarity."
+      },
+      {
+        "id": "DEC-003",
+        "category": "consistency",
+        "decision": "Remove bg-charcoal rounded-3xl from FooterNav.tsx editor to match PHP rendering",
+        "source": "existing-pattern",
+        "evidence": "Footer.php wraps FooterNav+FooterCredits in a shared bg-charcoal rounded-[32px] container. The TSX editor uses inline <style> to style these blocks. Having duplicate bg-charcoal on the <nav> in TSX but not PHP creates inconsistency."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "full"
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

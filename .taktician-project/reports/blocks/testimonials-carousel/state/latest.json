@@ -1,0 +1,9 @@
+{
+  "blockName": "TestimonialsCarousel",
+  "blockNameKebab": "testimonials-carousel",
+  "blockPath": "blocks/TestimonialsCarousel",
+  "reportDir": ".taktician-project/reports/blocks/testimonials-carousel",
+  "stateDir": ".taktician-project/reports/blocks/testimonials-carousel/state",
+  "testPage": { "url": "https://ign.localhost/?page_id=144", "pageId": 144 },
+  "latestOutputs": { "planning": ".taktician-project/reports/blocks/testimonials-carousel/state/planning-2026-02-12-115704.json", "developer": ".taktician-project/reports/blocks/testimonials-carousel/state/developer-fix-2026-02-12-120236.json", "functionalQa": null, "designQa": null }
+}

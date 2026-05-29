@@ -1,0 +1,89 @@
+/* Button row spacing within inner blocks content */
+.content-with-media-inner > .button-row {
+	margin-top: 2rem;
+}
+
+/* Drop the decorative SVG mask once the video starts playing so the frame
+   is a clean rounded rectangle (the mask's double-pill silhouette can clip
+   player controls/UI). Rounded corners come from .rounded-3xl on the
+   container. */
+.content-with-media-video-container.is-playing {
+	mask-image: none;
+}
+
+/* Play icon container */
+.content-with-media-play-button .play-icon {
+	position: relative;
+	width: 128px;
+	height: 103px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Rounded rectangle background via pseudo-element */
+.content-with-media-play-button .play-icon::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: 12.8px;
+	opacity: 0.5;
+	--play-bg-color: #fbf6e2;
+	background:
+		linear-gradient(90deg, var(--play-bg-color), var(--play-bg-color)),
+		linear-gradient(90deg, var(--color-neon-green) 0%, var(--color-blue) 70%);
+	background-size:
+		100% 100%,
+		200% 100%;
+	background-position:
+		0 0,
+		100% 0;
+}
+
+/* Circle + play triangle SVG */
+.content-with-media-play-button .play-circle {
+	position: relative;
+	width: 54px;
+	height: 54px;
+	color: var(--color-off-white);
+	transition: color 0.3s ease;
+}
+
+/* Hover: gradient sweeps across rectangle, circle turns black */
+.content-with-media-play-button:is(:hover, :focus-visible) .play-icon::before {
+	animation: cwm-play-gradient-sweep 1s ease forwards;
+}
+
+.content-with-media-play-button:is(:hover, :focus-visible) .play-circle {
+	color: var(--color-charcoal);
+}
+
+@property --play-bg-color {
+	syntax: "<color>";
+	initial-value: #fbf6e2;
+	inherits: false;
+}
+
+@keyframes cwm-play-gradient-sweep {
+	0% {
+		--play-bg-color: #fbf6e2;
+		opacity: 0.5;
+		background-position:
+			0 0,
+			100% 0;
+	}
+	50% {
+		--play-bg-color: transparent;
+		opacity: 1;
+		background-position:
+			0 0,
+			100% 0;
+	}
+	100% {
+		--play-bg-color: transparent;
+		opacity: 1;
+		background-position:
+			0 0,
+			0% 0;
+	}
+}

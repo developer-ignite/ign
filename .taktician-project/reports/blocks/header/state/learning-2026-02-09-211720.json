@@ -1,0 +1,191 @@
+{
+  "agent": "learning",
+  "timestamp": "2026-02-09-211720",
+  "status": "complete",
+  "blockName": "Header",
+  "output": {
+    "scope": "Post-build retrospective analyzing Design QA failure pattern, content-resilience principle, not-menu-open recurrence, and instruction improvement evaluation",
+    "priorLearningReport": ".taktician-project/reports/blocks/header/state/learning-2026-02-09-203815.json",
+    "issueAnalysis": [
+      {
+        "id": "L2-001",
+        "issue": "Design QA passed 3 times before content-resilience rule was added, then correctly failed on the 4th run",
+        "timeline": [
+          {
+            "run": "design-qa-2026-02-09-120759",
+            "result": "PASS",
+            "logoAssessment": "DQA-001: severity minor, 'md:**:h-14 (56px)' vs Figma 57.685px, 'within tolerance'. No mention of content-resilience or max-height constraint."
+          },
+          {
+            "run": "design-qa-2026-02-09-203303",
+            "result": "PASS",
+            "logoAssessment": "DQA-001: severity minor, 'Test content issue - wrong image uploaded, not a code issue'. Explicitly dismissed the visual breakage as a content problem. Even asked the user to upload a different image."
+          },
+          {
+            "run": "design-qa-2026-02-09-210915",
+            "result": "FAIL",
+            "logoAssessment": "DQA-001: severity critical, 'Content-Resilience failure: the code lacks proper height constraints on the logo'. Correctly identified the root cause as missing CSS constraints. The only difference from the previous run was the addition of the Content-Resilience Rule and Composition Gate to designer-qa.md."
+          }
+        ],
+        "rootCause": "The Design QA agent lacked a principle for evaluating whether code is resilient to varying content. Without the Content-Resilience Rule, the agent defaulted to a charitable interpretation: 'the test content is wrong, not the code'. This is a systemic bias in visual QA -- agents tend to blame the test environment rather than the implementation when content looks different from the Figma reference. The agent needed an explicit rule to override this default reasoning.",
+        "rootCauseType": "missing-general-rule",
+        "responsiblePhase": "design",
+        "keyInsight": "Agent behavior is driven almost entirely by explicit rules in instructions. The Design QA agent saw the same visual problem 3 times and dismissed it 3 times -- because no instruction told it to think about content resilience. Adding a single paragraph (the Content-Resilience Rule) with a concrete example (the logo case) was sufficient to flip the agent's judgment from 'PASS, test content issue' to 'FAIL, critical code bug'. This demonstrates that agent instruction design is about encoding judgment heuristics, not just procedures."
+      },
+      {
+        "id": "L2-002",
+        "issue": "Content-resilience as a cross-cutting principle -- which other instruction files need it",
+        "analysis": {
+          "currentState": "The Content-Resilience Rule exists only in designer-qa.md (Step 2: Overall Composition Check). No other agent instruction file contains this principle.",
+          "agentsThatNeedIt": [
+            {
+              "file": ".taktician/agents/planning-agent.md",
+              "why": "The planning agent defines styling classes. When it specifies 'self-stretch **:h-full' for a logo without a max-height, it creates the content-resilience problem at the source. The planning agent should validate that image containers have max-height or aspect-ratio constraints based on Figma dimensions.",
+              "suggestedRule": "In Phase 7 (Generate Implementation Specification), when specifying styling for image elements: always include a max-height or aspect-ratio constraint derived from Figma measurements. An image container with only h-full or self-stretch and no max-height is fragile -- it will break with images of unexpected aspect ratios."
+            },
+            {
+              "file": ".taktician/agents/functional-qa-agent.md",
+              "why": "The functional QA agent checks edge cases (Phase 4) but has no specific check for image/content-resilience. It should verify that media elements (logos, hero images, card images) have proper constraints (max-height, aspect-ratio, object-fit) so they cannot blow up or distort the layout.",
+              "suggestedRule": "In Phase 4 (Edge Case Testing), add a 'Content Resilience' check: verify that all image elements have appropriate CSS constraints (max-height, max-width, aspect-ratio, or object-fit/object-cover). Images with only h-full or w-full and no max constraint can break layout with unexpected content dimensions."
+            },
+            {
+              "file": ".taktician/agents/developer-agent.md",
+              "why": "The developer agent implements the spec literally but should flag obvious resilience gaps. When implementing an image with self-stretch + h-full and no max-height, the developer should note this as a potential issue.",
+              "suggestedRule": "In Phase 2 (Create Block Files), Critical Rules: when implementing image containers, always verify the spec includes max-height or aspect-ratio constraints. If the spec only specifies self-stretch or h-full without bounds, flag it as a potential blocker -- unbounded image dimensions will break the layout with non-ideal content."
+            }
+          ],
+          "principleFormulation": "Content-Resilience Principle: code must produce visually appropriate results regardless of the content dimensions, length, or aspect ratio. CSS constraints (max-height, max-width, aspect-ratio, object-fit, overflow, text-overflow) are mandatory for any element that displays user-provided content. Never assume content will match Figma reference dimensions."
+        },
+        "rootCauseType": "missing-general-rule",
+        "responsiblePhase": "design"
+      },
+      {
+        "id": "L2-003",
+        "issue": "not-menu-open CSS variant re-added by developer after explicit user prohibition and prior QA removal",
+        "recurrence": true,
+        "priorAnalysis": "learning-2026-02-09-203815.json identified this issue and traced root cause to: (1) header.md block-type docs referencing the pattern, (2) planning spec listing it as required, (3) developer following spec over prior QA decision",
+        "currentStatus": {
+          "fixApplied": "developer-fix-2026-02-09-202952.json removed not-menu-open again",
+          "rootCauseAddressed": false,
+          "explanation": "The previous learning report identified 3 instruction changes needed: (1) update header.md to remove not-menu-open references, (2) add developer-agent.md rule that prior QA fixes take precedence over spec, (3) add planning-agent.md structural integrity check. None of these have been applied yet. The orchestrator state shows the fix was applied mechanically (removed the variant again) but the instruction files remain unchanged. If a new block uses header.md as a reference, the pattern will propagate again."
+        },
+        "systemicRisk": "The not-menu-open issue reveals a broader pattern: when block-type documentation contains a pattern that is later rejected, there is no mechanism to update the docs before the next fix cycle. The learning agent identifies the needed changes, but no agent applies them. The orchestrator would need to either (a) apply learning suggestions to instruction files before the next agent run, or (b) inject the learning report's suggestions as temporary guidance notes into the next agent's prompt.",
+        "rootCauseType": "ignored-instruction",
+        "responsiblePhase": "development"
+      },
+      {
+        "id": "L2-004",
+        "issue": "Evaluation of designer-qa.md improvements -- are the Content-Resilience Rule and Composition Gate sufficient?",
+        "evaluation": {
+          "compositionGate": {
+            "added": "Step 2: Overall Composition Check (GATE)",
+            "effectiveness": "HIGH. The gate stops the QA process early when the overall shape is wrong. Without this gate, the previous Design QA runs proceeded to detailed property checks and reported 'all passed' while the fundamental composition was broken. The gate forces a global assessment before local checks.",
+            "gap": "The gate currently checks 4 things: overall shape/proportions, major element positions, relative sizes, visual weight/density. It should also check: content overflow (text clipping, images bleeding out of containers) and interactive element visibility (buttons, links that might be hidden behind other elements)."
+          },
+          "contentResilienceRule": {
+            "added": "Sub-section under Step 2 with 3 examples and an explicit header-logo case study",
+            "effectiveness": "HIGH. The concrete example (logo with h-full blowing up) directly addressed the dismissed issue. The rule's key innovation is the inversion of blame: 'if swapping content would fix the visual problem, that means the CODE lacks constraints'. This is the exact reasoning the agent was missing.",
+            "gap": "The rule covers images and text overflow but does not mention: (1) video embeds with no aspect-ratio constraint, (2) SVG icons that scale unexpectedly, (3) dynamic content length in grids causing uneven row heights. These are similar failure modes that the principle should cover."
+          },
+          "visualFirstComparison": {
+            "added": "CRITICAL RULE: Visual-First Comparison section",
+            "effectiveness": "MEDIUM. This rule existed implicitly but was not enforced. The first Design QA run (120759) passed all checks without noting that the logo was visually broken because it was doing code-level verification ('uses self-stretch + **:h-full, spanning full nav bar height. Revision VERIFIED.'). The visual-first rule should prevent this, but it lacks enforcement -- the agent can still claim it 'looked at the screenshot' while primarily doing code review.",
+            "gap": "Consider adding: 'When reporting a PASS for a visual check, describe what you saw in the screenshot (e.g., compact horizontal bar ~90px tall), not what the code does (e.g., uses self-stretch + h-full). If your check description references CSS classes instead of visual observations, you are doing code review, not visual QA.'"
+          },
+          "overallAssessment": "The changes are substantial and directly address the failure. The Composition Gate + Content-Resilience Rule combination caught the logo issue that was missed 3 times. However, there are 3 remaining gaps: (1) the visual-first rule lacks a self-check mechanism to prevent agents from substituting code review for visual comparison, (2) the content-resilience examples should be expanded to cover more media types, (3) no mention of content-resilience in other agent instructions (planning, developer, functional QA) means the issue can only be caught at the last QA stage rather than prevented earlier."
+        },
+        "rootCauseType": "ambiguous-instruction",
+        "responsiblePhase": "design"
+      }
+    ],
+    "suggestions": [
+      {
+        "type": "general",
+        "target": ".taktician/instructions/agents/designer-qa.md",
+        "section": "Step 2: Overall Composition Check (GATE)",
+        "content": "Add to the gate checklist: 'Does any content overflow or clip unexpectedly?' and 'Are all interactive elements (buttons, links, form inputs) visible and accessible?'",
+        "rationale": "The current gate checks shape, positions, sizes, and density but misses overflow and visibility -- two common composition failures that the gate should catch early."
+      },
+      {
+        "type": "general",
+        "target": ".taktician/instructions/agents/designer-qa.md",
+        "section": "CRITICAL RULE: Visual-First Comparison",
+        "content": "Add enforcement heuristic: 'When reporting a visual PASS, your description must reference what you observed in the screenshot (e.g., compact horizontal bar, proportional logo), not CSS class names. If your check description says uses X class or has Y property, you are doing code review, not visual QA. Rephrase in terms of visual observations.'",
+        "rationale": "The first 3 Design QA passes described the logo check in terms of CSS classes ('uses self-stretch + **:h-full') rather than visual appearance. This self-check would force the agent to actually describe what it sees."
+      },
+      {
+        "type": "general",
+        "target": ".taktician/instructions/agents/designer-qa.md",
+        "section": "Content-Resilience Rule",
+        "content": "Expand the examples to include: video embeds without aspect-ratio constraints, SVG icons that scale to fill containers, and dynamic content in grids causing uneven row heights.",
+        "rationale": "The current examples (logo, text overflow, wrong aspect ratio) cover the most common cases but miss video, SVG, and grid content -- similar failure modes that benefit from the same principle."
+      },
+      {
+        "type": "general",
+        "target": ".taktician/agents/planning-agent.md",
+        "section": "Phase 7: Generate Implementation Specification",
+        "content": "Add Content-Resilience Check: when specifying styling for image or media elements, always include a max-height or aspect-ratio constraint derived from Figma measurements. A styling entry with h-full or self-stretch and no max-height is a content-resilience gap -- the design will break with images of unexpected aspect ratios. Add max-h-[Xpx] based on Figma measurements.",
+        "rationale": "The logo issue originated in the planning spec, which specified self-stretch + h-full without max-height. Catching this at spec time prevents the issue from reaching development and QA."
+      },
+      {
+        "type": "general",
+        "target": ".taktician/agents/functional-qa-agent.md",
+        "section": "Phase 4: Edge Case Testing",
+        "content": "Add Content-Resilience check: verify that all image/media elements have CSS constraints (max-height, max-width, aspect-ratio, or object-fit). Flag any image element with only h-full/w-full/self-stretch and no bounding constraint as a major issue.",
+        "rationale": "The functional QA agent checks edge cases but has no image-constraint validation. Adding this check creates a second safety net before Design QA."
+      },
+      {
+        "type": "general",
+        "target": ".taktician/agents/developer-agent.md",
+        "section": "Phase 7: Handle QA Fixes > 7.1 Apply Fixes",
+        "content": "When applying a batch of fixes, cross-reference against ALL prior QA reports in the state directory. If a previous QA cycle removed a pattern (e.g., removed a CSS variant, removed a duplicate element), do NOT re-add it -- even if the original spec or block-type docs still reference it. Prior QA removals take precedence over the original spec.",
+        "rationale": "The not-menu-open variant was re-added because the developer followed the spec over the prior QA decision. This rule explicitly establishes the precedence hierarchy: user instructions > prior QA decisions > spec > block-type docs."
+      },
+      {
+        "type": "general",
+        "target": ".taktician/agents/orchestrator.md",
+        "section": "Fix Cycle Management (new section or existing workflow section)",
+        "content": "Before dispatching a developer fix cycle, check the latest learning report for instruction changes that affect the current block. If the learning report identified block-type doc patterns that should NOT be used, inject those as negative-guidance notes in the developer's prompt: 'Do NOT use pattern X from header.md -- it was removed by QA.'",
+        "rationale": "The not-menu-open recurrence happened because the learning report identified the issue but no agent applied the fix to the docs before the next developer run. The orchestrator is the only agent that can bridge this gap by injecting learning-report findings as runtime guidance."
+      },
+      {
+        "type": "project-specific",
+        "section": "Learnings",
+        "content": "Header logo: always constrain logo images with max-h-[58px] (desktop) / max-md:max-h-[26px] (mobile) and object-contain. Never use self-stretch + h-full alone on logo containers.",
+        "rationale": "Project-specific logo constraint values derived from the Figma measurements (57.685px desktop, 25.599px mobile) that should be applied consistently if the header is reused or referenced."
+      }
+    ],
+    "metaAnalysis": {
+      "instructionDesignPrinciples": [
+        {
+          "principle": "Explicit heuristics over implicit reasoning",
+          "evidence": "The Design QA agent saw the broken logo 3 times and dismissed it. Adding an explicit Content-Resilience Rule (one paragraph) was sufficient to flip the judgment. Agents do not spontaneously develop judgment heuristics -- they must be explicitly encoded.",
+          "implication": "When an agent makes a wrong judgment, the fix is almost never 'the agent should think harder'. The fix is to encode the correct reasoning as an explicit rule with a concrete example. Abstract principles are less effective than concrete examples."
+        },
+        {
+          "principle": "Gate checks are more effective than property checks",
+          "evidence": "The Composition Gate (Step 2) caught the logo issue immediately. Previous runs proceeded through 25+ detailed property checks and reported PASS. Individual property checks can each pass while the overall result is broken -- the gate prevents this by enforcing a holistic assessment first.",
+          "implication": "For any QA process, add a gate check that evaluates overall correctness before detailed checks. This catches 'all parts correct but assembly wrong' failures."
+        },
+        {
+          "principle": "Documentation is runtime state for agents",
+          "evidence": "The not-menu-open pattern persisted because header.md still referenced it. The developer agent read header.md and re-implemented the pattern, overriding the prior QA removal. For agents, documentation is not just reference material -- it is the primary source of truth that drives behavior.",
+          "implication": "When a pattern is rejected, the documentation that contains it must be updated BEFORE the next agent reads it. Otherwise the rejected pattern will be re-implemented. This creates a need for a 'documentation update' step in the orchestrator workflow, triggered by learning report findings."
+        }
+      ],
+      "unresolvedSystemicIssues": [
+        {
+          "issue": "No mechanism to apply learning suggestions to instruction files between fix cycles",
+          "description": "The learning agent identifies needed instruction changes, but no agent has the authority or workflow to apply them. The orchestrator reads the learning report but does not edit instruction files. This means the same mistakes can recur within the same build session.",
+          "suggestedResolution": "Either (a) give the orchestrator permission to apply critical learning suggestions to instruction files before the next agent run, or (b) have the orchestrator inject learning findings as prompt-level guidance notes that override the unchanged docs."
+        },
+        {
+          "issue": "Visual QA agents may substitute code review for visual comparison without detection",
+          "description": "The visual-first rule says 'look at screenshots, not code'. But the agent can describe code-level observations ('uses text-white class') as if they were visual observations ('text is white'). There is no enforcement mechanism to verify the agent actually looked at the image.",
+          "suggestedResolution": "Require the agent to describe observations in visual terms with approximate dimensions or spatial descriptions (e.g., 'logo is approximately 60px tall in a 90px nav bar' vs 'logo uses h-14 class'). Code-level descriptions should only appear in the diagnostic/fix section, never in the observation section."
+        }
+      ]
+    },
+    "summary": "Analyzed 4 issues from the Header block build process. The central finding is that the Design QA agent dismissed the same visual defect (oversized logo) 3 times before an explicit Content-Resilience Rule was added to the instructions, at which point it correctly identified the issue as critical. This demonstrates that agent judgment is driven by explicit instruction rules, not emergent reasoning. The content-resilience principle needs to be propagated to 3 other agent instruction files (planning, developer, functional QA) to catch such issues earlier in the pipeline. The not-menu-open recurrence root cause (stale block-type docs) remains unaddressed at the instruction level. The designer-qa.md improvements (Composition Gate + Content-Resilience Rule) are effective but have 3 gaps: no overflow/visibility gate checks, no visual-first enforcement heuristic, and limited content-resilience examples. Produced 8 suggestions (7 general instruction changes, 1 project-specific learning)."
+  }
+}

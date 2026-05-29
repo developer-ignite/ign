@@ -1,0 +1,62 @@
+{
+  "agent": "planning",
+  "status": "complete",
+  "timestamp": "2026-02-19-124704",
+  "output": {
+    "summary": "Fix logo SVG visibility (text color inheritance) and validate logo positioning against Figma design. The primary issue is that the logo <a> container lacks text-white, causing inline SVGs using currentColor to render invisible against the dark background. Secondary: logo link uses self-stretch but Figma shows items-center on the parent — switching to self-center provides better semantic alignment with the design intent.",
+    "fileChanges": [
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "action": "modify",
+        "description": "Add text-white to the logo <a> tag so inline SVGs using currentColor are visible on the dark background",
+        "details": "On line 70, the logo <a> tag class currently has 'block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px] focus-visible:...'. Add 'text-white' to this class string. Also change 'self-stretch' to 'self-center' to match Figma's items-center vertical alignment on the parent flex container.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "action": "modify",
+        "description": "Add text-white to both the logo <a> tag and the ImageDropUploader placeholder, and change self-stretch to self-center",
+        "details": "Two locations need updating: (1) The ImageDropUploader className on line 500 — add 'text-white' and change 'self-stretch' to 'self-center'. (2) The logo <a> tag className on line 511 — add 'text-white' and change 'self-stretch' to 'self-center'. Both currently use the same class string: 'block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px] focus-visible:...'",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "color",
+        "question": "Logo container needs text-white for inline SVG currentColor fill visibility",
+        "recommendation": "Add text-white to the logo <a> tag. The parent .header-main has bg-charcoal but the <a> element does not inherit text-white from any ancestor — browser default link color or WordPress styles override it. Since theme_output_svg_or_img() renders SVGs inline and they use currentColor for fill, the container must explicitly set text-white.",
+        "source": "figma",
+        "evidence": "Figma node 785-34245 shows white logo on charcoal background. Inline SVGs use currentColor which inherits from the nearest text color ancestor.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-002",
+        "category": "layout",
+        "question": "Should the logo use self-stretch or self-center vertical alignment?",
+        "recommendation": "Change from self-stretch to self-center. Figma's parent container uses 'flex items-center justify-between', meaning the logo should be vertically centered, not stretched. The self-stretch causes the logo <a> to span the full height of the two-row right column, which is unnecessary — the **:max-h-[58px] constraint already controls the actual logo size. Using self-center is semantically correct per the Figma design and prevents any potential layout issues where the stretched <a> tag creates an oversized clickable area.",
+        "source": "figma",
+        "evidence": "Figma node 441:28858 (Navigation) uses 'flex items-center justify-between'. The logo container (441:28859) has intrinsic height of 57.685px, not stretched to match the right column.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-003",
+        "category": "layout",
+        "question": "Are the logo max-height constraints correct?",
+        "recommendation": "Keep current values. Desktop md:**:max-h-[58px] matches Figma's 57.685px (rounded up). Mobile max-md:**:max-h-[26px] matches Figma's 25.599px (rounded up). Both are correct.",
+        "source": "figma",
+        "evidence": "Desktop logo: 57.685px tall (Figma 785-34245). Mobile logo: 25.599px tall (Figma 801-58305).",
+        "needsUserInput": false
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "visual-only",
+    "changeSummary": {
+      "phpChanges": "HeaderMain.php line 70: Add 'text-white' and change 'self-stretch' to 'self-center' in logo <a> class",
+      "tsxChanges": "HeaderMain.tsx lines 500 and 511: Add 'text-white' and change 'self-stretch' to 'self-center' in both ImageDropUploader and logo <a> class strings",
+      "classBeforePhp": "block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px] focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2",
+      "classAfterPhp": "block self-center text-white w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px] focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+    }
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-13-144900",
+  "status": "complete",
+  "blockName": "FeaturedPost",
+  "output": {
+    "summary": "Review of FeaturedPost block against content-with-media type requirements and accessibility standards. Identified 5 bugs/issues, test page needs full restructuring with DemoContainer wrappers and self-closing block markup format. No attribute changes needed.",
+    "fileChanges": [
+      {
+        "file": "blocks/FeaturedPost/FeaturedPost.php",
+        "action": "modify",
+        "description": "Fix accessibility: image alt fallback should use empty string for decorative images, not post title. When a featured image has no alt text set, falling back to the post title creates misleading alt text (the image is decorative in this context, not informational since the title is already visible as text). Also fix: the CTA link should wrap the entire clickable area properly and the link element needs descriptive accessible text since 'Learn More' alone is ambiguous without context.",
+        "details": "1. ACCESSIBILITY BUG (major): Line 146 - `$img_alt ?: $postTitle` should be `$img_alt ?: ''` - When no alt text is explicitly set on the featured image, using the post title as fallback creates redundant text (the title is already rendered as an h2/h3 on the page). Per accessibility guidelines, images that are purely decorative or whose content is already conveyed by adjacent text should use `alt=\"\"`. 2. ACCESSIBILITY BUG (major): Line 114 - The CTA button link uses only `$buttonLabel` (default 'Learn More') which is ambiguous for screen readers. Add `aria-label` attribute: `aria-label=\"$buttonLabel: $postTitle\"` so screen readers announce the full context, e.g., 'Learn More: Building Bridges'. 3. MINOR: Line 107 - The excerpt is double-escaped. `get_the_excerpt()` already returns sanitized text, but then `esc_html()` on line 107 will double-encode HTML entities (e.g., apostrophes become `&#039;` then `&amp;#039;`). Change to `echo wp_kses_post( $postExcerpt )` or just `echo $postExcerpt` since get_the_excerpt already sanitizes.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/FeaturedPost/FeaturedPost.tsx",
+        "action": "modify",
+        "description": "Fix TSX/PHP sync issues and accessibility in editor preview.",
+        "details": "1. TSX/PHP SYNC BUG (major): Line 335 - TSX uses `alt={featuredImage.alt_text || postTitle}` but PHP should use `alt=\"\"` for decorative fallback. Update TSX to match: `alt={featuredImage.alt_text || ''}`. 2. The editor preview does not use `wp_get_attachment_image()` so it lacks srcset/sizes. This is acceptable for editor-only rendering but should be noted.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/FeaturedPost/FeaturedPost.php",
+        "action": "modify",
+        "description": "Fix old non-self-closing block markup in saved content - the test page currently uses HTML wrappers in saved content which is incorrect for dynamic blocks.",
+        "details": "This is a test page content issue, not a PHP template issue. The existing test page (ID 135) uses the wrong block markup format: `<!-- wp:takt/featured-post {...} -->\\n<section class=\"wp-block-takt-featured-post\"></section>\\n<!-- /wp:takt/featured-post -->` instead of self-closing `<!-- wp:takt/featured-post {...} /-->`. The test page must be updated to use the correct format AND wrapped in DemoContainer blocks.",
+        "affectsPhp": false
+      }
+    ],
+    "testPageChanges": {
+      "pageId": 135,
+      "currentTitle": "TEST: Featured Post",
+      "newTitle": "TEST: Featured Post",
+      "currentFormat": "Raw blocks without DemoContainer wrappers, using non-self-closing markup with HTML wrappers",
+      "newFormat": "Self-closing block markup wrapped in DemoContainer blocks with titles and descriptions",
+      "contentFile": ".taktician-project/reports/blocks/featured-post/state/test-page-content.html",
+      "currentVariationCount": 8,
+      "newVariationCount": 10,
+      "missingVariations": [
+        "All Options Combined (dark + reversed + small heading + eyebrow + custom button)",
+        "Dark Mode + Eyebrow + Reverse Rows"
+      ],
+      "variations": [
+        {
+          "demoTitle": "Default - Full Content",
+          "demoDescription": "All fields auto-populated from selected post. Default layout with media on left, content on right.",
+          "attributes": {"selectedPost": 122}
+        },
+        {
+          "demoTitle": "Reversed Columns",
+          "demoDescription": "isReversed=true moves content to left column, media to right column on desktop.",
+          "attributes": {"selectedPost": 122, "isReversed": true, "buttonLabel": "Read Full Story"}
+        },
+        {
+          "demoTitle": "Dark Mode",
+          "demoDescription": "Dark mode with charcoal pseudo-element backgrounds behind both columns.",
+          "attributes": {"selectedPost": 121, "darkMode": true}
+        },
+        {
+          "demoTitle": "Dark Mode + Reversed",
+          "demoDescription": "Dark mode combined with reversed column order.",
+          "attributes": {"selectedPost": 120, "isReversed": true, "darkMode": true, "buttonLabel": "Explore This Story"}
+        },
+        {
+          "demoTitle": "Small Heading (H3)",
+          "demoDescription": "headingSize=small renders the post title as an H3.",
+          "attributes": {"selectedPost": 122, "headingSize": "small"}
+        },
+        {
+          "demoTitle": "With Eyebrow Text",
+          "demoDescription": "Optional eyebrow text displayed next to the topic tag pill.",
+          "attributes": {"selectedPost": 121, "eyebrow": "Work Integrated Learning Initiative"}
+        },
+        {
+          "demoTitle": "Reverse Rows (Mobile Order)",
+          "demoDescription": "reverseRows=true places content above image on mobile.",
+          "attributes": {"selectedPost": 120, "reverseRows": true}
+        },
+        {
+          "demoTitle": "Long Button Label",
+          "demoDescription": "Tests content resilience with a long CTA button label.",
+          "attributes": {"selectedPost": 119, "buttonLabel": "View Full Article on Our Blog"}
+        },
+        {
+          "demoTitle": "All Options Combined",
+          "demoDescription": "Dark mode + reversed + small heading + eyebrow + custom button.",
+          "attributes": {"selectedPost": 119, "isReversed": true, "darkMode": true, "headingSize": "small", "eyebrow": "Featured Spotlight", "buttonLabel": "Read the Full Story"}
+        },
+        {
+          "demoTitle": "Dark Mode + Eyebrow + Reverse Rows",
+          "demoDescription": "Dark mode with eyebrow text and reverse row order on mobile.",
+          "attributes": {"selectedPost": 122, "darkMode": true, "reverseRows": true, "eyebrow": "Community Highlight"}
+        }
+      ]
+    },
+    "attributeChanges": [],
+    "issues": [
+      {
+        "id": "FP-001",
+        "severity": "major",
+        "category": "accessibility",
+        "file": "blocks/FeaturedPost/FeaturedPost.php",
+        "line": 146,
+        "description": "Image alt text fallback uses post title instead of empty string for decorative images",
+        "details": "When featured image has no alt text, the code falls back to `$postTitle`. Since the post title is already displayed as visible text (h2/h3) adjacent to the image, this creates redundant alt text. Per WCAG, images whose content is conveyed by adjacent text should be decorative (`alt=\"\"`). The image in this block is illustrative, not informational.",
+        "fix": "Change `'alt' => $img_alt ?: $postTitle` to `'alt' => $img_alt ?: ''`"
+      },
+      {
+        "id": "FP-002",
+        "severity": "major",
+        "category": "accessibility",
+        "file": "blocks/FeaturedPost/FeaturedPost.php",
+        "line": 114,
+        "description": "CTA button link text is ambiguous for screen readers",
+        "details": "The link text defaults to 'Learn More' which provides no context about the destination when read out of context (e.g., in a screen reader's list of links). Multiple Featured Post blocks on a page would all announce as 'Learn More'.",
+        "fix": "Add `aria-label` attribute to the anchor: `aria-label=\"<?php echo esc_attr( $buttonLabel . ': ' . $postTitle ); ?>\"`"
+      },
+      {
+        "id": "FP-003",
+        "severity": "major",
+        "category": "sync",
+        "file": "blocks/FeaturedPost/FeaturedPost.tsx",
+        "line": 335,
+        "description": "TSX alt text fallback differs from PHP",
+        "details": "TSX uses `alt={featuredImage.alt_text || postTitle}` but PHP should use empty string fallback. Both should be synchronized to use `alt=\"\"` as decorative fallback.",
+        "fix": "Change to `alt={featuredImage.alt_text || ''}`"
+      },
+      {
+        "id": "FP-004",
+        "severity": "minor",
+        "category": "accessibility",
+        "file": "blocks/FeaturedPost/FeaturedPost.php",
+        "line": 107,
+        "description": "Post excerpt may be double-escaped",
+        "details": "get_the_excerpt() returns already-sanitized HTML. Wrapping it in esc_html() will double-encode entities like apostrophes (&#039; becomes &amp;#039;). While not always visible, it can cause display issues with certain content.",
+        "fix": "Change `echo esc_html( $postExcerpt );` to `echo wp_kses_post( $postExcerpt );`"
+      },
+      {
+        "id": "FP-005",
+        "severity": "major",
+        "category": "test-page",
+        "file": "test-page (ID 135)",
+        "description": "Test page uses wrong block markup format and lacks DemoContainer wrappers",
+        "details": "The current test page uses non-self-closing block markup with HTML wrappers (`<section class=\"wp-block-takt-featured-post\"></section>`) instead of self-closing format (`/-->`). It also lacks DemoContainer wrappers that describe each variation. Both issues must be fixed per the new test page standards.",
+        "fix": "Update test page content using the prepared test-page-content.html file with DemoContainer wrappers and self-closing markup."
+      }
+    ],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "accessibility",
+        "question": "Should the featured image use the post title as alt text fallback when no explicit alt is set?",
+        "recommendation": "No. The image is decorative/illustrative in this context because the post title is already rendered as visible text (h2/h3) adjacent to the image. Using the post title as alt text creates redundant information for screen reader users. Use `alt=\"\"` to mark it as decorative.",
+        "source": "accessibility-pattern",
+        "evidence": "WCAG 2.1 SC 1.1.1 (Non-text Content): Images that are purely decorative or whose content is already conveyed by adjacent text should use alt=\"\". The content-with-media block type doc also states: 'Images must have appropriate alt text (or be marked decorative with alt=\"\").'",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-002",
+        "category": "accessibility",
+        "question": "Should CTA links include aria-label with post title context?",
+        "recommendation": "Yes. Add `aria-label` combining button label and post title (e.g., 'Learn More: Building Bridges'). This ensures screen readers can distinguish between multiple Featured Post blocks on the same page.",
+        "source": "accessibility-pattern",
+        "evidence": "WCAG 2.1 SC 2.4.4 (Link Purpose): The purpose of each link can be determined from the link text alone or from the link text together with its programmatically determined link context.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-003",
+        "category": "behavior",
+        "question": "Should the test page title pattern match 'TEST: Featured Post' or use a different convention?",
+        "recommendation": "Keep the existing title 'TEST: Featured Post' as it already follows the 'TEST: Block Name' pattern used by other test pages (e.g., 'TEST: Content With Media', 'TEST: Post Hero').",
+        "source": "existing-pattern",
+        "evidence": "Other test pages use 'TEST: Block Name' format (page 184: 'TEST: Content With Media').",
+        "needsUserInput": false
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "full"
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

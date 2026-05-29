@@ -1,0 +1,166 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-11-133500",
+  "status": "PASS",
+  "blockName": "DynamicContentCarousel",
+  "output": {
+    "compositionGate": "PASS",
+    "figmaNodeId": "785:33970",
+    "figmaContentNodeId": "653:29365",
+    "testPageUrl": "https://ign.localhost/test-dynamic-content-carousel/",
+    "tolerance": "semantic (2-4px)",
+    "breakpointsAnalyzed": ["desktop-1440", "laptop-1024", "tablet-768", "mobile-375"],
+    "context": "Re-QA after padding restructure. Previously py-10 sm:py-24 was on section (bg-transparent!), meaning 96px was OUTSIDE charcoal. Now section has py-10 sm:py-16 (standard outer spacing), container div has py-10 md:py-24 (96px INSIDE charcoal).",
+    "screenshots": {
+      "implementation": {
+        "desktop": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/dynamic-content-carousel-qa-1440w.png",
+        "laptop": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/dynamic-content-carousel-qa-1024w.png",
+        "tablet": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/dynamic-content-carousel-qa-768w.png",
+        "mobile": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/dynamic-content-carousel-qa-375w.png"
+      },
+      "figma": "Figma node 785:33970 screenshot captured via MCP get_screenshot"
+    },
+    "primaryFocus": {
+      "description": "Verify charcoal panel internal padding matches Figma 96px at desktop",
+      "figmaReference": "Node 653:29365 (Content wrapper) has py-96px (var --margin/margin-7) and px-32px. Background is #1e1e1c with rounded-25px corners.",
+      "implementationMapping": "Container div has py-10 md:py-24 (40px / 96px). Background via before pseudo-element with bg-charcoal rounded-3xl.",
+      "verdict": "PASS"
+    },
+    "compositionAnalysis": {
+      "overallShape": "PASS - The charcoal rounded panel is clearly visible at all breakpoints. At desktop (1440px), the panel contains generous internal padding above the eyebrow text and below the card carousel. The amount of dark space between the panel edge and the first content element (eyebrow text) is visually consistent with approximately 96px, matching the Figma design.",
+      "internalPaddingTop": "PASS - At desktop, the dark space above 'WORK INTEGRATED LEARNING INITIATIVE' eyebrow is visually generous, approximately matching the 96px top padding shown in the Figma Content wrapper (node 653:29365). The proportion of top padding to heading height is consistent between Figma and implementation.",
+      "internalPaddingBottom": "PASS - At desktop, the dark space below the card carousel (below 'LEARN MORE' CTAs) is also visually generous, approximately matching the 96px bottom padding in Figma. The ratio of bottom padding to card height appears proportionally correct.",
+      "internalPaddingHorizontal": "PASS - Horizontal padding inside the charcoal area provides appropriate clearance from the rounded corners. The pseudo-element uses before:-inset-(--side-gutter) at mobile and md:before:-inset-8 at desktop, creating the charcoal background that extends beyond the container content area.",
+      "majorElements": "PASS - All major elements correctly positioned inside the charcoal panel: ThemeHeading (2-column with eyebrow, heading, description, secondary button), controls row (progress bar + circular nav arrows), 3-column card carousel.",
+      "relativeSizes": "PASS - Heading area proportional to card area matches Figma. The visual weight of the header section versus the carousel section is consistent.",
+      "overflow": "PASS - No content overflow or clipping at any breakpoint.",
+      "interactiveElements": "PASS - Navigation arrows visible, progress bar visible, secondary button visible."
+    },
+    "paddingVerification": {
+      "desktop1440": {
+        "containerPadding": "py-24 (96px) applied via md:py-24 on the container div",
+        "sectionPadding": "py-10 sm:py-16 (40px / 64px) on the section with bg-transparent!",
+        "backgroundElement": "before pseudo-element with bg-charcoal, positioned via before:-inset-8 at md+",
+        "figmaValue": "py-96px on Content wrapper (node 653:29365)",
+        "match": "EXACT - Implementation py-24 (96px) matches Figma 96px",
+        "visualVerification": "At 1440px, the charcoal panel shows substantial dark space above the eyebrow and below the cards. This is proportionally consistent with the Figma screenshot where the Content wrapper has 96px vertical padding.",
+        "status": "PASS"
+      },
+      "laptop1024": {
+        "containerPadding": "py-24 (96px) still active since 1024px >= md (768px)",
+        "visualVerification": "At 1024px, internal padding within the charcoal area remains generous. The proportions are maintained despite narrower viewport.",
+        "status": "PASS"
+      },
+      "tablet768": {
+        "containerPadding": "py-24 (96px) active since 768px == md breakpoint",
+        "visualVerification": "At 768px, md:py-24 applies. Internal charcoal padding is visible and generous.",
+        "status": "PASS"
+      },
+      "mobile375": {
+        "containerPadding": "py-10 (40px) since 375px < md (768px)",
+        "visualVerification": "At 375px, smaller internal padding is appropriate for mobile viewport. Content has adequate breathing room within the charcoal panel.",
+        "status": "PASS"
+      }
+    },
+    "detailedChecks": {
+      "layout": {
+        "status": "PASS",
+        "observations": [
+          "2-column ThemeHeading correctly splits eyebrow+heading left and description+button right at desktop, stacking on mobile",
+          "Controls row places progress bar and nav arrows on a single row between heading and cards",
+          "Swiper shows 3 slides at desktop, 2 at tablet, 1 at mobile",
+          "Gap between header and carousel visually matches Figma's 64px gap"
+        ]
+      },
+      "spacing": {
+        "status": "PASS",
+        "observations": [
+          "Container py-24 (96px) at md+ correctly places padding INSIDE the charcoal background area, matching Figma Content wrapper's py-96px",
+          "Section py-10 sm:py-16 (40px/64px) provides standard outer spacing between blocks with bg-transparent!",
+          "ThemeHeading mb-8 md:mb-16 creates appropriate gap between heading area and controls row",
+          "Controls row mb-6 separates progress bar/nav from cards"
+        ]
+      },
+      "typography": {
+        "status": "PASS",
+        "observations": [
+          "Heading uses text-header-2 matching Figma's H3 style (Anton 56px)",
+          "Eyebrow uses uppercase text-sm font-medium matching Figma",
+          "Description text at body size matches Figma",
+          "Card headings visible and proportionally correct"
+        ]
+      },
+      "colors": {
+        "status": "PASS",
+        "observations": [
+          "Dark mode applied via class='dark bg-transparent!' on section",
+          "Charcoal background via before pseudo-element - visually matches Figma #1e1e1c",
+          "White text on dark background provides proper contrast",
+          "Progress bar gradient (green to blue) visible matching Figma accent gradient",
+          "Navigation buttons with white border in dark mode match Figma circular arrows"
+        ]
+      },
+      "borderRadius": {
+        "status": "PASS",
+        "observations": [
+          "Charcoal background pseudo-element uses rounded-3xl (24px) vs Figma 25px - within 1px tolerance",
+          "Card images use rounded corners matching design intent"
+        ]
+      },
+      "alignment": {
+        "status": "PASS",
+        "observations": [
+          "ThemeHeading left column (eyebrow + heading) left-aligned matching Figma",
+          "ThemeHeading right column (description + button) left-aligned within column matching Figma",
+          "Navigation arrows right-aligned in controls row matching Figma",
+          "Cards evenly distributed across carousel width"
+        ]
+      }
+    },
+    "issues": [],
+    "notes": [
+      {
+        "id": "DQA-NOTE-001",
+        "severity": "note",
+        "category": "spacing",
+        "element": "Section vs container padding split",
+        "observation": "The restructured padding correctly separates outer section spacing (py-10 sm:py-16 on bg-transparent! section) from inner charcoal panel padding (py-10 md:py-24 on container div). At desktop, the 96px padding is now visually INSIDE the charcoal background area, matching the Figma design where the Content wrapper (node 653:29365) has py-96px and the charcoal background.",
+        "withinTolerance": true
+      },
+      {
+        "id": "DQA-NOTE-002",
+        "severity": "note",
+        "category": "layout",
+        "element": "Card templates",
+        "observation": "Implementation uses actual card-post.php, card-team-member.php, etc. templates instead of Figma's generic teal accent placeholder cards. This is intentional per planning decision DEC-004.",
+        "withinTolerance": true
+      },
+      {
+        "id": "DQA-NOTE-003",
+        "severity": "note",
+        "category": "layout",
+        "element": "Hover/focus states",
+        "observation": "Cannot verify hover/focus states from static screenshots.",
+        "withinTolerance": true
+      }
+    ],
+    "designChecklist": {
+      "typographyMatchesFigma": true,
+      "colorsUseThemeTokens": true,
+      "spacingMatchesFigma": true,
+      "layoutMatchesAtDesktop": true,
+      "layoutMatchesAtTablet": true,
+      "layoutMatchesAtMobile": true,
+      "aspectRatiosPreserved": true,
+      "contentAlignmentMatchesDesign": true,
+      "imagesHaveProperObjectFit": true,
+      "hoverStatesOnButtonsAndLinks": "unverified (static screenshots)",
+      "focusStatesOnKeyboardAccessible": "unverified (static screenshots)",
+      "smoothTransitionsWhereExpected": "unverified (static screenshots)",
+      "gradientsBackgroundsImplemented": true,
+      "allBlockVariationsWorking": true
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

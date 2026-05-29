@@ -1,0 +1,786 @@
+{
+  "meta": {
+    "blockName": "GalleryCarousel",
+    "namespace": "takt",
+    "title": "Gallery Carousel",
+    "description": "A full-width gallery section with a dark card container, content header, and a single-image carousel with navigation and pagination controls",
+    "category": "takt-theme",
+    "generatedAt": "2026-02-06T09:40:00.000Z",
+    "figmaNodeIds": {
+      "desktop": "938:2425",
+      "mobile": "785:34152"
+    },
+    "specFile": ".taktician-project/prompts/gallery-carousel.md"
+  },
+  "files": {
+    "parentBlock": {
+      "blockJson": "blocks/GalleryCarousel/block.json",
+      "indexTsx": "blocks/GalleryCarousel/index.tsx",
+      "componentTsx": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+      "templatePhp": "blocks/GalleryCarousel/GalleryCarousel.php",
+      "iconSvg": "blocks/GalleryCarousel/GalleryCarousel.svg",
+      "frontendJs": "blocks/GalleryCarousel/GalleryCarousel.js"
+    },
+    "childBlock": {
+      "blockJson": "blocks/GalleryCarousel/GalleryCarouselItem/block.json",
+      "indexTsx": "blocks/GalleryCarousel/GalleryCarouselItem/index.tsx",
+      "componentTsx": "blocks/GalleryCarousel/GalleryCarouselItem/GalleryCarouselItem.tsx",
+      "templatePhp": "blocks/GalleryCarousel/GalleryCarouselItem/GalleryCarouselItem.php",
+      "iconSvg": "blocks/GalleryCarousel/GalleryCarouselItem/GalleryCarouselItem.svg"
+    },
+    "assets": {
+      "noiseTexture": "blocks/GalleryCarousel/resources/NoiseTexture.png",
+      "arrowLeft": "blocks/GalleryCarousel/resources/ArrowLeft.svg",
+      "arrowRight": "blocks/GalleryCarousel/resources/ArrowRight.svg"
+    }
+  },
+  "blockTypePatterns": {
+    "source": "cards-carousel.md + content-with-media.md",
+    "requiredImports": {
+      "parentTsx": [
+        "{ __ } from '@wordpress/i18n'",
+        "{ useBlockProps, InspectorControls, useInnerBlocksProps, store as blockEditorStore } from '@wordpress/block-editor'",
+        "{ useSelect } from '@wordpress/data'",
+        "{ PanelBody, ToggleControl, RangeControl } from '@wordpress/components'",
+        "{ useRefEffect } from '@wordpress/compose'",
+        "{ Swiper } from 'swiper'",
+        "{ Navigation, Pagination, Autoplay, A11y } from 'swiper/modules'",
+        "{ shouldDisplay, cn, renameBlock } from '@taktdev/utilities'",
+        "{ Appender } from '@taktdev/components'",
+        "{ ThemeHeading } from 'parts/ThemeHeading'",
+        "{ ReactComponent as ArrowLeft } from './resources/ArrowLeft.svg'",
+        "{ ReactComponent as ArrowRight } from './resources/ArrowRight.svg'"
+      ],
+      "childTsx": [
+        "{ __ } from '@wordpress/i18n'",
+        "{ useBlockProps } from '@wordpress/block-editor'",
+        "{ shouldDisplay, cn, fetchMedia } from '@taktdev/utilities'",
+        "{ ImageDropUploader, MediaUploadPanel } from '@taktdev/components'",
+        "{ InspectorControls } from '@wordpress/block-editor'",
+        "{ PanelBody } from '@wordpress/components'"
+      ]
+    },
+    "requiredPatterns": [
+      { "pattern": "shouldDisplay", "usage": "Empty state handling for content and media areas" },
+      { "pattern": "renameBlock", "usage": "Sync block name with heading content in list view" },
+      { "pattern": "useRefEffect", "usage": "Swiper initialization and cleanup in editor" },
+      { "pattern": "useInnerBlocksProps", "usage": "Render child image blocks inside swiper-wrapper" },
+      { "pattern": "fetchMedia", "usage": "Load image data from ID in child block" },
+      { "pattern": "ImageDropUploader", "usage": "Drag-and-drop image upload in child block editor" },
+      { "pattern": "MediaUploadPanel", "usage": "Sidebar image picker with focal point in child block" },
+      { "pattern": "isEditing detection", "usage": "Disable loop/autoplay when block or children focused" },
+      { "pattern": "data-attributes", "usage": "Pass carousel settings to frontend JS" },
+      { "pattern": "Appender", "usage": "Custom appender for adding new carousel items" }
+    ],
+    "qualityChecklist": [
+      "Parent uses providesContext to share settings with children",
+      "Parent uses useInnerBlocksProps with allowedBlocks: ['takt/gallery-carousel-item']",
+      "Parent uses renderAppender: false with custom Appender",
+      "Parent uses shouldDisplay() for hasInnerBlocks check",
+      "Parent uses renameBlock() with ThemeHeading",
+      "Parent defines Swiper config inline (not in a helper function or as getCarouselConfig - match existing pattern)",
+      "Parent uses useSelect with hasSelectedInnerBlock to detect child focus",
+      "Parent passes isEditing (block OR children focused) to disable loop/autoplay",
+      "Parent uses useRefEffect for Swiper initialization with cleanup",
+      "Parent passes carousel settings via data attributes in PHP",
+      "Child has parent restriction in block.json",
+      "Child uses shouldDisplay() for empty states",
+      "Child image has responsive aspect ratio classes",
+      "Frontend JS defines Swiper config inline",
+      "Frontend JS reads settings from data attributes",
+      "Frontend JS initializes Swiper on DOMContentLoaded",
+      "TSX cn() and PHP class_name() have identical conditional logic",
+      "Noise texture overlay renders correctly",
+      "Arrow SVGs are reusable from CardsCarousel or custom"
+    ]
+  },
+  "attributes": {
+    "parent": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "description": "HTML anchor/id for the block",
+        "optional": true,
+        "editorComponent": "native (supports.anchor)"
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "",
+        "description": "Small uppercase label above the heading",
+        "optional": true,
+        "editorComponent": "ThemeHeading (AdvancedRichText)"
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "default": "",
+        "description": "Main heading text (Anton font, large)",
+        "optional": true,
+        "editorComponent": "ThemeHeading (AdvancedRichText)"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": "",
+        "description": "Body text below heading or in right column on desktop",
+        "optional": true,
+        "editorComponent": "ThemeHeading (AdvancedRichText)"
+      },
+      {
+        "name": "buttons",
+        "type": "array",
+        "description": "Array of button objects (secondary variation in dark context)",
+        "optional": true,
+        "editorComponent": "ThemeHeading (ThemeButton)"
+      },
+      {
+        "name": "showPagination",
+        "type": "boolean",
+        "default": true,
+        "description": "Toggle progress bar pagination visibility",
+        "optional": false,
+        "editorComponent": "ToggleControl"
+      },
+      {
+        "name": "showNavigation",
+        "type": "boolean",
+        "default": true,
+        "description": "Toggle prev/next arrow button visibility",
+        "optional": false,
+        "editorComponent": "ToggleControl"
+      },
+      {
+        "name": "loopCarousel",
+        "type": "boolean",
+        "default": false,
+        "description": "Enable infinite loop sliding",
+        "optional": false,
+        "editorComponent": "ToggleControl"
+      },
+      {
+        "name": "autoplayCarousel",
+        "type": "boolean",
+        "default": false,
+        "description": "Enable automatic slide advancement",
+        "optional": false,
+        "editorComponent": "ToggleControl"
+      },
+      {
+        "name": "autoplayDelay",
+        "type": "number",
+        "default": 3,
+        "description": "Seconds between auto-advancing slides",
+        "optional": false,
+        "editorComponent": "RangeControl (min:1, max:60, shown when autoplayCarousel=true)"
+      }
+    ],
+    "child": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "description": "HTML anchor/id for the slide",
+        "optional": true,
+        "editorComponent": "native (supports.anchor)"
+      },
+      {
+        "name": "image",
+        "type": "object",
+        "default": { "id": null, "focalPoint": { "x": 0.5, "y": 0.5 } },
+        "description": "Gallery image with focal point support",
+        "optional": false,
+        "editorComponent": "ImageDropUploader + MediaUploadPanel"
+      }
+    ]
+  },
+  "styling": {
+    "section": {
+      "element": "section",
+      "classes": "gallery-carousel py-6 sm:py-16",
+      "notes": "Outer section wrapper. py-6 mobile (24px), sm:py-16 desktop (64px). The 'gallery-carousel' class is for frontend JS targeting."
+    },
+    "outerContainer": {
+      "element": "div",
+      "classes": "container",
+      "notes": "Standard theme container with responsive max-width and side gutters"
+    },
+    "card": {
+      "element": "div",
+      "classes": "dark relative bg-charcoal rounded-3xl overflow-hidden px-[18px] py-9 sm:px-8 sm:py-24 flex flex-col gap-8 sm:gap-16",
+      "notes": "The dark charcoal card container. rounded-3xl = 24px (Figma 25px, acceptable 1px diff). Contains noise texture overlay as first child. gap-8 (32px) mobile, gap-16 (64px) desktop matches Figma."
+    },
+    "noiseTextureOverlay": {
+      "element": "div (with img child)",
+      "classes": "absolute inset-0 pointer-events-none rounded-3xl overflow-hidden",
+      "childImageClasses": "absolute inset-0 w-full h-full object-cover mix-blend-color-dodge opacity-[0.08]",
+      "notes": "Decorative noise texture overlay on the card. The noise texture image must be a tileable PNG. Uses mix-blend-mode: color-dodge at 8% opacity as shown in Figma. The rounded-3xl and overflow-hidden ensure it clips to the card shape."
+    },
+    "headerSection": {
+      "element": "ThemeHeading",
+      "themeHeadingProps": {
+        "headingSize": 2,
+        "columns": 2,
+        "enableButtons": true,
+        "enableEyebrow": true,
+        "enableDescription": true,
+        "enableHeading": true
+      },
+      "notes": "Uses ThemeHeading with columns=2 for the two-column desktop layout (eyebrow+heading left, description+button right). On mobile (columns=2 still uses md:grid-cols-2 breakpoint), stacks naturally. The heading maps to text-header-2 (Anton font)."
+    },
+    "carouselWrapper": {
+      "element": "div",
+      "classes": "swiper-parent overflow-hidden grid grid-cols-1 grid-rows-1",
+      "notes": "Grid-based swiper parent that contains controls row and swiper element"
+    },
+    "controlsRow": {
+      "element": "div",
+      "classes": "flex items-center gap-4 mb-6",
+      "conditionalRender": "attributes.showPagination || attributes.showNavigation",
+      "notes": "Controls row BETWEEN header and carousel per spec. Contains progress bar and nav buttons. gap-4 (16px) between pagination and nav. mb-6 (24px) gap below controls before carousel image."
+    },
+    "paginationProgressBar": {
+      "element": "div",
+      "classes": "swiper-pagination flex-1 relative! h-1 bg-charcoal/20 dark:bg-white/20 rounded-full overflow-hidden",
+      "conditionalRender": "attributes.showPagination",
+      "notes": "Swiper progressbar pagination. Uses theme gradient system for fill (defined in swiper.css). The bg-white/20 matches Figma's rgba(255,255,255,0.5) approximately (theme uses 20% opacity for consistency with existing CardsCarousel pattern)."
+    },
+    "navigationContainer": {
+      "element": "div",
+      "classes": "swiper-navigation flex items-center gap-2 md:gap-4",
+      "conditionalRender": "attributes.showNavigation",
+      "notes": "Contains prev/next arrow buttons. gap-2 (8px) mobile, gap-4 (16px) desktop. Figma shows 16px gap at both sizes but mobile may need tighter."
+    },
+    "navButtonPrev": {
+      "element": "button",
+      "classes": "carousel-nav-btn prev",
+      "ariaLabel": "Previous Item",
+      "childSvg": "ArrowLeft",
+      "notes": "Uses existing carousel-nav-btn CSS class from swiper.css. 40x40 mobile, 48x48 desktop. Border, rounded-full, gradient hover animation."
+    },
+    "navButtonNext": {
+      "element": "button",
+      "classes": "carousel-nav-btn next",
+      "ariaLabel": "Next Item",
+      "childSvg": "ArrowRight",
+      "notes": "Uses existing carousel-nav-btn CSS class. Same dimensions as prev."
+    },
+    "swiperContainer": {
+      "element": "div",
+      "classes": "swiper gallery-carousel-swiper relative overflow-visible! w-full",
+      "dataAttributes": {
+        "data-navigation": "showNavigation (1 or 0)",
+        "data-pagination": "showPagination (1 or 0)",
+        "data-loop": "loopCarousel (1 or 0)",
+        "data-autoplay": "autoplayCarousel (1 or 0)",
+        "data-autoplay-delay": "autoplayDelay (number)"
+      },
+      "notes": "The Swiper container element. Uses unique class 'gallery-carousel-swiper' for frontend JS targeting (distinct from 'cards-carousel-swiper'). ref={swiperRef} in TSX."
+    },
+    "swiperWrapper": {
+      "element": "div",
+      "classes": "swiper-wrapper",
+      "notes": "Standard Swiper wrapper containing slide elements. Uses useInnerBlocksProps in TSX."
+    },
+    "childSlide": {
+      "element": "div",
+      "classes": "swiper-slide",
+      "notes": "Each gallery carousel item is a swiper slide wrapping a single image."
+    },
+    "childImageContainer": {
+      "element": "div",
+      "classes": "w-full overflow-hidden rounded-2xl",
+      "notes": "Container for the image with rounded corners. The image itself handles aspect ratio."
+    },
+    "childImage": {
+      "element": "img (via ImageDropUploader in TSX, wp_get_attachment_image in PHP)",
+      "classes": "w-full! h-auto! object-cover aspect-[1.08] sm:aspect-[2.45] rounded-2xl",
+      "notes": "Responsive aspect ratio: ~1.08:1 on mobile (318x294 from Figma), ~2.45:1 on desktop (1312x536). Object-cover ensures fill. Rounded-2xl (16px) for smooth corners on the image."
+    }
+  },
+  "swiperConfig": {
+    "modules": ["Navigation", "Pagination", "Autoplay", "A11y"],
+    "slidesPerView": 1,
+    "breakpoints": {},
+    "spaceBetween": 0,
+    "simulateTouch": false,
+    "watchOverflow": false,
+    "autoHeight": false,
+    "navigation": {
+      "enabled": "attributes.showNavigation",
+      "prevEl": ".swiper-navigation .prev (via parent.querySelector)",
+      "nextEl": ".swiper-navigation .next (via parent.querySelector)"
+    },
+    "pagination": {
+      "enabled": "attributes.showPagination",
+      "el": ".swiper-pagination (via parent.querySelector)",
+      "type": "progressbar"
+    },
+    "loop": "attributes.loopCarousel && !isEditing",
+    "autoplay": "attributes.autoplayCarousel && !isEditing ? { delay: autoplayDelay * 1000 } : false",
+    "notes": "Single image per view at all breakpoints (no column breakpoints needed). Uses getCarouselConfig helper pattern from CardsCarousel. spaceBetween: 0 since slides are full-width. No breakpointsBase needed since slidesPerView is always 1."
+  },
+  "responsive": {
+    "mobile": {
+      "breakpoint": "< 640px (default/sm)",
+      "sectionPadding": "py-6 (24px)",
+      "cardPadding": "px-[18px] py-9 (18px sides, 36px top/bottom)",
+      "cardGap": "gap-8 (32px) between header and carousel sections",
+      "headerLayout": "Stacked single column (ThemeHeading columns=2 but below md breakpoint stacks)",
+      "imageAspectRatio": "aspect-[1.08] (~1.08:1, from 318x294)",
+      "controlsPosition": "Between header and carousel (above image)",
+      "navButtonSize": "40x40px (carousel-nav-btn default)",
+      "headingSize": "text-header-2 mobile size (48px from theme)"
+    },
+    "tablet": {
+      "breakpoint": "640px - 959px (sm to md)",
+      "notes": "Inferred - transitions between mobile and desktop. Card padding switches to desktop values at sm. ThemeHeading still stacked until md.",
+      "sectionPadding": "py-16 (64px)",
+      "cardPadding": "px-8 py-24 (32px sides, 96px top/bottom)",
+      "cardGap": "gap-16 (64px)",
+      "imageAspectRatio": "aspect-[2.45] (~2.45:1, from 1312x536)"
+    },
+    "desktop": {
+      "breakpoint": ">= 960px (md)",
+      "sectionPadding": "py-16 (64px)",
+      "cardPadding": "px-8 py-24 (32px sides, 96px top/bottom)",
+      "cardGap": "gap-16 (64px)",
+      "headerLayout": "Two columns via ThemeHeading columns=2 (md:grid-cols-2)",
+      "imageAspectRatio": "aspect-[2.45] (~2.45:1, from 1312x536)",
+      "controlsPosition": "Between header and carousel (above image)",
+      "navButtonSize": "48x48px (carousel-nav-btn md:w-12 md:h-12)",
+      "headingSize": "text-header-2 desktop size (60px from theme)"
+    }
+  },
+  "behavior": {
+    "emptyState": {
+      "parent": "Show ThemeHeading area when selected (shouldDisplay). Show carousel wrapper when hasInnerBlocks or selected. Show Appender when selected or no inner blocks.",
+      "child": "Show ImageDropUploader placeholder when selected and no image (shouldDisplay)."
+    },
+    "optionalFields": {
+      "pattern": "shouldDisplay()",
+      "fields": ["eyebrow", "description", "buttons"],
+      "notes": "Heading is technically optional too but ThemeHeading handles this. Image in child block shows placeholder via ImageDropUploader."
+    },
+    "editorBehavior": {
+      "blockNaming": "renameBlock() syncs heading content to block name in list view",
+      "swiperInEditor": "Uses useRefEffect to initialize Swiper in editor. Disables loop/autoplay when isEditing (block or any child selected). Re-initializes when showNavigation, showPagination, loopCarousel, or isEditing changes.",
+      "childAppender": "Custom Appender component shown below carousel when block is selected or has no inner blocks"
+    }
+  },
+  "accessibility": {
+    "section": {
+      "role": "region (implicit from section element)",
+      "ariaLabel": "From heading content (via ThemeHeading id)"
+    },
+    "prevButton": {
+      "ariaLabel": "Previous Item",
+      "title": "Previous Item"
+    },
+    "nextButton": {
+      "ariaLabel": "Next Item",
+      "title": "Next Item"
+    },
+    "carousel": {
+      "notes": "Swiper A11y module handles aria-live announcements and keyboard navigation"
+    },
+    "images": {
+      "notes": "Images use wp_get_attachment_image which includes alt text from media library"
+    }
+  },
+  "noiseTexture": {
+    "description": "The Figma design shows a noise texture overlay on the dark card with mix-blend-mode: color-dodge and 8% opacity. This creates a subtle grainy texture on the charcoal background.",
+    "implementation": "Add a noise texture PNG image (tileable, grayscale noise pattern) to blocks/GalleryCarousel/resources/NoiseTexture.png. Render it as an absolutely-positioned img inside the card div, before all content.",
+    "cssClasses": "absolute inset-0 w-full h-full object-cover mix-blend-color-dodge opacity-[0.08] pointer-events-none rounded-3xl",
+    "htmlStructure": "<div class='absolute inset-0 pointer-events-none rounded-3xl overflow-hidden' aria-hidden='true'><img src='noise.png' class='w-full h-full object-cover mix-blend-color-dodge opacity-[0.08]' alt='' /></div>",
+    "generationNotes": "The developer should either: (1) extract the noise texture from Figma manually, (2) generate a tileable noise pattern PNG (e.g., 200x200px grayscale noise), or (3) use a CSS-based noise pattern with SVG filter. Option 3 is recommended for performance: use an inline SVG feTurbulence filter."
+  },
+  "arrowSvgs": {
+    "description": "The navigation arrow SVGs can be copied from the existing CardsCarousel block at blocks/CardsCarousel/resources/ArrowLeft.svg and ArrowRight.svg.",
+    "source": "blocks/CardsCarousel/resources/ArrowLeft.svg, blocks/CardsCarousel/resources/ArrowRight.svg",
+    "target": "blocks/GalleryCarousel/resources/ArrowLeft.svg, blocks/GalleryCarousel/resources/ArrowRight.svg"
+  },
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "category": "layout",
+      "question": "Where should pagination/navigation controls be positioned?",
+      "decision": "Controls go BETWEEN the header and carousel on ALL breakpoints (above the image)",
+      "resolvedBy": "spec",
+      "rationale": "Spec explicitly states: 'Put the pagination and navigation between the heading and the carousel in both the mobile and desktop versions.' This overrides the Figma desktop layout where controls appear below the image. Mobile Figma already shows controls above image. Per conflictResolution.specVsFigma: 'spec'."
+    },
+    {
+      "id": "DEC-002",
+      "category": "visual",
+      "question": "Should the noise texture overlay be implemented?",
+      "decision": "Yes, include noise texture overlay on the dark card background",
+      "resolvedBy": "figma",
+      "rationale": "Both desktop and mobile Figma designs clearly show a noise texture with mix-blend-color-dodge at 8% opacity on the card. This is a new pattern not in existing blocks. CSS SVG feTurbulence filter is recommended for performance over a PNG."
+    },
+    {
+      "id": "DEC-003",
+      "category": "styling",
+      "question": "Should this block use the dark mode toggle pattern (pseudo-element) or direct card styling?",
+      "decision": "Use direct dark card styling - always dark, no toggle",
+      "resolvedBy": "figma",
+      "rationale": "The Figma shows a single dark variation with no light alternative. The design uses a direct bg-charcoal card with rounded corners, noise texture, and contained padding. This is different from the CardsCarousel dark-mode toggle pattern. The block is always dark by design, similar to FullWidthMedia's approach but with the card wrapper."
+    },
+    {
+      "id": "DEC-004",
+      "category": "typography",
+      "question": "What heading size token to use for the 56px Anton heading?",
+      "decision": "Use text-header-2 (48px mobile -> 60px desktop)",
+      "resolvedBy": "figma",
+      "rationale": "Figma shows 56px Anton at desktop. Theme text-header-2 = 48px base -> 60px at 48rem (sm). 60px is the closest to 56px (4px difference, acceptable). This matches the FullWidthMedia and CardsCarousel blocks which also use headingSize={2}."
+    },
+    {
+      "id": "DEC-005",
+      "category": "layout",
+      "question": "What aspect ratios should the gallery images use?",
+      "decision": "aspect-[1.08] on mobile (default), aspect-[2.45] on sm+ breakpoint",
+      "resolvedBy": "figma",
+      "rationale": "Desktop Figma: 1312x536px = 2.449:1 ratio (~2.45). Mobile Figma: 318x294px = 1.081:1 ratio (~1.08). These are exact measurements from the Figma design context output."
+    },
+    {
+      "id": "DEC-006",
+      "category": "spacing",
+      "question": "What section and card padding values to use?",
+      "decision": "Section: py-6 sm:py-16. Card: px-[18px] py-9 sm:px-8 sm:py-24",
+      "resolvedBy": "figma",
+      "rationale": "Desktop Figma: outer py-64px (py-16), card px-32px py-96px (px-8 py-24). Mobile Figma: outer py-24px (py-6), card px-18px py-36px (px-[18px] py-9). These match the FullWidthMedia pattern for section padding (py-6 sm:py-16) and use card-specific values."
+    },
+    {
+      "id": "DEC-007",
+      "category": "structure",
+      "question": "What content does the child inner block contain?",
+      "decision": "Image only - no text, no buttons, no title",
+      "resolvedBy": "spec",
+      "rationale": "Spec states: 'The gallery should allow only images. Each image will be an inner block.' The Figma confirms this showing only images in the carousel with no overlaid text or buttons."
+    },
+    {
+      "id": "DEC-008",
+      "category": "layout",
+      "question": "How many slides per view?",
+      "decision": "slidesPerView: 1 at all breakpoints",
+      "resolvedBy": "figma",
+      "rationale": "Both desktop and mobile Figma show a single full-width image per view. No multi-column carousel. No 'columns' attribute needed (unlike CardsCarousel which has 1-3 columns)."
+    },
+    {
+      "id": "DEC-009",
+      "category": "styling",
+      "question": "Which button variation should the ThemeHeading buttons use?",
+      "decision": "btn-secondary variation (outline button with white border in dark context)",
+      "resolvedBy": "figma",
+      "rationale": "Figma button shows: bg-charcoal, border-white, rounded-full, p-16px, text-white uppercase. This matches btn-secondary in dark mode: outline style with border-white, text-white, and gradient sweep on hover."
+    },
+    {
+      "id": "DEC-010",
+      "category": "spacing",
+      "question": "What gap between header sections and carousel controls?",
+      "decision": "gap-8 (32px) mobile, gap-16 (64px) desktop between major sections within the card",
+      "resolvedBy": "figma",
+      "rationale": "Desktop Figma card uses gap-64px between header and carousel sections. Mobile uses gap-32px. These map to gap-16 and gap-8 respectively."
+    },
+    {
+      "id": "DEC-011",
+      "category": "styling",
+      "question": "What border-radius for the card?",
+      "decision": "rounded-3xl (24px)",
+      "resolvedBy": "figma",
+      "rationale": "Figma shows 25px border-radius. Tailwind rounded-3xl = 24px. 1px difference is acceptable per token mapping rules."
+    },
+    {
+      "id": "DEC-012",
+      "category": "styling",
+      "question": "What border-radius for the carousel images?",
+      "decision": "rounded-2xl (16px)",
+      "resolvedBy": "figma",
+      "rationale": "The Figma image container appears to have rounded corners. Following the FullWidthMedia pattern which uses rounded-xl for inner media. However, looking at the Figma more carefully, the image corners are subtly rounded. rounded-2xl (16px) provides a harmonious relationship with the rounded-3xl (24px) card."
+    },
+    {
+      "id": "DEC-013",
+      "category": "layout",
+      "question": "Should ThemeHeading use columns=2 or columns=1?",
+      "decision": "columns=2",
+      "resolvedBy": "figma",
+      "rationale": "Desktop Figma shows a two-column layout: eyebrow+heading on the left, description+button on the right, with gap-64px between columns. This matches ThemeHeading columns=2 which applies md:grid-cols-2 gap-x-20."
+    },
+    {
+      "id": "DEC-014",
+      "category": "visual",
+      "question": "Should the progress bar background be white/20 or white/50?",
+      "decision": "Use bg-white/20 (matching existing CardsCarousel pattern)",
+      "resolvedBy": "convention",
+      "rationale": "Figma shows rgba(255,255,255,0.5) but existing CardsCarousel uses dark:bg-white/20 for the progress bar background. Per conflictResolution.patternDeviation: 'convention', follow existing pattern for consistency across carousel blocks."
+    }
+  ],
+  "unresolvedDecisions": [],
+  "testPage": {
+    "title": "TEST: Gallery Carousel",
+    "variations": [
+      {
+        "name": "Full Content",
+        "description": "All fields populated with realistic content and 4 gallery images",
+        "attributes": {
+          "eyebrow": "Previous Impact Reports",
+          "heading": "IGNITE Employees in Action",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "buttons": [
+            { "url": "#", "variation": "secondary", "title": "Explore More Student Voices" }
+          ],
+          "showPagination": true,
+          "showNavigation": true
+        },
+        "innerBlocks": [
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-1" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-2" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-3" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-4" } } }
+        ]
+      },
+      {
+        "name": "Minimal Content",
+        "description": "Only heading and 2 images, tests empty state handling for optional fields",
+        "attributes": {
+          "heading": "Gallery",
+          "showPagination": true,
+          "showNavigation": true
+        },
+        "innerBlocks": [
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-1" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-2" } } }
+        ]
+      },
+      {
+        "name": "No Controls",
+        "description": "Tests carousel without pagination or navigation",
+        "attributes": {
+          "eyebrow": "Photo Gallery",
+          "heading": "Campus Life",
+          "showPagination": false,
+          "showNavigation": false
+        },
+        "innerBlocks": [
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-1" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-2" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-3" } } }
+        ]
+      },
+      {
+        "name": "Pagination Only",
+        "description": "Tests progress bar without navigation arrows",
+        "attributes": {
+          "heading": "Events Gallery",
+          "showPagination": true,
+          "showNavigation": false
+        },
+        "innerBlocks": [
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-1" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-2" } } }
+        ]
+      },
+      {
+        "name": "Navigation Only",
+        "description": "Tests navigation arrows without progress bar",
+        "attributes": {
+          "heading": "Student Showcase",
+          "showPagination": false,
+          "showNavigation": true
+        },
+        "innerBlocks": [
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-1" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-2" } } }
+        ]
+      },
+      {
+        "name": "Long Content",
+        "description": "Tests overflow handling with long heading and description text",
+        "attributes": {
+          "eyebrow": "Previous Impact Reports and Annual Reviews from IGNITE Student Union",
+          "heading": "IGNITE Employees Demonstrating Excellence and Community Engagement Throughout the Academic Year",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          "buttons": [
+            { "url": "#", "variation": "secondary", "title": "Explore More Student Voices and Community Impact Stories" }
+          ],
+          "showPagination": true,
+          "showNavigation": true
+        },
+        "innerBlocks": [
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-1" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-2" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-3" } } }
+        ]
+      },
+      {
+        "name": "With Autoplay and Loop",
+        "description": "Tests autoplay and loop functionality",
+        "attributes": {
+          "heading": "Auto Gallery",
+          "showPagination": true,
+          "showNavigation": true,
+          "loopCarousel": true,
+          "autoplayCarousel": true,
+          "autoplayDelay": 5
+        },
+        "innerBlocks": [
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-1" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-2" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-3" } } }
+        ]
+      },
+      {
+        "name": "Single Image",
+        "description": "Edge case: only one image in the carousel",
+        "attributes": {
+          "heading": "Featured Photo",
+          "showPagination": true,
+          "showNavigation": true
+        },
+        "innerBlocks": [
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-1" } } }
+        ]
+      },
+      {
+        "name": "Many Images",
+        "description": "Tests carousel with 10+ images for performance and pagination",
+        "attributes": {
+          "eyebrow": "Photo Album",
+          "heading": "Year in Review",
+          "description": "A collection of moments from throughout the year.",
+          "showPagination": true,
+          "showNavigation": true
+        },
+        "innerBlocks": [
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-1" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-2" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-3" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-4" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-5" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-6" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-7" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-8" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-9" } } },
+          { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "placeholder-10" } } }
+        ]
+      }
+    ],
+    "notes": [
+      "Test responsive aspect ratios: images should be nearly square on mobile (~1.08:1) and wide landscape on desktop (~2.45:1)",
+      "Verify noise texture is visible as subtle grain on the dark card background",
+      "Verify controls (pagination + navigation) appear between header and carousel at all viewport sizes",
+      "Verify progress bar gradient matches theme gradient system (neon-green -> blue)",
+      "Verify navigation arrow hover states show gradient sweep animation",
+      "Test keyboard navigation through slides",
+      "Verify single image case hides controls appropriately (swiper-controls CSS handles this)",
+      "Verify ThemeHeading two-column layout at desktop, stacked at mobile",
+      "Test with images of various aspect ratios to ensure object-cover works properly"
+    ]
+  },
+  "implementationNotes": {
+    "frontendJs": {
+      "description": "Create GalleryCarousel.js following the CardsCarousel.js pattern but with simplified config (slidesPerView always 1, no column breakpoints).",
+      "selectorClass": "gallery-carousel-swiper",
+      "notes": "Must use a UNIQUE selector class different from 'cards-carousel-swiper' to avoid conflicts."
+    },
+    "noiseTextureApproach": {
+      "recommended": "CSS SVG feTurbulence filter",
+      "cssApproach": "Use an inline SVG with feTurbulence for a performant, resolution-independent noise pattern. Apply as a pseudo-element or a hidden SVG referenced via CSS url().",
+      "fallback": "If CSS noise is too complex, use a small tileable PNG (200x200px, grayscale noise, exported from Figma or generated).",
+      "example": "<svg class='hidden'><filter id='noise'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/></filter></svg><div style='filter: url(#noise)' class='absolute inset-0 opacity-[0.08] mix-blend-color-dodge pointer-events-none rounded-3xl'></div>"
+    },
+    "arrowSvgReuse": {
+      "description": "Copy ArrowLeft.svg and ArrowRight.svg from blocks/CardsCarousel/resources/ to blocks/GalleryCarousel/resources/. These are the same arrow icons used in the existing carousel navigation.",
+      "notes": "If the arrows in the Figma design differ, extract from Figma instead. Based on visual inspection, the arrows appear identical to CardsCarousel."
+    },
+    "blockJsonExample": {
+      "parent": {
+        "$schema": "https://schemas.wp.org/trunk/block.json",
+        "apiVersion": 3,
+        "name": "takt/gallery-carousel",
+        "title": "Gallery Carousel",
+        "category": "takt-theme",
+        "description": "A full-width gallery section with a dark card, content header, and image carousel",
+        "supports": {
+          "html": false,
+          "anchor": true
+        },
+        "attributes": {
+          "anchor": { "type": "string" },
+          "eyebrow": { "type": "string", "default": "" },
+          "heading": { "type": "string", "default": "" },
+          "description": { "type": "string", "default": "" },
+          "buttons": { "type": "array" },
+          "showPagination": { "type": "boolean", "default": true },
+          "showNavigation": { "type": "boolean", "default": true },
+          "loopCarousel": { "type": "boolean", "default": false },
+          "autoplayCarousel": { "type": "boolean", "default": false },
+          "autoplayDelay": { "type": "number", "default": 3 }
+        },
+        "textdomain": "takt",
+        "example": {
+          "viewportWidth": 1400,
+          "attributes": {
+            "eyebrow": "Previous Impact Reports",
+            "heading": "IGNITE Employees in Action",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          },
+          "innerBlocks": [
+            { "name": "takt/gallery-carousel-item", "attributes": {} },
+            { "name": "takt/gallery-carousel-item", "attributes": {} },
+            { "name": "takt/gallery-carousel-item", "attributes": {} }
+          ]
+        }
+      },
+      "child": {
+        "$schema": "https://schemas.wp.org/trunk/block.json",
+        "apiVersion": 3,
+        "name": "takt/gallery-carousel-item",
+        "title": "Gallery Carousel Item",
+        "category": "takt-theme",
+        "description": "A single image slide within the Gallery Carousel",
+        "supports": {
+          "html": false,
+          "anchor": true
+        },
+        "attributes": {
+          "anchor": { "type": "string" },
+          "image": {
+            "type": "object",
+            "default": {
+              "id": null,
+              "focalPoint": { "x": 0.5, "y": 0.5 }
+            }
+          }
+        },
+        "parent": ["takt/gallery-carousel"],
+        "textdomain": "takt",
+        "example": {
+          "viewportWidth": 400,
+          "attributes": {}
+        }
+      }
+    },
+    "htmlStructureOverview": {
+      "description": "High-level HTML structure for reference",
+      "structure": [
+        "section.gallery-carousel.py-6.sm:py-16",
+        "  div.container",
+        "    div.dark.relative.bg-charcoal.rounded-3xl.overflow-hidden... (card)",
+        "      div[aria-hidden=true] (noise texture overlay)",
+        "        div/svg (noise)",
+        "      ThemeHeading (eyebrow, heading, description, buttons - columns=2)",
+        "      div.swiper-parent (carousel wrapper)",
+        "        div.flex.items-center.gap-4.mb-6 (controls row, conditional)",
+        "          div.swiper-pagination (progress bar, conditional)",
+        "          div.swiper-navigation (arrows, conditional)",
+        "            button.carousel-nav-btn.prev",
+        "            button.carousel-nav-btn.next",
+        "        div.swiper.gallery-carousel-swiper[data-*] (swiper container)",
+        "          div.swiper-wrapper (inner blocks mount point)",
+        "            div.swiper-slide (GalleryCarouselItem)",
+        "              div.w-full.overflow-hidden.rounded-2xl",
+        "                img.w-full.h-auto.object-cover.aspect-[1.08].sm:aspect-[2.45]",
+        "      Appender (conditional)"
+      ]
+    }
+  }
+}

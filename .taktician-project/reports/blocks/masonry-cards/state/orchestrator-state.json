@@ -1,0 +1,183 @@
+{
+  "version": 1,
+  "mode": "edit",
+  "blockName": "MasonryCards",
+  "blockNameKebab": "masonry-cards",
+  "blockPath": "blocks/MasonryCards",
+  "reportDir": ".taktician-project/reports/blocks/masonry-cards",
+  "stateDir": ".taktician-project/reports/blocks/masonry-cards/state",
+  "phase": "review",
+  "status": "complete",
+  "revisionCycle": 0,
+  "maxRevisionCycles": 3,
+  "testPage": {
+    "url": "https://ign.localhost/test-masonry-cards/",
+    "pageId": null,
+    "verifiedBlockCount": 12
+  },
+  "figma": {
+    "url": "https://www.figma.com/design/bpRK9A1l2nTbWfMg1pX5yK/IGN-%7C-WEBSITE--INTERNAL-?node-id=785-34519&m=dev",
+    "nodeId": "785-34519",
+    "availability": {}
+  },
+  "guidance": {},
+  "editContext": {
+    "blockMeta": {
+      "name": "takt/masonry-cards",
+      "title": "Masonry Cards",
+      "category": "takt-theme"
+    },
+    "attributes": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": null
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": null
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "default": null
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": null
+      },
+      {
+        "name": "buttons",
+        "type": "array",
+        "default": null
+      },
+      {
+        "name": "columnCount",
+        "type": "number",
+        "default": 3
+      },
+      {
+        "name": "masonryStyle",
+        "type": "boolean",
+        "default": false
+      }
+    ],
+    "childBlocks": [
+      "TextCard",
+      "ImageCard"
+    ],
+    "patterns": {
+      "usesShouldDisplay": true,
+      "usesRenameBlock": true,
+      "usesCn": true,
+      "usesThemeHeading": true,
+      "usesProvidesContext": true,
+      "colorTokensUsed": [
+        "bg-accent",
+        "bg-accent-light",
+        "bg-accent-lighter"
+      ]
+    },
+    "testPageUrl": "https://ign.localhost/test-masonry-cards/"
+  },
+  "changeRequest": "The tall option (isTall) on TextCard and ImageCard child blocks should only show up in the editor when the parent's masonryStyle is enabled. When masonryStyle is false, the isTall toggle should be hidden AND isTall should not be applied in the frontend rendering (PHP).",
+  "agentOutputs": [
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-12-210138",
+      "status": "complete",
+      "summary": "Root cause: Gutenberg ::after on focused blocks overrides custom ::after."
+    },
+    {
+      "agent": "developer",
+      "timestamp": "2026-02-12-210138",
+      "status": "complete",
+      "summary": "Initial fix with <span> element."
+    },
+    {
+      "agent": "developer-fix",
+      "timestamp": "2026-02-12-210138",
+      "status": "complete",
+      "summary": "Reverted <span>, applied !important CSS overrides per user feedback."
+    },
+    {
+      "agent": "functionalQa",
+      "timestamp": "2026-02-12-210138",
+      "status": "PASS",
+      "summary": "All 6 checks pass. Editor-only fix correct, no frontend regressions."
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-12-210138",
+      "status": "complete",
+      "summary": "Report updated with bug fix documentation. Corrected to reflect CSS override approach."
+    },
+    {
+      "agent": "developer",
+      "timestamp": "2026-02-18-143824",
+      "summary": "Added addButtonToBlock('takt/masonry-cards', 'Masonry Cards Settings') to MasonryCards.tsx — inner blocks now show a button to navigate back to the parent Masonry Cards block's settings panel.",
+      "filesChanged": [
+        "blocks/MasonryCards/MasonryCards.tsx"
+      ]
+    },
+    {
+      "agent": "context",
+      "timestamp": "2026-02-25-154200",
+      "file": null,
+      "summary": "Context gathered: 7 attributes, 2 child blocks (TextCard, ImageCard), uses ThemeHeading/shouldDisplay/cn/providesContext patterns",
+      "status": "complete"
+    },
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-25-154528",
+      "file": ".taktician-project/reports/blocks/masonry-cards/state/planning-2026-02-25-154528.json",
+      "summary": "4 files to modify (TextCard TSX/PHP, ImageCard TSX/PHP). Gate isTall toggle visibility and styling on masonryStyle context. No attribute changes needed.",
+      "status": "complete"
+    },
+    {
+      "agent": "developer",
+      "timestamp": "2026-02-25-154944",
+      "file": ".taktician-project/reports/blocks/masonry-cards/state/developer-2026-02-25-154944.json",
+      "summary": "Modified 4 files: TextCard TSX/PHP, ImageCard TSX/PHP. Gated isTall toggle visibility and styling on masonryStyle. Build PASS, Sync PASS, Registration PASS.",
+      "status": "complete"
+    },
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-25-155202",
+      "file": ".taktician-project/reports/blocks/masonry-cards/state/functional-qa-2026-02-25-155202.json",
+      "summary": "PASS — 10/10 checks passed. isTall gating verified in both editor (TSX) and frontend (PHP). Screenshots captured at 4 widths × 3 browsers.",
+      "status": "PASS"
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-25-155600",
+      "file": ".taktician-project/reports/blocks/masonry-cards/masonry-cards-report.md",
+      "summary": "Report updated: changelog entry added, block behavior updated to note masonry dependency, development notes updated with isTall gating decision, validation summary updated.",
+      "status": "complete"
+    }
+  ],
+  "latestOutputs": {
+    "planning": ".taktician-project/reports/blocks/masonry-cards/state/planning-2026-02-25-154528.json",
+    "developer": ".taktician-project/reports/blocks/masonry-cards/state/developer-2026-02-25-154912.json",
+    "functionalQa": ".taktician-project/reports/blocks/masonry-cards/state/functional-qa-2026-02-25-155202.json",
+    "designQa": ".taktician-project/reports/blocks/masonry-cards/state/design-qa-a11y-2026-02-12-162100.json"
+  },
+  "screenshots": {
+    "qaScreenshots": ".taktician-project/reports/blocks/masonry-cards/screenshots",
+    "finalScreenshots": ".taktician-project/reports/blocks/masonry-cards/screenshots/2026-02-25-155110/"
+  },
+  "unresolvedIssues": [],
+  "timestamps": {
+    "started": "2026-02-25-154200",
+    "lastUpdated": "2026-02-25T23:55:02.326Z"
+  },
+  "agentSessions": {
+    "planning": "a0da0b0",
+    "developer": "a749b07",
+    "functionalQa": "a6f6995",
+    "designQa": "a84b17c",
+    "report": "aa96dba"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "agent": "developer",
+  "mode": "fix",
+  "timestamp": "2026-02-18-184951",
+  "issue": "rem unit not converted to px in updateMenuMaxHeight()",
+  "status": "completed",
+  "fix": {
+    "file": "blocks/Header/HeaderMain/HeaderMain.js",
+    "description": "Replaced the broken parseFloat(sideGutterRaw) || 16 with a proper rem-to-px conversion. Now reads the root font-size via getComputedStyle(document.documentElement).fontSize, then checks if the --side-gutter value ends with 'rem' and multiplies accordingly. Falls back to parseFloat() for px values, or 16 if unparseable.",
+    "before": "const sideGutterRaw = getComputedStyle( document.documentElement ).getPropertyValue( '--side-gutter' ).trim();\nconst bottomSpacing = parseFloat( sideGutterRaw ) || 16;",
+    "after": "const sideGutterRaw = getComputedStyle( document.documentElement ).getPropertyValue( '--side-gutter' ).trim();\nconst rootFontSize = parseFloat( getComputedStyle( document.documentElement ).fontSize ) || 16;\nconst bottomSpacing = sideGutterRaw.endsWith( 'rem' )\n\t? parseFloat( sideGutterRaw ) * rootFontSize\n\t: parseFloat( sideGutterRaw ) || 16;"
+  },
+  "validation": {
+    "passed": true,
+    "errors": 0,
+    "warnings": 9,
+    "warningDetails": "All warnings in unrelated blocks. HeaderMain sync warning expected by design."
+  }
+}

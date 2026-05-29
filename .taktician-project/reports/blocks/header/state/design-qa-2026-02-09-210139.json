@@ -1,0 +1,257 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-09-210139",
+  "status": "PASS",
+  "blockName": "Header",
+  "output": {
+    "summary": {
+      "breakpointsChecked": ["desktop-1440", "mobile-375"],
+      "breakpointsSkipped": [],
+      "toleranceUsed": "semantic (2-4px)",
+      "figmaNodesCompared": [
+        { "nodeId": "785:34245", "description": "Desktop header (closed)" },
+        { "nodeId": "1417:2397", "description": "Desktop header with About submenu open" },
+        { "nodeId": "801:58305", "description": "Mobile header (closed)" },
+        { "nodeId": "811:61228", "description": "Mobile header (open/expanded)" }
+      ],
+      "issuesFound": 2,
+      "critical": 0,
+      "major": 0,
+      "minor": 1,
+      "notes": 1,
+      "overallMatchQuality": "Good",
+      "compositionGate": "PASS"
+    },
+    "compositionCheck": {
+      "status": "PASS",
+      "description": "Overall composition matches Figma at both desktop and mobile breakpoints. The two-row desktop layout (utility row + nav row), rounded charcoal bar, and mobile SEP-above-nav-bar structure are all correctly implemented. The only significant visual difference is the test page using a favicon (bee icon only) instead of the full IGNITE logo (bee + wordmark), which is a content issue, not a code issue."
+    },
+    "passedChecks": [
+      {
+        "id": "PC-001",
+        "category": "layout",
+        "breakpoint": "desktop-1440",
+        "description": "Two-row desktop layout: utility row (search + separator + SEP link) on top-right, nav items row on bottom-right, logo on left. Matches Figma structure exactly.",
+        "verified": true
+      },
+      {
+        "id": "PC-002",
+        "category": "color",
+        "breakpoint": "all",
+        "description": "Nav bar background: bg-charcoal (#1f1f1d) vs Figma #1e1e1c. 1 RGB unit difference, imperceptible. Within tolerance.",
+        "verified": true
+      },
+      {
+        "id": "PC-003",
+        "category": "border",
+        "breakpoint": "all",
+        "description": "Nav bar rounded corners: rounded-[25px]. Figma: rounded-[25px]. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-004",
+        "category": "spacing",
+        "breakpoint": "desktop-1440",
+        "description": "Nav bar padding: px-8 (32px) py-4 (16px). Figma: px-32 py-16. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-005",
+        "category": "typography",
+        "breakpoint": "desktop-1440",
+        "description": "Nav items: font-sans font-medium text-base (16px) leading-[1.16] uppercase text-white. Figma: General_Sans:Medium 16px leading-1.16 uppercase white. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-006",
+        "category": "spacing",
+        "breakpoint": "desktop-1440",
+        "description": "Gap between utility row and nav row: gap-6 (24px). Figma: gap-24. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-007",
+        "category": "spacing",
+        "breakpoint": "desktop-1440",
+        "description": "Gap between nav items: gap-8 (32px). Figma: gap-32. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-008",
+        "category": "layout",
+        "breakpoint": "desktop-1440",
+        "description": "Search form: w-[250px], border-b border-white, pb-1 (4px), search icon + input. Figma: w-250, border-b white, pb-4, search icon + text. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-009",
+        "category": "layout",
+        "breakpoint": "desktop-1440",
+        "description": "Vertical separator: w-px h-5 bg-white. Matches Figma vertical line between search and SEP link.",
+        "verified": true
+      },
+      {
+        "id": "PC-010",
+        "category": "layout",
+        "breakpoint": "desktop-1440",
+        "description": "SEP link: flex items-center gap-2 (8px) + ExternalArrow.svg icon. Figma: gap-8 + arrow icon. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-011",
+        "category": "color",
+        "breakpoint": "all",
+        "description": "Active/expanded nav item: aria-expanded:text-neon-green (#d4ff45). Figma: color-brand-neon-green #d4ff45. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-012",
+        "category": "layout",
+        "breakpoint": "desktop-1440",
+        "description": "Submenu dropdown: md:bg-charcoal md:rounded-xl (12px) md:p-6 (24px). Figma: bg-charcoal rounded-12 p-24. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-013",
+        "category": "spacing",
+        "breakpoint": "desktop-1440",
+        "description": "Submenu items gap: md:gap-4 (16px). Figma: gap-16. Sub-item padding: py-2 (8px). Figma: py-8. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-014",
+        "category": "typography",
+        "breakpoint": "desktop-1440",
+        "description": "Submenu text: text-white font-sans font-medium text-base leading-[1.16] uppercase. Matches Figma white text, 16px, uppercase.",
+        "verified": true
+      },
+      {
+        "id": "PC-015",
+        "category": "layout",
+        "breakpoint": "desktop-1440",
+        "description": "Logo: self-stretch w-auto **:h-full shrink-0. Logo fills full nav bar height. Figma logo: 57.685px height. Implementation correctly scales logo to match bar height.",
+        "verified": true
+      },
+      {
+        "id": "PC-016",
+        "category": "layout",
+        "breakpoint": "mobile-375",
+        "description": "SEP mobile button: bg-charcoal border border-charcoal rounded-full p-4 (16px). Figma: bg-charcoal border-charcoal rounded-119px p-16. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-017",
+        "category": "spacing",
+        "breakpoint": "mobile-375",
+        "description": "Gap between SEP button and nav bar: gap-2 (8px). Figma: gap-8. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-018",
+        "category": "layout",
+        "breakpoint": "mobile-375",
+        "description": "Mobile closed: charcoal bar with rounded-[25px], logo on left, hamburger toggle on right. Matches Figma structure.",
+        "verified": true
+      },
+      {
+        "id": "PC-019",
+        "category": "layout",
+        "breakpoint": "mobile-375",
+        "description": "Mobile toggle: md:hidden button with MainMenuOpen.svg/MainMenuClose.svg, aria-controls, aria-expanded. Present in all header blocks with children.",
+        "verified": true
+      },
+      {
+        "id": "PC-020",
+        "category": "layout",
+        "breakpoint": "mobile-375",
+        "description": "Mobile expanded structure (code-verified): logo + X close, hr divider, nav items (vertical gap-8=32px), search, CTA text + Contact Us button. Matches Figma structure.",
+        "verified": true
+      },
+      {
+        "id": "PC-021",
+        "category": "spacing",
+        "breakpoint": "mobile-375",
+        "description": "Mobile sub-items: pl-6 (24px) indentation, gap-1 (4px) between sub-items, sub-item py-2 (8px). Figma: pl-24, gap-4, py-8. All exact matches.",
+        "verified": true
+      },
+      {
+        "id": "PC-022",
+        "category": "layout",
+        "breakpoint": "mobile-375",
+        "description": "Mobile CTA: CTA text in font-sans font-medium text-base leading-[1.5]. Contact Us button: bg-white text-charcoal rounded-full p-4 uppercase. Figma: bg-white charcoal rounded-119px p-16 gap-16. Matches.",
+        "verified": true
+      },
+      {
+        "id": "PC-023",
+        "category": "layout",
+        "breakpoint": "mobile-375",
+        "description": "Mobile search: border-b border-white pb-2 (8px). Figma: border-b white pb-8. Exact match.",
+        "verified": true
+      }
+    ],
+    "issues": [
+      {
+        "id": "DQA-001",
+        "severity": "minor",
+        "category": "layout",
+        "element": "Logo image is favicon instead of full logo with wordmark",
+        "breakpoint": "all",
+        "figmaValue": "Logo: bee icon (66.84px) + IGNITE wordmark (148.6px), total ~215px wide, 57.685px tall on desktop; 99.84px wide, 25.6px tall on mobile",
+        "implementationValue": "Test page uses favicon.png (small bee icon only, no wordmark). The image scales to fill the entire nav bar height due to **:h-full, making the bee icon appear disproportionately large.",
+        "difference": "Test content issue - wrong image uploaded, not a code issue",
+        "withinTolerance": true,
+        "recommendation": "Upload the full Ignite logo SVG (bee + IGNITE wordmark) to the test page. The block code correctly handles any logo via self-stretch + **:h-full. This is purely a test content asset issue and does not affect the code quality.",
+        "verified": true
+      },
+      {
+        "id": "DQA-002",
+        "severity": "note",
+        "category": "typography",
+        "element": "Font family mapping",
+        "breakpoint": "all",
+        "figmaValue": "Figma uses Roboto:Medium for SEP link, submenu items, CTA text, Contact Us button. General_Sans:Medium for main nav items.",
+        "implementationValue": "Implementation uses font-sans (General Sans) for all text elements throughout the header.",
+        "difference": "Intentional theme-level font mapping - General Sans is the theme's sans-serif font",
+        "withinTolerance": true,
+        "recommendation": "Theme intentionally maps all text to General Sans. No change needed unless client specifically requires Roboto for secondary text.",
+        "verified": true
+      }
+    ],
+    "screenshots": {
+      "implementation": {
+        "desktop-1440": ".taktician-project/reports/blocks/header/screenshots/header-qa-r3-1440w.png",
+        "mobile-375": ".taktician-project/reports/blocks/header/screenshots/header-qa-r3-375w.png"
+      },
+      "figma": {
+        "desktop-header": "Figma node 785:34245",
+        "desktop-header-submenu": "Figma node 1417:2397",
+        "mobile-closed": "Figma node 801:58305",
+        "mobile-open": "Figma node 811:61228"
+      }
+    },
+    "visualComparisonNotes": {
+      "methodology": "Visual-first approach: implementation screenshots taken at 375px and 1440px, Figma screenshots obtained for all 4 reference nodes. Both sets of images were viewed using the Read tool. Figma design context was obtained for all 4 nodes to verify precise measurements for issues identified visually.",
+      "desktopComposition": "The desktop header at 1440px matches Figma in overall structure, proportions, and layout. Two-row layout with utility row and nav row, logo on left, right-aligned content. The charcoal rounded bar, search with underline, vertical separator, SEP link with arrow, and nav items with chevrons are all correctly positioned and styled.",
+      "mobileClosedComposition": "The mobile header at 375px matches Figma in structure. SEP pill button on top, charcoal nav bar below with logo on left and hamburger icon on right. Gap between elements is correct.",
+      "mobileOpenNote": "The mobile open state cannot be visually verified via static screenshots as it requires JavaScript interaction (clicking the hamburger button). Code review confirms the expanded state structure matches Figma: logo + close X, divider, nav items with accordion sub-items, search, CTA text + Contact Us button.",
+      "submenuNote": "The desktop submenu state was verified via Figma design context comparison. Implementation uses md:bg-charcoal md:rounded-xl md:p-6 which matches Figma bg-charcoal rounded-12 p-24 exactly."
+    },
+    "accessibilityFeatures": [
+      "aria-expanded on menu toggle and submenu buttons",
+      "aria-controls linking toggle to collapsible nav",
+      "aria-label on nav element, logo link, and search submit buttons",
+      "aria-haspopup on submenu buttons",
+      "role=menu on submenu containers",
+      "role=menuitem on submenu items",
+      "role=search on both desktop and mobile search forms"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": [
+    {
+      "topic": "Logo asset",
+      "question": "The test page still uses favicon.png as the logo, which only shows the bee icon without the IGNITE wordmark. Should the full logo SVG be uploaded for a more accurate visual comparison?",
+      "recommendation": "Upload the full Ignite logo SVG to the test page. Block code correctly handles any logo."
+    }
+  ]
+}

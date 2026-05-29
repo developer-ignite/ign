@@ -1,0 +1,97 @@
+{
+  "agent": "developer",
+  "mode": "fix",
+  "timestamp": "2026-02-12T21:30:00Z",
+  "bug": "ImageCard opens MediaUpload modal when clicking existing image",
+  "expected_behavior": "Clicking ImageCard with existing image should only select the block, not open modal. User can replace image via toolbar/sidebar.",
+  "root_cause": "ImageDropUploader component has onClick={open} handler on img element that always triggers MediaUpload modal",
+  "solution": "Conditionally render plain img element when image exists (no click handler), show ImageDropUploader placeholder only when no image selected",
+  "changes": [
+    {
+      "file": "blocks/MasonryCards/ImageCard/ImageCard.tsx",
+      "description": "Replace ImageDropUploader with conditional rendering",
+      "modifications": [
+        {
+          "type": "import",
+          "line": 2,
+          "before": "import { className } from '@taktdev/utilities';",
+          "after": "import { className, fetchMedia, buildSrcSet, imagePosition } from '@taktdev/utilities';",
+          "reason": "Import utilities needed for manual image rendering"
+        },
+        {
+          "type": "add",
+          "line": 32,
+          "code": "const imageFile = image?.id ? fetchMedia( image.id ) : null;",
+          "reason": "Fetch image data when image ID exists"
+        },
+        {
+          "type": "replace",
+          "lines": "108-114",
+          "before": "<ImageDropUploader image={...} onSelect={...} />",
+          "after": "Conditional: imageFile?.source_url ? <img /> : <ImageDropUploader />",
+          "reason": "Show plain img when image exists (no click), show ImageDropUploader placeholder when empty",
+          "details": {
+            "img_element": {
+              "src": "imageFile.source_url",
+              "alt": "alt || imageFile.alt_text || ''",
+              "srcSet": "buildSrcSet(imageFile.media_details?.sizes)",
+              "className": "w-full h-full object-cover absolute inset-0",
+              "style": "objectPosition from image.focalPoint via imagePosition()"
+            },
+            "placeholder": {
+              "component": "ImageDropUploader",
+              "shown_when": "!imageFile?.source_url",
+              "allows": "Initial image selection and drag-and-drop"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preserved_functionality": [
+    "MediaUploadPanel in sidebar still allows image replacement",
+    "Toolbar 'Tall Card' button still works",
+    "Alt text control in sidebar still works",
+    "Drag-and-drop works when no image selected (ImageDropUploader placeholder)",
+    "Focal point styling applied via objectPosition",
+    "srcSet for responsive images",
+    "Fallback alt text from media library if custom alt not set"
+  ],
+  "testing_notes": {
+    "test_1": {
+      "action": "Click ImageCard with no image",
+      "expected": "ImageDropUploader placeholder shown, clicking opens MediaUpload modal"
+    },
+    "test_2": {
+      "action": "Select an image via modal",
+      "expected": "Image displays in card"
+    },
+    "test_3": {
+      "action": "Click ImageCard with existing image",
+      "expected": "Block selects, modal does NOT open"
+    },
+    "test_4": {
+      "action": "Replace image via sidebar MediaUploadPanel",
+      "expected": "Image replacement works normally"
+    },
+    "test_5": {
+      "action": "Set custom alt text via sidebar",
+      "expected": "Custom alt text applied to img element"
+    },
+    "test_6": {
+      "action": "Set focal point via sidebar MediaUploadPanel",
+      "expected": "objectPosition style applies focal point correctly"
+    }
+  },
+  "build_status": "PASSED",
+  "build_warnings": [
+    "Standard webpack size warnings (editor.js 330 KiB, screen.js entrypoint 365 KiB)"
+  ],
+  "files_modified": [
+    "blocks/MasonryCards/ImageCard/ImageCard.tsx"
+  ],
+  "files_unchanged": [
+    "blocks/MasonryCards/ImageCard/ImageCard.php (frontend rendering unaffected)",
+    "blocks/MasonryCards/ImageCard/block.json"
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-25-150210",
+  "status": "PASS",
+  "blockName": "Hero",
+  "output": {
+    "summary": {
+      "checksRun": 9,
+      "checksPassed": 9,
+      "checksFailed": 0,
+      "issuesFound": 1,
+      "critical": 0,
+      "major": 0,
+      "minor": 1
+    },
+    "contentComparison": {
+      "rawContent": {
+        "changed": false,
+        "codeModified": false,
+        "canSkipTests": true,
+        "note": "Comparison tool reported canSkipTests:true, but Hero files were modified 2026-02-25 at 14:58-14:59 (today). Full QA was run to verify the specific layout changes requested. The comparison tool's snapshot baseline appears to predate this session."
+      }
+    },
+    "focusAreas": {
+      "minHeight": {
+        "status": "pass",
+        "details": "TSX line 108: `min-h-[min(700px,100vh)] flex flex-col` applied to `.hero-inner`. PHP line 36: `min-h-[min(700px,100vh)] flex flex-col` applied to `.hero-inner`. Classes match exactly. Visual confirmation: first hero viewport shows hero occupying at least 700px with content at the bottom."
+      },
+      "contentBottomAlignment": {
+        "status": "pass",
+        "details": "TSX content layer (line 131): `relative z-10 mt-auto pt-[var(--header-height)] pb-8 sm:pb-16`. PHP content layer (line 60): identical class string. The `mt-auto` on the content layer within a `flex flex-col` parent pushes content to the bottom. Screenshot confirms heading and description sit at the bottom of both primary and secondary variations."
+      },
+      "primaryVariation": {
+        "status": "pass",
+        "details": "Primary variant (blockVariation=primary, default): heading centered, max-w-[912px] mx-auto, QuickNavigation rendered when enableQuickNav=true. Screenshots confirm bottom-aligned content with image+mask visible behind. 7 primary instances on test page covering full content, minimal content, no-image, quick-nav variations."
+      },
+      "secondaryVariation": {
+        "status": "pass",
+        "details": "Secondary variant (blockVariation=secondary): heading left-aligned, max-w-[700px] mr-auto, buttons rendered, no QuickNav. Screenshot of 'Work at IGNITE' confirms left-aligned content at bottom with eyebrow, heading, description, and CTA button. 3 secondary instances on test page."
+      },
+      "gradientImageMasking": {
+        "status": "pass",
+        "details": "TSX: mask applied inline on the `.absolute.inset-0` wrapper div (style prop). PHP: mask applied as inline style attribute. Both use `mask-image: linear-gradient(to bottom, black 40%, transparent 100%)` and `-webkit-mask-image`. The `.top-gradient` CSS class applies the gradient background via Hero.css. Page audit confirms: bg-image-mask found in 10/12 instances (2 have no image, correct), top-gradient found in all 12/12 instances."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "taktician_validate_all sync check passed (phpExtractPattern: pass, phpDocblock: pass, attributeUsage: pass, phpFunctionExistence: pass). htmlStructureSync warnings are pre-existing false positives caused by InspectorControls in TSX root (editor-only, not rendered on frontend). Content layer classes match identically between TSX and PHP. One redundantNullCoalescing info: `$buttons ?? []` on PHP line 86 is harmless."
+      }
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "Build passed with 0 errors. Warnings are all pre-existing in other blocks (Accordion, Archive, ContentWithMedia, EventHero, FullWidthMedia, PostHero, Tabs) — none in Hero."
+      },
+      "lint": {
+        "status": "pass",
+        "details": "Lint passed with 0 errors. All warnings are in other blocks, not Hero."
+      },
+      "registration": {
+        "status": "pass",
+        "details": "taktician_validate_registration: schema, naming (takt/hero), fileReferences, childBlocks, attributeTypes all pass."
+      },
+      "attributes": {
+        "status": "pass",
+        "details": "All 8 attributes present in block.json (anchor, blockVariation, eyebrow, heading, description, buttons, image, enableQuickNav). Test page covers: all fields populated, minimal fields, enableQuickNav true/false, secondary with buttons, secondary without buttons."
+      },
+      "edgeCases": {
+        "status": "pass",
+        "details": "Page audit instance 8 (Long Content): 150+ char heading renders without overflow. Instance 9 (Minimal Hero): no image, no optional fields, block renders correctly. Instance 10 (QuickNav - No Links): empty links array handled. Instance 11 (QuickNav - Many Links 10+): 10 links in dropdown handled."
+      },
+      "interactiveBehavior": {
+        "status": "skipped",
+        "reason": "Hero has no client-side interactive elements. QuickNavigation dropdown uses native HTML select — no custom JS interaction to test."
+      },
+      "accessibility": {
+        "status": "pass",
+        "details": "All 12 instances use h1 for heading. Heading hierarchy sequential (no skipped levels). Images have alt text (demo images have descriptive alt). Decorative/background image uses alt='' (correct). aria-labelledby present on all section elements. No JS errors on page load. No patterns applicable (no tabs/carousel/accordion/modal)."
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "details": "No duplicate markup for responsive. Primary and secondary are separate block variations controlled by blockVariation attribute, not CSS-only hiding."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "validate_all sync checks all pass. Manual review confirms: hero-inner classes identical (min-h-[min(700px,100vh)] flex flex-col), content layer classes identical (relative z-10 mt-auto pt-[var(--header-height)] pb-8 sm:pb-16), mask-image inline styles equivalent, conditional rendering identical (hasImage / $hasImage, isPrimary / $isPrimary, isSecondary / $isSecondary). PHP docblock @var annotations present for all camelCase variables."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "details": "12 hero instances on test page, all in takt/demo-container wrappers. Both primary (default) and secondary variations present. Primary with QuickNav (random, placeholder, first-item behaviors), primary without QuickNav, secondary with buttons, secondary without buttons, long content edge case, minimal empty fields, no-image variant all present."
+      },
+      "qaRulesChecklist": {
+        "status": "pass",
+        "automated": {
+          "RENDER_200": "pass",
+          "BLOCK_WRAPPER": "pass",
+          "NOT_EMPTY": "pass",
+          "NO_JS_ERRORS": "pass",
+          "NO_OVERFLOW": "pass",
+          "IMAGES_ALT": "pass",
+          "LINKS_HREF": "warning — 3 links with empty/hash href (all are intentional placeholder '#' links in test content)",
+          "HEADING_HIERARCHY": "pass",
+          "REDUCED_MOTION": "pass — no animations in block CSS"
+        },
+        "manual": {
+          "RESPONSIVE_RENDER": "pass — verified via page audit (no overflow at 375/768/1024/1440), visual check at 1440px confirms correct layout",
+          "DARK_THEME": "skipped — block does not have a theme/color variant attribute"
+        }
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "tsxPhpSync",
+        "severity": "minor",
+        "description": "Redundant null-coalescing on $buttons in Hero.php line 86: `$buttons ?? []` is not needed since block.json provides a default value for `buttons` and extract() guarantees the variable exists.",
+        "file": "blocks/Hero/Hero.php",
+        "line": 86,
+        "fix": "Change `$isSecondary ? ( $buttons ?? [] ) : []` to `$isSecondary ? $buttons : []`",
+        "note": "Pre-existing, non-breaking, cosmetic only."
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors",
+      "Lint passes with no errors in Hero files",
+      "Block registers correctly as takt/hero",
+      "min-h-[min(700px,100vh)] flex flex-col applied to .hero-inner in both TSX and PHP",
+      "Content layer uses mt-auto for bottom alignment in both TSX and PHP",
+      "Primary variation renders correctly with centered heading and QuickNavigation",
+      "Secondary variation renders correctly with left-aligned heading and CTA buttons",
+      "Gradient background (.top-gradient) renders on all 12 instances",
+      "Background image mask (linear-gradient mask-image) renders on all instances with images (10/12)",
+      "No-image instances render correctly without mask layer",
+      "TSX/PHP sync: all structural classes and conditionals match",
+      "PHP docblock @var annotations present for all camelCase attributes",
+      "No PHP $attributes['key'] anti-pattern in Hero.php",
+      "No JS errors on page load",
+      "No horizontal overflow at any breakpoint",
+      "All images have alt attributes",
+      "Heading hierarchy correct (all h1 within block)",
+      "12 hero instances on test page, all in demo-container wrappers",
+      "Both primary and secondary variations tested with full and minimal content"
+    ],
+    "screenshots": [
+      {
+        "file": ".taktician-project/reports/blocks/hero/screenshots/2026-02-25-150129/hero-qa-verify-1440w.png",
+        "description": "Primary hero at 1440px — content bottom-aligned, heading and description at bottom, gradient and image mask visible behind content, QuickNavigation visible",
+        "observations": "Hero fills viewport with bottom-aligned content as specified. Gradient background (green/yellow tones) visible. Background image with vertical mask gradient (opaque at top, transparent toward content area) visible. Heading 'Your Student Union. Real Support, Real Results.' and description at bottom. QuickNavigation dropdown renders below heading."
+      },
+      {
+        "file": ".taktician-project/reports/blocks/hero/screenshots/2026-02-25-150202/hero-secondary-full-1440w.png",
+        "description": "Secondary hero (Work at IGNITE) at 1440px — left-aligned content at bottom, eyebrow, heading, description, CTA button",
+        "observations": "Secondary variation renders with left-aligned content at bottom of hero. Eyebrow 'CAREERS' visible. Heading 'Work at IGNITE' uses default font size (no --text-header-0 custom class, correct for secondary). Description text visible. 'VIEW OPEN POSITIONS' button visible. Background image with mask visible."
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

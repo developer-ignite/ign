@@ -1,0 +1,102 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-13-172704",
+  "status": "PASS",
+  "blockName": "Archive",
+  "output": {
+    "mode": "qa",
+    "figmaNodeId": "811:59920",
+    "testPageUrl": "https://ign.localhost/test-archive/",
+    "tolerance": "semantic (2-4px)",
+    "context": "FINAL verification after 2 fix cycles for DQA-001 (btn-tertiary hover white-on-white) and DQA-002 (regression: base-state charcoal-on-charcoal).",
+    "compositionGate": "PASS",
+    "compositionNotes": "Overall dark mode layout matches Figma reference. 3-column grid, dark charcoal card backgrounds, lime/accent border, white heading text, taxonomy pills with accent backgrounds, 'VIEW RESOURCE' btn-tertiary links with arrows -- all visually consistent with the Figma design.",
+    "verificationResults": [
+      {
+        "id": "VERIFY-001",
+        "description": "Non-hovered dark mode resource cards: btn-tertiary text visibility",
+        "status": "PASS",
+        "evidence": "archive-dark-resource-nohover screenshot shows 'VIEW RESOURCE' text and arrow clearly visible as light/white text on dark charcoal card backgrounds. All three resource cards show legible btn-tertiary text. No white-on-white or charcoal-on-charcoal regression.",
+        "screenshot": "archive-dark-resource-nohover-1440w.png"
+      },
+      {
+        "id": "VERIFY-002",
+        "description": "Hovered dark mode resource cards: btn-tertiary text color on accent bg",
+        "status": "PASS",
+        "evidence": "archive-dark-resource-hover screenshot shows first card with accent lime-green background on hover. 'VIEW RESOURCE' text and arrow appear as dark/charcoal color on the bright accent background -- properly readable with good contrast.",
+        "screenshot": "archive-dark-resource-hover-1440w.png"
+      },
+      {
+        "id": "VERIFY-003",
+        "description": "Non-hovered dark mode policy cards: btn-tertiary text visibility",
+        "status": "PASS",
+        "evidence": "archive-dark-policy-nohover screenshot shows 'VIEW RESOURCE' btn-tertiary text clearly visible as light text on charcoal policy card backgrounds. All three policy cards (Academic Integrity, Campus Safety, Student Bill of Rights) show legible btn-tertiary text.",
+        "screenshot": "archive-dark-policy-nohover-1440w.png"
+      },
+      {
+        "id": "VERIFY-004",
+        "description": "Hovered dark mode policy cards: btn-tertiary text on accent bg",
+        "status": "PASS",
+        "evidence": "archive-dark-policy-hover screenshot shows first policy card with accent lime-green background on hover. 'VIEW RESOURCE' text appears as dark charcoal on the accent background -- correctly readable.",
+        "screenshot": "archive-dark-policy-hover-1440w.png"
+      },
+      {
+        "id": "VERIFY-005",
+        "description": "Light mode blog cards: btn-tertiary text visibility",
+        "status": "PASS",
+        "evidence": "Light mode blog section shows 'LEARN MORE' btn-tertiary text as dark/charcoal text on cream/off-white background -- properly visible and readable with good contrast."
+      },
+      {
+        "id": "VERIFY-006",
+        "description": "Dark mode overall matches Figma",
+        "status": "PASS",
+        "evidence": "Side-by-side comparison of Figma screenshot (node 811:59920) with implementation at 1440w shows matching: 3-column card grid layout, dark charcoal backgrounds, lime/accent card borders, white heading/body text, accent-colored taxonomy pills, 'VIEW RESOURCE' arrows, 'FILTER BY TOPIC' dropdown, 'SHOW/PER PAGE' selector, 'LOAD MORE' button. Overall composition, visual weight, and element positions are consistent."
+      },
+      {
+        "id": "VERIFY-007",
+        "description": "No new regressions detected",
+        "status": "PASS",
+        "evidence": "Full-page screenshots across all breakpoints (375, 768, 1024, 1440) in Chromium, plus 768/1024/1440 in Firefox and WebKit, show no visual artifacts, broken layouts, or contrast issues. All archive sections (blog dark/light, resource dark/light, policy dark/light, team, testimonial) render correctly."
+      }
+    ],
+    "fixVerification": {
+      "DQA-001": {
+        "original": "btn-tertiary hover was white-on-white in dark mode cards",
+        "fix": "Added :hover/:focus/:group-hover overrides for btn-tertiary text color",
+        "verified": true,
+        "result": "Hovered cards now show dark charcoal btn-tertiary text on accent background -- fully readable"
+      },
+      "DQA-002": {
+        "original": "Regression where base-state selectors made non-hovered text invisible (charcoal-on-charcoal)",
+        "fix": "Removed base-state selectors, kept only interactive-state selectors",
+        "verified": true,
+        "result": "Non-hovered dark mode cards show light/white btn-tertiary text on charcoal background -- fully readable"
+      }
+    },
+    "screenshotsCaptures": {
+      "chromium": ["375w", "768w", "1024w", "1440w"],
+      "firefox": ["768w", "1024w", "1440w"],
+      "webkit": ["768w", "1024w", "1440w"],
+      "note": "Firefox and WebKit at 375px failed to capture due to very tall full-page screenshot size limitation. Chromium 375w captured successfully."
+    },
+    "checklist": {
+      "typographyMatchesFigma": true,
+      "colorsUseThemeTokens": true,
+      "spacingMatchesFigma": true,
+      "layoutMatchesBreakpoints": true,
+      "contentAlignmentMatchesDesign": true,
+      "hoverStatesOnButtons": true,
+      "allBlockVariationsWorking": true
+    },
+    "issues": [],
+    "notes": [
+      {
+        "id": "NOTE-001",
+        "severity": "note",
+        "description": "Firefox and WebKit browsers failed to capture 375px full-page screenshots due to extremely tall page content (14 archive sections). All other widths captured successfully across all three browsers. Chromium 375px captures are sufficient for mobile verification."
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

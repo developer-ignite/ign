@@ -1,0 +1,90 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-25-154846",
+  "status": "PASS",
+  "blockName": "Header",
+  "output": {
+    "runType": "re-run after fix",
+    "change": "Logo container changed from 'block self-stretch' to 'flex items-center self-stretch' in TSX (2 occurrences) and PHP (1 occurrence)",
+    "summary": {
+      "checksRun": 4,
+      "checksPassed": 4,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "checks": {
+      "code1_logoFlexClasses": {
+        "status": "pass",
+        "description": "All 3 logo containers use 'flex items-center self-stretch' (not 'block') in HeaderMain.tsx and HeaderMain.php",
+        "detail": "TSX line 533 (ImageDropUploader): 'flex items-center self-stretch text-white w-auto *:w-auto *:max-w-full *:h-full *:object-contain shrink-0 max-md:*:max-h-[26px] md:*:max-h-[58px] focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2'. TSX line 544 (anchor): identical string. PHP line 76 (anchor): identical string. No occurrence of 'block self-stretch' remains in any file.",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.tsx:533",
+          "blocks/Header/HeaderMain/HeaderMain.tsx:544",
+          "blocks/Header/HeaderMain/HeaderMain.php:76"
+        ]
+      },
+      "code2_tsxPhpSync": {
+        "status": "pass",
+        "description": "TSX <a> and PHP <a> logo class strings match exactly",
+        "detail": "TSX line 544 className and PHP line 76 class are character-for-character identical: 'flex items-center self-stretch text-white w-auto *:w-auto *:max-w-full *:h-full *:object-contain shrink-0 max-md:*:max-h-[26px] md:*:max-h-[58px] focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2'. TSX also has the ImageDropUploader path (line 533, editor-only) which uses the same string. No sync gap."
+      },
+      "frontend1_logoCentering": {
+        "status": "pass",
+        "description": "Logo is vertically centered within the nav bar",
+        "detail": "At 1440px the logo (insect icon + IGNITE wordmark) sits vertically centered within the nav bar pill across all header variations. In single-row variations (Minimal Content, Hide on Scroll Down, Not Fixed on Scroll, Submenu Alignment Right, etc.) the logo is centered against the full pill height. In two-row variations (Full Content) the logo is centered against the taller pill that contains both the utility row and nav row. The flex + items-center combination achieves correct vertical alignment without needing explicit height or line-height overrides.",
+        "screenshotEvidence": "header-logo-centering-1440w.png, header-chromium-1440w.png"
+      },
+      "frontend2_mobileNoRegression": {
+        "status": "pass",
+        "description": "No layout regressions on mobile — logo still respects max-h constraints",
+        "detail": "At 375px the logo renders at the correct mobile size (max-md:*:max-h-[26px]) with no overflow, distortion, or layout breakage. The flex + items-center change does not interfere with the *:max-h constraints as those are applied to child elements, not the container itself. All 10 variations render correctly at mobile width.",
+        "screenshotEvidence": "header-chromium-375w.png"
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "TSX ImageDropUploader logo: 'flex items-center self-stretch' present (line 533)",
+      "TSX anchor logo: 'flex items-center self-stretch' present (line 544)",
+      "PHP anchor logo: 'flex items-center self-stretch' present (line 76)",
+      "No 'block self-stretch' remaining in any file",
+      "TSX anchor and PHP anchor class strings are identical",
+      "Logo vertically centered in nav bar pill at all desktop breakpoints",
+      "Logo max-h constraints intact at mobile (375px)",
+      "No layout regressions at any breakpoint or in any browser"
+    ],
+    "screenshots": {
+      "finalDirectory": ".taktician-project/reports/blocks/header/screenshots/2026-02-25-154754",
+      "files": [
+        "header-chromium-375w.png",
+        "header-chromium-768w.png",
+        "header-chromium-1024w.png",
+        "header-chromium-1440w.png",
+        "header-firefox-375w.png",
+        "header-firefox-768w.png",
+        "header-firefox-1024w.png",
+        "header-firefox-1440w.png",
+        "header-webkit-375w.png",
+        "header-webkit-768w.png",
+        "header-webkit-1024w.png",
+        "header-webkit-1440w.png"
+      ],
+      "supplementary": [
+        {
+          "file": ".taktician-project/reports/blocks/header/screenshots/2026-02-25-154834/header-logo-centering-1440w.png",
+          "purpose": "Close-up viewport shot confirming logo vertical centering in the nav bar at desktop width"
+        }
+      ],
+      "visualObservations": {
+        "375px": "Mobile layout. Logo at max-h-[26px] inside all variations — small but correctly sized and vertically centered within the pill. No max-h overflow. All 10 variations render correctly.",
+        "768px": "Tablet, mobile layout. Logo at mobile height, centered. Consistent across all variations.",
+        "1024px": "Desktop layout. Logo at max-h-[58px], vertically centered in the pill. Two-row and single-row variations both show correct centering.",
+        "1440px": "Full desktop. Logo centered vertically in all 10 variations. Most clearly visible in single-row variations (Minimal Content, Not Fixed, etc.) where the full pill height is shorter — logo sits cleanly mid-height. Two-row Full Content variations show logo centered against the taller pill."
+      }
+    },
+    "tokensUsed": 0,
+    "questionsForUser": []
+  }
+}

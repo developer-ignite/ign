@@ -1,0 +1,194 @@
+import { __ } from "@wordpress/i18n";
+import { useBlockProps, useInnerBlocksProps, InspectorControls } from "@wordpress/block-editor";
+import { PanelBody, ToggleControl } from "@wordpress/components";
+import {
+	shouldDisplay,
+	cn,
+	fetchMedia,
+	renameBlock,
+	uniqueBlocks,
+	addButtonToBlock,
+	isTemplatePreview,
+	isTemplateEdit
+} from "@taktdev/utilities";
+
+import { ImageDropUploader, MediaUploadPanel, FilteredServerSideRender } from "@taktdev/components";
+import { ThemeHeading } from "parts/ThemeHeading";
+
+addButtonToBlock("takt/hero", __("Hero Settings", "takt"));
+
+type ImageAttribute = {
+	id: number | null;
+	focalPoint?: { x: number; y: number };
+};
+
+type HeroAttributes = {
+	anchor?: string;
+	blockVariation: "primary" | "secondary";
+	eyebrow?: string;
+	heading?: string;
+	description?: string;
+	buttons?: Array<{
+		title?: string;
+		url?: string;
+		postId?: number;
+		opensInNewTab?: boolean;
+		label?: string;
+	}>;
+	image: ImageAttribute;
+	enableQuickNav: boolean;
+	showBreadcrumbs: boolean;
+};
+
+type EditProps = {
+	attributes: HeroAttributes;
+	setAttributes: (attrs: Partial<HeroAttributes>) => void;
+	clientId: string;
+};
+
+export default function Edit({ attributes, setAttributes, clientId }: EditProps) {
+	const { displayContent, hasInnerBlocks } = shouldDisplay();
+	const hasHeader = isTemplatePreview() || isTemplateEdit();
+	const isPrimary = attributes.blockVariation === "primary";
+	const isSecondary = attributes.blockVariation === "secondary";
+
+	const mediaImage = fetchMedia(attributes.image?.id || null);
+	const hasImage = !!mediaImage?.source_url;
+
+	// Limit to one QuickNavigation block
+	uniqueBlocks("takt/quick-navigation", clientId);
+
+	// InnerBlocks setup for QuickNavigation
+	const innerBlocksProps = useInnerBlocksProps(
+		{
+			className: cn({
+				"w-full": true,
+				hidden: !attributes.enableQuickNav
+			})
+		},
+		{
+			allowedBlocks: ["takt/quick-navigation"],
+			template: [["takt/quick-navigation"]],
+			renderAppender: false
+		}
+	);
+
+	return (
+		<>
+			<InspectorControls>
+				{isPrimary && (
+					<PanelBody title={__("Settings", "takt")} initialOpen={true}>
+						<ToggleControl
+							label={__("Show Quick Navigation", "takt")}
+							checked={attributes.enableQuickNav}
+							onChange={(value) => setAttributes({ enableQuickNav: value })}
+							__nextHasNoMarginBottom
+						/>
+					</PanelBody>
+				)}
+				{isSecondary && (
+					<PanelBody title={__("Settings", "takt")} initialOpen={true}>
+						<ToggleControl
+							label={__("Show Breadcrumbs", "takt")}
+							help={attributes.showBreadcrumbs ? __("Eyebrow is disabled when breadcrumbs are shown.", "takt") : ""}
+							checked={attributes.showBreadcrumbs}
+							onChange={(value) => setAttributes({ showBreadcrumbs: value })}
+							__nextHasNoMarginBottom
+						/>
+					</PanelBody>
+				)}
+
+				<PanelBody title={__("Media", "takt")} initialOpen={true}>
+					<MediaUploadPanel
+						media={attributes.image}
+						label={__("Background Image", "takt")}
+						onSelect={(image) => setAttributes({ image })}
+					/>
+				</PanelBody>
+			</InspectorControls>
+
+			<section
+				{...useBlockProps({
+					className: cn({
+						"not-discourse": true,
+						"hero grid overflow-visible": true,
+						"-mt-(--header-height)": hasHeader,
+						"hero--primary": isPrimary,
+						"hero--secondary": isSecondary
+					})
+				})}
+			>
+				{/* Layer 1: Background image — col-1/row-1, stretches to fill grid */}
+				<div className="col-start-1 row-start-1 overflow-hidden bg-accent h-[calc(var(--header-height)+300px)] md:h-[calc(var(--header-height)+450px)] mask-b-from-65% mask-b-to-90%">
+					{(displayContent || hasImage) && (
+						<ImageDropUploader
+							image={attributes.image}
+							onSelect={(image) => setAttributes({ image })}
+							className="w-full! h-full!"
+							imageClassName="w-full! h-full! object-cover"
+							imageStyle={{ pointerEvents: "none", cursor: "default" }}
+							placeholderClassName="w-full h-full"
+						/>
+					)}
+				</div>
+
+				{/* Layer 2: Gradient — col-1/row-1, margin-top aligns with content text position */}
+				<div className="col-start-1 row-start-1 self-start relative -z-1 mt-[calc(var(--header-height)+180px)] md:mt-[calc(var(--header-height)+300px)]">
+					<div className="top-gradient" />
+				</div>
+
+				{/* Layer 3: Content — col-1/row-1, padding-top for minimum top spacing */}
+				<div className="col-start-1 row-start-1 self-end relative z-10 pt-[calc(var(--header-height)+180px)] md:pt-[calc(var(--header-height)+300px)] pb-8 sm:pb-16">
+					<div className="container">
+						{isSecondary && attributes.showBreadcrumbs && (
+								<FilteredServerSideRender
+									block="takt/hero"
+									attributes={attributes}
+									querySelector=".breadcrumbs"
+									className="breadcrumbs mb-4 uppercase text-sm font-medium leading-[1.1]"
+									preventInteraction
+								/>
+							)}
+							<ThemeHeading
+							className={cn({
+								"max-w-[912px]": isPrimary,
+								"max-w-[700px]": isSecondary,
+								"mx-auto": isPrimary,
+								"mr-auto": isSecondary
+							})}
+							alignment={isPrimary ? "center" : "left"}
+							enableEyebrow={!attributes.showBreadcrumbs}
+							eyebrow={attributes.eyebrow}
+							heading={attributes.heading}
+							headingTag="h1"
+							headingSize={0}
+							headingClassName={cn({
+								"text-[2.5rem] md:text-[length:var(--text-header-0)]": isPrimary
+							})}
+							description={attributes.description}
+							buttons={isSecondary ? attributes.buttons : []}
+							enableButtons={isSecondary}
+							onChange={(value: Partial<HeroAttributes>) => {
+								renameBlock(value.heading, attributes.heading, clientId);
+								setAttributes(value);
+							}}
+						/>
+
+						{/* Quick Navigation (Primary only) */}
+						{isPrimary && (
+							<div
+								className={cn({
+									"mt-8 sm:mt-12 relative": true,
+									"max-w-[912px] mx-auto": true,
+									hidden: !displayContent && !hasInnerBlocks && !attributes.enableQuickNav
+								})}
+							>
+								<div {...innerBlocksProps} />
+							</div>
+						)}
+					</div>
+				</div>
+			</section>
+		</>
+	);
+}

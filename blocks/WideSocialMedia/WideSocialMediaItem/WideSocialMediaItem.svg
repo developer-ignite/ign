@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Social media item: icon square and label text -->
+	<!-- Icon square -->
+	<rect x="3" y="9" width="6" height="6"/>
+	<!-- Label text -->
+	<rect x="11" y="11" width="10" height="2"/>
+</svg>

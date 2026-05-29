@@ -1,0 +1,154 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-13-204153",
+  "status": "complete",
+  "blockName": "Footer",
+  "output": {
+    "mode": "fix",
+    "filesModified": [
+      {
+        "path": "blocks/Footer/FooterCredits/FooterCredits.tsx",
+        "description": "Changed responsive breakpoints from sm: to md: for order-1, order-2, order-3, mx-auto, gap-6, flex-row, text-left, and justify-end",
+        "changes": [
+          "sm:flex-row → md:flex-row",
+          "sm:gap-6 → md:gap-6",
+          "sm:order-3 → md:order-3",
+          "sm:text-left → md:text-left",
+          "sm:order-1 → md:order-1",
+          "sm:order-2 → md:order-2",
+          "sm:mx-auto → md:mx-auto",
+          "sm:justify-end → md:justify-end"
+        ]
+      },
+      {
+        "path": "blocks/Footer/FooterCredits/FooterCredits.php",
+        "description": "Changed responsive breakpoints from sm: to md: to match TSX and block-type doc pattern",
+        "changes": [
+          "sm:flex-row → md:flex-row",
+          "sm:gap-6 → md:gap-6",
+          "sm:order-3 → md:order-3",
+          "sm:text-left → md:text-left",
+          "sm:order-1 → md:order-1",
+          "sm:order-2 → md:order-2",
+          "sm:mx-auto → md:mx-auto",
+          "sm:justify-end → md:justify-end"
+        ]
+      },
+      {
+        "path": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumn.tsx",
+        "description": "Added aria-labelledby on <ul> linking to heading, generate stable heading id from clientId",
+        "changes": [
+          "Added headingId variable: footer-nav-col-${clientId}",
+          "Added id={headingId} to RichText h3 element",
+          "Added 'aria-labelledby': headingId to innerBlocksProps"
+        ]
+      },
+      {
+        "path": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumn.php",
+        "description": "Added aria-labelledby on <ul> linking to h3 heading id, fixed empty id bug",
+        "changes": [
+          "Generated stable heading_id using wp_unique_id()",
+          "Added id to h3 element (fixes bug where id was empty: '-heading')",
+          "Added aria-labelledby attribute on <ul> pointing to heading_id"
+        ]
+      },
+      {
+        "path": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/FooterInfoSocialItem.php",
+        "description": "Added fallback accessible name check for social media links",
+        "changes": [
+          "Added check after empty URL validation",
+          "If both linkTitle and linkLabel are empty, set linkTitle to 'Social media link'"
+        ]
+      },
+      {
+        "path": "blocks/Footer/FooterNav/FooterNav.tsx",
+        "description": "Removed bg-charcoal rounded-3xl from <nav> to align with PHP (parent handles these styles)",
+        "changes": [
+          "Changed className from 'bg-charcoal rounded-3xl p-8 text-white' to 'p-8 text-white'"
+        ]
+      }
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Webpack size warnings (pre-existing, not related to changes)",
+        "ESLint warnings in other blocks (pre-existing, Hero/TestimonialsCarousel)"
+      ]
+    },
+    "testPage": {
+      "updated": true,
+      "pageId": 108,
+      "url": "https://ign.localhost/test-footer/",
+      "title": "Test: Footer",
+      "contentSource": ".taktician-project/reports/blocks/footer/state/test-page-content.html",
+      "variations": 6
+    },
+    "fixesApplied": [
+      {
+        "issueId": "A11Y-003",
+        "severity": "major",
+        "description": "FooterCredits breakpoint changes from sm: to md:",
+        "status": "fixed",
+        "filesAffected": [
+          "blocks/Footer/FooterCredits/FooterCredits.tsx",
+          "blocks/Footer/FooterCredits/FooterCredits.php"
+        ]
+      },
+      {
+        "issueId": "A11Y-001",
+        "severity": "major",
+        "description": "FooterNavColumn aria-labelledby linking heading to nav list",
+        "status": "fixed",
+        "filesAffected": [
+          "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumn.tsx"
+        ]
+      },
+      {
+        "issueId": "A11Y-005",
+        "severity": "major",
+        "description": "FooterNavColumn TSX editor aria-labelledby association",
+        "status": "fixed",
+        "filesAffected": [
+          "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumn.tsx"
+        ]
+      },
+      {
+        "issueId": "A11Y-001 (PHP)",
+        "severity": "major",
+        "description": "FooterNavColumn PHP aria-labelledby + fixed empty id bug",
+        "status": "fixed",
+        "filesAffected": [
+          "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumn.php"
+        ]
+      },
+      {
+        "issueId": "A11Y-002",
+        "severity": "major",
+        "description": "FooterInfoSocialItem accessible name fallback",
+        "status": "fixed",
+        "filesAffected": [
+          "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/FooterInfoSocialItem.php"
+        ]
+      },
+      {
+        "issueId": "A11Y-007",
+        "severity": "minor",
+        "description": "FooterNav TSX/PHP alignment - removed bg-charcoal rounded-3xl from TSX",
+        "status": "fixed",
+        "filesAffected": [
+          "blocks/Footer/FooterNav/FooterNav.tsx"
+        ]
+      }
+    ],
+    "syncStatus": {
+      "verified": true,
+      "notes": "TSX and PHP structures remain in sync. All changes were made to both files where applicable."
+    },
+    "blockers": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

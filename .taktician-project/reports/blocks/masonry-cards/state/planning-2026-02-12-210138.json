@@ -1,0 +1,32 @@
+{
+  "summary": "Fix Gutenberg editor ::after pseudo-element conflict on tall TextCard by replacing the ::after-based split background with an explicit inner <span> element in the TSX editor component only.",
+  "rootCause": "WordPress Gutenberg applies ::after styling to block wrapper elements for selection outlines/highlights via the selector '.block-editor-block-list__layout .block-editor-block-list__block:not([contenteditable=true]):focus:after'. This sets position: absolute, inset: 0, z-index: 1, content: \"\", and outline styles on the ::after pseudo-element. The TextCard's isTall variant uses the same ::after pseudo-element on the same block wrapper div (the element receiving useBlockProps) for the bottom half of a split background decoration: 'md:after:absolute md:after:inset-x-0 md:after:bottom-0 md:after:h-1/2 md:after:bg-accent md:after:rounded-3xl md:after:-z-1'. When the block is selected/focused in the editor, Gutenberg's higher-specificity selector overrides the block's ::after styles — setting z-index to 1 (instead of -1), stretching it to cover the full card (inset: 0 instead of only the bottom half), and adding an outline. This causes the ::after to render as a visible overlay on top of the card content rather than as the intended background decoration behind it.",
+  "fileChanges": [
+    {
+      "file": "blocks/MasonryCards/TextCard/TextCard.tsx",
+      "action": "modify",
+      "description": "Replace ::after pseudo-element classes with an explicit inner <span> element for the bottom-half split background on tall cards in the editor.",
+      "details": "1. Remove the md:after:* classes from the useBlockProps className for isTall cards. Specifically remove: 'md:after:absolute md:after:inset-x-0 md:after:top-auto md:after:bottom-0 md:after:h-1/2 md:after:bg-accent md:after:rounded-3xl md:after:-z-1'. 2. When isTall is true, render an explicit <span> element inside the block wrapper div (as a sibling to the RichText elements) with the equivalent styling: 'hidden md:block absolute inset-x-0 bottom-0 h-1/2 bg-accent rounded-3xl -z-1'. This <span> serves the same visual purpose as the ::after but is not affected by Gutenberg's editor overlay styles since Gutenberg only targets the ::after pseudo-element on the block wrapper. 3. The ::before pseudo-element classes remain unchanged (they handle the full background on non-tall cards and the top-half on tall cards). 4. Keep the md:before:* classes for the tall card top-half split as they are — the ::before pseudo-element is not affected by Gutenberg's selection styles (Gutenberg only uses ::after for this purpose).",
+      "affectsPhp": false
+    }
+  ],
+  "attributeChanges": [],
+  "designDecisions": [
+    {
+      "id": "DEC-001",
+      "category": "editor-fix",
+      "decision": "Use an explicit <span> element instead of ::after pseudo-element for the split background bottom half in the TSX editor component",
+      "source": "technical-constraint",
+      "evidence": "Gutenberg's block selection system uses ::after on block wrappers (elements with useBlockProps) with higher specificity than Tailwind utility classes. The selector '.block-editor-block-list__layout .block-editor-block-list__block:not([contenteditable=true]):focus:after' sets z-index: 1, position: absolute, and inset: 0, overriding the block's decorative ::after. Using an inner element avoids the pseudo-element conflict entirely."
+    },
+    {
+      "id": "DEC-002",
+      "category": "editor-fix",
+      "decision": "PHP frontend template remains unchanged",
+      "source": "technical-constraint",
+      "evidence": "The ::after conflict is editor-only because Gutenberg's block selection CSS is only loaded in the editor. The frontend (PHP) renders without the block editor styles, so the ::after pseudo-element works correctly there."
+    }
+  ],
+  "requiresQA": true,
+  "qaScope": "functional"
+}

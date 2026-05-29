@@ -1,0 +1,90 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-25-152953",
+  "status": "complete",
+  "output": {
+    "mode": "edit",
+    "blockName": "HeaderMain",
+    "blockPath": "blocks/Header/HeaderMain",
+    "changes": [
+      {
+        "id": "CHANGE-001",
+        "title": "Logo size class: change ** (all descendants) to * (direct children only)",
+        "reason": "The ** selector applies max-height constraints to elements inside the SVG (internal SVG elements), which is unnecessary. Only the direct child (the SVG/img element itself) needs the constraint.",
+        "files": [
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+            "locations": [
+              {
+                "description": "ImageDropUploader className (logo placeholder, ~line 532)",
+                "find": "**:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px]",
+                "replace": "*:w-auto *:max-w-full *:h-full *:object-contain shrink-0 max-md:*:max-h-[26px] md:*:max-h-[58px]"
+              },
+              {
+                "description": "Logo anchor className (when logo is set, ~line 543)",
+                "find": "**:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px]",
+                "replace": "*:w-auto *:max-w-full *:h-full *:object-contain shrink-0 max-md:*:max-h-[26px] md:*:max-h-[58px]"
+              }
+            ]
+          },
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMain.php",
+            "locations": [
+              {
+                "description": "Logo anchor class (line 76)",
+                "find": "**:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px]",
+                "replace": "*:w-auto *:max-w-full *:h-full *:object-contain shrink-0 max-md:*:max-h-[26px] md:*:max-h-[58px]"
+              }
+            ]
+          }
+        ],
+        "decisions": [
+          {
+            "id": "DEC-001",
+            "category": "styling",
+            "decision": "Change Tailwind ** (all descendants) selector to * (direct children) for logo size constraints",
+            "source": "user-request",
+            "evidence": "User requested this change to avoid targeting elements inside the SVG"
+          }
+        ]
+      },
+      {
+        "id": "CHANGE-002",
+        "title": "Fixed state trigger: account for header margin-top so fixed mode activates earlier",
+        "reason": "Currently the header becomes fixed when scrollY exceeds the sum of previous siblings' heights (startHeight). The header has mt-8 (32px margin-top), but offsetHeight does not include margin. The user wants fixed mode to trigger when the margin area above the header scrolls past the viewport top, meaning startHeight should be reduced by the header's margin-top.",
+        "files": [
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMain.js",
+            "locations": [
+              {
+                "description": "calculateStartHeight function (~line 89-105). After computing startHeight from sibling offsetHeights and admin bar, subtract the header's computed margin-top so the trigger fires earlier.",
+                "currentLogic": "Sums offsetHeight of all previousElementSiblings + admin bar height. Returns that value. The comparison at line 170 is: scrollY > startHeight.",
+                "newLogic": "After computing startHeight, subtract the header's computed marginTop: startHeight -= parseInt(window.getComputedStyle(header).marginTop, 10) || 0. This means the scrolling class is added when the margin-top area reaches the viewport top, not when the header element itself does."
+              }
+            ]
+          },
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+            "locations": [
+              {
+                "description": "Editor scroll handler calculateStartHeight function (~line 159-168). Apply the same margin-top subtraction. Use iframeWin.getComputedStyle(header).marginTop to get the header's margin.",
+                "currentLogic": "Sums offsetHeight of all previousElementSiblings. Returns that value. The comparison at line 175 is: scrollY > startHeight.",
+                "newLogic": "After computing startHeight, subtract the header's computed marginTop: startHeight -= parseInt(iframeWin.getComputedStyle(header).marginTop, 10) || 0. This keeps the editor preview in sync with the frontend behavior."
+              }
+            ]
+          }
+        ],
+        "decisions": [
+          {
+            "id": "DEC-002",
+            "category": "behavior",
+            "decision": "Subtract header margin-top from startHeight threshold so fixed mode triggers when the margin area scrolls past viewport top",
+            "source": "user-request",
+            "evidence": "User requested: fixed state should trigger when the top margin of the header (the mt-8 space above it) reaches the top of the screen"
+          }
+        ]
+      }
+    ],
+    "syncNotes": "Both changes affect TSX and PHP (change 1) or TSX and JS (change 2). All files must stay in sync."
+  }
+}

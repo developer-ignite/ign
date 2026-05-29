@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Left column: vertical tab buttons (stacked labels) -->
+	<rect x="2" y="5" width="6" height="2"/>
+	<rect x="2" y="9" width="5" height="2"/>
+	<rect x="2" y="13" width="6" height="2"/>
+	<rect x="2" y="17" width="4" height="2"/>
+
+	<!-- Right column: content panel (outlined) -->
+	<path d="M10,5v14h12V5h-12ZM21,18h-10V6h10v12Z"/>
+
+	<!-- Content lines inside right panel -->
+	<rect x="12" y="8" width="7" height="2"/>
+	<rect x="12" y="11" width="8" height="1"/>
+	<rect x="12" y="13" width="6" height="1"/>
+
+	<!-- Outer container -->
+	<path d="M0,3v18h24V3H0ZM23,20H1V4h22v16Z"/>
+</svg>

@@ -1,0 +1,30 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-20-135845",
+  "status": "complete",
+  "severity": "none",
+  "output": {
+    "summary": "Scope the ResizeObserver in Hero.js to only target .top-gradient elements inside .hero block wrappers, preventing conflicts with other blocks that also use a .top-gradient class.",
+    "fileChanges": [
+      {
+        "file": "blocks/Hero/Hero.js",
+        "action": "modify",
+        "description": "Replace the global document.querySelectorAll('.top-gradient') selector with a scoped approach that finds .top-gradient elements only within .hero wrappers.",
+        "details": "Change line 6 from `document.querySelectorAll('.top-gradient')` to `document.querySelectorAll('.hero .top-gradient')`. This ensures the ResizeObserver only attaches to gradient elements that are children of the Hero block's wrapper element (which has the class 'hero' applied via theme_block_props in Hero.php). No other changes are needed -- the rest of the logic (finding the closest <main>, observing resize, setting maxHeight) remains identical.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "behavior",
+        "decision": "Use '.hero .top-gradient' descendant selector to scope the query",
+        "source": "existing-pattern",
+        "evidence": "Hero.php applies the 'hero' class to the block wrapper via theme_block_props (line 8-14). The .top-gradient div is a direct child of that wrapper (line 18). Using a descendant selector is the simplest scoping mechanism and requires no PHP changes."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

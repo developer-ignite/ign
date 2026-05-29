@@ -1,0 +1,141 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-19-144332",
+  "status": "PASS",
+  "blockName": "Footer",
+  "output": {
+    "scope": "fix-verification",
+    "fixVerified": "FooterInfoSocialItem rewrite — Link component, deferred IconPicker, block.json defaults",
+    "summary": {
+      "checksRun": 5,
+      "checksPassed": 5,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "detail": "taktician_validate_all passed with 0 errors. 9 pre-existing react-hooks/exhaustive-deps warnings in unrelated blocks (Accordion, Archive×2, ContentWithMedia, FullWidthMedia, PostHero×2, Tabs) — none in any Footer block file. Sync: 1 known false-positive warning (FooterInfo.tsx InspectorControls root vs PHP section — editor-only wrapper, not a frontend issue). Registration: 0 issues across all Footer child blocks."
+      },
+      "tsxSourceVerification": {
+        "status": "pass",
+        "file": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/FooterInfoSocialItem.tsx",
+        "findings": {
+          "linkComponent": {
+            "status": "pass",
+            "detail": "Link imported from @taktdev/components (line 2) and used as the wrapping element (lines 76–113). No import or usage of __experimentalLinkControl, Popover for link editing, ToggleControl, or TextControl anywhere in the file.",
+            "code": "import { Link, IconPicker, SuggestedIcon } from \"@taktdev/components\";"
+          },
+          "deferredIconPicker": {
+            "status": "pass",
+            "detail": "isSelected is declared in EditProps (line 53) and destructured (line 56). The JSX uses a ternary on isSelected (line 89): when true, renders <IconPicker> (full MediaUpload-capable picker); when false, renders a lightweight static fallback — either the matching SVG from suggestedIcons or a placeholder span. This prevents MediaUpload store interactions during block insertion lifecycle.",
+            "code": "{isSelected ? (<IconPicker ... />) : (<span ...>{staticIcon ? <staticIcon.icon /> : <span ... />}</span>)}"
+          },
+          "forbiddenImports": {
+            "status": "pass",
+            "detail": "Grep confirms none of the following are imported or used: __experimentalLinkControl, Popover (for link editing), ToggleControl, TextControl."
+          },
+          "renameBlockIntegration": {
+            "status": "pass",
+            "detail": "renameBlock called inside Link onChange (line 85) to keep the block label in sync with the link title — correct pattern."
+          }
+        }
+      },
+      "blockJsonDefaults": {
+        "status": "pass",
+        "file": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/block.json",
+        "findings": {
+          "logoId": {
+            "status": "pass",
+            "detail": "logoId defined as { \"type\": \"number\", \"default\": null } — explicit null default present.",
+            "attribute": {
+              "type": "number",
+              "default": null
+            }
+          },
+          "iconSlug": {
+            "status": "pass",
+            "detail": "iconSlug defined as { \"type\": \"string\", \"default\": \"\" } — explicit empty string default present.",
+            "attribute": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          "linkDefault": {
+            "status": "pass",
+            "detail": "link object has full default including opensInNewTab: true and all required fields."
+          }
+        }
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "file": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/FooterInfoSocialItem.php",
+        "detail": "PHP template unchanged and correctly in sync with TSX output. Key structural verification: (1) PHP skips render entirely when linkUrl is empty — matches TSX which only renders via Link when a URL is set. (2) Icon resolution logic mirrors TSX: iconSlug takes priority over logoId, falls back gracefully. (3) <li> wrapper with theme_block_props('block list-none') matches TSX useBlockProps({ className: 'block list-none' }). (4) <a> element classes match TSX Link className exactly: block transition-colors w-6 h-6 no-underline! *:w-6 *:h-6 *:object-contain *:object-center text-white hover:text-accent. (5) <span class=\"sr-only\"> for screen-reader title is present — not in TSX editor view (editor uses Link's own label UI) but correct for frontend accessibility. (6) phpcs:ignore comment for SVG echo is appropriate.",
+        "syncNotes": {
+          "srOnlySpan": "PHP renders <span class=\"sr-only\">{linkTitle}</span> inside the anchor. TSX editor does not render this directly — it is a frontend-only accessibility addition. This is acceptable and intentional; the editor shows icon + Link UI, the frontend shows icon + screen-reader span.",
+          "hasIconClass": "TSX conditionally adds *:w-6 *:h-6 *:object-contain *:object-center to Link className when hasIcon is true. PHP always includes these classes on the <a>. Difference is negligible: when no icon is present the classes have no visual effect, and PHP has no img/SVG child to constrain. Not a defect."
+        }
+      },
+      "renderedOutput": {
+        "status": "pass",
+        "detail": "Page audit of https://ign.localhost/test-footer/ confirms all 7 footer sections render correctly.",
+        "results": {
+          "totalSections": 7,
+          "linkCounts": [
+            32,
+            3,
+            25,
+            5,
+            7,
+            22,
+            32
+          ],
+          "linkCountsMatchPreviousRuns": true,
+          "socialLinksPerSection": {
+            "section0": 5,
+            "section1": 0,
+            "section2": 5,
+            "section3": 0,
+            "section4": 1,
+            "section5": 2,
+            "section6": 5,
+            "assessment": "PASS — social link counts match block structure from taktician_wp_count_blocks. Sections without social items correctly show 0."
+          },
+          "srOnlySpans": {
+            "presentInAllSocialSections": true,
+            "countMatchesSocialLinks": true,
+            "assessment": "PASS — every social link anchor has a .sr-only span providing an accessible name for screen readers."
+          },
+          "logoAnchor": {
+            "sections": [
+              0,
+              6
+            ],
+            "count": 2,
+            "assessment": "PASS — FQA-001 fix still intact. Logo anchor present only in sections with a logoId set, absent from all others."
+          },
+          "noEmptyAnchors": "PASS — all social link anchors have accessible text via sr-only span and/or aria-label."
+        }
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build passes with 0 errors in all Footer block files",
+      "Link component from @taktdev/components used — no __experimentalLinkControl, Popover, ToggleControl, or TextControl",
+      "IconPicker conditionally rendered only when isSelected is true",
+      "Static icon fallback renders correct SVG (from suggestedIcons) or placeholder span when not selected",
+      "block.json has explicit defaults: logoId null, iconSlug empty string",
+      "PHP template unchanged and structurally in sync with TSX frontend output",
+      "All 7 footer sections render correctly with correct social link counts per section",
+      "Every social link anchor has .sr-only span for screen-reader accessibility",
+      "FQA-001 (empty logo anchor) fix still intact across all sections",
+      "No new issues introduced by the rewrite"
+    ],
+    "resolvedIssues": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

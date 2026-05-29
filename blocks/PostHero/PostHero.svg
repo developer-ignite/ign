@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<defs>
+		<linearGradient id="post-hero-grad" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0" stop-color="currentColor" stop-opacity="1"/>
+			<stop offset="0.5" stop-color="currentColor" stop-opacity="0.7"/>
+			<stop offset="1" stop-color="currentColor" stop-opacity="0.4"/>
+		</linearGradient>
+	</defs>
+	<path fill="url(#post-hero-grad)" d="
+		M0,3v18h24V3H0Z
+		M2,9h5v1H2Z
+		M2,11h12v2H2Z
+		M2,15h8v1H2Z
+		M2,17h6v1H2Z
+	"/>
+</svg>

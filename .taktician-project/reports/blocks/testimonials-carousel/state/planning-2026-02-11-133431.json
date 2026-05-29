@@ -1,0 +1,53 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-11-133431",
+  "status": "complete",
+  "blockName": "TestimonialsCarousel",
+  "output": {
+    "summary": "Remove all fade mask elements, CSS classes, JS logic, and the wrapper div that existed solely to support them. The .swiper-slides-wrapper div was added exclusively for fade mask overlays and should be unwrapped (its child .swiper div promoted directly under .swiper-parent). All data-at-beginning/data-at-end attributes and related Swiper event handlers are fade-mask-only and should be removed.",
+    "fileChanges": [
+      {
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.php",
+        "action": "modify",
+        "description": "Remove fade mask HTML elements, unwrap .swiper-slides-wrapper, remove data attributes from .swiper-parent",
+        "details": "1. On line 62, remove data-at-beginning=\"true\" data-at-end=\"false\" from the .swiper-parent div. Also remove the grid classes (grid grid-cols-1 grid-rows-1) from .swiper-parent since they were only needed for the overlay layout with fade masks. Keep 'overflow-hidden' on .swiper-parent.\n2. Remove the entire .swiper-slides-wrapper div (line 90) -- unwrap it so the .swiper div (lines 91-107) sits directly inside .swiper-parent. The .swiper div already has its own classes and does not need the wrapper's 'relative overflow-hidden grid grid-cols-1 grid-rows-1' classes.\n3. Delete the fade mask comment and both fade mask divs (lines 109-111): the .testimonials-fade-left div and the .testimonials-fade-right div.\n4. Remove the closing </div> for .swiper-slides-wrapper (line 112 -- the one that closes the wrapper, not the ones for .swiper or .swiper-parent).\n5. Update the block docblock comment at top to remove mention of 'fade-out masks'.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.tsx",
+        "action": "modify",
+        "description": "Remove grid overlay classes from FilteredServerSideRender className since fade masks no longer exist",
+        "details": "On line 296, the FilteredServerSideRender className is 'swiper-parent overflow-hidden grid grid-cols-1 grid-rows-1 relative'. Remove 'grid grid-cols-1 grid-rows-1' since those classes were only needed for the fade mask overlay layout. Keep 'swiper-parent overflow-hidden relative'. No other TSX changes needed -- the TSX does not render fade masks directly (they come from SSR/PHP).",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.js",
+        "action": "modify",
+        "description": "Remove all fade mask JS logic: updateFadeMasks function, Swiper event handlers for fade masks, MutationObserver for data attribute changes",
+        "details": "1. Remove the three Swiper 'on' event handlers (lines 41-57): 'init' (calls updateFadeMasks), 'slideChange' (calls updateFadeMasks), 'reachBeginning' (sets data-at-beginning), and 'reachEnd' (sets data-at-end). Remove the entire 'on' property from the Swiper config object.\n2. Remove the updateFadeMasks function (lines 62-68).\n3. Remove the entire MutationObserver block (lines 70-95) that queries '.swiper-parent[data-at-beginning]' elements and observes data attribute changes to toggle fade mask opacity.",
+        "affectsPhp": false
+      }
+    ],
+    "designDecisions": [
+      {
+        "id": "REV2-DEC-001",
+        "decision": "Remove .swiper-slides-wrapper div entirely rather than keeping it empty",
+        "rationale": "The .swiper-slides-wrapper was introduced in Revision 1 exclusively to isolate fade masks from navigation/pagination controls. With fade masks removed, this wrapper has no purpose. Removing it simplifies the DOM."
+      },
+      {
+        "id": "REV2-DEC-002",
+        "decision": "Remove grid classes from .swiper-parent",
+        "rationale": "The grid grid-cols-1 grid-rows-1 classes on .swiper-parent were used to stack fade mask overlays on top of the carousel. Without fade masks, standard block flow is sufficient."
+      },
+      {
+        "id": "REV2-DEC-003",
+        "decision": "Remove all data-at-beginning/data-at-end attributes and related JS",
+        "rationale": "These data attributes existed solely to drive fade mask visibility. No other feature depends on them. The Swiper event handlers (init, slideChange, reachBeginning, reachEnd) and the MutationObserver were all fade-mask-only logic."
+      }
+    ],
+    "requiresQA": false,
+    "qaScope": "none"
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

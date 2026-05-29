@@ -1,0 +1,71 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-17-132558",
+  "status": "complete",
+  "blockName": "Archive",
+  "output": {
+    "mode": "edit",
+    "filesCreated": [],
+    "filesModified": [
+      {
+        "path": "blocks/Archive/block.json",
+        "purpose": "Added presetFilters attribute (object, default {})"
+      },
+      {
+        "path": "blocks/Archive/Archive.tsx",
+        "purpose": "Added presetFilters to type definition, VARIATION_TAXONOMIES map, useSelect for taxonomy terms, Preset Filters PanelBody with FormTokenField per taxonomy, useEffect to clear presets when blockVariation changes"
+      },
+      {
+        "path": "blocks/Archive/Archive.php",
+        "purpose": "Added @var array $presetFilters docblock, preset filter fallback logic (URL params override presets), data-preset-filters attribute on section, conditional hide of active filter bar when displayFilters is false"
+      },
+      {
+        "path": "blocks/Archive/Archive.js",
+        "purpose": "Read presetFilters from data attribute on init, fall back to presets in loadFiltersFromUrl when no URL params, call buildButtons() on page load to populate active filter pills"
+      }
+    ],
+    "componentModifications": [],
+    "attributesAdded": [
+      {
+        "name": "presetFilters",
+        "type": "object",
+        "default": {}
+      }
+    ],
+    "attributesModified": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "react-hooks/exhaustive-deps on useEffect (setAttributes) - matches pattern in other blocks, not a functional issue",
+        "react-hooks/exhaustive-deps on useSelect (taxonomyNames) - array derived from blockVariation, dep on blockVariation is correct"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "Root wrapper mismatch warning is a pre-existing false positive: validator sees <BlockControls> as first element in fragment, but actual rendered wrapper is <section>. This existed before this change."
+    },
+    "testPage": {
+      "updated": true,
+      "url": "https://ign.localhost/test-archive/",
+      "pageId": 118,
+      "verifiedBlockCount": 16,
+      "newVariations": [
+        "Resources Archive - Preset Filters (Filters Visible): presetFilters={\"audience\":[\"students\"]}, displayFilters=true",
+        "Resources Archive - Preset Filters (Filters Hidden): presetFilters={\"audience\":[\"students\"]}, displayFilters=false (no filter UI or pill bar shown)"
+      ]
+    },
+    "blockers": [],
+    "fixesApplied": [],
+    "implementationNotes": [
+      "URL parameters always override preset filters per taxonomy (not merged)",
+      "Clear All clears to empty state, not back to presets",
+      "Active filter pill bar (.archive-active-filters) is suppressed when displayFilters is false even if presets are active",
+      "PHP pre-populates hidden inputs with preset values so initial pill bar renders correctly on page load",
+      "JS reads data-preset-filters JSON from section element and uses it in loadFiltersFromUrl fallback for browser back/forward navigation",
+      "buildButtons() called on page load so active filter pills reflect PHP-pre-populated hidden inputs"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

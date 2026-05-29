@@ -1,0 +1,110 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12-224248",
+  "status": "complete",
+  "blockName": "Search",
+  "output": {
+    "mode": "fix",
+    "userRevisionNumber": 1,
+    "filesCreated": [],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Performance warnings for bundle size (expected, not blocking)"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "TSX and PHP structure remain synced after fixes. Card changes only affect parts/card-search.php template (used by PHP). Dropdown arrow CSS applies to both editor and frontend select elements. Section wrapper, container, heading, and search-inner all match between TSX and PHP."
+    },
+    "testPage": {
+      "created": false,
+      "url": "https://ign.localhost/test-search/",
+      "pageId": 180,
+      "slug": "test-search",
+      "verifiedBlockCount": 5,
+      "notes": "Existing test page unchanged - fixes applied to card template and styles only"
+    },
+    "fixesApplied": [
+      {
+        "userRequest": "Make the whole card background change on hover, keep the border black",
+        "severity": "minor",
+        "description": "Card hover only changed border color to accent, did not change background. Border should remain charcoal (black).",
+        "files": [
+          "parts/card-search.php",
+          "blocks/Search/Search.css"
+        ],
+        "changes": [
+          {
+            "file": "parts/card-search.php",
+            "line": 14,
+            "before": "hover:border-accent",
+            "after": "group-hover:bg-accent group-hover:text-charcoal",
+            "notes": "Replaced hover:border-accent with group-hover:bg-accent to change entire card background on hover. Added group-hover:text-charcoal to ensure text remains readable. Border remains border-charcoal (not changed on hover)."
+          },
+          {
+            "file": "parts/card-search.php",
+            "line": 16,
+            "change": "Added group-hover:bg-white/80 group-hover:border-charcoal/20 transition-colors to post type pill",
+            "notes": "Pill adapts to card hover state similar to resource card pattern. Background lightens, border adapts on hover."
+          },
+          {
+            "file": "blocks/Search/Search.css",
+            "lines": "32-34",
+            "before": "transition: border-color 0.2s;",
+            "after": "transition: background-color 0.2s, border-color 0.2s, color 0.2s;",
+            "notes": "Extended transition to include background-color and color for smooth hover animation."
+          },
+          {
+            "file": "blocks/Search/Search.css",
+            "lines": "44-52",
+            "change": "Added btn-tertiary hover overrides for card context",
+            "notes": "Ensures Learn More button maintains charcoal color when card background changes to accent on hover. Suppresses underline in card context. Pattern from Archive block resource/policy cards."
+          }
+        ],
+        "verification": "Card now changes entire background to accent color on hover. Border remains charcoal. Pill and button text remain readable with appropriate contrast."
+      },
+      {
+        "userRequest": "It's missing the arrows on the filter dropdowns",
+        "severity": "minor",
+        "description": "Filter-by-post-type dropdown and per-page selector were missing visible chevron/arrow icons. Global forms.css uses bg-none! which wipes background images.",
+        "files": [
+          "blocks/Search/Search.css"
+        ],
+        "changes": [
+          {
+            "file": "blocks/Search/Search.css",
+            "lines": "36-42",
+            "change": "Added dropdown arrow CSS for .search select elements",
+            "implementation": "background-image: url(data:image/svg+xml with charcoal chevron) !important; background-repeat: no-repeat !important; background-position: right 16px center !important; background-size: 12px !important;",
+            "notes": "Uses !important to override global forms.css bg-none!important. Chevron is charcoal (#1f1f1d) to match light mode theme. 12px size, positioned 16px from right edge per Archive pattern."
+          }
+        ],
+        "referencePattern": "blocks/Archive/Archive.css lines 126-135",
+        "verification": "Both filter-by dropdown and per-page selector now display charcoal chevron arrows. Arrows visible in light mode context (Search block uses light background, not dark like Archive)."
+      }
+    ],
+    "implementationNotes": {
+      "cardHover": "Card hover pattern now matches resource card pattern: entire background changes to accent color, text changes to charcoal for contrast, pill adapts with lighter background. Border remains charcoal (black) throughout. Smooth transitions on all color properties.",
+      "dropdownArrows": "Dropdown arrows use SVG data URI with charcoal stroke color (#1f1f1d) appropriate for light mode. Archive block uses white stroke for dark mode. Both use !important to override global forms.css background:none!important.",
+      "pillHover": "Post type pill uses group-hover:bg-white/80 and group-hover:border-charcoal/20 to adapt when card background changes. Same pattern as resource card taxonomy pills.",
+      "btnTertiaryOverride": "Added CSS rules to prevent btn-tertiary from changing to white/light color on hover within card context. Maintains charcoal color for readability against accent background. Same override pattern used in Archive block for resource/policy cards.",
+      "tsxPhpSync": "Card template changes only affect PHP rendering (parts/card-search.php). TSX uses FilteredServerSideRender which previews the PHP output. CSS changes apply to both editor and frontend. No structural changes to block wrapper or container.",
+      "colorContrast": "Charcoal text on accent background meets WCAG AA contrast requirements. Pill white/80 background on accent provides visual separation. Learn More button charcoal color maintained for readability."
+    },
+    "blockers": [],
+    "verificationSteps": [
+      "Build compiled successfully with no errors (performance warnings only)",
+      "TSX/PHP structure sync verified - section, container, heading, search-inner all match",
+      "Card hover verified: background changes to accent, border remains charcoal, text changes to charcoal",
+      "Pill hover verified: background lightens to white/80, border adapts to charcoal/20",
+      "Dropdown arrows verified: charcoal chevrons visible on both filter-by and per-page selects",
+      "CSS transitions verified: smooth animation on background-color, border-color, and color",
+      "btn-tertiary override verified: Learn More button maintains charcoal color on card hover"
+    ]
+  },
+  "tokensUsed": 119500,
+  "questionsForUser": []
+}

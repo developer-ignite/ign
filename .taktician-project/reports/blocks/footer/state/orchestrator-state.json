@@ -1,0 +1,239 @@
+{
+  "version": 1,
+  "mode": "edit",
+  "blockName": "Footer",
+  "blockNameKebab": "footer",
+  "blockPath": "blocks/Footer/",
+  "reportDir": ".taktician-project/reports/blocks/footer",
+  "stateDir": ".taktician-project/reports/blocks/footer/state",
+  "phase": "review",
+  "status": "complete",
+  "revisionCycle": 1,
+  "maxRevisionCycles": 3,
+  "testPage": {
+    "url": "https://ign.localhost/test-footer/"
+  },
+  "figma": {
+    "url": null,
+    "nodeId": "928:19448",
+    "availability": {}
+  },
+  "guidance": {},
+  "editContext": {
+    "blockMeta": {
+      "name": "takt/footer",
+      "title": "Footer",
+      "category": "takt-theme"
+    },
+    "childBlocks": [
+      "takt/footer-info",
+      "takt/footer-info-social",
+      "takt/footer-info-social-item",
+      "takt/footer-nav",
+      "takt/footer-nav-column",
+      "takt/footer-nav-column-item",
+      "takt/footer-credits",
+      "takt/footer-credits-item"
+    ],
+    "patterns": {
+      "usesShouldDisplay": true,
+      "usesRenameBlock": true,
+      "templateEnforcement": true,
+      "manualInnerBlockRendering": true
+    },
+    "testPageUrl": "https://ign.localhost/test-footer/",
+    "status": "Production Ready"
+  },
+  "changeRequest": "Address field escapes HTML - when user enters a <br> in the address text, it renders as literal &lt;br&gt; instead of an actual line break. The address content needs to allow basic HTML (at minimum <br> tags) to pass through unescaped in the PHP frontend rendering.",
+  "agentOutputs": [
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-19-123255",
+      "file": ".taktician-project/reports/blocks/footer/state/planning-2026-02-19-123255.json",
+      "status": "complete",
+      "summary": "4 changes planned: 3 SVG icon replacements + flex-wrap fix for social links wrapping"
+    },
+    {
+      "agent": "developer",
+      "timestamp": "2026-02-19-123426",
+      "file": ".taktician-project/reports/blocks/footer/state/developer-2026-02-19-123426.json",
+      "status": "complete",
+      "summary": "3 SVG icons replaced, flex-wrap added to social links in TSX+PHP, lint fix for nested ternary. Build passes."
+    },
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-19-123647",
+      "file": ".taktician-project/reports/blocks/footer/state/functional-qa-2026-02-19-123647.json",
+      "status": "PASS",
+      "summary": "9/9 checks passed. 1 minor pre-existing issue (empty logo anchor). All spec changes verified."
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-19-123850",
+      "file": ".taktician-project/reports/blocks/footer/state/report-2026-02-19-123850.json",
+      "status": "complete",
+      "summary": "Report updated with changelog entry, validation summary, and development notes."
+    },
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-19-124230",
+      "file": ".taktician-project/reports/blocks/footer/state/planning-2026-02-19-124230.json",
+      "status": "complete",
+      "summary": "PHP-only fix: strengthen logo guard to check actual image output before rendering anchor. No TSX change needed."
+    },
+    {
+      "agent": "developer-fix",
+      "timestamp": "2026-02-19-124434",
+      "file": ".taktician-project/reports/blocks/footer/state/developer-fix-2026-02-19-124434.json",
+      "status": "complete",
+      "summary": "FQA-001 fixed: logo anchor now only renders when theme_output_svg_or_img produces actual output. Build passes."
+    },
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-19-124531",
+      "file": ".taktician-project/reports/blocks/footer/state/functional-qa-2026-02-19-124531.json",
+      "status": "PASS",
+      "summary": "FQA-001 verified resolved. 3/3 checks pass. No empty anchors on page."
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-19-124652",
+      "file": ".taktician-project/reports/blocks/footer/state/report-2026-02-19-124652.json",
+      "status": "complete",
+      "summary": "Report updated with FQA-001 fix changelog entry and resolved validation summary."
+    },
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-19-140128",
+      "file": ".taktician-project/reports/blocks/footer/state/planning-2026-02-19-140128.json",
+      "status": "complete",
+      "summary": "Race condition in Footer.tsx: useEffect subscribes to entire nested block tree via getBlocks(), fires on deeply-nested changes, replaceInnerBlocks races with block insertion. Fix: narrow selector to only track direct children structure."
+    },
+    {
+      "agent": "developer-fix",
+      "timestamp": "2026-02-19-141119",
+      "file": ".taktician-project/reports/blocks/footer/state/developer-fix-2026-02-19-141119.json",
+      "status": "complete",
+      "summary": "Fixed race condition: useEffect now tracks directChildrenKey string instead of full nested block tree. Deeply-nested insertions no longer trigger replaceInnerBlocks. Build passes."
+    },
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-19-141303",
+      "file": ".taktician-project/reports/blocks/footer/state/functional-qa-2026-02-19-141303.json",
+      "status": "PASS",
+      "summary": "3/3 checks pass. Race condition fix verified. Template enforcement logic intact. Rendered page correct."
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-19-141440",
+      "file": ".taktician-project/reports/blocks/footer/state/report-2026-02-19-141440.json",
+      "status": "complete",
+      "summary": "Report updated with race condition fix changelog and DEC-013 development note."
+    },
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-19-142504",
+      "file": ".taktician-project/reports/blocks/footer/state/planning-2026-02-19-142504.json",
+      "status": "complete",
+      "summary": "Root cause: FooterInfoSocialItem uses __experimentalLinkControl + MediaUpload/IconPicker which trigger editEntityRecord during insertion. Fix: replace with @taktdev/components Link, defer IconPicker to selected state, add attribute defaults."
+    },
+    {
+      "agent": "developer-fix",
+      "timestamp": "2026-02-19-144023",
+      "file": ".taktician-project/reports/blocks/footer/state/developer-fix-2026-02-19-144023.json",
+      "status": "complete",
+      "summary": "Replaced __experimentalLinkControl with @taktdev/components Link, deferred IconPicker to selected state, added attribute defaults. Build passes."
+    },
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-19-144257",
+      "file": ".taktician-project/reports/blocks/footer/state/functional-qa-2026-02-19-144257.json",
+      "status": "PASS",
+      "summary": "5/5 checks pass. All 3 fix items verified. Link component replaces __experimentalLinkControl, IconPicker deferred, defaults added."
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-19-144441",
+      "file": ".taktician-project/reports/blocks/footer/state/report-2026-02-19-144441.json",
+      "status": "complete",
+      "summary": "Report updated with FooterInfoSocialItem rewrite changelog and DEC-014."
+    },
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-20-133536",
+      "file": ".taktician-project/reports/blocks/footer/state/planning-2026-02-20-133536.json",
+      "summary": "Plan to replace fixed widths with fluid flex patterns in FooterInfo PHP and TSX",
+      "status": "complete"
+    },
+    {
+      "agent": "developer",
+      "timestamp": "2026-02-20-133732",
+      "file": ".taktician-project/reports/blocks/footer/state/developer-2026-02-20-133732.json",
+      "summary": "Applied 5 CSS class changes to FooterInfo.php and FooterInfo.tsx — fixed widths replaced with fluid flex. Build passes.",
+      "status": "complete"
+    },
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-20-134418",
+      "file": ".taktician-project/reports/blocks/footer/state/functional-qa-2026-02-20-134418.json",
+      "summary": "PASS - 7 checks, 0 issues. All fluid layout classes verified in DOM. Screenshots captured at 4 widths x 3 browsers.",
+      "status": "PASS"
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-20-135023",
+      "file": ".taktician-project/reports/blocks/footer/state/report-2026-02-20-135023.json",
+      "summary": "Report updated with changelog, design decision DEC-015, screenshots, and QA pass status",
+      "status": "complete"
+    },
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-20-135253",
+      "file": ".taktician-project/reports/blocks/footer/state/planning-2026-02-20-135253.json",
+      "summary": "Change esc_html() to wp_kses_post() for address output in FooterInfo.php line 59. TSX already uses RichText correctly.",
+      "status": "complete"
+    },
+    {
+      "agent": "developer-fix",
+      "timestamp": "2026-02-20-135403",
+      "file": ".taktician-project/reports/blocks/footer/state/developer-fix-2026-02-20-135403.json",
+      "summary": "Changed esc_html to wp_kses_post for address output in FooterInfo.php. Build passes.",
+      "status": "complete"
+    },
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-20-135548",
+      "file": ".taktician-project/reports/blocks/footer/state/functional-qa-2026-02-20-135548.json",
+      "summary": "PASS - br fix confirmed working. wp_kses_post renders <br> as real line breaks. Screenshots captured.",
+      "status": "PASS"
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-20-135719",
+      "file": ".taktician-project/reports/blocks/footer/state/report-2026-02-20-135719.json",
+      "summary": "Report updated with changelog entry for br fix, DEC-016, and latest screenshots",
+      "status": "complete"
+    }
+  ],
+  "latestOutputs": {
+    "planning": ".taktician-project/reports/blocks/footer/state/planning-2026-02-20-135253.json",
+    "developer": ".taktician-project/reports/blocks/footer/state/developer-fix-2026-02-20-135403.json",
+    "functionalQa": ".taktician-project/reports/blocks/footer/state/functional-qa-2026-02-20-135548.json",
+    "designQa": null
+  },
+  "screenshots": {
+    "qaScreenshots": null,
+    "finalScreenshots": ".taktician-project/reports/blocks/footer/screenshots/2026-02-20-135519/"
+  },
+  "unresolvedIssues": [],
+  "timestamps": {
+    "started": "2026-02-19-122835",
+    "lastUpdated": "2026-02-20T21:58:15.284Z"
+  },
+  "agentSessions": {
+    "planning": "a056dc2",
+    "developer": "a3cf534",
+    "functionalQa": "a39301d",
+    "report": "a4079d6"
+  }
+}

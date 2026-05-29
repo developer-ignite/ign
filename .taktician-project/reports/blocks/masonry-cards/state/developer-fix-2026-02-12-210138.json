@@ -1,0 +1,131 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12T21:01:38Z",
+  "status": "complete",
+  "output": {
+    "mode": "fix",
+    "summary": "Fixed Gutenberg editor z-index conflict on tall TextCards using CSS !important modifiers to override WordPress's default ::after selection styles. Reverted the <span> element approach per user feedback and kept the original DOM structure.",
+    "filesModified": [
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/blocks/MasonryCards/TextCard/TextCard.tsx",
+        "change": "Removed <span> element, restored md:after:* classes with !important modifiers on key properties",
+        "linesBefore": "58, 83-85",
+        "linesAfter": "58",
+        "reason": "User feedback: 'don't change the structure, use css classes to override wp default style'. Using !important modifiers ensures block's ::after styles win over Gutenberg's selection outline styles."
+      }
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "approachChange": {
+      "previousApproach": "Add explicit <span> element to avoid ::after pseudo-element conflict",
+      "userFeedback": "don't change the structure, use css classes to override wp default style",
+      "newApproach": "Use Tailwind !important modifiers on ::after classes to override Gutenberg's default styles",
+      "reason": "Maintain original DOM structure while solving the z-index conflict through CSS specificity"
+    },
+    "codeChanges": {
+      "removed": {
+        "location": "Inside block wrapper div, lines 83-85 (previous version)",
+        "element": "<span className=\"hidden md:block absolute inset-x-0 bottom-0 h-1/2 bg-accent rounded-3xl -z-1\" />",
+        "condition": "isTall",
+        "reason": "User requested to not change DOM structure, use CSS overrides instead"
+      },
+      "restored": {
+        "location": "useBlockProps className, line 58",
+        "classes": "md:after:!absolute md:after:!inset-x-0 md:after:!top-auto md:after:!bottom-0 md:after:!h-1/2 md:after:bg-accent md:after:rounded-3xl md:after:!-z-1",
+        "condition": "isTall",
+        "importantModifiers": [
+          "md:after:!absolute - Ensures position: absolute !important",
+          "md:after:!inset-x-0 - Ensures left: 0; right: 0 !important",
+          "md:after:!top-auto - Ensures top: auto !important (overrides Gutenberg's inset: 0)",
+          "md:after:!bottom-0 - Ensures bottom: 0 !important (overrides Gutenberg's inset: 0)",
+          "md:after:!h-1/2 - Ensures height: 50% !important (overrides Gutenberg's full coverage)",
+          "md:after:!-z-1 - Ensures z-index: -1 !important (most critical - overrides Gutenberg's z-index: 1)"
+        ],
+        "nonImportantClasses": [
+          "md:after:bg-accent - Background color doesn't need !important",
+          "md:after:rounded-3xl - Border radius doesn't need !important"
+        ]
+      },
+      "unchanged": {
+        "classes": "md:before:inset-x-0 md:before:top-0 md:before:h-1/2",
+        "reason": "::before pseudo-element is not affected by Gutenberg's selection styles"
+      }
+    },
+    "cssOverrideStrategy": {
+      "gutenbergDefaults": {
+        "selector": ".block-editor-block-list__layout .block-editor-block-list__block:not([contenteditable=true]):focus:after",
+        "styles": {
+          "position": "absolute",
+          "inset": "0",
+          "zIndex": "1",
+          "content": "''",
+          "outline": "selection outline styles"
+        }
+      },
+      "blockNeeds": {
+        "position": "absolute - same as Gutenberg",
+        "left": "0 (inset-x-0) - same as Gutenberg",
+        "right": "0 (inset-x-0) - same as Gutenberg",
+        "top": "auto - DIFFERENT from Gutenberg's inset: 0 (which sets all sides to 0)",
+        "bottom": "0 - DIFFERENT from Gutenberg's inset: 0 (which sets all sides to 0)",
+        "height": "50% - DIFFERENT from Gutenberg (which lets inset: 0 control height)",
+        "zIndex": "-1 - DIFFERENT from Gutenberg's z-index: 1"
+      },
+      "importantNeeded": [
+        "!absolute - Ensures position stays absolute (though Gutenberg uses same value)",
+        "!inset-x-0 - Ensures horizontal positioning (though Gutenberg uses same value via inset)",
+        "!top-auto - CRITICAL: Prevents Gutenberg's inset: 0 from setting top: 0",
+        "!bottom-0 - CRITICAL: Prevents Gutenberg's inset: 0 from removing bottom: 0",
+        "!h-1/2 - CRITICAL: Forces height to 50%, overriding Gutenberg's full coverage",
+        "!-z-1 - CRITICAL: Forces z-index: -1, overriding Gutenberg's z-index: 1"
+      ],
+      "reasoning": "Tailwind's !important modifier creates CSS with !important flag, increasing specificity enough to override Gutenberg's higher-specificity selector. The ! prefix in Tailwind (e.g., !-z-1) generates z-index: -1 !important in the compiled CSS."
+    },
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Webpack performance warnings (asset size limits) - pre-existing, not related to changes"
+      ],
+      "details": "Build completed successfully with 'webpack compiled with 3 warnings'. All warnings are pre-existing performance recommendations. TypeScript compilation passed without errors."
+    },
+    "syncStatus": {
+      "verified": true,
+      "phpUnchanged": true,
+      "details": "PHP template (TextCard.php) intentionally left unchanged. The ::after pseudo-element conflict is editor-only because Gutenberg's block selection CSS is only loaded in the editor. The frontend renders without these styles, so the ::after approach works correctly in PHP without !important modifiers."
+    },
+    "domStructure": {
+      "maintained": true,
+      "details": "No changes to DOM structure. The block wrapper div and its children (RichText elements) remain unchanged. Only CSS classes on the wrapper were modified to add !important flags.",
+      "beforeFix": "<div useBlockProps>{RichText title}{RichText content}</div>",
+      "afterFix": "<div useBlockProps>{RichText title}{RichText content}</div>",
+      "difference": "None - structure is identical"
+    },
+    "testing": {
+      "editorTesting": [
+        "Open Gutenberg editor and add a TextCard with isTall enabled",
+        "Select/focus the tall card",
+        "Verify the split background (top and bottom halves) renders behind the content, not on top",
+        "Verify the background maintains the accent color and rounded corners",
+        "Verify the background height is 50% for each half (not full coverage)",
+        "Toggle isTall off and verify the single background still works correctly"
+      ],
+      "cssInspection": [
+        "Inspect the tall card's computed styles in browser dev tools",
+        "Verify ::after has position: absolute !important",
+        "Verify ::after has top: auto !important and bottom: 0 !important",
+        "Verify ::after has height: 50% !important",
+        "Verify ::after has z-index: -1 !important (should override Gutenberg's z-index: 1)",
+        "Verify no outline or selection border appears over the background when selected"
+      ],
+      "frontendTesting": [
+        "View the test page at https://ign.localhost/test-masonry-cards/",
+        "Verify tall text cards have the split background effect (top and bottom halves)",
+        "Verify non-tall cards have a single full background",
+        "Verify all backgrounds are accent-colored and behind the text content"
+      ]
+    },
+    "blockers": [],
+    "componentModifications": []
+  }
+}

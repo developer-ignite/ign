@@ -1,0 +1,83 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-18-150820",
+  "status": "PASS",
+  "blockName": "header",
+  "revisionCycle": 11,
+  "output": {
+    "summary": "Revision 11 QA pass. FQA-005 verified FIXED via live browser testing. The global *:focus-visible rule in body.css was moved into @layer base, allowing Tailwind utility classes to override it. All three revision 10 fixes now confirmed passing. All previous regression checks from revisions 9 and 10 continue to pass. No open issues remain.",
+    "codeReview": {
+      "body_css_focus_visible": {
+        "status": "VERIFIED",
+        "file": "resources/css/screen/body.css",
+        "lines": "38-42",
+        "content": "@layer base { *:focus-visible { @apply outline-2 outline-black outline-dotted outline-offset-1; } }",
+        "note": "Previously unlayered (lines 38-40), now correctly inside @layer base so Tailwind @layer utilities can override it."
+      }
+    },
+    "liveBrowserTests": {
+      "FQA005_outlineFixOnNavButton": {
+        "status": "PASS",
+        "element": ".header-main-item-button (BUTTON, text: About)",
+        "method": "6x Tab keypresses from document.body to reach first .header-main-item-button",
+        "evidence": "Screenshot 2026-02-18-150655: hasMenuItemBtn=true, focusVisible=true, outline-style=solid, outline-color=rgb(255,255,255), outline-width=2px, outline-offset=2px, color=rgb(212,255,69). White solid outline visually confirmed around ABOUT button in rendered header.",
+        "wasFailingBefore": "outline-style was dotted, outline-color was rgb(31,31,29) in revision 10"
+      },
+      "FQA005_outlineFixOnSubItem": {
+        "status": "PASS",
+        "element": "HeaderMainSubItem <a> link (text: Who We Are)",
+        "method": "6x Tab + ArrowDown from document.body",
+        "evidence": "Screenshot 2026-02-18-150721: focusVisible=true, outline-style=solid, outline-color=rgb(255,255,255), outline-width=2px, outline-offset=2px, color=rgb(212,255,69). White solid outline visually confirmed around WHO WE ARE in dropdown.",
+        "wasFailingBefore": "outline-style was dotted in revision 10"
+      },
+      "fix1_focusVisibleTextAccent": {
+        "status": "PASS",
+        "evidence": "Screenshot 2026-02-18-150655: color=rgb(212,255,69) on .header-main-item-button with focusVisible=true. Accent color correctly applied. Screenshot 2026-02-18-150721: same accent color on sub-item link."
+      },
+      "globalDefaultStillWorks": {
+        "status": "PASS",
+        "evidence": "Screenshot 2026-02-18-150616 (taken before fix confirmation): a non-header BUTTON element (hasMenuItemBtn=false, no outline-solid override classes) with focusVisible=true shows outline-style=dotted, outline-color=rgb(31,31,29). The @layer base default still applies to elements without explicit overrides."
+      }
+    },
+    "regressionTests": {
+      "FQA001_arrowDownIntoDropdown": {
+        "status": "PASS",
+        "evidence": "Screenshot 2026-02-18-150741: TAG=A, text=Who We Are, aria-expanded=n/a. Focus correctly enters first dropdown item via ArrowDown."
+      },
+      "FQA002_arrowUpIntoDropdown": {
+        "status": "PASS",
+        "evidence": "Screenshot 2026-02-18-150744: TAG=A, text=Work at Ignite, aria-expanded=n/a. Focus correctly enters last dropdown item via ArrowUp."
+      },
+      "escape_closesDropdown": {
+        "status": "PASS",
+        "evidence": "Screenshot 2026-02-18-150802: focus=About, btn aria-expanded=false, submenu hidden=true. Escape from inside dropdown closes it and returns focus to trigger. White solid outline visible on ABOUT button."
+      },
+      "CUSTOM011_tabClosesDropdown": {
+        "status": "PASS",
+        "evidence": "Screenshot 2026-02-18-150808: focus=Health, btn aria-expanded=false, submenu hidden=true. Tab from inside dropdown closes submenu and moves focus to next top-level item. White solid outline visible on HEALTH button."
+      },
+      "FQA003_ariaLabelOnMenubar": {
+        "status": "PASS",
+        "note": "Unchanged since revision 9. Verified in code review of HeaderMain.php line 150."
+      },
+      "FQA004_ariaOrientationOnMenubar": {
+        "status": "PASS",
+        "note": "Unchanged since revision 9. Verified in code review of HeaderMain.php line 150."
+      },
+      "fix3_minWidthMax_removed": {
+        "status": "PASS",
+        "note": "Unchanged since revision 10. Submenu has min-width=calc(100%+48px), no min-w-max class."
+      }
+    },
+    "issuesSummary": {
+      "FQA-001": "CLOSED — Fixed revision 9, regression confirmed passing",
+      "FQA-002": "CLOSED — Fixed revision 9, regression confirmed passing",
+      "FQA-003": "CLOSED — Fixed revision 9, regression confirmed passing",
+      "FQA-004": "CLOSED — Fixed revision 9, regression confirmed passing",
+      "FQA-005": "CLOSED — Fixed revision 11. body.css *:focus-visible moved into @layer base. Live browser confirms outline-style=solid, outline-color=rgb(255,255,255) on all header interactive elements with keyboard focus."
+    },
+    "openIssues": []
+  },
+  "questionsForUser": [],
+  "tokensUsed": null
+}

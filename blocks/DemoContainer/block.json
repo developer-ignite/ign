@@ -1,0 +1,32 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/demo-container",
+  "title": "Demo Container",
+  "category": "takt-theme",
+  "description": "A utility wrapper for demo pages. Wraps a block instance with a title and description.",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "inserter": false
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "title": "Card Carousel - Default",
+      "description": "A carousel with 3 cards and navigation arrows."
+    }
+  }
+}

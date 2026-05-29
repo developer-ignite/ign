@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Container -->
+	<path d="M1,3v18h22V3H1ZM22,20H2V4h20v16Z"/>
+	<!-- Name (heading line) -->
+	<rect x="3" y="6" width="8" height="2"/>
+	<!-- Message lines (body text) -->
+	<rect x="3" y="10" width="16" height="1"/>
+	<rect x="3" y="12" width="14" height="1"/>
+	<rect x="3" y="14" width="12" height="1"/>
+	<!-- Video button indicator -->
+	<rect x="3" y="17" width="5" height="2"/>
+	<!-- Play icon triangle -->
+	<rect x="15" y="17" width="1" height="2"/>
+	<rect x="16" y="18" width="1" height="1"/>
+	<rect x="14" y="18" width="1" height="1"/>
+</svg>

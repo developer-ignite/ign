@@ -1,0 +1,100 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-20-101100",
+  "status": "PASS",
+  "blockName": "EventHero",
+  "output": {
+    "testPageUrl": "https://ign.localhost/test-event-hero/",
+    "testPageBlockCount": 5,
+    "buildStatus": "PASS",
+    "registrationStatus": "PASS",
+    "syncStatus": "PASS",
+    "phases": {
+      "phase1_build": {
+        "status": "PASS",
+        "details": "Build passes with 0 errors. Lint passes with 0 errors and pre-existing warnings only (react-hooks/exhaustive-deps on EventHero.tsx lines 177/177 match pattern seen in PostHero and other blocks — not introduced by this change)."
+      },
+      "phase2_registration": {
+        "status": "PASS",
+        "details": "block.json valid — apiVersion 3, name takt/event-hero, all file references resolve, attribute types correct. showExcerpt default confirmed as true."
+      },
+      "phase3_test_page": {
+        "status": "PASS",
+        "details": "Test page exists at https://ign.localhost/test-event-hero/ (pageId 248). 5 takt/event-hero instances confirmed via taktician_wp_count_blocks. All 5 wrapped in takt/demo-container as expected."
+      },
+      "phase4_attribute_changes": {
+        "status": "PASS",
+        "checks": [
+          {
+            "change": "showExcerpt default changed from false to true",
+            "result": "PASS",
+            "evidence": "block.json line 18: 'default': true. Example block also uses showExcerpt: true. PHP uses $showExcerpt variable directly (from attribute extraction). TSX checks attributes.showExcerpt. Default is consistent across all layers.",
+            "rawMarkup": "Variation 1 explicitly sets showExcerpt:false to test the hidden state. Variations 2-5 set showExcerpt:true. Default in block.json is true — new blocks will show excerpt by default."
+          },
+          {
+            "change": "Cost display added — _EventCost with _EventCurrencySymbol",
+            "result": "PASS",
+            "evidence": {
+              "php": "EventHero.php lines 28-32: $event_cost = get_post_meta($event_id, '_EventCost', true). $cost_display computed with currency symbol prefix. Rendered at lines 169-173 with esc_html() output.",
+              "tsx": "EventHero.tsx line 147: eventCost from eventMeta._EventCost. Lines 301-304: renders cost with currency symbol when eventCost truthy. Shows placeholder 'Event Cost' in editor when displayContent is true.",
+              "sync": "Both TSX and PHP use same conditional logic: show cost only when cost value is non-empty. PHP: $cost_display !== ''. TSX: eventCost truthy. Both prefix currency symbol when available."
+            }
+          },
+          {
+            "change": "External link button content-width (self-start), not full-width",
+            "result": "PASS",
+            "evidence": {
+              "php": "EventHero.php line 179: class='btn-primary mt-6 inline-flex self-start'",
+              "tsx": "EventHero.tsx line 311: className='btn-primary mt-6 inline-flex self-start'",
+              "sync": "Both files use identical classes. 'inline-flex self-start' means the button sizes to its content width and aligns to start of flex container, not full-width."
+            }
+          }
+        ]
+      },
+      "phase5_sync_verification": {
+        "status": "PASS",
+        "details": "TSX/PHP structure sync verified. Root wrapper mismatch (InspectorControls fragment vs <section>) is a false positive — InspectorControls is a Gutenberg editor panel injected into the block toolbar, not part of the rendered output. The actual rendered root <section> is consistent in both files. All conditionals match: $featured_img_id / featuredMediaUrl, !empty($event_categories) / eventCategories.length > 0, $showExcerpt && !empty($event_excerpt) / attributes.showExcerpt && (displayContent || eventExcerpt), $date_time_display / startDate, $venue_name / venueName, $cost_display !== '' / eventCost truthy, $external_url / externalUrl."
+      },
+      "phase6_rendered_output": {
+        "status": "PASS",
+        "details": "Test page rendered successfully (no 500 errors). All 5 instances display. Note: test page is a regular WordPress page, not a tribe_events post — event meta (dates, venue, cost, URL) is intentionally empty. Blocks render the page title and empty lower group correctly. Category pills and date/time/venue/cost/button only appear on actual tribe_events posts."
+      },
+      "phase7_accessibility": {
+        "status": "PASS",
+        "checks": [
+          "h1 used for event title — correct landmark heading",
+          "<time> element with datetime attribute for date/time line — correct semantic markup",
+          "Featured image uses role='presentation' and empty alt — correct for decorative image",
+          "External link button includes sr-only span with event name and '(opens in a new tab)' — correct accessible label",
+          "Category pill spans use uppercase text — no ARIA issue since they are informational labels, not interactive"
+        ]
+      },
+      "phase8_screenshots": {
+        "status": "PASS",
+        "path": ".taktician-project/reports/blocks/event-hero/screenshots/2026-02-20-100950",
+        "browsers": [
+          "chromium",
+          "firefox",
+          "webkit"
+        ],
+        "widths": [
+          375,
+          768,
+          1024,
+          1440
+        ],
+        "visualObservations": {
+          "375px": "Five stacked hero sections fill the viewport width. Large bold 'TEST: Event Hero' h1 at lower-left. Each section has the gradient background (lime green to teal). Demo container labels visible at top of each section (DEFAULT - NO EXCERPT, FULL CONTENT - ALL FIELDS POPULATED, etc.). No images, dates, costs, or buttons visible — correct, as test page is not a tribe_events post. Text renders cleanly at small viewport.",
+          "768px": "Same layout, wider viewport. Hero sections taller with more vertical breathing room. h1 text larger. Demo container descriptions more legible. Gradient background consistent across all sections. Layout remains single-column.",
+          "1024px": "Hero height increases noticeably. Content constrained to max-w-[700px] with left alignment. Gradient backgrounds render well at this width. All 5 variations clearly distinguishable by demo container labels.",
+          "1440px": "Full desktop view. Five hero sections stack vertically. Each section is tall (approximately 600px estimated). max-w-[700px] content column visible clearly at left. Footer renders correctly below all sections. No visual regressions detected. All three browsers (chromium, firefox, webkit) produce consistent output."
+        }
+      }
+    },
+    "issues": [],
+    "summary": "All three targeted changes verified: (1) showExcerpt default is true in block.json and consistent across PHP/TSX. (2) Cost display implemented in both PHP ($cost_display with currency symbol) and TSX (eventCost with eventCurrencySymbol). (3) External link button uses 'inline-flex self-start' making it content-width in both PHP and TSX. Build passes, registration valid, sync confirmed. No issues found."
+  },
+  "screenshotDir": ".taktician-project/reports/blocks/event-hero/screenshots/2026-02-20-100950",
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

@@ -1,0 +1,44 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-20-135845",
+  "status": "complete",
+  "severity": "none",
+  "output": {
+    "summary": "Create PostHero.js with a ResizeObserver that caps .top-gradient max-height to the nearest <main> element height, scoped to .post-hero wrappers. No CSS changes needed -- PostHero already inherits the 150vh height from Hero.css via the shared 'hero' class.",
+    "fileChanges": [
+      {
+        "file": "blocks/PostHero/PostHero.js",
+        "action": "create",
+        "description": "Create a frontend JS file with ResizeObserver to cap .top-gradient max-height to <main> height, scoped to .post-hero wrappers.",
+        "details": "Follow the exact pattern from Hero.js but use the selector '.post-hero .top-gradient' instead of '.hero .top-gradient'. On DOMContentLoaded, query all '.post-hero .top-gradient' elements, find the closest <main> (or fallback to document.querySelector('main')), set gradient.style.maxHeight = main.offsetHeight + 'px', and observe <main> with a ResizeObserver to update dynamically. The webpack glob pattern in webpack.config.js ('...glob.sync(\"./blocks/**/!(*index).js\")') will automatically pick up PostHero.js and bundle it into screen.js -- no manual registration needed.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "behavior",
+        "decision": "Use '.post-hero .top-gradient' selector to scope the ResizeObserver to PostHero blocks only",
+        "source": "existing-pattern",
+        "evidence": "PostHero.php applies 'post-hero hero' classes to the wrapper via theme_block_props (line 25-31). The .top-gradient div is a direct child (line 35). Using '.post-hero .top-gradient' scopes precisely to PostHero instances and avoids overlap with Hero.js which uses '.hero .top-gradient' (or is being scoped to do so)."
+      },
+      {
+        "id": "DEC-002",
+        "category": "styling",
+        "decision": "No PostHero.css needed -- 150vh height already inherited from Hero.css via shared 'hero' class",
+        "source": "existing-pattern",
+        "evidence": "PostHero.php wrapper has class 'post-hero hero' (line 28). Hero.css defines .top-gradient with height: 150vh (already updated from 150vw). The shared 'hero' class ensures PostHero inherits these gradient styles. No duplication needed."
+      },
+      {
+        "id": "DEC-003",
+        "category": "infrastructure",
+        "decision": "Use standalone PostHero.js file (not inline PHP script) for the ResizeObserver",
+        "source": "existing-pattern",
+        "evidence": "Hero.js uses the same standalone file approach. webpack.config.js glob pattern ('...glob.sync(\"./blocks/**/!(*index).js\")') automatically bundles any .js file in block directories into screen.js. This avoids PHP function validator issues with JavaScript identifiers and follows the established QuickNavigation.js / Hero.js pattern."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

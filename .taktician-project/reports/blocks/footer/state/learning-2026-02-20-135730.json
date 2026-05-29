@@ -1,0 +1,20 @@
+{
+  "revision": 1,
+  "analysis": {
+    "mistake": "Address field displayed literal '<br>' text instead of rendering line breaks",
+    "expected": "RichText editor content with <br> tags should render as actual line breaks on the frontend",
+    "rootCause": "Inconsistent escaping function: esc_html() was used on address field (line 59) while the same file already used wp_kses_post() for hoursContent (line 76) and contactContent (line 86). The developer didn't notice or follow the existing pattern in the same file.",
+    "rootCauseType": "missing-project-pattern",
+    "responsiblePhase": "development"
+  },
+  "suggestions": [
+    {
+      "type": "project-specific",
+      "action": "add",
+      "section": "Required Patterns",
+      "content": "RichText editor content (with potential HTML tags like <br>, <strong>, etc.) must use wp_kses_post() for output, never esc_html(). Use esc_html() only for plain text fields (text inputs, metadata without HTML support).",
+      "rationale": "The Footer block already follows this pattern correctly for hoursContent and contactContent. Documenting this prevents developers from mixing escaping functions for similar content types in the same block.",
+      "implemented": true
+    }
+  ]
+}

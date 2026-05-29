@@ -1,0 +1,151 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-13-150000",
+  "status": "PASS",
+  "blockName": "FeaturedPost",
+  "output": {
+    "summary": "Full visual QA comparison of FeaturedPost block across all 4 Figma variants and 10 test page variations. Implementation closely matches the Figma design across all breakpoints and all browsers (Chromium, Firefox, WebKit). No critical or major visual issues found. All findings are within tolerance or are notes.",
+    "figmaNodeId": "811:59175",
+    "testPageUrl": "https://ign.localhost/test-featured-post/",
+    "tolerance": "2-4px (semantic mode)",
+    "compositionGate": "PASS",
+    "compositionNotes": "Overall composition matches Figma across all 4 variants (Light/Right, Light/Left, Dark/Left, Dark/Right). Two-column grid layout, vertical centering of content, image aspect ratio (4:3), rounded corners, dark mode pseudo-element backgrounds, and column ordering all render correctly.",
+    "breakpointsAnalyzed": ["375", "768", "1024", "1440"],
+    "browsersAnalyzed": ["chromium", "firefox", "webkit"],
+    "crossBrowserConsistency": "All three browsers render identically at all breakpoints. No cross-browser discrepancies observed.",
+    "variantsChecked": [
+      {
+        "name": "Light Mode - Media Left, Content Right (default)",
+        "figmaNode": "811:59176",
+        "status": "PASS",
+        "notes": "Two-column layout with image on left, content column on right. Topic tag pill with green accent background and border, heading in Anton display font, excerpt in body text, primary button with charcoal fill. Content vertically centered. Image has rounded-3xl corners and 4:3 aspect ratio. All match Figma."
+      },
+      {
+        "name": "Light Mode - Media Right, Content Left (isReversed)",
+        "figmaNode": "811:59198",
+        "status": "PASS",
+        "notes": "Columns correctly swap. Content on left (col-start-1), image on right (col-start-2). All element positions match Figma. Custom button label 'Read Full Story' renders correctly."
+      },
+      {
+        "name": "Dark Mode - Media Left, Content Right",
+        "figmaNode": "811:59220",
+        "status": "PASS",
+        "notes": "Dark charcoal pseudo-element backgrounds behind both columns with rounded-3xl corners. Image uses rounded-xl (smaller radius) in dark mode matching Figma. White text on dark background. Button inverts to white fill with dark text. Two separate dark panels with a visible gap between them matches the Figma design. Topic tag pill text forced to charcoal (text-charcoal class) for readability against accent background."
+      },
+      {
+        "name": "Dark Mode - Media Right, Content Left (isReversed)",
+        "figmaNode": "811:59244",
+        "status": "PASS",
+        "notes": "Dark mode combined with reversed columns. Both dark pseudo-element panels render in correct positions. Content on left, image on right. All styling matches Dark/Left variant with correct column swap."
+      }
+    ],
+    "detailedChecks": {
+      "typography": {
+        "status": "PASS",
+        "details": "Heading uses Anton font family (text-header-2 for regular, text-header-3 for small). Body text uses sans-serif body font. Topic tag uses uppercase small text with medium weight. Button uses uppercase tracking-wider medium weight. All match Figma visual weight and proportions."
+      },
+      "colors": {
+        "status": "PASS",
+        "details": "Light mode: off-white/cream page background, charcoal text, charcoal button fill with white text. Dark mode: charcoal pseudo-element backgrounds, white text, white button fill with charcoal text, accent-lighter topic tag with accent border. All colors match Figma references."
+      },
+      "spacing": {
+        "status": "PASS",
+        "details": "Section padding (py-10 sm:py-16), grid gap (gap-x-16 gap-y-10 sm:gap-y-16), content spacing (mb-6 for tag row, mb-8 md:mb-12 for heading and excerpt), dark mode gap override (gap-y-8) all produce visual spacing consistent with Figma within 2-4px tolerance."
+      },
+      "layout": {
+        "status": "PASS",
+        "details": "Two-column grid (md:grid-cols-2) with items-stretch. Content column uses flex items-center for vertical centering. Mobile stacking works correctly with image above content by default (-order-1 on media). Column swapping via col-start classes works correctly. Dark mode pseudo-element insets (-inset-(--side-gutter) on mobile, -inset-8 on desktop) provide proper background coverage."
+      },
+      "borderRadius": {
+        "status": "PASS",
+        "details": "Light mode image: rounded-3xl (large radius matching Figma). Dark mode image: rounded-xl (smaller radius matching Figma). Dark mode pseudo-element: rounded-3xl. All match Figma corner treatments."
+      },
+      "alignment": {
+        "status": "PASS",
+        "details": "Content vertically centered within its column via flex items-center. All text left-aligned. Topic tag and eyebrow horizontally aligned in a flex row with gap-4. All alignment matches Figma."
+      },
+      "proportions": {
+        "status": "PASS",
+        "details": "Image maintains 4:3 aspect ratio via aspect-[4/3] with object-cover. Both columns occupy equal grid widths on desktop. Content column text fills approximately half the width, matching Figma proportions."
+      },
+      "responsiveBehavior": {
+        "status": "PASS",
+        "details": "At 375px (mobile): stacks to single column with image on top (default) or content on top (reverseRows). At 768px (tablet): same single-column stacking as mobile (md breakpoint not reached). At 1024px: two-column grid activates (md breakpoint). At 1440px: full desktop layout. All breakpoint transitions are smooth and match expected responsive behavior."
+      }
+    },
+    "findings": [
+      {
+        "id": "DQA-001",
+        "severity": "note",
+        "category": "layout",
+        "element": "Dark mode column gap",
+        "breakpoint": "desktop",
+        "figmaValue": "Two separate dark rounded panels with thin gap",
+        "implementationValue": "Two separate dark rounded pseudo-element panels with gap-x-16 (64px) between grid columns",
+        "withinTolerance": true,
+        "recommendation": "The gap between dark panels in the implementation is driven by the grid gap-x-16 (64px). In Figma the gap appears narrower (approximately 16-20px between the two dark panels). However, the dark pseudo-elements use -inset-8 (32px negative inset on desktop) which extends the dark background beyond the column boundaries, effectively reducing the visible gap. The resulting visual gap appears approximately similar to Figma. Within tolerance."
+      },
+      {
+        "id": "DQA-002",
+        "severity": "note",
+        "category": "color",
+        "element": "Dark mode button style",
+        "breakpoint": "all",
+        "figmaValue": "White-filled button with dark text in dark mode",
+        "implementationValue": "btn-primary with dark mode variant: white border, white gradient background, charcoal text",
+        "withinTolerance": true,
+        "recommendation": "Button correctly inverts in dark mode using the theme's dark variant CSS (dark:border-white, dark:text-charcoal, white gradient fill). Matches Figma intent."
+      },
+      {
+        "id": "DQA-003",
+        "severity": "note",
+        "category": "typography",
+        "element": "Eyebrow text visibility",
+        "breakpoint": "all",
+        "figmaValue": "Eyebrow text next to topic tag pill",
+        "implementationValue": "Eyebrow renders correctly when set, hidden when empty",
+        "withinTolerance": true,
+        "recommendation": "On instances without eyebrow attribute, only the topic tag pill shows. On instances with eyebrow (e.g., 'Work Integrated Learning Initiative'), both pill and eyebrow render correctly in a flex row. Matches Figma behavior."
+      }
+    ],
+    "screenshots": {
+      "fullPage": {
+        "chromium": {
+          "375": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-chromium-375w.png",
+          "768": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-chromium-768w.png",
+          "1024": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-chromium-1024w.png",
+          "1440": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-chromium-1440w.png"
+        },
+        "firefox": {
+          "375": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-firefox-375w.png",
+          "768": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-firefox-768w.png",
+          "1024": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-firefox-1024w.png",
+          "1440": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-firefox-1440w.png"
+        },
+        "webkit": {
+          "375": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-webkit-375w.png",
+          "768": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-webkit-768w.png",
+          "1024": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-webkit-1024w.png",
+          "1440": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-webkit-1440w.png"
+        }
+      }
+    },
+    "checklist": {
+      "typographyMatches": true,
+      "colorsUseThemeTokens": true,
+      "spacingMatches": true,
+      "layoutMatchesAtAllBreakpoints": true,
+      "aspectRatiosPreserved": true,
+      "contentAlignmentMatches": true,
+      "imagesHaveProperObjectFit": true,
+      "hoverStatesVerified": false,
+      "focusStatesVerified": false,
+      "smoothTransitions": "not-applicable-static-block",
+      "gradientsBackgroundsImplemented": true,
+      "allVariationsWorking": true
+    },
+    "hoverFocusNote": "Hover and focus states cannot be verified via static screenshots. The btn-primary CSS includes hover animations (gradient sweep) and dark mode hover variants. These require interactive testing."
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

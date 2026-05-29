@@ -1,0 +1,85 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/quick-links",
+  "title": "Quick Links",
+  "category": "takt-theme",
+  "description": "Two-column layout with content on the left and a list of link cards on the right",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "buttons": {
+      "type": "array",
+      "default": [
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "primary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "secondary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "tertiary",
+          "title": "",
+          "label": ""
+        }
+      ]
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "eyebrow": "Quick Links",
+      "heading": "Looking for Other Social and Community Spaces? We've Got You Covered!",
+      "description": "Diam sed vestibulum et aliquam dignissim velit nulla. Orci ac aliquam justo amet sed. Porttitor nibh in lectus lectus enim nulla phasellus tellus commodo."
+    },
+    "innerBlocks": [
+      {
+        "name": "takt/quick-link-item",
+        "attributes": { "title": "Health + Dental Overview", "url": "/health-dental" }
+      },
+      {
+        "name": "takt/quick-link-item",
+        "attributes": { "title": "Tax Clinic", "url": "/tax-clinic" }
+      },
+      {
+        "name": "takt/quick-link-item",
+        "attributes": { "title": "DEI Resources", "url": "/dei-resources" }
+      },
+      {
+        "name": "takt/quick-link-item",
+        "attributes": { "title": "Student Advocates", "url": "/student-advocates" }
+      }
+    ]
+  }
+}

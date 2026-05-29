@@ -1,0 +1,569 @@
+{
+  "planType": "comprehensive-update",
+  "blockName": "GalleryCarousel",
+  "blockSlug": "gallery-carousel",
+  "createdAt": "2026-02-12T14:31:01Z",
+  "testPageSlug": "test-gallery-carousel",
+  "testPageId": 106,
+  "summary": "Apply all improvements from DynamicContentCarousel, TestimonialsCarousel, and CardsCarousel: padding refactor, WAI-ARIA carousel pattern, color lock, and DQA fixes. GalleryCarousel is unique because it has a real dark card wrapper (bg-charcoal rounded-3xl) rather than a pseudo-element, which requires a different padding approach.",
+
+  "structuralAnalysis": {
+    "currentStructure": {
+      "description": "GalleryCarousel uses a real dark card div rather than a pseudo-element. The section has py-6 sm:py-16, and inside is container > div.dark.bg-charcoal with px-[18px] py-9 sm:px-8 sm:py-24, flex column with gap-8 sm:gap-16 between ThemeHeading and carousel.",
+      "hierarchy": [
+        "section.gallery-carousel.py-6.sm:py-16",
+        "  div.container",
+        "    div.dark.bg-charcoal.rounded-3xl.px-[18px].py-9.sm:px-8.sm:py-24.flex.flex-col.gap-8.sm:gap-16",
+        "      div (noise texture overlay)",
+        "      ThemeHeading (no className, no buttonVariations)",
+        "      div.swiper-parent",
+        "        div.flex.items-center.gap-8.mb-6 (controls row)",
+        "          div.swiper-pagination",
+        "          div.swiper-navigation.gap-4",
+        "        div.swiper.gallery-carousel-swiper"
+      ]
+    },
+    "targetStructure": {
+      "description": "Move padding from section to container. Keep the real dark card approach (bg-charcoal div) since GalleryCarousel has visual elements (noise texture, rounded corners with overflow) that require a real DOM element. The container gets py-18 md:py-23 to match other carousels. The dark card inner padding stays the same since it controls spacing inside the card.",
+      "hierarchy": [
+        "section.gallery-carousel (NO padding, add dark bg-transparent!)",
+        "  div.container.py-18.md:py-23",
+        "    div.dark.bg-charcoal.rounded-3xl.px-[18px].py-9.sm:px-8.sm:py-24.flex.flex-col.gap-8.sm:gap-16",
+        "      div (noise texture overlay)",
+        "      ThemeHeading (add className='mb-0', add buttonVariations=['secondary'])",
+        "      div.swiper-parent (add aria-roledescription='carousel')",
+        "        div.flex.items-center.gap-4.mb-6 (controls row - fix gap from 8 to 4)",
+        "          button.carousel-autoplay-toggle (NEW - when autoplay enabled)",
+        "          div.swiper-pagination (add aria-hidden='true')",
+        "          div.swiper-navigation.gap-2.md:gap-4 (fix gap from 4 to 2 md:gap-4)",
+        "        div.swiper.gallery-carousel-swiper"
+      ],
+      "paddingRationale": "Unlike DynamicContentCarousel/TestimonialsCarousel/CardsCarousel which use a CSS pseudo-element (before:bg-charcoal) for the dark background, GalleryCarousel needs a real DOM element for the noise texture SVG filter and overflow:hidden for the carousel. The pseudo-element approach cannot support child DOM elements. Therefore: section gets no padding + dark bg-transparent!, container gets py-18 md:py-23 (matching other carousels), and the dark card div stays as a real element inside the container."
+    }
+  },
+
+  "changes": [
+    {
+      "id": "PAD-001",
+      "category": "padding-refactor",
+      "priority": "high",
+      "title": "Remove section padding, add container padding",
+      "files": ["GalleryCarousel.php", "GalleryCarousel.tsx"],
+      "description": "Move vertical padding from section to container level to match the standard carousel pattern.",
+      "details": {
+        "php": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.php",
+          "changes": [
+            {
+              "line": 5,
+              "from": "theme_block_props( 'gallery-carousel py-6 sm:py-16' )",
+              "to": "theme_block_props( 'gallery-carousel dark bg-transparent!', empty( $heading ) ? 'aria-label=\"' . esc_attr__( 'Gallery Carousel', 'takt' ) . '\"' : '' )",
+              "reason": "Remove section padding. Add dark bg-transparent! class. Add fallback aria-label when no heading (consistent with other carousels)."
+            },
+            {
+              "line": 6,
+              "from": "<div class=\"container\">",
+              "to": "<div class=\"container py-18 md:py-23\">",
+              "reason": "Add standardized padding to container (72px / 92px), matching DynamicContentCarousel, TestimonialsCarousel, and CardsCarousel."
+            }
+          ]
+        },
+        "tsx": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+          "changes": [
+            {
+              "line": 183,
+              "from": "className: 'gallery-carousel py-6 sm:py-16'",
+              "to": "className: 'gallery-carousel dark bg-transparent!', ...(!attributes.heading && { 'aria-label': __('Gallery Carousel', 'takt') })",
+              "reason": "Remove section padding, add dark bg-transparent! and conditional aria-label."
+            },
+            {
+              "line": 186,
+              "from": "<div className=\"container\">",
+              "to": "<div className=\"container py-18 md:py-23\">",
+              "reason": "Add standardized padding to container."
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "id": "DQA-001",
+      "category": "design-qa-fix",
+      "priority": "critical",
+      "title": "Fix button variant: primary -> secondary",
+      "files": ["GalleryCarousel.php", "GalleryCarousel.tsx"],
+      "description": "ThemeHeading buttons are showing primary variant instead of secondary. All dark-card carousels must use buttonVariations=['secondary'] to match design spec.",
+      "details": {
+        "php": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.php",
+          "changes": [
+            {
+              "line": "23-32 (get_template_part ThemeHeading args)",
+              "action": "Add 'buttonVariations' => [ 'secondary' ] to the ThemeHeading args array",
+              "from": "'enableButtons'    => true,",
+              "to": "'enableButtons'    => true,\n\t\t\t\t\t'buttonVariations' => [ 'secondary' ],",
+              "reason": "Force secondary button variant, matching DynamicContentCarousel and TestimonialsCarousel."
+            }
+          ]
+        },
+        "tsx": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+          "changes": [
+            {
+              "line": "214-235 (ThemeHeading component)",
+              "action": "Add buttonVariations={['secondary']} prop",
+              "after": "enableButtons={ true }",
+              "add": "buttonVariations={ [ 'secondary' ] }",
+              "reason": "Force secondary button variant in editor, matching DynamicContentCarousel and TestimonialsCarousel."
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "id": "DQA-003",
+      "category": "design-qa-fix",
+      "priority": "major",
+      "title": "Fix navigation arrow gap: gap-4 -> gap-2 md:gap-4",
+      "files": ["GalleryCarousel.php", "GalleryCarousel.tsx"],
+      "description": "Navigation arrows gap should be responsive: gap-2 on mobile, gap-4 on md+. Currently uses static gap-4.",
+      "details": {
+        "php": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.php",
+          "changes": [
+            {
+              "line": 48,
+              "from": "<div class=\"swiper-navigation flex items-center gap-4\">",
+              "to": "<div class=\"swiper-navigation flex items-center gap-2 md:gap-4\">",
+              "reason": "Match DynamicContentCarousel, TestimonialsCarousel, CardsCarousel navigation gap pattern."
+            }
+          ]
+        },
+        "tsx": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+          "changes": [
+            {
+              "line": 257,
+              "from": "className=\"swiper-navigation flex items-center gap-4\"",
+              "to": "className=\"swiper-navigation flex items-center gap-2 md:gap-4\"",
+              "reason": "Match responsive gap pattern from other carousels."
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "id": "DQA-004",
+      "category": "design-qa-fix",
+      "priority": "major",
+      "title": "Fix controls row gap: gap-8 -> gap-4",
+      "files": ["GalleryCarousel.php", "GalleryCarousel.tsx"],
+      "description": "Controls row (pagination + navigation container) gap should be gap-4 (16px) not gap-8 (32px). All other carousels use gap-4.",
+      "details": {
+        "php": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.php",
+          "changes": [
+            {
+              "line": 40,
+              "from": "<div class=\"flex items-center gap-8 mb-6\">",
+              "to": "<div class=\"flex items-center gap-4 mb-6\">",
+              "reason": "Match DynamicContentCarousel (line 113), TestimonialsCarousel (line 64), CardsCarousel (line 41) controls row gap."
+            }
+          ]
+        },
+        "tsx": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+          "changes": [
+            {
+              "line": 249,
+              "from": "className=\"flex items-center gap-8 mb-6\"",
+              "to": "className=\"flex items-center gap-4 mb-6\"",
+              "reason": "Match controls row gap from other carousels."
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "id": "A11Y-001",
+      "category": "accessibility",
+      "priority": "high",
+      "title": "Add aria-roledescription='carousel' to swiper-parent",
+      "files": ["GalleryCarousel.php", "GalleryCarousel.tsx"],
+      "description": "Add WAI-ARIA carousel pattern: swiper-parent gets aria-roledescription='carousel'.",
+      "details": {
+        "php": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.php",
+          "changes": [
+            {
+              "line": 37,
+              "from": "<div class=\"swiper-parent overflow-hidden grid grid-cols-1 grid-rows-1\">",
+              "to": "<div class=\"swiper-parent overflow-hidden grid grid-cols-1 grid-rows-1\" aria-roledescription=\"<?php esc_attr_e( 'carousel', 'takt' ); ?>\">",
+              "reason": "WAI-ARIA carousel pattern requires the carousel container to have aria-roledescription='carousel'."
+            }
+          ]
+        },
+        "tsx": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+          "changes": [
+            {
+              "line": "238-245 (swiper-parent div)",
+              "action": "Add aria-roledescription={__('carousel', 'takt')} to the swiper-parent div",
+              "reason": "WAI-ARIA carousel pattern in editor."
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "id": "A11Y-002",
+      "category": "accessibility",
+      "priority": "high",
+      "title": "Add slide-level ARIA attributes via JS",
+      "files": ["GalleryCarousel.js"],
+      "description": "Add role='group', aria-roledescription='slide', and aria-label='Slide X of Y' to each slide. Since GalleryCarousel uses inner blocks (not server-rendered slides like DynamicContentCarousel), slides must be attributed via JS after Swiper initialization (same approach as CardsCarousel).",
+      "details": {
+        "js": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.js",
+          "changes": [
+            {
+              "action": "Add updateSlideAriaAttributes() helper function (copy from CardsCarousel.js)",
+              "reason": "Handles loop mode duplicate slides correctly. Sets role='group', aria-roledescription='slide', aria-label='Slide X of Y' on real slides."
+            },
+            {
+              "action": "Call updateSlideAriaAttributes(swiper) after Swiper initialization",
+              "reason": "Apply ARIA attributes to initial slides."
+            },
+            {
+              "action": "Add swiper.on('slideChange', () => updateSlideAriaAttributes(swiper)) event listener",
+              "reason": "Re-apply ARIA attributes when slides change (important for loop mode where Swiper creates duplicates)."
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "id": "A11Y-003",
+      "category": "accessibility",
+      "priority": "high",
+      "title": "Add pagination aria-hidden='true'",
+      "files": ["GalleryCarousel.php", "GalleryCarousel.tsx"],
+      "description": "Progress bar pagination is decorative and should be hidden from assistive technology.",
+      "details": {
+        "php": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.php",
+          "changes": [
+            {
+              "line": 43,
+              "from": "<div class=\"swiper-pagination flex-1 relative! h-1 bg-charcoal/20 dark:bg-white/20 rounded-full overflow-hidden\"></div>",
+              "to": "<div class=\"swiper-pagination flex-1 relative! h-1 bg-charcoal/20 dark:bg-white/20 rounded-full overflow-hidden\" aria-hidden=\"true\"></div>",
+              "reason": "Progress bar is a visual indicator, not semantic navigation. Match DynamicContentCarousel."
+            }
+          ]
+        },
+        "tsx": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+          "changes": [
+            {
+              "line": 252,
+              "action": "Add aria-hidden=\"true\" to pagination div",
+              "reason": "Match DynamicContentCarousel pagination aria-hidden pattern."
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "id": "A11Y-004",
+      "category": "accessibility",
+      "priority": "high",
+      "title": "Add autoplay toggle button with Pause/Play icons",
+      "files": ["GalleryCarousel.php", "GalleryCarousel.tsx"],
+      "description": "When autoplay is enabled, add a toggle button before the pagination bar that allows users to stop/start slide rotation. Requires Pause.svg and Play.svg assets.",
+      "details": {
+        "assets": {
+          "action": "Copy Pause.svg from blocks/DynamicContentCarousel/resources/Pause.svg to blocks/GalleryCarousel/resources/Pause.svg",
+          "reason": "Autoplay toggle needs Pause icon (Play icon is inlined in JS as SVG string, matching other carousels)."
+        },
+        "php": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.php",
+          "changes": [
+            {
+              "line": "39 (after showPagination || showNavigation condition)",
+              "action": "Change condition to: if ( $showPagination || $showNavigation || $autoplayCarousel )",
+              "reason": "Controls row must also show when autoplay is enabled (for the toggle button)."
+            },
+            {
+              "insertBefore": "pagination progress bar comment",
+              "add": "<?php if ( $autoplayCarousel ) : ?>\n\t\t\t\t\t\t\t<button\n\t\t\t\t\t\t\t\tclass=\"carousel-autoplay-toggle carousel-nav-btn\"\n\t\t\t\t\t\t\t\taria-label=\"<?php esc_attr_e( 'Stop slide rotation', 'takt' ); ?>\"\n\t\t\t\t\t\t\t\tdata-label-pause=\"<?php esc_attr_e( 'Stop slide rotation', 'takt' ); ?>\"\n\t\t\t\t\t\t\t\tdata-label-play=\"<?php esc_attr_e( 'Start slide rotation', 'takt' ); ?>\"\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t<?php theme_block_asset( 'Pause.svg' ); ?>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<?php endif; ?>",
+              "reason": "Autoplay toggle button with accessible labels and data attributes for JS toggling. Matches DynamicContentCarousel pattern exactly."
+            }
+          ]
+        },
+        "tsx": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+          "changes": [
+            {
+              "action": "Add import for Pause SVG: import { ReactComponent as PauseIcon } from './resources/Pause.svg';",
+              "reason": "Need Pause icon for the autoplay toggle button in editor."
+            },
+            {
+              "line": "247-249 (controls row condition and content)",
+              "action": "Change condition to include autoplayCarousel. Add autoplay toggle button before pagination.",
+              "reason": "Match PHP template structure."
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "id": "A11Y-005",
+      "category": "accessibility",
+      "priority": "high",
+      "title": "Add prefers-reduced-motion support and autoplay toggle JS logic",
+      "files": ["GalleryCarousel.js"],
+      "description": "Complete JS rewrite to match DynamicContentCarousel/CardsCarousel accessibility pattern: prefers-reduced-motion detection, autoplay toggle with icon swap, aria-live region management, and focus pause/resume behavior.",
+      "details": {
+        "js": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.js",
+          "fullRewrite": true,
+          "template": "DynamicContentCarousel.js (adapted for single-slide gallery)",
+          "features": [
+            {
+              "feature": "prefers-reduced-motion",
+              "description": "Check window.matchMedia('(prefers-reduced-motion: reduce)').matches at init. If true, disable autoplay regardless of data attribute.",
+              "reference": "DynamicContentCarousel.js line 5"
+            },
+            {
+              "feature": "autoplay-toggle",
+              "description": "Find .carousel-autoplay-toggle button. On click: stop/start autoplay, swap icon between Pause and Play SVGs, update aria-label from data attributes, toggle aria-live on .swiper-wrapper between 'off' (playing) and 'polite' (paused).",
+              "reference": "DynamicContentCarousel.js lines 52-85"
+            },
+            {
+              "feature": "focus-pause",
+              "description": "On .swiper-parent focusin: pause autoplay if currently playing. On focusout (when focus leaves carousel entirely): resume autoplay if was playing.",
+              "reference": "DynamicContentCarousel.js lines 88-101"
+            },
+            {
+              "feature": "autoplay-options",
+              "description": "Add pauseOnMouseEnter: true and disableOnInteraction: false to autoplay config.",
+              "reference": "DynamicContentCarousel.js line 44-46"
+            },
+            {
+              "feature": "slide-aria-attributes",
+              "description": "Add updateSlideAriaAttributes() function and call after init + on slideChange.",
+              "reference": "CardsCarousel.js lines 53-68, 93-98"
+            }
+          ],
+          "newStructure": [
+            "1. Import Swiper + modules",
+            "2. Define updateSlideAriaAttributes(swiper) helper",
+            "3. DOMContentLoaded listener:",
+            "   a. Check prefers-reduced-motion",
+            "   b. For each .gallery-carousel-swiper:",
+            "      - Get parent, wrapper, autoplayToggle refs",
+            "      - Calculate autoplayEnabled (data-autoplay && !prefersReducedMotion)",
+            "      - Init Swiper with pauseOnMouseEnter + disableOnInteraction: false",
+            "      - Call updateSlideAriaAttributes(swiper)",
+            "      - swiper.on('slideChange', updateSlideAriaAttributes)",
+            "      - If autoplayEnabled && autoplayToggle: set up toggle, aria-live, focus handlers"
+          ]
+        }
+      }
+    },
+
+    {
+      "id": "COLOR-001",
+      "category": "color-lock",
+      "priority": "medium",
+      "title": "Add neon-green gradient color lock CSS",
+      "files": ["NEW: GalleryCarousel.css"],
+      "description": "Create a CSS file that locks the gradient to neon-green/blue regardless of page accent color. This ensures the carousel nav button gradient hover always uses the brand neon-green color.",
+      "details": {
+        "css": {
+          "file": "blocks/GalleryCarousel/GalleryCarousel.css",
+          "create": true,
+          "content": "/* Color lock: always use neon-green gradient regardless of page accent color */\n.gallery-carousel {\n\t--gradient-left: var(--color-neon-green);\n\t--gradient-right: var(--color-blue);\n}\n",
+          "reference": "DynamicContentCarousel.css lines 7-10, TestimonialsCarousel.css lines 1-5",
+          "note": "DynamicContentCarousel uses var(--color-neon-green) and var(--color-blue). TestimonialsCarousel uses raw rgba values rgba(212, 255, 69, 1) and rgba(71, 203, 242, 1). Prefer the CSS custom property approach (DynamicContentCarousel) for maintainability."
+        }
+      }
+    },
+
+    {
+      "id": "TEST-001",
+      "category": "test-page",
+      "priority": "medium",
+      "title": "Verify existing test variations and add missing ones",
+      "files": ["WordPress test page (ID: 106)"],
+      "description": "The test page has 9 variations. Variation 7 already has autoplay+loop. Verify all variations render correctly after changes. Consider adding dedicated Loop-only and Autoplay-only variations if needed for testing the new autoplay toggle.",
+      "details": {
+        "existingVariations": [
+          { "number": 1, "name": "Full Content", "config": "all fields, 4 images, pagination+navigation" },
+          { "number": 2, "name": "Minimal Content", "config": "heading only, 2 images" },
+          { "number": 3, "name": "No Controls", "config": "no pagination, no navigation" },
+          { "number": 4, "name": "Pagination Only", "config": "pagination, no navigation" },
+          { "number": 5, "name": "Navigation Only", "config": "no pagination, navigation" },
+          { "number": 6, "name": "Long Content", "config": "long text, overflow test" },
+          { "number": 7, "name": "Autoplay and Loop", "config": "loop=true, autoplay=true, delay=5" },
+          { "number": 8, "name": "Single Image", "config": "edge case, 1 image" },
+          { "number": 9, "name": "Many Images", "config": "10 images, performance test" }
+        ],
+        "variationsToAdd": [
+          {
+            "number": 10,
+            "name": "Loop Only (No Autoplay)",
+            "config": { "heading": "Loop Gallery", "loopCarousel": true, "autoplayCarousel": false, "showPagination": true, "showNavigation": true },
+            "reason": "Tests loop mode independently from autoplay. Verifies slide ARIA attributes update correctly on slideChange.",
+            "images": 3
+          },
+          {
+            "number": 11,
+            "name": "Autoplay Only (No Loop)",
+            "config": { "heading": "Autoplay Gallery", "loopCarousel": false, "autoplayCarousel": true, "autoplayDelay": 4, "showPagination": true, "showNavigation": true },
+            "reason": "Tests autoplay toggle button, aria-live management, and prefers-reduced-motion independently from loop.",
+            "images": 3
+          }
+        ],
+        "verificationChecklist": [
+          "All 11 variations render without errors",
+          "Variation 7: autoplay toggle button visible, Pause icon shown initially",
+          "Variation 7: clicking toggle stops autoplay, shows Play icon, changes aria-label",
+          "Variation 10: loop works, no autoplay toggle button shown",
+          "Variation 11: autoplay toggle button visible, no loop",
+          "All variations: padding is py-18 md:py-23 on container",
+          "All variations with buttons: secondary variant shown (not primary)",
+          "All variations: controls row has gap-4",
+          "All variations with navigation: arrows have gap-2 md:gap-4",
+          "All variations: aria-roledescription='carousel' on swiper-parent",
+          "All slides: role='group', aria-roledescription='slide', aria-label='Slide X of Y'"
+        ]
+      }
+    }
+  ],
+
+  "fileChangesSummary": {
+    "blocks/GalleryCarousel/GalleryCarousel.php": {
+      "changeIds": ["PAD-001", "DQA-001", "DQA-003", "DQA-004", "A11Y-001", "A11Y-003", "A11Y-004"],
+      "description": "Padding refactor, button variant fix, gap fixes, WAI-ARIA attributes, autoplay toggle button"
+    },
+    "blocks/GalleryCarousel/GalleryCarousel.tsx": {
+      "changeIds": ["PAD-001", "DQA-001", "DQA-003", "DQA-004", "A11Y-001", "A11Y-003", "A11Y-004"],
+      "description": "Same changes as PHP for editor parity"
+    },
+    "blocks/GalleryCarousel/GalleryCarousel.js": {
+      "changeIds": ["A11Y-002", "A11Y-005"],
+      "description": "Full rewrite: prefers-reduced-motion, autoplay toggle, aria-live, focus pause, slide ARIA attributes"
+    },
+    "blocks/GalleryCarousel/GalleryCarousel.css": {
+      "changeIds": ["COLOR-001"],
+      "description": "New file: neon-green gradient color lock"
+    },
+    "blocks/GalleryCarousel/resources/Pause.svg": {
+      "changeIds": ["A11Y-004"],
+      "description": "New file: copy from DynamicContentCarousel/resources/Pause.svg"
+    }
+  },
+
+  "executionOrder": [
+    {
+      "step": 1,
+      "title": "Create asset files",
+      "actions": [
+        "Copy Pause.svg from DynamicContentCarousel to GalleryCarousel resources",
+        "Create GalleryCarousel.css with color lock"
+      ],
+      "changeIds": ["COLOR-001", "A11Y-004"]
+    },
+    {
+      "step": 2,
+      "title": "Update PHP template",
+      "actions": [
+        "Remove section padding, add dark bg-transparent! and aria-label fallback",
+        "Add container padding py-18 md:py-23",
+        "Add buttonVariations to ThemeHeading",
+        "Add aria-roledescription to swiper-parent",
+        "Change controls row condition to include autoplayCarousel",
+        "Fix controls row gap: gap-8 -> gap-4",
+        "Add autoplay toggle button before pagination",
+        "Add aria-hidden to pagination",
+        "Fix navigation gap: gap-4 -> gap-2 md:gap-4"
+      ],
+      "changeIds": ["PAD-001", "DQA-001", "DQA-003", "DQA-004", "A11Y-001", "A11Y-003", "A11Y-004"]
+    },
+    {
+      "step": 3,
+      "title": "Update TSX editor component",
+      "actions": [
+        "Same structural changes as PHP for editor parity",
+        "Add PauseIcon import",
+        "Add autoplay toggle button rendering",
+        "Add aria-roledescription to swiper-parent",
+        "Add aria-hidden to pagination",
+        "Add buttonVariations to ThemeHeading"
+      ],
+      "changeIds": ["PAD-001", "DQA-001", "DQA-003", "DQA-004", "A11Y-001", "A11Y-003", "A11Y-004"]
+    },
+    {
+      "step": 4,
+      "title": "Rewrite JS frontend script",
+      "actions": [
+        "Full rewrite with accessibility features matching DynamicContentCarousel/CardsCarousel pattern"
+      ],
+      "changeIds": ["A11Y-002", "A11Y-005"]
+    },
+    {
+      "step": 5,
+      "title": "Update test page",
+      "actions": [
+        "Add Variation 10 (Loop Only) and Variation 11 (Autoplay Only)",
+        "Verify all 11 variations render correctly"
+      ],
+      "changeIds": ["TEST-001"]
+    },
+    {
+      "step": 6,
+      "title": "Build and verify",
+      "actions": [
+        "Run build to compile new CSS and JS",
+        "Take screenshots at key breakpoints",
+        "Run page audit on test page",
+        "Run accessibility tests"
+      ]
+    }
+  ],
+
+  "risks": [
+    {
+      "risk": "Padding change may affect visual spacing inside dark card",
+      "mitigation": "The inner dark card div keeps its own px/py padding unchanged. Only the outer section-to-container padding changes. Visual comparison screenshots before/after will catch any discrepancies."
+    },
+    {
+      "risk": "Loop mode + slide ARIA attributes: Swiper duplicates slides for loop, duplicates should not get ARIA attributes",
+      "mitigation": "Use CardsCarousel's updateSlideAriaAttributes() which filters out swiper-slide-duplicate class slides."
+    },
+    {
+      "risk": "GalleryCarousel is slidesPerView:1 (unlike multi-slide carousels), autoplay toggle placement may differ visually",
+      "mitigation": "The autoplay toggle is placed in the same controls row as pagination/navigation, before the progress bar. With gap-4 it will be visually consistent."
+    }
+  ],
+
+  "referenceFiles": {
+    "paddingPattern": "blocks/DynamicContentCarousel/DynamicContentCarousel.php (line 95: container py-18 md:py-23)",
+    "ariaPattern": "blocks/DynamicContentCarousel/DynamicContentCarousel.php (lines 111, 170-172)",
+    "autoplayToggle": "blocks/DynamicContentCarousel/DynamicContentCarousel.php (lines 114-123)",
+    "jsAccessibility": "blocks/DynamicContentCarousel/DynamicContentCarousel.js (full file)",
+    "slideAriaViaJs": "blocks/CardsCarousel/CardsCarousel.js (lines 53-68, 93-98)",
+    "colorLock": "blocks/DynamicContentCarousel/DynamicContentCarousel.css (lines 7-10)",
+    "buttonVariation": "blocks/DynamicContentCarousel/DynamicContentCarousel.php (line 106: buttonVariations => ['secondary'])"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/text",
+  "title": "Text",
+  "category": "takt-theme",
+  "description": "A two-column section with content on one side and rich text on the other",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "buttons": {
+      "type": "array",
+      "default": [
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "primary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "secondary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "tertiary",
+          "title": "",
+          "label": ""
+        }
+      ]
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "eyebrow": "Governance",
+      "heading": "IGNITE Is Accountable to You, the Student.",
+      "description": "You can find a collection of IGNITE's policies and financial statements, as well as a schedule of board meetings for the upcoming year.",
+      "buttons": [
+        { "url": "#", "variation": "primary", "title": "Governance" },
+        { "url": "#", "variation": "secondary", "title": "Send Us an Email" }
+      ]
+    },
+    "innerBlocks": [
+      {
+        "name": "core/heading",
+        "attributes": {
+          "level": 3,
+          "content": "IGNITE Is Accountable to You, the Student."
+        }
+      },
+      {
+        "name": "core/paragraph",
+        "attributes": {
+          "content": "All Humber Polytechnic students are charged $116.65 per semester for IGNITE's Health and Dental Insurance plan."
+        }
+      },
+      {
+        "name": "core/list",
+        "innerBlocks": [
+          {
+            "name": "core/list-item",
+            "attributes": {
+              "content": "Please note that your coverage amounts do not reset every semester."
+            }
+          },
+          {
+            "name": "core/list-item",
+            "attributes": {
+              "content": "Fall 2025 coverage period: September 1st, 2025 – December 31st, 2025"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

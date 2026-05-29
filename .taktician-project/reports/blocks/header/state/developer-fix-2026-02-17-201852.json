@@ -1,0 +1,66 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-17-201852",
+  "status": "complete",
+  "blockName": "Header",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "filesModified": [
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMain.php",
+        "purpose": "Fixed fixed-header width constraint (left-0/right-0 → left-1/2 -translate-x-1/2 w-(--max-container)) and z-index (z-150 → z-200) on the header-main div for both desktop and mobile fixed-scroll variants"
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "purpose": "Mirrored the same fixed-header width and z-index changes in the editor TSX to keep TSX/PHP in sync"
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+        "purpose": "Changed dropdown gap from md:mt-4 to md:mt-6 (24px gap between header bar and dropdown), raised submenu z-index from md:z-50 to md:z-[210], added pseudo-element bridge (before:md:h-6 before:md:bottom-full) to maintain hover continuity across the gap"
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+        "purpose": "Mirrored dropdown gap and z-index changes from PHP into the editor TSX"
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMain.js",
+        "purpose": "Five JS improvements: (1) Refactored into closeSubmenu/openSubmenu/closeAllSubmenus helpers; (2) Fixed click-outside to close dropdown when clicking anywhere outside the specific submenu panel or its trigger button (not just outside the entire header); (3) Added Left/Right arrow keys on top-level menu buttons to move focus between menubar items; (4) Added Left/Right arrow keys inside submenus to close and move to adjacent top-level item; (5) Added Home/End keys on menubar level to jump to first/last top-level item"
+      }
+    ],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": []
+    },
+    "syncStatus": {
+      "verified": true
+    },
+    "testPage": {
+      "updated": false,
+      "url": "https://ign.localhost/test-header/",
+      "note": "No attribute or structural changes — test page content unchanged, no update needed"
+    },
+    "blockers": [],
+    "fixesApplied": [
+      {
+        "id": "FIX-001",
+        "file": "HeaderMain.php + HeaderMain.tsx",
+        "description": "Replace left-0/right-0 with left-1/2 -translate-x-1/2 w-(--max-container) for fixed header width constraint; raise z-index from z-150 to z-200"
+      },
+      {
+        "id": "FIX-002",
+        "file": "HeaderMainItem.php + HeaderMainItem.tsx",
+        "description": "Dropdown gap mt-4 → mt-6; z-index z-50 → z-[210]; added before: pseudo-element bridge for hover continuity"
+      },
+      {
+        "id": "FIX-003",
+        "file": "HeaderMain.js",
+        "description": "Click-outside now checks per-dropdown (submenu panel + trigger button) instead of entire header. Full WAI-ARIA menubar keyboard pattern: Left/Right arrows on menubar, Left/Right in submenus closes and moves to adjacent item, Home/End on menubar level"
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

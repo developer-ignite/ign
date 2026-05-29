@@ -1,0 +1,108 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/full-width-media",
+  "title": "Full Width Media",
+  "category": "takt-theme",
+  "description": "A section with content above a full-width media area (image or video)",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "buttons": {
+      "type": "array",
+      "default": [
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "primary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "secondary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "tertiary",
+          "title": "",
+          "label": ""
+        }
+      ]
+    },
+    "mediaType": {
+      "type": "string",
+      "default": "image",
+      "enum": ["image", "video"]
+    },
+    "image": {
+      "type": "object",
+      "default": {
+        "id": null,
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    },
+    "videoSource": {
+      "type": "string",
+      "default": "file",
+      "enum": ["file", "youtube", "vimeo"]
+    },
+    "videoFile": {
+      "type": "number"
+    },
+    "videoId": {
+      "type": "string"
+    },
+    "posterImage": {
+      "type": "object",
+      "default": {
+        "id": null,
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "eyebrow": "Previous Impact Reports",
+      "heading": "Until Next Time",
+      "description": "Another year of opportunities and milestones made possible by YOU, Humber and UofGH students. This success is powered by our incredible academic community that breeds excellence and fosters growth at every turn.",
+      "buttons": [
+        { "url": "#", "variation": "primary", "title": "View Impact Report 2023-2024" }
+      ],
+      "image": {
+        "id": "https://picsum.photos/id/972/1440/800",
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      },
+      "posterImage": {
+        "id": "https://picsum.photos/id/976/1440/800",
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    }
+  }
+}

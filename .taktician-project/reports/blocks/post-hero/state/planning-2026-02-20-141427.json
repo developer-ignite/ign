@@ -1,0 +1,78 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-20-141427",
+  "status": "complete",
+  "output": {
+    "summary": "Remove the 'hero' class from PostHero's wrapper in both PHP and TSX, and create a new PostHero.css file containing the .top-gradient styles that PostHero currently inherits from Hero.css. This makes PostHero fully independent -- it will render its gradient correctly even if the Hero block is removed entirely.",
+    "context": {
+      "currentDependency": "PostHero.php line 28 uses class 'post-hero hero relative overflow-visible'. The 'hero' class causes PostHero to inherit .top-gradient styles from blocks/Hero/Hero.css. PostHero.tsx line 115 also includes the 'hero' class.",
+      "stylesInherited": "Hero.css defines a single rule: .top-gradient { position: absolute; top: 0; left: 0; width: 100%; height: 150vh; z-index: -10; background: 3-layer gradient using --accent-color, --color-off-white, --gradient-left, --gradient-right CSS custom properties }",
+      "heroInnerClass": "The 'hero-inner' class has NO CSS definition anywhere -- it is purely a semantic class name used in the HTML structure. It does not need renaming.",
+      "jsAlreadyScoped": "PostHero.js already targets '.post-hero .top-gradient' (not '.hero .top-gradient'), so removing the 'hero' class has no JS impact.",
+      "noCssFileExists": "PostHero currently has no CSS file. One must be created."
+    },
+    "fileChanges": [
+      {
+        "file": "blocks/PostHero/PostHero.css",
+        "action": "create",
+        "description": "Create PostHero's own CSS file with the .top-gradient styles currently inherited from Hero.css",
+        "details": "Create a new file with the exact same .top-gradient rule from Hero.css. The rule uses CSS custom properties (--accent-color, --color-off-white, --gradient-left, --gradient-right) that are defined in resources/css/screen/colors.css at theme level, so they remain available. The full rule:\n\n.top-gradient {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n\twidth: 100%;\n\theight: 150vh;\n\tz-index: -10;\n\tbackground:\n\t\tlinear-gradient(\n\t\t\t180deg,\n\t\t\tcolor-mix(in srgb, var(--accent-color) 60%, transparent) 25%,\n\t\t\tcolor-mix(in srgb, var(--color-off-white) 60%, transparent) 80%,\n\t\t\ttransparent\n\t\t),\n\t\tradial-gradient(ellipse 30% 44% at 20% 45%, var(--gradient-left), transparent),\n\t\tradial-gradient(ellipse 44% 33% at 80% 30%, var(--gradient-right), transparent);\n}\n\nScope the selector to .post-hero .top-gradient to avoid global conflicts with Hero and EventHero blocks that also use .top-gradient.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/PostHero/PostHero.php",
+        "action": "modify",
+        "description": "Remove the 'hero' class from the wrapper section element",
+        "details": "Line 28: Change 'post-hero hero relative overflow-visible' to 'post-hero relative overflow-visible'. Remove only the word 'hero' from the class string. All other classes remain unchanged.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/PostHero/PostHero.tsx",
+        "action": "modify",
+        "description": "Remove the 'hero' class from the editor wrapper element",
+        "details": "Line 115: Change 'post-hero hero relative overflow-visible' to 'post-hero relative overflow-visible' in the cn() call inside useBlockProps(). Remove only the word 'hero' from the class string.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "css",
+        "decision": "Scope the .top-gradient selector to .post-hero .top-gradient in PostHero.css",
+        "source": "existing-pattern",
+        "evidence": "Hero.css uses an unscoped .top-gradient selector. Since multiple blocks (Hero, PostHero, EventHero) all use .top-gradient child elements, scoping to .post-hero .top-gradient prevents cross-block style conflicts and ensures PostHero's CSS is truly independent."
+      },
+      {
+        "id": "DEC-002",
+        "category": "css",
+        "decision": "Keep hero-inner class name unchanged",
+        "source": "code-audit",
+        "evidence": "Searched all CSS files for .hero-inner -- no CSS rule exists anywhere. The class is purely semantic/structural in the HTML and has no styling impact. Renaming it would be unnecessary churn."
+      },
+      {
+        "id": "DEC-003",
+        "category": "css",
+        "decision": "CSS custom properties (--accent-color, --color-off-white, --gradient-left, --gradient-right) remain available without the 'hero' class",
+        "source": "code-audit",
+        "evidence": "These properties are defined in resources/css/screen/colors.css at theme level, not scoped to .hero. They are available to any element on the page."
+      },
+      {
+        "id": "DEC-004",
+        "category": "js",
+        "decision": "No changes needed to PostHero.js",
+        "source": "code-audit",
+        "evidence": "PostHero.js line 6 targets '.post-hero .top-gradient' -- it already uses .post-hero, not .hero. Removing the 'hero' class has no JS impact."
+      }
+    ],
+    "impactAnalysis": {
+      "heroBlock": "No impact. Hero.css and Hero.js remain unchanged. Hero still uses its own 'hero' class.",
+      "eventHeroBlock": "No impact. EventHero has its own dependency on the 'hero' class (separate issue). This change only affects PostHero.",
+      "globalCss": "No impact. The .top-gradient selector in PostHero.css is scoped to .post-hero .top-gradient. The unscoped .top-gradient in Hero.css continues to work for Hero and EventHero (which still have the 'hero' class).",
+      "buildSystem": "PostHero.css will be automatically picked up by the build system (webpack globs all block CSS files)."
+    },
+    "requiresQA": true,
+    "qaScope": "functional",
+    "qaNotes": "Verify: (1) PostHero gradient renders correctly on test page after removing 'hero' class, (2) Hero block gradient is unaffected, (3) PostHero.css is included in built output, (4) ResizeObserver max-height capping still works via PostHero.js"
+  }
+}

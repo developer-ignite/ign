@@ -1,0 +1,43 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/footer-info",
+  "title": "Footer Info",
+  "category": "takt-theme",
+  "description": "Footer information card with logo, address, hours, contact, and social media",
+  "parent": ["takt/footer"],
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "reusable": false
+  },
+  "attributes": {
+    "anchor": { "type": "string" },
+    "logoId": { "type": "number" },
+    "addressLabel": { "type": "string", "default": "Address" },
+    "addresses": {
+      "type": "array",
+      "default": [{ "name": "", "address": "" }, { "name": "", "address": "" }]
+    },
+    "hoursLabel": { "type": "string", "default": "Hours" },
+    "hoursContent": { "type": "string", "default": "" },
+    "contactLabel": { "type": "string", "default": "Contact" },
+    "contactContent": { "type": "string", "default": "" },
+    "socialLabel": { "type": "string", "default": "Follow Us" }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 400,
+    "attributes": {
+      "addressLabel": "Address",
+      "addresses": [
+        { "name": "North Campus", "address": "205 Humber College Blvd" }
+      ],
+      "hoursLabel": "Hours",
+      "hoursContent": "Mon–Fri: 9am–5pm",
+      "contactLabel": "Contact",
+      "contactContent": "info@ignitestudentlife.com",
+      "socialLabel": "Follow Us"
+    }
+  }
+}

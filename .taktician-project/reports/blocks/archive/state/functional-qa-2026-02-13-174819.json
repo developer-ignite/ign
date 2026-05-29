@@ -1,0 +1,217 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-13-174819",
+  "status": "PASS",
+  "blockName": "Archive",
+  "revision": 1,
+  "output": {
+    "summary": {
+      "revisionVerification": true,
+      "changesVerified": 3,
+      "changesPassed": 3,
+      "changesFailed": 0,
+      "regressionsFound": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "revisionChanges": [
+      {
+        "change": 1,
+        "description": "Resource/policy card backgrounds changed from bg-white to bg-off-white in light mode",
+        "status": "VERIFIED",
+        "filesModified": [
+          "parts/card-resource.php",
+          "parts/card-policy.php"
+        ],
+        "verification": {
+          "cardResourcePhp": {
+            "line": 15,
+            "expected": "dark:bg-charcoal bg-off-white",
+            "actual": "dark:bg-charcoal bg-off-white",
+            "status": "pass"
+          },
+          "cardPolicyPhp": {
+            "line": 13,
+            "expected": "dark:bg-charcoal bg-off-white",
+            "actual": "dark:bg-charcoal bg-off-white",
+            "status": "pass"
+          }
+        },
+        "visualVerification": {
+          "screenshot": "archive-revision-resource-light-1440w.png",
+          "observation": "Resource cards in light mode now use off-white background matching page background (#FBF6E2), creating a seamless blend. Cards are defined by subtle charcoal/10 border rather than bright white fill."
+        }
+      },
+      {
+        "change": 2,
+        "description": "Filter pill buttons and Clear All buttons now have cursor-pointer",
+        "status": "VERIFIED",
+        "filesModified": [
+          "blocks/Archive/Archive.php",
+          "blocks/Archive/Archive.js"
+        ],
+        "verification": {
+          "filterPillsPhp": {
+            "line": 310,
+            "expected": "cursor-pointer in class string",
+            "actual": "inline-flex items-center gap-1 border border-current rounded-full px-3 py-1 text-body-small uppercase font-medium tracking-wider cursor-pointer",
+            "status": "pass"
+          },
+          "clearAllFormPhp": {
+            "line": 279,
+            "expected": "cursor-pointer in class string",
+            "actual": "text-body-small uppercase font-medium tracking-wider cursor-pointer",
+            "status": "pass"
+          },
+          "clearAllActiveFiltersPhp": {
+            "line": 301,
+            "expected": "cursor-pointer in class string",
+            "actual": "order-last text-body-small ml-auto uppercase font-medium tracking-wider cursor-pointer",
+            "status": "pass"
+          },
+          "dynamicFilterPillsJs": {
+            "line": 288,
+            "expected": "cursor-pointer in insertAdjacentHTML class string",
+            "actual": "inline-flex items-center gap-1 border border-current rounded-full px-3 py-1 text-body-small uppercase font-medium tracking-wider cursor-pointer",
+            "status": "pass"
+          }
+        },
+        "visualVerification": {
+          "screenshot": "archive-revision-filters-cursor-1440w.png",
+          "observation": "All interactive filter buttons now show pointer cursor on hover, improving UX clarity"
+        }
+      },
+      {
+        "change": 3,
+        "description": "Load More button in light mode has explicit gradient hover background in Archive.css",
+        "status": "VERIFIED",
+        "filesModified": [
+          "blocks/Archive/Archive.css"
+        ],
+        "verification": {
+          "archiveCss": {
+            "lines": "111-115",
+            "selector": ".archive:not(.dark) .archive-load-more .btn-secondary:hover",
+            "expected": "background: linear-gradient(90deg, var(--color-neon-green) 0%, var(--color-blue) 70%)",
+            "actual": "background: linear-gradient(90deg, var(--color-neon-green) 0%, var(--color-blue) 70%); border-color: var(--color-charcoal); color: var(--color-charcoal) !important;",
+            "status": "pass"
+          }
+        },
+        "observation": "Light mode Load More button now has explicit gradient background on hover, ensuring visibility against off-white page background. No longer transparent/white on hover."
+      }
+    ],
+    "regressionChecks": {
+      "status": "pass",
+      "checksRun": [
+        {
+          "check": "Build integrity",
+          "status": "pass",
+          "details": "Build completed successfully with same warnings as baseline (bundle size warnings only)"
+        },
+        {
+          "check": "Dark mode resource/policy cards",
+          "status": "pass",
+          "details": "dark:bg-charcoal conditional classes still present, dark mode appearance unchanged"
+        },
+        {
+          "check": "Card hover states",
+          "status": "pass",
+          "details": "group-hover:bg-accent transition still works in both light and dark modes"
+        },
+        {
+          "check": "btn-tertiary hover contrast",
+          "status": "pass",
+          "details": "Archive.css overrides for btn-tertiary (lines 165-200) unchanged, hover contrast fix still in place"
+        },
+        {
+          "check": "Dark mode Load More button (blog xl)",
+          "status": "pass",
+          "details": "Existing .archive.dark[data-post-type=\"post\"] Load More override (lines 100-108) unchanged, white-filled button in dark mode preserved"
+        },
+        {
+          "check": "Test page block count",
+          "status": "pass",
+          "details": "14 Archive block instances still present, no content loss"
+        },
+        {
+          "check": "TSX/PHP sync",
+          "status": "pass",
+          "details": "No changes to TSX file in this revision, PHP changes affect only class strings (cursor-pointer) and card template backgrounds"
+        }
+      ]
+    },
+    "qaChecklistResults": [
+      {
+        "item": "Verify light-mode resource cards have off-white background (matching page), not bright white",
+        "status": "PASS",
+        "evidence": "parts/card-resource.php line 15 uses bg-off-white, screenshot shows seamless blend with page"
+      },
+      {
+        "item": "Verify light-mode policy cards have off-white background (matching page), not bright white",
+        "status": "PASS",
+        "evidence": "parts/card-policy.php line 13 uses bg-off-white, screenshot shows seamless blend with page"
+      },
+      {
+        "item": "Verify dark-mode resource/policy cards still have charcoal background (unchanged)",
+        "status": "PASS",
+        "evidence": "Both card templates retain dark:bg-charcoal conditional class"
+      },
+      {
+        "item": "Verify resource/policy card hover still transitions to accent fill in both modes",
+        "status": "PASS",
+        "evidence": "group-hover:bg-accent still present on both card templates, hover behavior preserved"
+      },
+      {
+        "item": "Verify filter pill buttons show cursor:pointer on hover",
+        "status": "PASS",
+        "evidence": "Archive.php line 310 adds cursor-pointer to filter pill class string"
+      },
+      {
+        "item": "Verify Clear All buttons show cursor:pointer on hover",
+        "status": "PASS",
+        "evidence": "Archive.php lines 279 and 301 add cursor-pointer to both Clear All buttons"
+      },
+      {
+        "item": "Verify AJAX-created filter pills also show cursor:pointer on hover",
+        "status": "PASS",
+        "evidence": "Archive.js line 288 adds cursor-pointer to dynamically created pill buttons"
+      },
+      {
+        "item": "Verify Load More button in light mode: visible gradient background on hover, not transparent/white",
+        "status": "PASS",
+        "evidence": "Archive.css lines 111-115 add explicit gradient background for .archive:not(.dark) .archive-load-more .btn-secondary:hover"
+      },
+      {
+        "item": "Verify Load More button in dark mode: existing white-filled behavior unchanged (blog xl)",
+        "status": "PASS",
+        "evidence": "Archive.css lines 100-108 unchanged, .archive.dark[data-post-type=\"post\"] Load More override still active"
+      },
+      {
+        "item": "Verify Load More button standard behavior: charcoal border + charcoal text on hover in light mode",
+        "status": "PASS",
+        "evidence": "Archive.css line 113 includes border-color: var(--color-charcoal) and line 114 includes color: var(--color-charcoal) !important"
+      }
+    ],
+    "issues": [],
+    "screenshots": [
+      ".taktician-project/reports/blocks/archive/screenshots/2026-02-13-174849/archive-revision-resource-light-1440w.png",
+      ".taktician-project/reports/blocks/archive/screenshots/2026-02-13-174851/archive-revision-policy-light-1440w.png",
+      ".taktician-project/reports/blocks/archive/screenshots/2026-02-13-174857/archive-revision-filters-cursor-1440w.png"
+    ],
+    "revisionSummary": {
+      "userRequest": "Three targeted fixes: (1) Change light-mode resource/policy card backgrounds to off-white. (2) Add cursor-pointer to filter pills and Clear All buttons. (3) Fix Load More button hover visibility in light mode.",
+      "implementationApproach": "Modified card templates to use bg-off-white instead of bg-white. Added cursor-pointer class to all interactive filter buttons (PHP template + JS dynamic creation). Added Archive.css override for light-mode Load More button hover with explicit gradient background.",
+      "verificationResult": "All three changes verified and working correctly. No regressions detected. Card backgrounds now blend seamlessly with page in light mode. All interactive buttons show pointer cursor. Load More button has visible gradient on hover in light mode.",
+      "additionalObservations": [
+        "The off-white card background change improves visual cohesion by reducing contrast between cards and page background",
+        "Cursor-pointer addition improves UX by providing clear affordance for interactive elements",
+        "Load More gradient fallback ensures button is always visible on hover regardless of CSS animation support",
+        "Dark mode behavior completely preserved - all changes are light-mode specific or additive (cursor-pointer)"
+      ]
+    }
+  },
+  "tokensUsed": 89000,
+  "questionsForUser": []
+}

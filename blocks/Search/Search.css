@@ -1,0 +1,73 @@
+/* Search block styles */
+
+/* Hide active filters container when there are no filter pills */
+.search-active-filters:not(:has(button[data-field])) {
+	display: none;
+}
+
+/* Filter remove button (X icon) */
+.search-remove-filter {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	position: relative;
+}
+
+.search-remove-filter::before,
+.search-remove-filter::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 80%;
+	height: 2px;
+	background: currentColor;
+	border-radius: 1px;
+}
+
+.search-remove-filter::before {
+	transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.search-remove-filter::after {
+	transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* Search card hover state */
+.search .card-search article {
+	transition:
+		background-color 0.2s,
+		border-color 0.2s,
+		color 0.2s;
+}
+
+/* Search input white background */
+/* The global forms.css applies bg-transparent to all text inputs via an unlayered rule, */
+/* which overrides the bg-white utility class. Force white background here. */
+.search input[data-type="s"] {
+	background-color: var(--color-white) !important;
+}
+
+/* Dropdown arrow for select elements */
+/* The global forms.css uses @apply bg-none! which compiles to 'background: none !important' */
+/* This shorthand overrides all background sub-properties with !important, wiping the arrow */
+/* Fix by adding !important to all background properties to compete with the global !important */
+.search select {
+	background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%231f1f1d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+	background-repeat: no-repeat !important;
+	background-position: right 16px center !important;
+	background-size: 12px !important;
+}
+
+/* Override btn-tertiary hover in card context to maintain charcoal color */
+.search .card-search .group:hover .btn-tertiary,
+.search .card-search .group:hover .btn-tertiary:hover,
+.search .card-search .group:hover .btn-tertiary:focus,
+.search .card-search .group:focus-within .btn-tertiary {
+	color: var(--color-charcoal) !important;
+}
+
+/* Suppress btn-tertiary underline on hover in card context (entire card is clickable) */
+.search .card-search .btn-tertiary:hover {
+	text-decoration: none !important;
+}

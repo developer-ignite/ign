@@ -1,0 +1,120 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-10-222500",
+  "status": "FAIL",
+  "blockName": "DynamicContentCarousel",
+  "output": {
+    "summary": {
+      "checksRun": 9,
+      "checksPassed": 6,
+      "checksFailed": 2,
+      "checksWarning": 1,
+      "issuesFound": 4,
+      "critical": 0,
+      "major": 2,
+      "minor": 2
+    },
+    "checks": {
+      "build": { "status": "pass" },
+      "lint": {
+        "status": "warning",
+        "issues": [
+          {
+            "type": "CRLF line endings",
+            "severity": "minor",
+            "autoFixable": true,
+            "command": "bun run lint:fix",
+            "files": ["DynamicContentCarousel.tsx", "index.tsx"]
+          },
+          {
+            "type": "Prettier formatting (line 55 of TSX)",
+            "severity": "minor",
+            "autoFixable": true,
+            "command": "bun run lint:fix"
+          }
+        ]
+      },
+      "registration": { "status": "pass" },
+      "attributes": { "status": "pass" },
+      "edgeCases": { "status": "fail", "issues": 1 },
+      "accessibility": { "status": "pass" },
+      "markupDuplication": { "status": "pass" },
+      "tsxPhpSync": { "status": "pass" },
+      "innerBlocks": { "status": "skipped", "reason": "Block uses FilteredServerSideRender, not InnerBlocks" },
+      "specCompliance": { "status": "fail", "issues": 1 }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "specCompliance",
+        "severity": "major",
+        "description": "Manual selection with empty selectedPosts falls through to automatic query instead of rendering no carousel. Spec says 'If query returns results but postsSource=manual with no selectedPosts, swiper-parent is not rendered.' Currently, when postsSource is 'manual' and selectedPosts is empty, the PHP else branch runs an automatic query, displaying blog posts. The condition at line 56 checks `$postsSource === 'manual' && ! empty( $selectedPosts )`, so an empty selectedPosts array falls through to the else (automatic) branch.",
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.php",
+        "line": 56,
+        "fix": "Add a separate condition for manual mode with empty selectedPosts. When postsSource is 'manual' and selectedPosts is empty, skip the WP_Query entirely and set $has_posts to false. For example: add `elseif ( $postsSource === 'manual' && empty( $selectedPosts ) ) { $has_posts = false; }` before the else branch, or restructure the conditional so that the automatic query only runs when postsSource is 'automatic'.",
+        "alsoUpdate": null
+      },
+      {
+        "id": "FQA-002",
+        "check": "edgeCases",
+        "severity": "major",
+        "description": "The 'empty-optional' variation (section index 6, no heading/eyebrow/description) renders with 6 posts instead of the specified postsLimit of 6. The block correctly renders cards, but without any heading content the section has no aria-labelledby attribute and no visual heading to identify the section's purpose. While this is technically by-design (ThemeHeading handles its own empty state), it may confuse users. More importantly, this section's lack of section identification (no heading, no aria-label) means assistive technology users will encounter an unlabelled section.",
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.php",
+        "line": 92,
+        "fix": "Consider adding a fallback aria-label on the section when no heading is provided, or accept this as by-design since the ThemeHeading internally handles its own empty state. The priority fix is FQA-001.",
+        "alsoUpdate": null
+      },
+      {
+        "id": "FQA-003",
+        "check": "lint",
+        "severity": "minor",
+        "description": "CRLF line endings in DynamicContentCarousel.tsx and index.tsx. Auto-fixable with bun run lint:fix.",
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+        "line": 1,
+        "fix": "Run: bun run lint:fix",
+        "alsoUpdate": "blocks/DynamicContentCarousel/index.tsx"
+      },
+      {
+        "id": "FQA-004",
+        "check": "lint",
+        "severity": "minor",
+        "description": "Prettier formatting issue on line 55 of DynamicContentCarousel.tsx -- function signature should be multiline. Auto-fixable.",
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+        "line": 55,
+        "fix": "Run: bun run lint:fix",
+        "alsoUpdate": null
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors (only pre-existing asset size warnings)",
+      "Block registers correctly with apiVersion 3, name takt/dynamic-content-carousel",
+      "All 17 attributes defined in block.json with correct types and defaults matching spec",
+      "All required files exist: block.json, index.tsx, DynamicContentCarousel.tsx, .php, .js, .svg, resources/ArrowLeft.svg, resources/ArrowRight.svg",
+      "10 block instances on test page covering all specified variations",
+      "Post type queries work: post (5 results), team_member (3 results), resource (3 results), policy (3 results)",
+      "Navigation buttons have aria-label and title attributes with translatable strings (Previous Item / Next Item)",
+      "Section elements get automatic aria-labelledby from theme_block_props() when heading attribute is present",
+      "Swiper notification element uses sr-only class for screen readers",
+      "Controls row correctly hidden when both showPagination and showNavigation are false (section 9)",
+      "Data attributes on swiper container correctly reflect block attributes (data-navigation, data-pagination, data-loop, data-autoplay, data-autoplay-delay)",
+      "No markup duplication detected -- block does not duplicate content for responsive breakpoints",
+      "TSX/PHP sync verified: section classes, container classes, ThemeHeading props, and swiper-parent structure all match",
+      "TSX and JS Swiper configs are in sync (modules, breakpoints, spaceBetween, navigation selectors, pagination type)",
+      "Loop and autoplay correctly disabled in editor when block is selected (isSelected guard)",
+      "wp_reset_postdata() called after the query loop",
+      "Taxonomy filters correctly mapped per post type matching Archive block configuration",
+      "card template parts loaded dynamically based on post type (get_template_part('parts/card', $card_slug))",
+      "Progress bar uses accent gradient via --gradient-left/--gradient-right CSS variables",
+      "Navigation buttons use carousel-nav-btn class with hover gradient animation from swiper.css",
+      "Global focus-visible style provides keyboard focus indicator (outline-2 outline-black outline-dotted)"
+    ],
+    "notes": [
+      "The 'manual-selection' test variation has empty selectedPosts by design (needs editor population), but the fallback to automatic query is a spec violation (FQA-001)",
+      "All images in blog cards have empty alt attributes -- this is coming from the card templates (card-post.php), not this block. The card templates use featured images which should have alt text set per-image in the media library. This is a content concern, not a block code concern.",
+      "No prefers-reduced-motion handling found anywhere in the codebase for Swiper animations. This is a global/shared concern, not specific to this block, as CardsCarousel and GalleryCarousel also lack it.",
+      "The carousel-nav-btn hover state sets text-charcoal without a dark: variant. Since the gradient ::before fills the background with accent colors on hover, charcoal text should be readable against typical accent gradients. This is an existing pattern from CardsCarousel/swiper.css, not introduced by this block."
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

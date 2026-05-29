@@ -1,0 +1,28 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-18-151848",
+  "status": "complete",
+  "blockName": "ContentWithMedia",
+  "output": {
+    "mode": "fix",
+    "filesModified": [
+      "blocks/ContentWithMedia/ContentWithMedia.tsx",
+      "blocks/ContentWithMedia/ContentWithMedia.php"
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "buildStatus": "pass",
+    "errors": [],
+    "fixesApplied": [
+      {
+        "file": "blocks/ContentWithMedia/ContentWithMedia.tsx",
+        "description": "Removed headingTag={attributes.headingSize === \"small\" ? \"h3\" : \"h2\"} prop from ThemeHeading JSX call."
+      },
+      {
+        "file": "blocks/ContentWithMedia/ContentWithMedia.php",
+        "description": "Removed 'headingTag' => 'h' . $headingLevel, from the get_template_part args array."
+      }
+    ],
+    "blockers": []
+  }
+}

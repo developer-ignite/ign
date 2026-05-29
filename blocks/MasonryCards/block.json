@@ -1,0 +1,80 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/masonry-cards",
+  "title": "Masonry Cards",
+  "category": "takt-theme",
+  "description": "A masonry grid layout with customizable columns and card arrangements",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "providesContext": {
+    "masonryCards/columnCount": "columnCount",
+    "masonryCards/masonryStyle": "masonryStyle"
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "buttons": {
+      "type": "array"
+    },
+    "columnCount": {
+      "type": "number",
+      "default": 3,
+      "enum": [2, 3, 4]
+    },
+    "masonryStyle": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "eyebrow": "Our Impact",
+      "heading": "From Money and Wellness to Community and Advocacy",
+      "description": "Building stronger communities through innovative programs and partnerships.",
+      "buttons": [
+        {"url": "#", "variation": "primary", "title": "Learn More"},
+        {"url": "#", "variation": "secondary", "title": "Contact Us"}
+      ],
+      "columnCount": 3,
+      "masonryStyle": false
+    },
+    "innerBlocks": [
+      {
+        "name": "takt/text-card",
+        "attributes": { "title": "90%", "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit." }
+      },
+      {
+        "name": "takt/image-card",
+        "attributes": {
+          "image": {
+            "id": "https://picsum.photos/id/704/800/800",
+            "focalPoint": { "x": 0.5, "y": 0.5 }
+          }
+        }
+      },
+      {
+        "name": "takt/text-card",
+        "attributes": { "title": "$100,000", "content": "Raised for community programs." }
+      },
+      {
+        "name": "takt/text-card",
+        "attributes": { "title": "20,000", "content": "People served annually." }
+      }
+    ]
+  }
+}

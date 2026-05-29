@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/tabs-item",
+  "title": "Tab",
+  "category": "takt-theme",
+  "description": "A single tab panel that lives inside a Tabs parent block",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "tabTitle": {
+      "type": "string"
+    },
+    "tabDescription": {
+      "type": "string"
+    },
+    "tabColor": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "usesContext": ["takt/tabs/baseId"],
+  "textdomain": "takt",
+  "parent": ["takt/tabs"],
+  "example": {
+    "viewportWidth": 550,
+    "attributes": {
+      "tabTitle": "Tab Title"
+    },
+    "innerBlocks": [
+      {
+        "name": "core/paragraph",
+        "attributes": {
+          "content": "Content for this tab panel."
+        }
+      }
+    ]
+  }
+}

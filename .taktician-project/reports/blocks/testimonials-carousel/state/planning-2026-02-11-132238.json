@@ -1,0 +1,59 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-11-132238",
+  "status": "complete",
+  "blockName": "TestimonialsCarousel",
+  "output": {
+    "summary": "Two revision changes: (1) Restructure fade masks so they only cover the swiper/slides area, not the pagination/navigation controls above. (2) Fix vertical padding inside the charcoal background area to match Figma's 96px inner padding (currently missing container-level py).",
+    "fileChanges": [
+      {
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.php",
+        "action": "modify",
+        "description": "Fix fade mask scope and container padding",
+        "details": "1. FADE MASK FIX: Move the two fade mask divs (.testimonials-fade-left, .testimonials-fade-right) from inside .swiper-parent to inside a new wrapper div that ONLY wraps the .swiper element (not the pagination/nav row). Create a new relative wrapper around just the .swiper and the fade masks. Structure change:\n\n   CURRENT:\n   .swiper-parent (relative, overflow-hidden)\n     > pagination/nav row\n     > .swiper\n     > .testimonials-fade-left (absolute, top-0 bottom-0)\n     > .testimonials-fade-right (absolute, top-0 bottom-0)\n\n   NEW:\n   .swiper-parent (overflow-hidden)\n     > pagination/nav row\n     > .swiper-slides-wrapper (relative, overflow-hidden)   <-- NEW wrapper\n       > .swiper\n       > .testimonials-fade-left (absolute, top-0 bottom-0)\n       > .testimonials-fade-right (absolute, top-0 bottom-0)\n\n   The new .swiper-slides-wrapper div gets classes: 'relative overflow-hidden grid grid-cols-1 grid-rows-1'\n   The .swiper-parent loses 'relative' (no longer needed for absolute mask positioning) but keeps 'overflow-hidden grid grid-cols-1 grid-rows-1'\n\n2. PADDING FIX: Add vertical padding to the container div to match Figma's 96px inner content padding within the charcoal card.\n   - Add 'py-16 md:py-24' to the container div (64px mobile, 96px desktop).\n   - Figma shows the outer section has py-64px (currently py-10 sm:py-16 = 40px/64px -- keep as-is for outer spacing).\n   - Figma shows the charcoal Content area has py-96px inner padding. Currently there is 0 padding on the container itself. Adding md:py-24 (96px) gives the correct inner padding at desktop. Using py-16 (64px) for mobile is a reasonable responsive fallback since the outer section already has py-10 on mobile.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.tsx",
+        "action": "modify",
+        "description": "Match container padding change in editor preview",
+        "details": "Update the container div className to add 'py-16 md:py-24' matching the PHP change. The container div currently has:\n  className=\"container relative before:absolute before:bg-charcoal before:rounded-3xl before:-z-1 before:-inset-(--side-gutter) md:before:-inset-8\"\nChange to:\n  className=\"container relative py-16 md:py-24 before:absolute before:bg-charcoal before:rounded-3xl before:-z-1 before:-inset-(--side-gutter) md:before:-inset-8\"\n\nNote: The fade mask restructure does NOT need to be replicated in TSX because the carousel area is rendered via FilteredServerSideRender (SSR). The TSX only renders the ThemeHeading directly; the swiper-parent and its contents come from PHP via SSR.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.js",
+        "action": "modify",
+        "description": "Update fade mask JS selectors for new DOM structure",
+        "details": "The MutationObserver and initial-state code (lines 71-94) queries fade mask elements within the parent (.swiper-parent). After the restructure, the fade masks are inside .swiper-slides-wrapper (a child of .swiper-parent). The querySelector calls on parent still work because querySelector searches descendants, so '.testimonials-fade-left' and '.testimonials-fade-right' will still be found.\n\nHOWEVER, the data-at-beginning/data-at-end attributes are set on .swiper-parent. The MutationObserver is observing .swiper-parent for attribute changes. This still works correctly.\n\nNo JS changes needed -- the existing querySelector calls are descendant queries that will find the fade masks regardless of their nesting depth within .swiper-parent.",
+        "affectsPhp": false
+      }
+    ],
+    "designDecisions": [
+      {
+        "id": "REV1-DEC-001",
+        "category": "layout",
+        "decision": "Create a new .swiper-slides-wrapper div inside .swiper-parent that wraps only the .swiper element and the fade mask divs. This isolates the fade masks to only cover the slides area.",
+        "source": "user-revision",
+        "evidence": "User reported fade masks overlap pagination/navigation controls. Current structure has absolute-positioned masks inside .swiper-parent which spans the full height including the controls row."
+      },
+      {
+        "id": "REV1-DEC-002",
+        "category": "spacing",
+        "decision": "Add py-16 md:py-24 to the container div to achieve 96px inner padding within the charcoal background area at desktop.",
+        "source": "figma",
+        "evidence": "Figma node I785:34805;634:40724 (Content) shows py-[var(--margin/margin-7,96px)]. Current implementation has 0 padding on the container -- only the outer section has py-10 sm:py-16. The 96px maps to Tailwind py-24."
+      },
+      {
+        "id": "REV1-DEC-003",
+        "category": "spacing",
+        "decision": "Keep section outer padding as py-10 sm:py-16 (40px/64px). This represents the transparent spacing outside the charcoal card.",
+        "source": "figma",
+        "evidence": "Figma node 785:34805 (outer Testimonial wrapper) shows py-[var(--margin/margin-5,64px)]. sm:py-16 = 64px matches correctly. The mobile py-10 (40px) is a reasonable responsive reduction."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "design"
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

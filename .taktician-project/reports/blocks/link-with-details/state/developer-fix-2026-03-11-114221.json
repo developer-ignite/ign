@@ -1,0 +1,57 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-03-11-120647",
+  "status": "complete",
+  "blockName": "LinkWithDetails",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "componentModifications": [],
+    "fixesApplied": [
+      {
+        "issueId": "FQA-001",
+        "severity": "minor",
+        "description": "CRLF line endings / Prettier violations in LinkWithDetails.tsx and index.tsx",
+        "fix": "Ran `bun run format` — both files reformatted (CRLF normalized, Prettier rules applied)",
+        "filesChanged": [
+          "blocks/LinkWithDetails/index.tsx",
+          "blocks/LinkWithDetails/LinkWithDetails.tsx",
+          "blocks/LinkWithDetails/LinkWithDetails.css"
+        ]
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": []
+    },
+    "validationStatus": {
+      "passed": true,
+      "sync": {
+        "passed": true,
+        "issues": 0
+      },
+      "registration": {
+        "passed": true,
+        "issues": 0
+      },
+      "lint": {
+        "passed": true,
+        "errors": 0,
+        "warnings": 0
+      }
+    },
+    "syncStatus": {
+      "verified": true
+    },
+    "testPage": {
+      "url": "https://ign.localhost/test-link-with-details/",
+      "pageId": 311,
+      "verifiedBlockCount": 11
+    },
+    "blockers": [],
+    "questionsForUser": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

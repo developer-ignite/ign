@@ -1,0 +1,15 @@
+{
+  "agentOutputs": [
+    {
+      "agent": "developer",
+      "timestamp": "2026-02-18-143824",
+      "summary": "Added addButtonToBlock('takt/button-row', 'Button Row Settings') to ButtonRow.tsx — inner blocks now show a button to navigate back to the parent Button Row block's settings panel.",
+      "filesChanged": [
+        "blocks/ButtonRow/ButtonRow.tsx"
+      ]
+    }
+  ],
+  "timestamps": {
+    "lastUpdated": "2026-02-18T22:38:31.300Z"
+  }
+}

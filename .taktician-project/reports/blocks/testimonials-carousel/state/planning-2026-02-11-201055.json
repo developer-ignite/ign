@@ -1,0 +1,28 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-11T20:10:55Z",
+  "status": "complete",
+  "output": {
+    "summary": "Add padding-top with var(--admin-bar-height) to the testimonial video modal so it accounts for the WordPress admin bar when calculating the size and position of the video overlay. This is a CSS-only change on the PHP template, with no attribute or TSX sync needed.",
+    "fileChanges": [
+      {
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.php",
+        "action": "modify",
+        "description": "Add padding-top using the --admin-bar-height CSS variable to the video modal's outer fixed-position container.",
+        "details": "On line 113, the `.testimonial-video-modal` div has classes `fixed inset-0 z-[9999] flex items-center justify-center ...`. Add `pt-(--admin-bar-height)` (Tailwind v4 arbitrary property syntax) to the class list. This shifts the flex centering area downward by the admin bar height, so the video is visually centered within the visible viewport area below the admin bar. The CSS variable --admin-bar-height is defined in resources/css/screen/spacing.css and defaults to 0rem when there is no admin bar, so it is safe for logged-out users as well.",
+        "affectsPhp": true
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "category": "spacing",
+        "question": "Should the admin bar offset be applied as padding-top on the modal overlay, or as a top offset (top: var(--admin-bar-height)) instead of inset-0?",
+        "recommendation": "Use padding-top via `pt-(--admin-bar-height)`. This keeps `inset-0` (which also provides the backdrop overlay covering the full viewport including behind the admin bar), but shifts the flex centering context downward. Using `top: var(--admin-bar-height)` instead of `inset-0` would leave a gap behind the admin bar where the backdrop overlay is not rendered, which looks wrong. padding-top is the correct approach.",
+        "needsUserInput": false
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

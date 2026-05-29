@@ -1,0 +1,92 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/cards-grid",
+  "version": "1.0.0",
+  "title": "Cards Grid",
+  "category": "takt-theme",
+  "description": "A responsive grid displaying multiple cards with optional images, titles, descriptions, and tertiary buttons with arrow icons",
+  "keywords": ["cards", "grid", "services", "features"],
+  "textdomain": "takt",
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "darkMode": {
+      "type": "boolean",
+      "default": false
+    },
+    "eyebrow": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "buttons": {
+      "type": "array"
+    },
+    "columns": {
+      "type": "number",
+      "default": 3,
+      "enum": [1, 2, 3]
+    }
+  },
+  "providesContext": {
+    "takt/cards-grid/columns": "columns"
+  },
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "darkMode": false,
+      "eyebrow": "What We Offer",
+      "heading": "Comprehensive Student Services",
+      "description": "Discover the range of support services designed to help you succeed.",
+      "columns": 3
+    },
+    "innerBlocks": [
+      {
+        "name": "takt/cards-grid-item",
+        "attributes": {
+          "title": "Academic Support",
+          "description": "Get help with tutoring, writing assistance, and study skills workshops.",
+          "image": {
+            "id": "https://picsum.photos/id/667/600/400",
+            "focalPoint": { "x": 0.5, "y": 0.5 }
+          }
+        }
+      },
+      {
+        "name": "takt/cards-grid-item",
+        "attributes": {
+          "title": "Career Services",
+          "description": "Connect with employers, get resume help, and prepare for interviews.",
+          "image": {
+            "id": "https://picsum.photos/id/972/600/400",
+            "focalPoint": { "x": 0.5, "y": 0.5 }
+          }
+        }
+      },
+      {
+        "name": "takt/cards-grid-item",
+        "attributes": {
+          "title": "Health & Wellness",
+          "description": "Access counseling, health services, and wellness programs.",
+          "image": {
+            "id": "https://picsum.photos/id/976/600/400",
+            "focalPoint": { "x": 0.5, "y": 0.5 }
+          }
+        }
+      }
+    ]
+  }
+}

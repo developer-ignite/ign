@@ -1,0 +1,115 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-09-163802",
+  "status": "complete",
+  "blockName": "Header",
+  "output": {
+    "mode": "fix",
+    "fixesApplied": [
+      {
+        "id": "FIX-001",
+        "issue": "Header should respect the container width",
+        "description": "Added a div.container wrapper inside Header.tsx and Header.php to constrain the header content to the site's container width, matching the pattern used by the Footer block.",
+        "filesModified": [
+          "blocks/Header/Header.tsx",
+          "blocks/Header/Header.php"
+        ]
+      },
+      {
+        "id": "FIX-002",
+        "issue": "Submenu items displaying as black text on black background",
+        "description": "Added explicit text-white class to the submenu dropdown container in both HeaderMainItem.tsx and HeaderMainItem.php. The body inherits text-black (charcoal) which was overriding the intended white text on the charcoal dropdown background.",
+        "filesModified": [
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php"
+        ]
+      },
+      {
+        "id": "FIX-003",
+        "issue": "Logo should span full height of header bar",
+        "description": "Changed logo link classes from 'self-center **:h-6.5 md:**:h-14' to 'self-stretch **:h-full' in both TSX and PHP, allowing the logo to fill the available vertical space of the nav bar rather than being constrained to fixed heights.",
+        "filesModified": [
+          "blocks/Header/HeaderMain/HeaderMain.tsx",
+          "blocks/Header/HeaderMain/HeaderMain.php"
+        ]
+      },
+      {
+        "id": "FIX-004",
+        "issue": "Search should be a proper search form with input and submit button",
+        "description": "Replaced the search anchor links with proper <form> elements containing <input type='search'> and a submit button with search icon. Applied to both desktop (utility row, 250px) and mobile (full-width) search elements. The form submits to the configured search URL. In the editor, onSubmit is prevented and input is readOnly.",
+        "filesModified": [
+          "blocks/Header/HeaderMain/HeaderMain.tsx",
+          "blocks/Header/HeaderMain/HeaderMain.php"
+        ]
+      },
+      {
+        "id": "FIX-005",
+        "issue": "Arrow on SEP link not showing in PHP + all SVG assets broken in PHP",
+        "description": "Root cause: All theme_block_asset() calls used 'resources/' prefix (e.g., 'resources/ExternalArrow.svg') but the build system flattens SVGs from the resources/ subdirectory into the block's public root directory. Fixed all paths by removing the 'resources/' prefix. Also added a wrapping <span class='w-3 h-3 shrink-0'> around the ExternalArrow SVG in the mobile SEP button (matching the desktop version). This fix resolved the mobile toggle not showing (Fix 8) and the search icon not appearing as well.",
+        "filesModified": [
+          "blocks/Header/HeaderMain/HeaderMain.php",
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php"
+        ]
+      },
+      {
+        "id": "FIX-006",
+        "issue": "Rename SEP field to Call to Action",
+        "description": "Changed InspectorControls panel title from 'SEP Link' to 'Call to Action'. Added descriptive label 'External link displayed in the header utility row'. Changed placeholder text from 'Student Engagement Platform' to 'Call to Action'. Changed all fallback display text from 'SEP Link' to 'Call to Action' throughout the TSX.",
+        "filesModified": [
+          "blocks/Header/HeaderMain/HeaderMain.tsx"
+        ]
+      },
+      {
+        "id": "FIX-007",
+        "issue": "Sidebar editor interface improvements",
+        "description": "Improved InspectorControls organization: renamed panels with clearer titles, added descriptive labels to BaseControls (e.g., 'External link displayed in the header utility row' for CTA, 'Search page URL (the search form will submit to this URL)' for search). Panel titles: 'Logo Settings', 'Call to Action', 'Search', 'Mobile CTA', 'Behaviour'. All controls have proper onChange handlers, reflect current values, and use appropriate control types.",
+        "filesModified": [
+          "blocks/Header/HeaderMain/HeaderMain.tsx"
+        ]
+      },
+      {
+        "id": "FIX-008",
+        "issue": "Mobile menu toggle not showing",
+        "description": "This was caused by the same SVG path issue as Fix 5. The hamburger (MainMenuOpen.svg) and close (MainMenuClose.svg) icons were not rendering because theme_block_asset() was looking for 'resources/MainMenuOpen.svg' instead of 'MainMenuOpen.svg'. Fixed by removing the 'resources/' prefix from all theme_block_asset() calls.",
+        "filesModified": [
+          "blocks/Header/HeaderMain/HeaderMain.php"
+        ]
+      },
+      {
+        "id": "FIX-009",
+        "issue": "Added not-menu-open CSS variant",
+        "description": "Added @custom-variant not-menu-open to resources/css/screen/states.css for use in the mobile menu collapsed state. Used in HeaderMain.php nav panel classes: 'not-menu-open:max-md:max-h-0 not-menu-open:max-md:opacity-0 not-menu-open:max-md:pointer-events-none'.",
+        "filesModified": [
+          "resources/css/screen/states.css",
+          "blocks/Header/HeaderMain/HeaderMain.php"
+        ]
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Asset size limit: js/editor.js (301 KiB) exceeds recommended 244 KiB",
+        "Entrypoint size limit: js/editor (302 KiB), js/screen (331 KiB)"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "TSX and PHP structures are in sync for all modified blocks: Header, HeaderMain, HeaderMainItem"
+    },
+    "testPageVerification": {
+      "url": "https://ign.localhost/test-header/",
+      "verified": true,
+      "results": {
+        "containerFound": "All 7 sections have container div",
+        "searchFormFound": "2 search forms per content section (desktop + mobile)",
+        "mobileToggleFound": "Mobile toggle button found in all content sections",
+        "sepArrowFound": "External arrow SVG found in sections with SEP link",
+        "logoFound": "Logo image found in all content sections",
+        "hamburgerSvgFound": "Hamburger SVG found in all content sections"
+      }
+    }
+  },
+  "tokensUsed": 45000,
+  "questionsForUser": []
+}

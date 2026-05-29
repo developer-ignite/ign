@@ -1,0 +1,80 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+	"settings": {
+		"appearanceTools": false,
+		"border": {
+			"color": false,
+			"radius": false,
+			"style": false,
+			"width": false
+		},
+		"color": {
+      "custom": false,
+      "customGradient": false,
+      "defaultPalette": false,
+      "defaultGradients": false,
+			"palette": []
+		},
+		"custom": {
+      "spacing": {},
+      "typography": {
+        "font-size": {},
+        "line-height": {}
+      }
+		},
+		"dimensions": {
+			"minHeight": false
+		},
+		"layout": {
+			"contentSize": "",
+			"wideSize": ""
+		},
+		"position": {
+			"sticky": false
+		},
+    "shadow": {
+      "defaultPresets": false
+    },
+		"spacing": {
+      "padding": false,
+      "margin": false,
+      "units": ["rem"],
+      "customSpacingSize": false,
+      "defaultSpacingSizes": false,
+      "spacingSizes": []
+    },
+		"typography": {
+      "dropCap": false,
+      "defaultFontSizes": false,
+      "customFontSize": false,
+      "letterSpacing": false,
+      "textTransform": false,
+      "fontStyle": false,
+      "fontWeight": false,
+      "textDecoration": false,
+      "fontFamilies": [],
+			"fontSizes": []
+		},
+		"useRootPaddingAwareAlignments": false,
+		"blocks": {}
+	},
+  "templateParts": [
+    {
+      "name": "header",
+      "title": "Header",
+      "area": "header"
+    },
+    {
+      "name": "footer",
+      "title": "Footer",
+      "area": "footer"
+    }
+  ],
+  "customTemplates": [
+    {
+      "name": "single-post",
+      "title": "Single Blog Post"
+    }
+  ]
+}

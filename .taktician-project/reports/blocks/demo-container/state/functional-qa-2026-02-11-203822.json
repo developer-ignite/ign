@@ -1,0 +1,163 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-11-203822",
+  "status": "FAIL",
+  "blockName": "DemoContainer",
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 7,
+      "checksFailed": 1,
+      "checksSkipped": 2,
+      "issuesFound": 1,
+      "critical": 0,
+      "major": 1,
+      "minor": 0
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "Build completed successfully with only performance warnings (not errors). TypeScript compilation clean."
+      },
+      "lint": {
+        "status": "pass",
+        "details": "CRLF line ending issues were auto-fixed via lint:fix. No DemoContainer-specific lint errors remain."
+      },
+      "registration": {
+        "status": "pass",
+        "details": "All required files exist: block.json, index.tsx, DemoContainer.tsx, DemoContainer.php, DemoContainer.svg. Block metadata correct: apiVersion 3, name takt/demo-container, supports.inserter: false as specified."
+      },
+      "attributes": {
+        "status": "pass",
+        "details": "All attributes defined correctly in block.json: anchor (string), title (string), description (string). Test page shows proper attribute persistence across all variations."
+      },
+      "edgeCases": {
+        "status": "pass",
+        "details": "Test page includes comprehensive edge cases: minimal (title only), full content (title + description), long content (200+ char title and description), empty description, no inner blocks, multiple inner blocks. All render without errors. Empty description properly hidden on frontend via PHP empty() check."
+      },
+      "interactiveBehavior": {
+        "status": "skipped",
+        "reason": "No interactive elements - this is a static container block"
+      },
+      "accessibility": {
+        "status": "pass",
+        "details": "Semantic HTML: h2 for title, proper use of role=region and aria-label in PHP. Heading hierarchy appropriate (h2 for section containers). No interactive elements requiring keyboard navigation. No images requiring alt text. No contrast issues with charcoal text on default background."
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "details": "No responsive duplication patterns found. No hidden/flex breakpoint classes. Single render path for all screen sizes."
+      },
+      "tsxPhpSync": {
+        "status": "fail",
+        "issues": 1,
+        "details": "Wrapper classes match. Container structure matches. Conditional rendering logic matches (displayContent || title || description in TSX equals !empty(title) || !empty(description) in PHP on frontend). ISSUE: TSX missing role=region and aria-label attributes that are present in PHP."
+      },
+      "innerBlocks": {
+        "status": "pass",
+        "details": "Inner blocks work correctly. All blocks allowed (no allowedBlocks restriction). Template is empty (starts blank). renderAppender: true works. Inner blocks render on frontend via $children. Test page shows single paragraph, multiple paragraphs, heading + paragraphs + image all render correctly."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "details": "All 6 spec variations present on test page: Minimal, Full Content, Long Content, Empty Description, No Inner Blocks, Multiple Inner Blocks. All variations match spec requirements. No placeholder media IDs (block doesn't use images)."
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "tsxPhpSync",
+        "severity": "major",
+        "description": "TSX wrapper div missing accessibility attributes that are present in PHP template",
+        "file": "blocks/DemoContainer/DemoContainer.tsx",
+        "line": 35,
+        "details": "PHP template includes role=\"region\" and aria-label derived from title on the wrapper div. TSX does not include these attributes, causing editor/frontend mismatch. This affects accessibility - screen readers will announce the region properly on frontend but not in editor.",
+        "fix": "Add role and aria-label to blockProps in TSX to match PHP output",
+        "suggestedCode": "const blockProps = useBlockProps( {\n\tclassName: cn( {\n\t\t'demo-container py-8 sm:py-12': true,\n\t\t'first:mt-(--header-height)': true,\n\t} ),\n\trole: 'region',\n\t'aria-label': attributes.title ? attributes.title.replace( /<[^>]+>/g, '' ) : undefined,\n} );",
+        "alsoUpdate": null
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors",
+      "Lint passes after auto-fix (no DemoContainer-specific issues)",
+      "All required files present and properly structured",
+      "Block hidden from inserter via supports.inserter: false",
+      "Attributes defined correctly with proper types",
+      "All spec variations present on test page",
+      "Edge cases handled: empty optional fields, long content, no inner blocks",
+      "Optional description field uses empty() check in PHP (proper shouldDisplay equivalent)",
+      "Inner blocks render correctly with all block types allowed",
+      "No markup duplication patterns",
+      "Wrapper classes sync between TSX and PHP",
+      "Container structure matches between TSX and PHP",
+      "Conditional rendering logic matches (editor displayContent equals frontend !empty)",
+      "Semantic HTML: h2 for title, role=region for accessibility",
+      "renameBlock() implemented correctly for list view naming",
+      "first:mt-(--header-height) class applied for fixed header spacing"
+    ],
+    "testPageAnalysis": {
+      "url": "https://ign.localhost/test-demo-container/",
+      "pageId": 147,
+      "blockInstances": 6,
+      "variations": [
+        {
+          "name": "Minimal Demo",
+          "attributes": {
+            "title": "Minimal Demo",
+            "description": null
+          },
+          "innerBlocks": 1,
+          "status": "renders correctly"
+        },
+        {
+          "name": "Cards Carousel - Full Content",
+          "attributes": {
+            "title": "Cards Carousel - Full Content",
+            "description": "A fully populated demo container showing a carousel with navigation, pagination, and autoplay. This description provides context about what is being tested."
+          },
+          "innerBlocks": 2,
+          "status": "renders correctly"
+        },
+        {
+          "name": "Long Content",
+          "attributes": {
+            "title": "This Is A Very Long Demo Container Title That Tests How The Block Handles Extremely Long Headings Without Breaking The Layout",
+            "description": "This is an extremely long description meant to test how the demo container handles verbose text. It should wrap gracefully within the max-w-2xl constraint and maintain proper spacing with the inner blocks below. The description provides detailed context about the block variation being tested, including edge cases, known issues, and specific configurations that are relevant to QA testing."
+          },
+          "innerBlocks": 1,
+          "status": "renders correctly, text wraps properly"
+        },
+        {
+          "name": "No Description Provided",
+          "attributes": {
+            "title": "No Description Provided",
+            "description": ""
+          },
+          "innerBlocks": 1,
+          "status": "renders correctly, empty description hidden"
+        },
+        {
+          "name": "Empty Container - No Inner Blocks",
+          "attributes": {
+            "title": "Empty Container - No Inner Blocks",
+            "description": "This container has no child blocks. The inner blocks area should still render the appender in the editor."
+          },
+          "innerBlocks": 0,
+          "status": "renders correctly, no errors with empty children"
+        },
+        {
+          "name": "Multiple Inner Blocks Test",
+          "attributes": {
+            "title": "Multiple Inner Blocks Test",
+            "description": "Container with several inner blocks to verify spacing between them."
+          },
+          "innerBlocks": 4,
+          "status": "renders correctly with heading, paragraphs, and image"
+        }
+      ]
+    },
+    "screenshots": {
+      "fullPage": ".taktician-project/reports/blocks/demo-container/screenshots/demo-container-qa-1440w.png"
+    }
+  },
+  "tokensUsed": 42708,
+  "questionsForUser": []
+}

@@ -1,0 +1,83 @@
+/* Color lock: always use neon-green gradient regardless of page accent color */
+.testimonials-carousel {
+	--gradient-left: var(--color-neon-green);
+	--gradient-right: var(--color-blue);
+}
+
+/* Modal Close Button - semantically separate from carousel nav, always white on dark backdrop */
+.modal-close-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	border: 1px solid var(--color-white);
+	border-radius: 9999px;
+	color: var(--color-white);
+	cursor: pointer;
+	overflow: hidden;
+	position: relative;
+	isolation: isolate;
+}
+
+@media (min-width: 768px) {
+	.modal-close-btn {
+		width: 3rem;
+		height: 3rem;
+	}
+}
+
+.modal-close-btn::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(90deg, var(--gradient-left) 0%, var(--gradient-right) 100%);
+	background-size: 200% 100%;
+	background-position: 100% 0;
+	opacity: 0;
+	z-index: -1;
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+}
+
+.modal-close-btn svg {
+	width: 1.25rem;
+	height: 1.25rem;
+	position: relative;
+}
+
+@media (min-width: 768px) {
+	.modal-close-btn svg {
+		width: 1.5rem;
+		height: 1.5rem;
+	}
+}
+
+.modal-close-btn:hover:not(:disabled) {
+	border-color: var(--color-charcoal);
+	color: var(--color-charcoal);
+}
+
+.modal-close-btn:hover:not(:disabled)::before {
+	opacity: 1;
+	animation: carousel-nav-gradient-sweep 1s ease forwards;
+}
+
+.modal-close-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.modal-close-btn:focus-visible {
+	outline: 2px solid var(--color-white);
+	outline-offset: 2px;
+	box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Respect prefers-reduced-motion: disable modal close button animations */
+@media (prefers-reduced-motion: reduce) {
+	.modal-close-btn::before {
+		transition: none !important;
+		animation: none !important;
+	}
+}

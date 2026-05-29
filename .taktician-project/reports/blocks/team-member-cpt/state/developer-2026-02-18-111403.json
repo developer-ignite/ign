@@ -1,0 +1,98 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-18-112313",
+  "status": "complete",
+  "blockName": "TeamMemberCPT",
+  "output": {
+    "mode": "build",
+    "filesCreated": [
+      {
+        "path": "blocks/TeamMemberCPT/block.json",
+        "purpose": "Block metadata — takt/team-member-cpt, inserter:false, multiple:false, attributes:{}"
+      },
+      {
+        "path": "blocks/TeamMemberCPT/index.tsx",
+        "purpose": "Block registration"
+      },
+      {
+        "path": "blocks/TeamMemberCPT/TeamMemberCPT.tsx",
+        "purpose": "Editor component — visual preview mirroring card-team-member.php. Uses featured image, RichText for first_name/last_name/excerpt, read-only department badge, static CTA."
+      },
+      {
+        "path": "blocks/TeamMemberCPT/TeamMemberCPT.svg",
+        "purpose": "Block icon — person/user silhouette"
+      },
+      {
+        "path": "resources/js/editor/team-member-cpt-panel.tsx",
+        "purpose": "Sidebar PluginDocumentSettingPanel with TextControl for first_name, last_name and TextareaControl for excerpt (role). No photo field — built-in Featured Image panel (featured-image.tsx) already handles team_member."
+      }
+    ],
+    "filesModified": [
+      {
+        "path": "inc/post-types/team_member.php",
+        "changes": [
+          "Added 'thumbnail' to supports array",
+          "Added template => [['takt/team-member-cpt']] to post type registration",
+          "Added template_lock => 'all' to post type registration"
+        ]
+      },
+      {
+        "path": "resources/js/editor.js",
+        "changes": [
+          "Added import './editor/team-member-cpt-panel' after testimonial-cpt-panel import"
+        ]
+      },
+      {
+        "path": "parts/card-team-member.php",
+        "changes": [
+          "Changed photo_id from get_post_meta(ID, 'photo', true) to get_post_thumbnail_id(ID) — per user correction that photo meta is replaced by featured image"
+        ]
+      }
+    ],
+    "userCorrectionApplied": {
+      "description": "Photo meta field replaced by post thumbnail (featured image)",
+      "actions": [
+        "Did NOT register a photo meta field",
+        "Did NOT add photo MediaUploadPanel to sidebar (featured-image.tsx already handles team_member post type)",
+        "Added 'thumbnail' to supports array in team_member.php",
+        "Block body displays featured image via useSelect(coreEditorStore).getEditedPostAttribute('featured_media') + coreStore.getMedia()",
+        "Updated card-team-member.php to use get_post_thumbnail_id() instead of photo meta"
+      ]
+    },
+    "blockTypePatterns": {
+      "postTypeGuard": "if (postType !== 'team_member') return null — in both block and sidebar panel",
+      "metaReadWrite": "useSelect for meta/excerpt reading, editPost({meta:{...}}) for first_name/last_name, editPost({excerpt}) for role",
+      "autoTitleSync": "useEffect syncs title to first_name + last_name whenever either changes",
+      "featuredImage": "useSelect reads featured_media ID, coreStore.getMedia() fetches URL for display in block body",
+      "taxonomyFetch": "useSelect + coreStore fetches department terms read-only for badge display",
+      "dualLocationControls": "first_name/last_name/excerpt editable in both block body (RichText) and sidebar panel (TextControl/TextareaControl)"
+    },
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "note": "Pre-existing lint errors in MainWrapper/index.tsx, FullWidthMedia/FullWidthMedia.tsx, and TestimonialsCarousel/TestimonialsCarousel.tsx are not related to this block."
+    },
+    "syncStatus": {
+      "verified": true,
+      "note": "CPT block has no PHP render file. TSX/PHP sync check passes (skipped for CPT blocks per addendum)."
+    },
+    "testPage": {
+      "created": true,
+      "type": "cpt-test-post",
+      "url": "https://ign.localhost/wp-admin/post.php?post=221&action=edit",
+      "postId": 221,
+      "postType": "team_member",
+      "status": "draft",
+      "sampleData": {
+        "first_name": "Alex",
+        "last_name": "Johnson",
+        "excerpt": "Senior Developer"
+      }
+    },
+    "blockers": [],
+    "fixesApplied": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

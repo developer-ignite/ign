@@ -1,0 +1,42 @@
+{
+  "summary": "Fix two issues in GalleryCarousel block: (1) Appender button hidden by overflow-hidden on swiper-parent -- move Appender outside the overflow-hidden container (matching CardsCarousel pattern), and (2) image click behavior in child block -- replace pointer-events-none wrapper with conditional rendering: show ImageDropUploader only when no image is set, show a plain <img> tag when image is set (so clicking the slide does not reopen the media picker).",
+  "fileChanges": [
+    {
+      "file": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+      "action": "modify",
+      "description": "Remove the conditional pb-12/-mb-12 hack from swiper-parent and ensure Appender is rendered outside the overflow-hidden container.",
+      "details": "The current code applies `pb-12 -mb-12` to `.swiper-parent` when `isSelected` to try to reveal the Appender below the overflow boundary. This causes a height shift. The CardsCarousel block solves this correctly: the Appender is placed OUTSIDE the `.swiper-parent` div (which has `overflow-hidden`), so it is never clipped.\n\nIn GalleryCarousel, the Appender is already outside `.swiper-parent` (it is a sibling after the swiper-parent div, inside the dark bg container). However, the `swiper-parent` div has `overflow-hidden` AND conditional padding `pb-12 -mb-12` when selected. The fix is:\n\n1. Remove the conditional `cn()` on the swiper-parent div. Change from:\n   ```tsx\n   className={ cn( {\n     'swiper-parent overflow-hidden grid grid-cols-1 grid-rows-1': true,\n     'pb-12 -mb-12': isSelected,\n   } ) }\n   ```\n   To a static className:\n   ```tsx\n   className=\"swiper-parent overflow-hidden grid grid-cols-1 grid-rows-1\"\n   ```\n\n2. The Appender is already positioned correctly outside `.swiper-parent` (line 310-312), matching the CardsCarousel pattern. No structural move needed.\n\nThe Appender was never actually hidden by the swiper-parent overflow -- it is a sibling element. The `pb-12 -mb-12` hack was unnecessary and only caused visual jitter. Removing it fixes the height-change issue without any other structural changes.",
+      "affectsPhp": false
+    },
+    {
+      "file": "blocks/GalleryCarousel/GalleryCarouselItem/GalleryCarouselItem.tsx",
+      "action": "modify",
+      "description": "Replace pointer-events-none wrapper approach with conditional rendering: ImageDropUploader for empty state, plain <img> for set images.",
+      "details": "Current code wraps ImageDropUploader in a div with `pointer-events-none` when an image is set. This is meant to prevent clicking the image from reopening the media picker, but it doesn't work reliably (ImageDropUploader internally sets `pointerEvents: 'auto'` on the img element and has `cursor: pointer` + onClick handler).\n\nThe fix replaces the entire image rendering section with two branches:\n\n1. **No image set** (placeholder state): Show `ImageDropUploader` for drag-and-drop or click-to-upload functionality. Condition: `displayContent || !mediaImage?.source_url`.\n\n2. **Image is set**: Show a plain `<img>` tag using `mediaImage.source_url`, `mediaImage.alt_text`, and `buildSrcSet(mediaImage.media_details?.sizes)`. Apply focal point via `imagePosition()` for `object-position`. This way clicking the image does nothing (no media picker opens). The sidebar `MediaUploadPanel` remains available for changing the image.\n\nNew imports needed:\n- `import { imagePosition, buildSrcSet } from '@taktdev/utilities';` (add to existing import)\n\nThe updated render section replaces lines 46-64:\n```tsx\n<div className=\"w-full\">\n  { !mediaImage?.source_url ? (\n    ( displayContent ) && (\n      <ImageDropUploader\n        image={ attributes.image }\n        onSelect={ ( image: ImageAttribute ) =>\n          setAttributes( { image } )\n        }\n        className=\"w-full! h-auto! object-cover aspect-[1.08] sm:aspect-[2.45]\"\n        imageClassName=\"w-full! h-auto! object-cover aspect-[1.08] sm:aspect-[2.45]\"\n        placeholderClassName=\"w-full aspect-[1.08] sm:aspect-[2.45]\"\n      />\n    )\n  ) : (\n    <img\n      src={ mediaImage.source_url }\n      alt={ mediaImage.alt_text || '' }\n      srcSet={ buildSrcSet( mediaImage.media_details?.sizes ) }\n      className=\"w-full! h-auto! object-cover aspect-[1.08] sm:aspect-[2.45]\"\n      style={ {\n        objectPosition: attributes.image?.focalPoint\n          ? imagePosition( attributes.image.focalPoint )\n          : undefined,\n      } }\n    />\n  ) }\n</div>\n```\n\nKey points:\n- `ImageDropUploader` only renders when there is no image (for initial upload via click or drag-and-drop)\n- When image exists, a plain `<img>` renders (no click handler, no media picker)\n- `MediaUploadPanel` in the sidebar still allows replacing/removing the image\n- Uses `imagePosition()` and `buildSrcSet()` from `@taktdev/utilities` for consistency with ImageDropUploader's own internal rendering\n- The `fetchMedia` hook already provides `source_url`, `alt_text`, and `media_details` needed for the `<img>` tag",
+      "affectsPhp": false
+    }
+  ],
+  "attributeChanges": [],
+  "designDecisions": [
+    {
+      "id": "DEC-001",
+      "decision": "Move Appender visibility fix: remove pb-12/-mb-12 hack from swiper-parent",
+      "rationale": "The Appender in GalleryCarousel is already a sibling of .swiper-parent (not inside it), matching the CardsCarousel pattern. The pb-12/-mb-12 conditional padding was unnecessary and caused height jitter. The real issue may have been something else (e.g., WordPress block list appender styling), but the padding hack is definitively wrong. CardsCarousel uses identical structure without any padding hacks and works correctly.",
+      "source": "CardsCarousel reference block (blocks/CardsCarousel/CardsCarousel.tsx lines 281, 342-343)"
+    },
+    {
+      "id": "DEC-002",
+      "decision": "Use conditional rendering (ImageDropUploader vs <img>) instead of pointer-events-none wrapper",
+      "rationale": "The pointer-events-none approach fails because ImageDropUploader internally sets pointerEvents:'auto' on the rendered img element (line 127 of ImageDropUploader.tsx source) and attaches an onClick handler (line 130-132). Wrapping in pointer-events-none on the parent div does not override the inline style. The clean solution is to not render ImageDropUploader at all when an image exists, and instead render a plain <img> tag. This approach: (a) prevents click-to-replace, (b) still allows sidebar MediaUploadPanel changes, (c) matches the same visual output.",
+      "source": "User requirement + ImageDropUploader source analysis (node_modules/@taktdev/components/src/ImageDropUploader.tsx)"
+    },
+    {
+      "id": "DEC-003",
+      "decision": "Use buildSrcSet() and imagePosition() utilities for the plain <img> tag",
+      "rationale": "These are the same utilities that ImageDropUploader uses internally. Using them ensures the editor preview matches both the ImageDropUploader placeholder behavior and the PHP frontend output (which uses wp_get_attachment_image with srcset and object-position via theme_image_position).",
+      "source": "Utility source analysis (node_modules/@taktdev/utilities/src/buildSrcSet.ts, imagePosition.ts)"
+    }
+  ],
+  "requiresQA": true,
+  "qaScope": "functional"
+}

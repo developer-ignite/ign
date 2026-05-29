@@ -1,0 +1,85 @@
+{
+  "agent": "planning",
+  "status": "completed",
+  "timestamp": "2026-02-17-124559",
+  "output": {
+    "summary": "Refine DynamicContentCarousel: remove relatedNonSingularBehavior attribute, rename relatedFallbackToLatest to fallbackToLatest (now applies to both automatic and related modes), wrap related-mode Notice in BaseControl for spacing, add help text to hideIfEmpty toggle and reorder it below the fallback toggle.",
+    "fileChanges": [
+      {
+        "file": "blocks/DynamicContentCarousel/block.json",
+        "action": "modify",
+        "description": "Remove relatedNonSingularBehavior attribute, rename relatedFallbackToLatest to fallbackToLatest",
+        "details": "1. Remove the 'relatedNonSingularBehavior' attribute definition entirely (lines 58-62). 2. Rename 'relatedFallbackToLatest' to 'fallbackToLatest' (keep type boolean, default true). The attribute now applies to both 'automatic' and 'related' postsSource modes.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+        "action": "modify",
+        "description": "Update TypeScript type, remove relatedNonSingularBehavior UI, rename attribute references, wrap Notice in BaseControl, add help text to hideIfEmpty, reorder controls",
+        "details": "1. In DynamicContentCarouselAttributes type: remove 'relatedNonSingularBehavior: string', rename 'relatedFallbackToLatest: boolean' to 'fallbackToLatest: boolean'. 2. In the 'related' mode section (lines 323-407): (a) Wrap the <Notice> component in a <BaseControl __nextHasNoMarginBottom> for proper margin-bottom spacing. (b) Remove the entire ToggleGroupControl for 'Behavior on non-singular pages' (lines 378-405). (c) Rename all references from relatedFallbackToLatest to fallbackToLatest. (d) Reorder controls so fallbackToLatest toggle comes before hideIfEmpty. (e) Add help prop to hideIfEmpty toggle: 'Hides the section if no posts are found.' 3. In the 'automatic' mode section (lines 229-321): (a) Add a ToggleControl for fallbackToLatest with label 'Fall back to latest posts' and help 'Show latest posts when no posts match the selected filters'. (b) Reorder so the new fallbackToLatest toggle appears after the RangeControl, then hideIfEmpty appears after fallbackToLatest. (c) Add help prop to hideIfEmpty toggle: 'Hides the section if no posts are found.'",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.php",
+        "action": "modify",
+        "description": "Update PHP docblock, remove relatedNonSingularBehavior logic, rename attribute references, add fallback logic to automatic mode",
+        "details": "1. In @var docblock: remove '@var string $relatedNonSingularBehavior', rename '@var bool $relatedFallbackToLatest' to '@var bool $fallbackToLatest'. 2. In the 'related' postsSource branch (lines 92-164): (a) Remove the $relatedNonSingularBehavior check (lines 97-104). On non-singular pages, the block should still attempt to query (showing latest posts since there's no current post for taxonomy matching). The taxonomy query section already handles this — when !$is_singular, skip taxonomy filtering and just query latest. Simplify: if !$is_singular, go straight to a latest-posts query if $fallbackToLatest is true, otherwise set $has_posts = false (letting hideIfEmpty handle visibility). (b) Rename $relatedFallbackToLatest to $fallbackToLatest everywhere. 3. In the 'automatic' postsSource branch (lines 165-189): (a) After the initial query, if !$has_posts && $fallbackToLatest, re-run the query without taxonomy filters to show latest posts of the same post type. This means: if the taxonomy-filtered query returns no results and fallback is enabled, query again with just post_type/postsLimit/orderby/order/post_status (no tax_query)."
+      }
+    ],
+    "attributeChanges": [
+      {
+        "action": "remove",
+        "name": "relatedNonSingularBehavior",
+        "type": "string",
+        "default": "hide",
+        "description": "Removed entirely. On non-singular pages, the block falls back to latest posts (if fallbackToLatest is enabled) or shows nothing (controlled by hideIfEmpty)."
+      },
+      {
+        "action": "remove",
+        "name": "relatedFallbackToLatest",
+        "type": "boolean",
+        "default": true,
+        "description": "Replaced by the generic fallbackToLatest attribute."
+      },
+      {
+        "action": "add",
+        "name": "fallbackToLatest",
+        "type": "boolean",
+        "default": true,
+        "description": "When enabled, falls back to showing latest posts if no posts match the query criteria. Applies to both 'automatic' mode (when taxonomy filters return no results) and 'related' mode (when no related posts are found or on non-singular pages)."
+      }
+    ],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "behavior",
+        "decision": "On non-singular pages in related mode, treat as 'no related posts found' and use the fallbackToLatest / hideIfEmpty logic rather than having a separate behavior control",
+        "source": "user",
+        "evidence": "User explicitly requested removing relatedNonSingularBehavior and using fallback/hideIfEmpty instead"
+      },
+      {
+        "id": "DEC-002",
+        "category": "behavior",
+        "decision": "fallbackToLatest in automatic mode removes taxonomy filters and queries latest posts of the same post type when the filtered query returns empty",
+        "source": "user",
+        "evidence": "User requested adding fallback toggle to automatic mode. The logical fallback is to drop taxonomy filters since those are the only constraint beyond post type."
+      },
+      {
+        "id": "DEC-003",
+        "category": "ui",
+        "decision": "Control order in both automatic and related modes: taxonomy/content controls, postsLimit, fallbackToLatest, hideIfEmpty (top to bottom)",
+        "source": "user",
+        "evidence": "User requested hideIfEmpty below fallback toggle since fallback is checked first. This ordering reflects the logical execution order."
+      },
+      {
+        "id": "DEC-004",
+        "category": "ui",
+        "decision": "Wrap the related-mode Notice component in a BaseControl for consistent margin-bottom spacing",
+        "source": "user",
+        "evidence": "User explicitly requested wrapping Notice in BaseControl for proper spacing"
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

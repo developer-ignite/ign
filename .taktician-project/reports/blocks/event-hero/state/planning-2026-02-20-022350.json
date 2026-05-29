@@ -1,0 +1,61 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-20-022350",
+  "status": "complete",
+  "blockName": "EventHero",
+  "output": {
+    "summary": "Two changes: (1) Replace btn-tertiary with btn-primary on the external link button in both TSX and PHP. (2) Remove the useTopicColor attribute entirely — delete it from block.json, remove the ToggleControl from TSX, remove the conditional accent color class from the section element in both TSX and PHP, and remove the $first_accent_color / firstAccentColor variables and related accent color fetching logic.",
+    "fileChanges": [
+      {
+        "file": "blocks/EventHero/block.json",
+        "action": "modify",
+        "description": "Remove useTopicColor attribute and its example entry",
+        "details": "Delete the 'useTopicColor' key from attributes object. Remove 'useTopicColor' from example.attributes.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/EventHero/EventHero.tsx",
+        "action": "modify",
+        "description": "Remove useTopicColor logic and change button to btn-primary",
+        "details": "1. Remove 'useTopicColor' from EventHeroAttributes type. 2. Remove the entire 'categoryAccentColors' useSelect block (lines 163-177) that fetches accent colors for categories. 3. Remove the 'firstAccentColor' variable derivation (lines 179-181). 4. Remove the useTopicColor ToggleControl from InspectorControls (lines 207-215). 5. In the section's useBlockProps className, remove the conditional '[firstAccentColor]: attributes.useTopicColor && !!firstAccentColor' — simplify to just 'event-hero hero relative overflow-visible'. 6. Change 'btn-tertiary' to 'btn-primary' on the external link button (line 321). Note: keep the per-pill accent color logic intact — that is independent of useTopicColor and applies per-category colors to individual pills.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/EventHero/EventHero.php",
+        "action": "modify",
+        "description": "Remove useTopicColor logic and change button to btn-primary",
+        "details": "1. Remove '@var bool $useTopicColor' from docblock. 2. Remove lines 35-36 that compute $first_category and $first_accent_color. 3. In theme_block_props() call, remove the '$first_accent_color => $useTopicColor && ...' conditional — simplify to just 'event-hero hero relative overflow-visible'. 4. Change 'btn-tertiary' to 'btn-primary' on the external link <a> element (line 179).",
+        "affectsPhp": true
+      }
+    ],
+    "attributeChanges": [
+      {
+        "action": "remove",
+        "name": "useTopicColor",
+        "type": "boolean",
+        "default": false,
+        "description": "Removed entirely — no topic color gradient override functionality"
+      }
+    ],
+    "designDecisions": [
+      {
+        "id": "DEC-EDIT-001",
+        "category": "styling",
+        "decision": "External link button uses btn-primary (filled charcoal button with gradient hover) instead of btn-tertiary (text link with arrow)",
+        "source": "user-request",
+        "evidence": "User requested: 'Use primary button style instead of btn-tertiary'"
+      },
+      {
+        "id": "DEC-EDIT-002",
+        "category": "behavior",
+        "decision": "Remove useTopicColor attribute and all associated logic (accent color fetching for section gradient, ToggleControl, conditional class on section). Per-pill accent colors on individual category pills remain unchanged.",
+        "source": "user-request",
+        "evidence": "User requested: 'Remove the useTopicColor attribute and all topic color override functionality entirely'"
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  },
+  "tokensUsed": 8000,
+  "questionsForUser": []
+}

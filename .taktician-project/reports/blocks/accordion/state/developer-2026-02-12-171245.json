@@ -1,0 +1,43 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12-171245",
+  "status": "complete",
+  "blockName": "Accordion",
+  "output": {
+    "mode": "fix",
+    "filesModified": [
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/blocks/Accordion/AccordionItem/AccordionItem.tsx",
+        "purpose": "Removed 'not-open:hover:border-accent' class to keep border charcoal on hover"
+      },
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/blocks/Accordion/AccordionItem/AccordionItem.php",
+        "purpose": "Removed 'not-open:hover:border-accent' class to match TSX changes"
+      }
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "testPage": {
+      "created": true,
+      "replaced": true,
+      "url": "https://ign.localhost/test-accordion/",
+      "pageId": 164,
+      "verifiedBlockCount": 12,
+      "previousPages": [
+        {"id": 162, "slug": "test-accordion-exclusive-mode-qa", "action": "deleted"},
+        {"id": 48, "slug": "test-accordion", "action": "deleted"}
+      ]
+    },
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": ["Asset size limit warnings (non-blocking)"]
+    },
+    "syncStatus": {
+      "verified": true,
+      "details": "TSX and PHP both updated to remove 'not-open:hover:border-accent' class. Hover background still changes to accent (not-open:hover:bg-accent preserved), but border stays charcoal."
+    },
+    "changesSummary": "Removed hover border accent color on closed accordion items so the border stays charcoal on hover. Background still changes to accent for visual feedback. Created comprehensive test page with 12 variations wrapped in DemoContainer blocks, replacing two older test pages. All variations test different combinations of: default/with-media layout, exclusive mode, always-one-open, open-by-default, minimal/full content, long content edge case, and many items (8).",
+    "blockers": []
+  }
+}

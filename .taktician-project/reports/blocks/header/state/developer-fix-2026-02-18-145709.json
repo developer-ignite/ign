@@ -1,0 +1,66 @@
+{
+  "agent": "developer",
+  "mode": "fix",
+  "timestamp": "2026-02-18-145709",
+  "planningFile": ".taktician-project/reports/blocks/header/state/planning-2026-02-18-145321.json",
+  "blockPath": "blocks/Header",
+  "buildStatus": {
+    "build": "passed",
+    "lint": "passed",
+    "sync": "passed",
+    "registration": "passed"
+  },
+  "filesModified": [
+    "blocks/Header/HeaderMain/HeaderMain.php",
+    "blocks/Header/HeaderMain/HeaderMain.tsx",
+    "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+    "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+    "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.php",
+    "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.tsx"
+  ],
+  "fixes": [
+    {
+      "id": "fix-1",
+      "description": "Focus-visible accent: added focus-visible:text-accent to every interactive element that has hover:text-accent",
+      "elements": [
+        "HeaderMainItem.php: plain link (ThemeLink className)",
+        "HeaderMainItem.php: submenu trigger button class",
+        "HeaderMainItem.tsx: plain Link className",
+        "HeaderMainItem.tsx: submenu trigger button cn() key",
+        "HeaderMainSubItem.php: ThemeLink className",
+        "HeaderMainSubItem.tsx: Link className",
+        "HeaderMain.php: mobile SEP link class",
+        "HeaderMain.php: desktop search submit button class (replace_all — matched both desktop and mobile buttons identically)",
+        "HeaderMain.php: desktop CTA link class",
+        "HeaderMain.tsx: mobile SEP link cn() key",
+        "HeaderMain.tsx: desktop + mobile search submit buttons (replace_all)",
+        "HeaderMain.tsx: desktop CTA link cn() key"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "fix-2",
+      "description": "Outline fix: removed dead 'outline outline-0 outline-transparent' base state; added focus-visible:outline-solid to override global outline-dotted; kept focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2",
+      "elements": [
+        "HeaderMainItem.php: plain link className",
+        "HeaderMainItem.php: button class",
+        "HeaderMainItem.tsx: plain Link className",
+        "HeaderMainItem.tsx: button cn() key",
+        "HeaderMainSubItem.php: ThemeLink className",
+        "HeaderMainSubItem.tsx: Link className"
+      ],
+      "note": "HeaderMain.php/.tsx SEP links and search buttons did not have outline classes — only focus-visible:text-accent was added to those.",
+      "status": "done"
+    },
+    {
+      "id": "fix-3",
+      "description": "Dropdown min-width: removed conflicting md:min-w-max from submenu container; kept md:min-w-[calc(100%+3rem)] which provides the correct minimum width (p-6 = 1.5rem each side = 3rem total)",
+      "elements": [
+        "HeaderMainItem.php: submenu class string",
+        "HeaderMainItem.tsx: submenu cn() key string"
+      ],
+      "status": "done"
+    }
+  ],
+  "errors": []
+}

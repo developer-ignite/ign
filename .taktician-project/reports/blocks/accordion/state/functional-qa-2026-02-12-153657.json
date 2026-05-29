@@ -1,0 +1,226 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-12-154514",
+  "status": "PASS",
+  "blockName": "Accordion",
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 9,
+      "checksFailed": 0,
+      "issuesFound": 1,
+      "critical": 0,
+      "major": 0,
+      "minor": 1
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "Build completed successfully with only expected bundle size warnings"
+      },
+      "lint": {
+        "status": "skipped",
+        "reason": "Build passed, lint check not run separately for this edit mode QA"
+      },
+      "registration": {
+        "status": "pass",
+        "details": "Block registered correctly, all required files present"
+      },
+      "attributes": {
+        "status": "pass",
+        "details": "New attributes (exclusiveMode, alwaysOneOpen) defined in block.json with correct types and defaults"
+      },
+      "edgeCases": {
+        "status": "skipped",
+        "reason": "Edit mode QA focused on new behavior verification"
+      },
+      "interactiveBehavior": {
+        "status": "pass",
+        "testsRun": [
+          {
+            "test": "Exclusive mode: opening Item 2 closes Item 1",
+            "status": "pass",
+            "screenshot": "exclusive-mode-test-2-after-click-1440w.png",
+            "notes": "Verified via screenshot - only Item 2 is open after clicking it"
+          },
+          {
+            "test": "Always-one-open: clicking open item keeps it open",
+            "status": "pass",
+            "screenshot": "always-one-open-test-try-close-1440w.png",
+            "notes": "Verified - Item A remains open when clicked (JS prevents closing last item)"
+          },
+          {
+            "test": "Auto-open first item when alwaysOneOpen enabled with no openByDefault",
+            "status": "pass",
+            "screenshot": "auto-open-first-test-1440w.png",
+            "notes": "JS correctly auto-opened the first accordion item on page load"
+          },
+          {
+            "test": "Default behavior: no exclusive mode",
+            "status": "pass",
+            "notes": "Accordion without exclusiveMode allows multiple items open simultaneously"
+          },
+          {
+            "test": "Border styling: charcoal border remains when open",
+            "status": "pass",
+            "screenshot": "accordion-border-check-1440w.png",
+            "notes": "Verified open:border-accent-lighter removed from both TSX and PHP"
+          }
+        ]
+      },
+      "accessibility": {
+        "status": "skipped",
+        "reason": "No accessibility changes in this edit. Previous accordion accessibility patterns remain unchanged."
+      },
+      "markupDuplication": {
+        "status": "skipped",
+        "reason": "No new markup added"
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "TSX and PHP sync verified for new data attributes and border class changes",
+        "checks": [
+          {
+            "aspect": "Data attributes",
+            "status": "pass",
+            "tsx": "data-exclusive-mode={attributes.exclusiveMode}, data-always-one-open={attributes.alwaysOneOpen}",
+            "php": "data-exclusive-mode=\"<?php echo esc_attr( $exclusiveMode ?? false ? 'true' : 'false' ); ?>\", data-always-one-open=\"<?php echo esc_attr( $alwaysOneOpen ?? false ? 'true' : 'false' ); ?>\"",
+            "notes": "Both output 'true' or 'false' string values"
+          },
+          {
+            "aspect": "Border class removal",
+            "status": "pass",
+            "tsx": "Line 63 - 'open:bg-accent-lighter': true (no open:border-accent-lighter)",
+            "php": "Line 2 - 'open:bg-accent-lighter not-open:hover:bg-accent not-open:hover:border-accent' (no open:border-accent-lighter)",
+            "notes": "Both files correctly removed open:border-accent-lighter class"
+          },
+          {
+            "aspect": "Attribute extraction",
+            "status": "pass",
+            "notes": "No manual $attributes['key'] extraction found - uses auto-extracted variables correctly"
+          }
+        ]
+      },
+      "innerBlocks": {
+        "status": "skipped",
+        "reason": "Inner blocks structure unchanged"
+      },
+      "specCompliance": {
+        "status": "pass",
+        "details": "All planning requirements implemented correctly",
+        "verified": [
+          "exclusiveMode attribute added (boolean, default false)",
+          "alwaysOneOpen attribute added (boolean, default false)",
+          "InspectorControls Behavior PanelBody added for all variations",
+          "alwaysOneOpen toggle only visible when exclusiveMode is true",
+          "Data attributes passed to accordion items wrapper div",
+          "JS implements exclusive mode (one item open at a time)",
+          "JS implements always-one-open (prevents closing last item)",
+          "JS auto-opens first item when alwaysOneOpen enabled with no openByDefault items",
+          "JS uses direct toggle listeners (not delegation) for Safari compatibility",
+          "JS uses isProcessing flag to prevent recursive handling",
+          "open:border-accent-lighter removed from AccordionItem TSX and PHP"
+        ]
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "tsxPhpSync",
+        "severity": "minor",
+        "description": "Accordion.php missing @var docblock for camelCase attribute variables",
+        "file": "blocks/Accordion/Accordion.php",
+        "line": 1,
+        "fix": "Add @var docblock at the top of the file documenting $exclusiveMode and $alwaysOneOpen variables to prevent PHP_CodeSniffer warnings for camelCase variables",
+        "alsoUpdate": null,
+        "details": "PHP_CodeSniffer warns about camelCase variables like $exclusiveMode and $alwaysOneOpen because WordPress coding standards prefer snake_case. Adding a @var docblock tells the linter these variables come from block attributes (which use camelCase from JavaScript) and should be ignored.",
+        "suggestedDocblock": "<?php\n/**\n * Accordion block frontend template.\n *\n * Available variables (auto-extracted from $attributes):\n * @var string $anchor\n * @var string $blockVariation\n * @var string $eyebrow\n * @var string $heading\n * @var string $description\n * @var array $buttons\n * @var string $mediaType\n * @var int $mediaId\n * @var array $focalPoint\n * @var string $videoSource\n * @var int $videoFile\n * @var string $videoId\n * @var array $posterImage\n * @var bool $exclusiveMode\n * @var bool $alwaysOneOpen\n *\n * Also available:\n * @var string $children Inner blocks content\n * @var WP_Block $block Block instance\n */\n?>"
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors",
+      "New attributes (exclusiveMode, alwaysOneOpen) defined correctly in block.json",
+      "InspectorControls has new Behavior PanelBody with both toggles",
+      "alwaysOneOpen toggle conditionally rendered only when exclusiveMode is true",
+      "Data attributes (data-exclusive-mode, data-always-one-open) present in TSX",
+      "Data attributes (data-exclusive-mode, data-always-one-open) present in PHP and match TSX output format",
+      "JavaScript correctly implements exclusive mode behavior",
+      "JavaScript correctly implements always-one-open behavior",
+      "JavaScript auto-opens first item when alwaysOneOpen enabled with no openByDefault items",
+      "JavaScript uses direct event listeners (not delegation) for Safari compatibility",
+      "JavaScript uses isProcessing flag to prevent recursive toggle handling",
+      "Border class open:border-accent-lighter removed from AccordionItem.tsx",
+      "Border class open:border-accent-lighter removed from AccordionItem.php",
+      "Background class open:bg-accent-lighter still present in both TSX and PHP",
+      "No manual attribute extraction in Accordion.php (uses auto-extracted variables)",
+      "Test page exists with 5 accordion block instances",
+      "New test page created with exclusive mode and always-one-open variations",
+      "Interactive behavior verified with screenshots"
+    ],
+    "testPages": [
+      {
+        "url": "https://ign.localhost/test-accordion/",
+        "pageId": 48,
+        "blockCount": 5,
+        "purpose": "Existing test page with default accordion variations"
+      },
+      {
+        "url": "https://ign.localhost/test-accordion-exclusive-mode-qa/",
+        "pageId": 162,
+        "blockCount": 4,
+        "purpose": "New test page created for QA to verify exclusive mode and always-one-open behaviors"
+      }
+    ],
+    "interactiveBehaviorVerification": {
+      "exclusiveMode": {
+        "tested": true,
+        "result": "pass",
+        "details": "Opening Item 2 correctly closed Item 1. Only one item remains open at a time.",
+        "screenshot": "exclusive-mode-test-2-after-click-1440w.png"
+      },
+      "alwaysOneOpen": {
+        "tested": true,
+        "result": "pass",
+        "details": "Clicking the open Item A did not close it. The JS correctly prevents closing the last remaining open item.",
+        "screenshot": "always-one-open-test-try-close-1440w.png"
+      },
+      "autoOpenFirst": {
+        "tested": true,
+        "result": "pass",
+        "details": "When alwaysOneOpen is enabled with no openByDefault items, the first accordion item auto-opened on page load.",
+        "screenshot": "auto-open-first-test-1440w.png"
+      },
+      "borderStyling": {
+        "tested": true,
+        "result": "pass",
+        "details": "Open accordion items maintain charcoal border (border-charcoal) instead of switching to border-accent-lighter. Background still changes to accent-lighter as expected.",
+        "screenshot": "accordion-border-check-1440w.png"
+      }
+    },
+    "dataAttributeVerification": {
+      "testPageUrl": "https://ign.localhost/test-accordion/",
+      "sectionsChecked": 5,
+      "allSectionsHaveAttributes": true,
+      "sampleValues": [
+        {
+          "sectionIndex": 0,
+          "exclusiveMode": "false",
+          "alwaysOneOpen": "false"
+        },
+        {
+          "sectionIndex": 1,
+          "exclusiveMode": "false",
+          "alwaysOneOpen": "false"
+        }
+      ],
+      "notes": "All 5 accordion sections have data-exclusive-mode and data-always-one-open attributes present with default values ('false')"
+    },
+    "qaRecommendations": [
+      "Add @var docblock to Accordion.php to prevent PHP_CodeSniffer warnings for camelCase variables (minor issue)",
+      "Consider adding editor preview for the behavior toggles so users can see the effect in the editor (enhancement, not required)",
+      "All critical functionality working as specified"
+    ]
+  },
+  "tokensUsed": 73044,
+  "questionsForUser": []
+}

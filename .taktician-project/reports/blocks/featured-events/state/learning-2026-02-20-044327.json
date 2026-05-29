@@ -1,0 +1,38 @@
+{
+  "revision": 1,
+  "analysis": {
+    "mistake": "Six major visual and functional issues passed both Functional QA and Design QA: (1) section dark background should only apply to card halves not full section, (2) date badge positioned directly against image frame without spacing, (3) card backgrounds missing dark-pattern texture, (4) tertiary button not including required arrow icon, (5) day/title font sizes incorrect, (6) location/venue not rendering due to missing venue data in test events.",
+    "expected": "Design QA should have caught all 5 visual differences by pixel-comparing implementation against Figma. Functional QA should have caught the missing venue rendering by testing with complete event data.",
+    "rootCause": "Design QA skipped visual screenshot comparison and relied on code review only. Functional QA tested with incomplete test data that lacked required venue field, never verifying rendering with complete event attributes.",
+    "rootCauseType": "missing-context",
+    "responsiblePhase": "qa"
+  },
+  "suggestions": [
+    {
+      "type": "general",
+      "action": "add",
+      "target": ".taktician/agents/design-agent.md",
+      "section": "Mode 3: Quality Assurance",
+      "content": "**CRITICAL — Screenshot comparison is mandatory, not optional.** After capturing implementation screenshots, you MUST visually compare each breakpoint screenshot against the Figma screenshot pixel-by-pixel using the Step 3 Detailed Visual Comparison checklist. Never skip visual comparison in favor of code review — code review is only supplementary diagnostic after a visual issue is found. If you report PASS without evidence of visual comparison (screenshots read and compared), the QA output is invalid.",
+      "rationale": "Design QA failed to catch 5 visual issues because it relied on code review instead of comparing actual rendered screenshots against Figma. Visual comparison is the primary evidence; code is supplementary.",
+      "implemented": false
+    },
+    {
+      "type": "general",
+      "action": "add",
+      "target": ".taktician/agents/functional-qa-agent.md",
+      "section": "Phase 4: Edge Case Testing",
+      "content": "**Content Completeness Testing:** For blocks that render dynamic data from posts/taxonomies, always test with complete content including all optional fields. Test with at least one item containing every optional field (images, taxonomy terms, URLs, descriptions) to verify rendering. A missing field in test data that causes a layout shift or absent element is a functional failure, not a test data issue.",
+      "rationale": "Functional QA passed with test events lacking venue data, never catching that the location output was missing. Complete test data is required to verify all conditional rendering paths work.",
+      "implemented": false
+    },
+    {
+      "type": "project-specific",
+      "action": "add",
+      "section": "Required Patterns",
+      "content": "**Screenshot Verification as Gate Before QA Sign-Off:** Both Design QA and Functional QA agents must visually capture and review at least one screenshot of their test block at desktop size (1440px) before marking any QA run as complete. If a visual screenshot review was not performed, the QA output is incomplete. This is a process requirement, not a code requirement, but is mandatory before any QA can be marked PASS.",
+      "rationale": "This project had 5 visual issues and 1 functional rendering issue all pass QA because agents relied on code review and test procedures without visual validation. Screenshot review creates an observable trace of what was tested.",
+      "implemented": true
+    }
+  ]
+}

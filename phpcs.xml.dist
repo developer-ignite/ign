@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<ruleset name="IGN Theme Coding Standards">
+  <description>PHP_CodeSniffer configuration for IGN WordPress theme</description>
+
+  <!-- Check all PHP files in theme -->
+  <file>.</file>
+
+  <!-- Exclude patterns -->
+  <exclude-pattern>*/node_modules/*</exclude-pattern>
+  <exclude-pattern>*/vendor/*</exclude-pattern>
+  <exclude-pattern>*/public/*</exclude-pattern>
+  <exclude-pattern>*/.taktician/*</exclude-pattern>
+
+  <!-- Use WordPress Coding Standards -->
+  <rule ref="WordPress">
+    <!-- Allow short array syntax -->
+    <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+    <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+
+    <!-- Allow template files without file comment -->
+    <exclude name="Squiz.Commenting.FileComment"/>
+
+    <!-- Allow template files without class comment -->
+    <exclude name="Squiz.Commenting.ClassComment"/>
+
+    <!-- Allow yoda conditions preference -->
+    <exclude name="WordPress.PHP.YodaConditions"/>
+  </rule>
+
+  <!-- Check for PHP 8.0+ compatibility -->
+  <config name="testVersion" value="8.0-"/>
+  <rule ref="PHPCompatibilityWP"/>
+
+  <!-- Show progress -->
+  <arg value="ps"/>
+
+  <!-- Use colors in output -->
+  <arg name="colors"/>
+
+  <!-- Show sniff codes in all reports -->
+  <arg value="ns"/>
+</ruleset>

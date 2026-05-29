@@ -1,0 +1,445 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-12T20:42:57Z",
+  "status": "complete",
+  "severity": "info",
+  "output": {
+    "summary": "Accessibility compliance audit and test page modernization for Gallery Carousel block. The block already has strong accessibility foundations (role=region, aria-roledescription=carousel, autoplay toggle, pause-on-focus, inert management, prefers-reduced-motion, slide ARIA attributes). Gaps identified: (1) TSX needs Play.svg import for autoplay toggle parity with PHP, (2) CardsCarousel PHP has role=region on swiper-parent but GalleryCarousel PHP already has it - good, (3) TSX autoplay toggle button missing data-label-pause/play attributes present in PHP, (4) TSX carousel region missing aria-labelledby connection to heading, (5) test page needs complete rebuild with DemoContainer wrappers and interactive tests.",
+    "fileChanges": [
+      {
+        "file": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+        "action": "modify",
+        "description": "Add Play.svg import, add data-label-pause/play attributes to autoplay toggle button, ensure aria-labelledby on carousel region connects to ThemeHeading's heading ID",
+        "details": "1. Import Play.svg: `import { ReactComponent as PlayIcon } from './resources/Play.svg';` (already imported PauseIcon). 2. On the autoplay toggle button in TSX, add `data-label-pause` and `data-label-play` attributes to match PHP output - these are used by the JS toggle handler. 3. The aria-labelledby on the carousel region div references `${clientId}-heading` but needs to verify ThemeHeading actually outputs an element with that ID. If ThemeHeading auto-generates heading IDs based on block region ID, this is fine. If not, the TSX needs to pass a headingId prop.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/GalleryCarousel/GalleryCarousel.php",
+        "action": "modify",
+        "description": "Add role=region to swiper-parent div (already present - verified), verify aria-labelledby points to the ThemeHeading heading element ID",
+        "details": "The PHP swiper-parent already has role=region and aria-roledescription=carousel and aria-labelledby. Verify the aria-labelledby value matches the ID that ThemeHeading renders on the h2 element. Current: `aria-labelledby` references `theme_block_region_id() . '-heading'`. ThemeHeading should output `id=\"{region_id}-heading\"` on the heading element. No changes needed IF ThemeHeading follows this pattern. Otherwise add explicit id pass-through.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/GalleryCarousel/GalleryCarousel.js",
+        "action": "modify",
+        "description": "Minor: verify Play.svg is used via inline SVG string (already done). Add aria-live=polite on swiper-wrapper when autoplay is off/paused (already implemented). No changes needed - JS implementation is comprehensive.",
+        "details": "The JS file already implements: (1) updateSlideAriaAttributes with role=group, aria-roledescription=slide, aria-label with position, (2) inert management on non-loop slides, (3) autoplay toggle with label switching via data attributes, (4) aria-live toggling (off when playing, polite when paused), (5) pause on focusin/resume on focusout, (6) prefers-reduced-motion check. This is fully compliant with the carousel accessibility pattern.",
+        "affectsPhp": false
+      },
+      {
+        "file": "test-page (WordPress content)",
+        "action": "modify",
+        "description": "Rebuild test page with DemoContainer wrappers and comprehensive interactive test definitions",
+        "details": "Current test page uses plain h2/p headings instead of takt/demo-container wrappers. Need to rebuild with: (1) DemoContainer wrapper for each variation, (2) Add missing variation for 'Empty Optional Fields' (no eyebrow, no description, no buttons - only heading), (3) Add variation testing all ThemeHeading fields exhaustively, (4) Ensure autoplay+loop variation exists (already does - variation 7), (5) Define interactiveTests for QA automation covering: next/prev navigation, autoplay toggle, loop wrapping behavior.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "testPage": {
+      "url": "https://ign.localhost/test-gallery-carousel/",
+      "rebuildRequired": true,
+      "rebuildReason": "Current test page uses plain h2/p elements instead of takt/demo-container wrappers per test page standards. Need to wrap each variation in DemoContainer with demoTitle and demoDescription.",
+      "variations": [
+        {
+          "demoTitle": "Full Content",
+          "demoDescription": "All fields populated: eyebrow, heading, description, button, pagination, navigation. 4 gallery images.",
+          "attributes": {
+            "eyebrow": "Previous Impact Reports",
+            "heading": "IGNITE Employees in Action",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "buttons": [{"url": "#", "variation": "secondary", "title": "Explore More Student Voices"}],
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 17, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        },
+        {
+          "demoTitle": "Minimal Content",
+          "demoDescription": "Only heading and 2 images. Tests shouldDisplay() empty state handling for optional eyebrow, description, and buttons.",
+          "attributes": {
+            "heading": "Gallery",
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        },
+        {
+          "demoTitle": "Empty Optional Fields",
+          "demoDescription": "Heading only, no eyebrow, no description, no buttons. Verifies shouldDisplay correctly hides empty ThemeHeading fields.",
+          "attributes": {
+            "eyebrow": "",
+            "heading": "Photos",
+            "description": "",
+            "buttons": [],
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 17, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        },
+        {
+          "demoTitle": "No Controls",
+          "demoDescription": "Pagination and navigation both disabled. Carousel is static, only swipeable on touch.",
+          "attributes": {
+            "eyebrow": "Photo Gallery",
+            "heading": "Campus Life",
+            "showPagination": false,
+            "showNavigation": false
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 17, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        },
+        {
+          "demoTitle": "Pagination Only",
+          "demoDescription": "Progress bar visible, navigation arrows hidden. Tests pagination-only layout.",
+          "attributes": {
+            "heading": "Events Gallery",
+            "showPagination": true,
+            "showNavigation": false
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 17, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        },
+        {
+          "demoTitle": "Navigation Only",
+          "demoDescription": "Arrow buttons visible, progress bar hidden. Tests navigation-only layout.",
+          "attributes": {
+            "heading": "Student Showcase",
+            "showPagination": false,
+            "showNavigation": true
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 17, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        },
+        {
+          "demoTitle": "Long Content",
+          "demoDescription": "Excessive text length in eyebrow, heading, and description. Tests overflow/truncation handling in ThemeHeading.",
+          "attributes": {
+            "eyebrow": "Previous Impact Reports and Annual Reviews from IGNITE Student Union",
+            "heading": "IGNITE Employees Demonstrating Excellence and Community Engagement Throughout the Academic Year",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            "buttons": [{"url": "#", "variation": "secondary", "title": "Explore More Student Voices and Community Impact Stories"}],
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 17, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        },
+        {
+          "demoTitle": "Autoplay with Loop",
+          "demoDescription": "Both autoplay (5s delay) and loop enabled. Tests autoplay toggle button, pause-on-hover, pause-on-focus, and infinite loop behavior.",
+          "attributes": {
+            "heading": "Auto Gallery",
+            "showPagination": true,
+            "showNavigation": true,
+            "loopCarousel": true,
+            "autoplayCarousel": true,
+            "autoplayDelay": 5
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 17, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        },
+        {
+          "demoTitle": "Loop Only (No Autoplay)",
+          "demoDescription": "Loop enabled, autoplay disabled. Tests that carousel wraps around without automatic rotation.",
+          "attributes": {
+            "heading": "Loop Gallery",
+            "showPagination": true,
+            "showNavigation": true,
+            "loopCarousel": true,
+            "autoplayCarousel": false
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 17, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        },
+        {
+          "demoTitle": "Autoplay Only (No Loop)",
+          "demoDescription": "Autoplay enabled (4s), loop disabled. Tests autoplay toggle and that carousel stops at last slide.",
+          "attributes": {
+            "heading": "Autoplay Gallery",
+            "showPagination": true,
+            "showNavigation": true,
+            "loopCarousel": false,
+            "autoplayCarousel": true,
+            "autoplayDelay": 4
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 17, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        },
+        {
+          "demoTitle": "Single Image",
+          "demoDescription": "Edge case: only one image in carousel. Navigation and pagination should be effectively disabled.",
+          "attributes": {
+            "heading": "Featured Photo",
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        },
+        {
+          "demoTitle": "Many Images (10)",
+          "demoDescription": "Performance and pagination test with 10 images. Verifies progress bar and navigation work correctly with many slides.",
+          "attributes": {
+            "eyebrow": "Photo Album",
+            "heading": "Year in Review",
+            "description": "A collection of moments from throughout the year.",
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 17, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 17, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 17, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        },
+        {
+          "demoTitle": "No Heading (aria-label fallback)",
+          "demoDescription": "No heading text provided. Tests aria-label='Gallery Carousel' fallback on section element for accessibility.",
+          "attributes": {
+            "heading": "",
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": [
+            ["takt/gallery-carousel-item", {"image": {"id": 19, "focalPoint": {"x": 0.5, "y": 0.5}}}],
+            ["takt/gallery-carousel-item", {"image": {"id": 18, "focalPoint": {"x": 0.5, "y": 0.5}}}]
+          ]
+        }
+      ],
+      "interactiveTests": [
+        {
+          "name": "Navigate to next slide",
+          "variationIndex": 0,
+          "selector": ".gallery-carousel",
+          "actions": [
+            {"action": "scrollTo", "selector": ".gallery-carousel"},
+            {"action": "waitForTimeout", "timeout": 500},
+            {"action": "click", "selector": ".gallery-carousel .carousel-nav-btn.next"},
+            {"action": "waitForTimeout", "timeout": 600}
+          ],
+          "expect": "Second slide becomes visible, progress bar advances, previous button becomes enabled"
+        },
+        {
+          "name": "Navigate to previous slide",
+          "variationIndex": 0,
+          "selector": ".gallery-carousel",
+          "actions": [
+            {"action": "scrollTo", "selector": ".gallery-carousel"},
+            {"action": "waitForTimeout", "timeout": 500},
+            {"action": "click", "selector": ".gallery-carousel .carousel-nav-btn.next"},
+            {"action": "waitForTimeout", "timeout": 600},
+            {"action": "click", "selector": ".gallery-carousel .carousel-nav-btn.prev"},
+            {"action": "waitForTimeout", "timeout": 600}
+          ],
+          "expect": "Returns to first slide, progress bar resets"
+        },
+        {
+          "name": "Autoplay toggle pauses rotation",
+          "variationIndex": 7,
+          "selector": ".gallery-carousel:nth-of-type(8)",
+          "actions": [
+            {"action": "scrollTo", "selector": ".demo-container:nth-of-type(8) .gallery-carousel"},
+            {"action": "waitForTimeout", "timeout": 1000},
+            {"action": "click", "selector": ".demo-container:nth-of-type(8) .carousel-autoplay-toggle"},
+            {"action": "waitForTimeout", "timeout": 500}
+          ],
+          "expect": "Toggle button changes from pause to play icon, aria-label changes to 'Start slide rotation', slide rotation stops"
+        },
+        {
+          "name": "Autoplay toggle resumes rotation",
+          "variationIndex": 7,
+          "selector": ".gallery-carousel:nth-of-type(8)",
+          "actions": [
+            {"action": "scrollTo", "selector": ".demo-container:nth-of-type(8) .gallery-carousel"},
+            {"action": "waitForTimeout", "timeout": 1000},
+            {"action": "click", "selector": ".demo-container:nth-of-type(8) .carousel-autoplay-toggle"},
+            {"action": "waitForTimeout", "timeout": 500},
+            {"action": "click", "selector": ".demo-container:nth-of-type(8) .carousel-autoplay-toggle"},
+            {"action": "waitForTimeout", "timeout": 500}
+          ],
+          "expect": "Toggle button changes back to pause icon, aria-label changes to 'Stop slide rotation', slide rotation resumes"
+        },
+        {
+          "name": "Loop mode wraps to first slide",
+          "variationIndex": 8,
+          "selector": ".demo-container:nth-of-type(9) .gallery-carousel",
+          "actions": [
+            {"action": "scrollTo", "selector": ".demo-container:nth-of-type(9) .gallery-carousel"},
+            {"action": "waitForTimeout", "timeout": 500},
+            {"action": "click", "selector": ".demo-container:nth-of-type(9) .carousel-nav-btn.next"},
+            {"action": "waitForTimeout", "timeout": 600},
+            {"action": "click", "selector": ".demo-container:nth-of-type(9) .carousel-nav-btn.next"},
+            {"action": "waitForTimeout", "timeout": 600},
+            {"action": "click", "selector": ".demo-container:nth-of-type(9) .carousel-nav-btn.next"},
+            {"action": "waitForTimeout", "timeout": 600}
+          ],
+          "expect": "After navigating past last slide, carousel wraps to first slide seamlessly"
+        }
+      ]
+    },
+    "accessibilityAudit": {
+      "pattern": "Carousel (WAI-ARIA Authoring Practices)",
+      "source": ".taktician/instructions/accessibility-patterns/carousel.md",
+      "requirements": [
+        {
+          "requirement": "Carousel container has role=region with aria-roledescription=carousel",
+          "status": "PASS",
+          "evidence": "PHP line 38: swiper-parent has role=region, aria-roledescription=carousel. TSX line 250-253: same attributes."
+        },
+        {
+          "requirement": "Carousel container has aria-labelledby (if visible label) or aria-label",
+          "status": "PASS",
+          "evidence": "PHP line 38: aria-labelledby references heading ID. TSX line 252: aria-labelledby references clientId-heading. Section level fallback aria-label='Gallery Carousel' when heading is empty."
+        },
+        {
+          "requirement": "Rotation control is native <button> element",
+          "status": "PASS",
+          "evidence": "PHP line 44-51: native button element. TSX line 260-269: native button element."
+        },
+        {
+          "requirement": "Rotation control has dynamic accessible name (Stop/Start slide rotation)",
+          "status": "PASS",
+          "evidence": "PHP: aria-label + data-label-pause/play attributes. JS line 110-128: toggles aria-label between pause/play labels."
+        },
+        {
+          "requirement": "Rotation control does NOT use aria-pressed",
+          "status": "PASS",
+          "evidence": "No aria-pressed found on autoplay toggle button."
+        },
+        {
+          "requirement": "Rotation control is first tab-stop inside carousel",
+          "status": "PASS",
+          "evidence": "Both PHP and TSX render autoplay toggle before pagination and navigation in DOM order."
+        },
+        {
+          "requirement": "Auto-rotate stops on keyboard focus",
+          "status": "PASS",
+          "evidence": "JS lines 131-144: focusin pauses autoplay, focusout resumes only if focus left carousel entirely and was previously playing."
+        },
+        {
+          "requirement": "Slides have role=group with aria-roledescription=slide",
+          "status": "PASS",
+          "evidence": "JS lines 8-23: updateSlideAriaAttributes sets role=group, aria-roledescription=slide on each slide."
+        },
+        {
+          "requirement": "Slides have aria-label with position info (e.g. 'Slide 1 of 5')",
+          "status": "PASS",
+          "evidence": "JS line 21: sets aria-label=`Slide ${slideNumber} of ${realSlidesCount}`."
+        },
+        {
+          "requirement": "Wrapper uses aria-live=off when rotating, polite when paused",
+          "status": "PASS",
+          "evidence": "JS lines 98-101: sets aria-live=off initially when autoplay enabled. Lines 115/122: toggles between polite (paused) and off (playing)."
+        },
+        {
+          "requirement": "Inactive slides use inert attribute (non-loop mode)",
+          "status": "PASS",
+          "evidence": "JS lines 72-92: manages inert attribute on inactive slides when not in loop mode."
+        },
+        {
+          "requirement": "Navigation buttons have aria-label",
+          "status": "PASS",
+          "evidence": "Both PHP and TSX: prev/next buttons have aria-label='Previous Item'/'Next Item'."
+        },
+        {
+          "requirement": "Respects prefers-reduced-motion",
+          "status": "PASS",
+          "evidence": "JS line 26: checks prefers-reduced-motion and disables autoplay. swiper.css lines 103-116: disables transitions and animations."
+        },
+        {
+          "requirement": "Swiper A11y module included",
+          "status": "PASS",
+          "evidence": "JS line 2 and TSX line 12: A11y module imported and included in modules array."
+        }
+      ],
+      "gaps": [
+        {
+          "id": "GAP-001",
+          "severity": "low",
+          "description": "TSX autoplay toggle button missing data-label-pause and data-label-play attributes that PHP has",
+          "impact": "Editor-only: does not affect frontend. The data attributes are used by the frontend JS for label toggling. Since the TSX button is non-functional in the editor context, this is cosmetic but should match PHP for consistency.",
+          "recommendation": "Add data-label-pause and data-label-play to the TSX autoplay toggle button."
+        },
+        {
+          "id": "GAP-002",
+          "severity": "info",
+          "description": "GalleryCarousel JS uses inline Play SVG string while Pause.svg and Play.svg files exist in resources/",
+          "impact": "Functional - the inline SVG works. But Play.svg exists as a file and could be referenced. However since JS files cannot use PHP theme_block_asset(), the inline approach is the correct pattern for frontend JS.",
+          "recommendation": "No change needed. The inline SVG approach in JS is correct per the carousel pattern."
+        }
+      ]
+    },
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "behavior",
+        "question": "Should the TSX autoplay toggle button include data-label-pause/data-label-play attributes?",
+        "recommendation": "Yes, add them for TSX/PHP consistency, even though they are unused in the editor context.",
+        "needsUserInput": false,
+        "source": "existing-pattern",
+        "evidence": "CardsCarousel PHP and GalleryCarousel PHP both include these data attributes. TSX should match."
+      },
+      {
+        "id": "DEC-002",
+        "category": "behavior",
+        "question": "Should test page variations be wrapped in DemoContainer blocks?",
+        "recommendation": "Yes, per the test page standards in planning-agent.md Phase 8. The current test page uses plain h2/p elements which do not follow the DemoContainer pattern.",
+        "needsUserInput": false,
+        "source": "test-page-standards",
+        "evidence": "Planning agent Phase 8 states: 'Each block variation on a test page MUST be wrapped in a DemoContainer that describes what the variation tests.'"
+      },
+      {
+        "id": "DEC-003",
+        "category": "behavior",
+        "question": "Should a 'No Heading' variation be added to test the aria-label fallback?",
+        "recommendation": "Yes. When no heading is provided, the section element uses aria-label='Gallery Carousel' as fallback. This is an important accessibility behavior that should be tested.",
+        "needsUserInput": false,
+        "source": "accessibility-pattern",
+        "evidence": "Carousel a11y pattern requires aria-labelledby (if visible label) or aria-label (if no visible label). The block implements this conditional."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional",
+    "qaNote": "Focus on: (1) DemoContainer wrappers rendering correctly, (2) all 13 variations displaying properly, (3) interactive tests passing for navigation, autoplay toggle, and loop behavior, (4) accessibility audit verifying ARIA attributes on frontend."
+  }
+}

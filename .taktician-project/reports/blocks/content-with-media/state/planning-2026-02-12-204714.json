@@ -1,0 +1,444 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-12-204714",
+  "status": "complete",
+  "blockName": "ContentWithMedia",
+  "output": {
+    "summary": "Comprehensive audit of ContentWithMedia block against block-type docs and accessibility requirements. Found 6 accessibility gaps (play button missing aria-label, iframes missing title, IconPlay SVG missing aria-hidden, missing headingSize attribute from block-type spec, no prefers-reduced-motion handling, images treated as decorative without configurable alt text). No test page exists; plan defines 14 test scenarios using DemoContainer pattern covering all media types, layouts, dark mode, reversal, video sources, and edge cases.",
+    "fileChanges": [
+      {
+        "file": "blocks/ContentWithMedia/ContentWithMedia.php",
+        "action": "modify",
+        "description": "Add accessibility attributes: aria-label on play button, title on iframes, aria-hidden on IconPlay SVG, and alt text support for gallery images",
+        "details": "1. Add aria-label='Play video' to the play <button> element (line 195). 2. Add title attribute to YouTube/Vimeo iframes (title='Video player' or similar descriptive text) in both the direct-render iframe (line 231-243) and the JS-injected iframes in ContentWithMedia.js. 3. Ensure the IconPlay SVG is wrapped or output with aria-hidden='true' since the button already has an aria-label. 4. On the single image layout, images are currently rendered via wp_get_attachment_image which uses the media library alt text by default - verify this is populated or provide a fallback.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/ContentWithMedia/ContentWithMedia.tsx",
+        "action": "modify",
+        "description": "Add accessibility attributes matching PHP changes: aria-label on play button, aria-hidden on IconPlay",
+        "details": "1. Add aria-label={__('Play video', 'takt')} to the play <button> element (around line 531). 2. Add aria-hidden='true' to the <IconPlay /> component usage (line 553). 3. Add title attribute to iframe elements injected in the playVideo function for YouTube/Vimeo embeds.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/ContentWithMedia/ContentWithMedia.js",
+        "action": "modify",
+        "description": "Add title attribute to dynamically injected YouTube/Vimeo iframes",
+        "details": "Both the YouTube and Vimeo iframe strings generated in the click handler (lines 30-33) need a title attribute: title='Video player'. This is required for WCAG 2.1 SC 4.1.2 (iframes must have accessible names).",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/ContentWithMedia/block.json",
+        "action": "modify",
+        "description": "Add missing headingSize attribute per block-type documentation requirements",
+        "details": "The block-type doc specifies a headingSize attribute ('small' -> H3, 'regular' -> H2) but it is not currently in block.json. Add: \"headingSize\": { \"type\": \"string\", \"default\": \"regular\", \"enum\": [\"small\", \"regular\"] }. The TSX and PHP already hardcode headingSize=2; this change makes it configurable per the block-type spec.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [
+      {
+        "action": "add",
+        "name": "headingSize",
+        "type": "string",
+        "default": "regular",
+        "description": "Heading level: 'small' renders H3, 'regular' renders H2. Per block-type documentation section 5 (Heading Size Mapping).",
+        "enum": ["small", "regular"]
+      }
+    ],
+    "designDecisions": [
+      {
+        "category": "behavior",
+        "question": "Should the headingSize attribute be added as specified in the block-type doc, or is the hardcoded H2 intentional?",
+        "recommendation": "Add headingSize attribute. The block-type doc explicitly defines this mapping (small=H3, regular=H2) and existing code already passes headingSize to ThemeHeading. Making it configurable follows the documented pattern and allows editors to maintain proper heading hierarchy.",
+        "needsUserInput": false
+      },
+      {
+        "category": "behavior",
+        "question": "Gallery images have no user-configurable alt text - they use whatever is set in the WordPress media library. Is this sufficient?",
+        "recommendation": "This is acceptable because WordPress's wp_get_attachment_image() uses the alt text from the media library entry. No block-level alt attribute is needed as long as editors set alt text in the media library. Document this expectation in the test plan.",
+        "needsUserInput": false
+      }
+    ],
+    "accessibilityGaps": [
+      {
+        "requirement": "Play button must have an accessible name (aria-label) - buttons with only icon content need aria-label per accessibility.md section 3",
+        "currentStatus": "missing",
+        "fix": "Add aria-label='Play video' to the <button> element in both PHP and TSX. The button currently contains only an image and an icon with no text."
+      },
+      {
+        "requirement": "IconPlay SVG must have aria-hidden='true' per accessibility.md section 3 (SVG Icons)",
+        "currentStatus": "missing",
+        "fix": "Add aria-hidden='true' to the <IconPlay /> component in TSX, and add aria-hidden='true' to the SVG output in PHP (theme_block_asset output). The icon is decorative since the button will have an aria-label."
+      },
+      {
+        "requirement": "Iframes must have a title attribute for accessible name (WCAG 2.1 SC 4.1.2)",
+        "currentStatus": "missing",
+        "fix": "Add title='YouTube video player' or title='Vimeo video player' to all <iframe> elements - in PHP static rendering, in TSX playVideo() function, and in ContentWithMedia.js frontend click handler."
+      },
+      {
+        "requirement": "Heading hierarchy must be maintained - headingSize attribute allows appropriate level per context (block-type doc section 5)",
+        "currentStatus": "partial",
+        "fix": "Add headingSize attribute to block.json with enum ['small', 'regular']. Update TSX to pass headingSize={attributes.headingSize === 'small' ? 3 : 2} to ThemeHeading. Update PHP similarly. Currently hardcoded to H2."
+      },
+      {
+        "requirement": "Respect prefers-reduced-motion for video playback transitions (accessibility.md section 5)",
+        "currentStatus": "missing",
+        "fix": "The play button uses group-hover transitions (transition-colors on the icon span in the video-playback pattern). While the current implementation does not have heavy animations, verify that the CSS transitions respect prefers-reduced-motion. The theme may already handle this globally, but it should be verified during QA."
+      },
+      {
+        "requirement": "Images should have appropriate alt text or be marked decorative (accessibility.md section 3, block-type doc section 6)",
+        "currentStatus": "partial",
+        "fix": "Gallery images rendered via wp_get_attachment_image use the media library alt text. If no alt text is set in the media library, images will have empty alt. This is acceptable for decorative images but problematic for informative ones. Document that editors should set alt text in the media library. No code change required - this is an editorial guidance issue."
+      }
+    ],
+    "testPageScenarios": [
+      {
+        "title": "Full Content - Gallery Layout (Default)",
+        "description": "All fields populated: eyebrow, heading, description, 2 buttons, 3 gallery images. Default layout (media left, content right). Tests complete rendering with all optional fields.",
+        "demoTitle": "Full Content - Gallery Layout (Default)",
+        "demoDescription": "All fields populated with eyebrow, heading, description, 2 buttons, and 3 gallery images. Default column order: media left, content right.",
+        "attributes": {
+          "eyebrow": "Work Integrated Learning Initiative",
+          "heading": "Featured Student Story",
+          "description": "Diam sed vestibulum et aliquam dignissim velit nulla. Orci ac aliquam justo amet sed. Porttitor nibh in lectus lectus enim nulla phasellus tellus commodo.",
+          "buttons": [
+            { "url": "#", "variation": "primary", "title": "Learn More" },
+            { "url": "#", "variation": "secondary", "title": "Contact Us" }
+          ],
+          "mediaType": "image",
+          "imageLayout": "gallery",
+          "images": [
+            { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 18, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 17, "focalPoint": { "x": 0.5, "y": 0.5 } }
+          ]
+        }
+      },
+      {
+        "title": "Reversed Layout - Gallery",
+        "description": "isReversed=true, media on right, content on left. Tests column reversal with gallery layout. All content fields populated.",
+        "demoTitle": "Reversed Layout - Gallery",
+        "demoDescription": "isReversed=true moves media to the right side. Tests md:col-start logic and secondary image order swap.",
+        "attributes": {
+          "isReversed": true,
+          "eyebrow": "Community Engagement",
+          "heading": "Building Connections",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.",
+          "buttons": [
+            { "url": "#", "variation": "primary", "title": "Get Involved" }
+          ],
+          "mediaType": "image",
+          "imageLayout": "gallery",
+          "images": [
+            { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 18, "focalPoint": { "x": 0.3, "y": 0.7 } },
+            { "id": 17, "focalPoint": { "x": 0.7, "y": 0.3 } }
+          ]
+        }
+      },
+      {
+        "title": "Single Image Layout",
+        "description": "imageLayout='single' with one image in 4:3 aspect ratio. Tests single image rendering path.",
+        "demoTitle": "Single Image Layout",
+        "demoDescription": "imageLayout=single renders a single 4:3 image instead of the 3-image gallery collage.",
+        "attributes": {
+          "heading": "Single Image Section",
+          "description": "This variation uses a single image instead of the gallery collage layout.",
+          "buttons": [
+            { "url": "#", "variation": "primary", "title": "View Details" }
+          ],
+          "mediaType": "image",
+          "imageLayout": "single",
+          "images": [
+            { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": null, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": null, "focalPoint": { "x": 0.5, "y": 0.5 } }
+          ]
+        }
+      },
+      {
+        "title": "Dark Mode - Gallery",
+        "description": "darkMode=true with gallery layout. Tests charcoal pseudo-element background, white text, rounded-xl (instead of rounded-3xl), and transparent section background.",
+        "demoTitle": "Dark Mode - Gallery",
+        "demoDescription": "darkMode=true applies charcoal pseudo-element backgrounds, white text, and rounded-xl on image containers.",
+        "attributes": {
+          "darkMode": true,
+          "eyebrow": "Student Resources",
+          "heading": "Support Services",
+          "description": "Access the resources and support services available to you as a student.",
+          "buttons": [
+            { "url": "#", "variation": "primary", "title": "Explore Resources" },
+            { "url": "#", "variation": "secondary", "title": "Contact Support" }
+          ],
+          "mediaType": "image",
+          "imageLayout": "gallery",
+          "images": [
+            { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 18, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 17, "focalPoint": { "x": 0.5, "y": 0.5 } }
+          ]
+        }
+      },
+      {
+        "title": "Dark Mode - Reversed",
+        "description": "darkMode=true + isReversed=true. Tests combined dark mode with reversed column order.",
+        "demoTitle": "Dark Mode - Reversed",
+        "demoDescription": "Combined dark mode with reversed layout. Both content and media columns get charcoal backgrounds on opposing sides.",
+        "attributes": {
+          "darkMode": true,
+          "isReversed": true,
+          "eyebrow": "Academic Programs",
+          "heading": "Career Development",
+          "description": "Explore career development opportunities and co-op placements available through the student union.",
+          "buttons": [
+            { "url": "#", "variation": "primary", "title": "Apply Now" }
+          ],
+          "mediaType": "image",
+          "imageLayout": "gallery",
+          "images": [
+            { "id": 17, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 18, "focalPoint": { "x": 0.5, "y": 0.5 } }
+          ]
+        }
+      },
+      {
+        "title": "Video - File Upload with Poster",
+        "description": "mediaType='video', videoSource='file' with a poster image. Tests video container, play button, and file video playback.",
+        "demoTitle": "Video - File Upload with Poster",
+        "demoDescription": "Video from uploaded file with poster image overlay and play button. Tests the video-container grid stacking pattern.",
+        "attributes": {
+          "heading": "Video Showcase",
+          "description": "Watch our latest campus video to see student life in action.",
+          "buttons": [
+            { "url": "#", "variation": "primary", "title": "Watch More" }
+          ],
+          "mediaType": "video",
+          "videoSource": "file",
+          "videoFile": 34,
+          "posterImage": {
+            "id": 19,
+            "focalPoint": { "x": 0.5, "y": 0.5 }
+          }
+        }
+      },
+      {
+        "title": "Video - YouTube Embed",
+        "description": "mediaType='video', videoSource='youtube' with poster image. Tests YouTube iframe injection on play.",
+        "demoTitle": "Video - YouTube Embed",
+        "demoDescription": "YouTube video with poster image. Click play to inject YouTube iframe via JS.",
+        "attributes": {
+          "heading": "Campus Tour",
+          "description": "Take a virtual tour of our campus facilities.",
+          "mediaType": "video",
+          "videoSource": "youtube",
+          "videoId": "dQw4w9WgXcQ",
+          "posterImage": {
+            "id": 18,
+            "focalPoint": { "x": 0.5, "y": 0.5 }
+          }
+        }
+      },
+      {
+        "title": "Video - Vimeo Embed",
+        "description": "mediaType='video', videoSource='vimeo' with poster image. Tests Vimeo iframe injection on play.",
+        "demoTitle": "Video - Vimeo Embed",
+        "demoDescription": "Vimeo video with poster image. Click play to inject Vimeo iframe via JS.",
+        "attributes": {
+          "heading": "Event Highlights",
+          "description": "Highlights from our most recent community event.",
+          "mediaType": "video",
+          "videoSource": "vimeo",
+          "videoId": "76979871",
+          "posterImage": {
+            "id": 17,
+            "focalPoint": { "x": 0.5, "y": 0.5 }
+          }
+        }
+      },
+      {
+        "title": "Video - YouTube Without Poster (Direct Embed)",
+        "description": "YouTube video without poster image. Tests direct iframe rendering (no play button overlay). The PHP renders the iframe immediately when no posterImage is set.",
+        "demoTitle": "Video - YouTube Without Poster",
+        "demoDescription": "YouTube video without poster image shows iframe directly (no play button). Tests the PHP direct-embed fallback path.",
+        "attributes": {
+          "heading": "Quick Video",
+          "mediaType": "video",
+          "videoSource": "youtube",
+          "videoId": "dQw4w9WgXcQ",
+          "posterImage": {
+            "id": null,
+            "focalPoint": { "x": 0.5, "y": 0.5 }
+          }
+        }
+      },
+      {
+        "title": "Reverse Rows (Mobile Order)",
+        "description": "reverseRows=true changes mobile column stacking order. Media moves below content on mobile instead of above.",
+        "demoTitle": "Reverse Rows (Mobile Order)",
+        "demoDescription": "reverseRows=true changes mobile stacking: content appears first, media below. Tests the -order-1 toggle.",
+        "attributes": {
+          "reverseRows": true,
+          "heading": "Content First on Mobile",
+          "description": "On mobile, the content appears above the media when reverse rows is enabled.",
+          "buttons": [
+            { "url": "#", "variation": "primary", "title": "Learn More" }
+          ],
+          "mediaType": "image",
+          "imageLayout": "gallery",
+          "images": [
+            { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 18, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 17, "focalPoint": { "x": 0.5, "y": 0.5 } }
+          ]
+        }
+      },
+      {
+        "title": "Minimal Content - Heading Only",
+        "description": "Only heading populated. Tests shouldDisplay empty state for eyebrow, description, buttons. Gallery images provided.",
+        "demoTitle": "Minimal Content - Heading Only",
+        "demoDescription": "Only heading provided. Tests shouldDisplay() behavior for all optional fields.",
+        "attributes": {
+          "heading": "Minimal Section",
+          "mediaType": "image",
+          "imageLayout": "gallery",
+          "images": [
+            { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 18, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 17, "focalPoint": { "x": 0.5, "y": 0.5 } }
+          ]
+        }
+      },
+      {
+        "title": "Long Content Edge Case",
+        "description": "Very long eyebrow, heading (100+ chars), and description (500+ chars). Tests text wrapping and overflow behavior.",
+        "demoTitle": "Long Content Edge Case",
+        "demoDescription": "Edge case with extremely long text in all fields. Tests wrapping, overflow, and layout stability.",
+        "attributes": {
+          "eyebrow": "This Is An Extremely Long Eyebrow That Tests How The Block Handles Very Long Eyebrow Text Content Across Multiple Lines",
+          "heading": "This Is An Extremely Long Heading That Tests How The ContentWithMedia Block Handles Very Long Content In The Heading Area Spanning Multiple Lines And Potentially Multiple Breakpoints",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem.",
+          "buttons": [
+            { "url": "#", "variation": "primary", "title": "This Is A Very Long Button Label That Tests Wrapping" },
+            { "url": "#", "variation": "secondary", "title": "Another Extremely Long Secondary Button Label" }
+          ],
+          "mediaType": "image",
+          "imageLayout": "gallery",
+          "images": [
+            { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 18, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": 17, "focalPoint": { "x": 0.5, "y": 0.5 } }
+          ]
+        }
+      },
+      {
+        "title": "Dark Mode - Video with Poster",
+        "description": "Dark mode combined with video. Tests dark mode charcoal background on the video container with rounded-xl.",
+        "demoTitle": "Dark Mode - Video with Poster",
+        "demoDescription": "Dark mode with video media type. Tests that video container gets rounded-xl instead of rounded-3xl.",
+        "attributes": {
+          "darkMode": true,
+          "heading": "Featured Video",
+          "description": "A video section in dark mode demonstrates the charcoal background treatment.",
+          "mediaType": "video",
+          "videoSource": "file",
+          "videoFile": 34,
+          "posterImage": {
+            "id": 19,
+            "focalPoint": { "x": 0.5, "y": 0.5 }
+          }
+        }
+      },
+      {
+        "title": "Dark Mode - Single Image",
+        "description": "Dark mode with single image layout. Note: single image layout does not apply dark mode rounded-xl - it always uses rounded-3xl. This tests whether this is intentional.",
+        "demoTitle": "Dark Mode - Single Image",
+        "demoDescription": "Dark mode with single image layout. Tests whether single image respects dark mode border radius changes.",
+        "attributes": {
+          "darkMode": true,
+          "heading": "Single Image Dark",
+          "description": "Testing dark mode with the single image layout variant.",
+          "mediaType": "image",
+          "imageLayout": "single",
+          "images": [
+            { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": null, "focalPoint": { "x": 0.5, "y": 0.5 } },
+            { "id": null, "focalPoint": { "x": 0.5, "y": 0.5 } }
+          ]
+        }
+      }
+    ],
+    "interactiveTests": [
+      {
+        "name": "Video play button triggers video playback",
+        "selector": ".content-with-media-video-container",
+        "actions": [
+          { "action": "scrollTo", "selector": ".content-with-media-video-container" },
+          { "action": "click", "selector": ".content-with-media-play-button" },
+          { "action": "waitForTimeout", "timeout": 1000 }
+        ],
+        "expect": "Play button hides, video begins playing or iframe is injected into embed-video-container"
+      }
+    ],
+    "implementationGaps": [
+      {
+        "id": "GAP-001",
+        "severity": "major",
+        "area": "accessibility",
+        "description": "Play button has no aria-label. The button contains only an image (poster) and an SVG icon with no text content.",
+        "fix": "Add aria-label='Play video' to the button in both TSX and PHP."
+      },
+      {
+        "id": "GAP-002",
+        "severity": "major",
+        "area": "accessibility",
+        "description": "IconPlay SVG lacks aria-hidden='true'. Without it, screen readers may announce the SVG content.",
+        "fix": "Add aria-hidden='true' to IconPlay SVG element or component."
+      },
+      {
+        "id": "GAP-003",
+        "severity": "major",
+        "area": "accessibility",
+        "description": "YouTube/Vimeo iframes have no title attribute. Iframes require an accessible name per WCAG 2.1 SC 4.1.2.",
+        "fix": "Add title='Video player' to iframes in PHP template, TSX playVideo(), and ContentWithMedia.js."
+      },
+      {
+        "id": "GAP-004",
+        "severity": "minor",
+        "area": "feature",
+        "description": "headingSize attribute specified in block-type doc is not implemented. Block always renders H2 regardless of context.",
+        "fix": "Add headingSize attribute to block.json, update TSX and PHP to map 'small' -> 3, 'regular' -> 2 for ThemeHeading."
+      },
+      {
+        "id": "GAP-005",
+        "severity": "minor",
+        "area": "sync",
+        "description": "Single image layout in PHP always uses rounded-3xl even in dark mode, while gallery layout switches to rounded-xl in dark mode. TSX has the same behavior. This may be intentional but is inconsistent.",
+        "fix": "Verify with design whether single image should also use rounded-xl in dark mode. If so, update both TSX and PHP."
+      },
+      {
+        "id": "GAP-006",
+        "severity": "note",
+        "area": "accessibility",
+        "description": "prefers-reduced-motion: The block uses transition-colors on play button hover state. The theme may handle this globally, but should be verified.",
+        "fix": "Verify global prefers-reduced-motion handling during QA. No code change expected."
+      }
+    ],
+    "testPagePlan": {
+      "slug": "test-content-with-media",
+      "title": "TEST: Content With Media",
+      "useDemoContainer": true,
+      "totalVariations": 14,
+      "mediaIds": {
+        "images": [19, 18, 17],
+        "video": 34
+      },
+      "youtubeTestId": "dQw4w9WgXcQ",
+      "vimeoTestId": "76979871"
+    },
+    "requiresQA": true,
+    "qaScope": "full"
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

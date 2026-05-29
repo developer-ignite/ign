@@ -1,0 +1,184 @@
+{
+  "summary": "Accessibility audit of DynamicContentCarousel against the carousel accessibility pattern (WAI-ARIA carousel pattern). Multiple gaps found: (1) Missing aria-roledescription='carousel' on the carousel container, (2) Missing role='group' and aria-roledescription='slide' on individual slides, (3) Missing aria-label with position info on slides, (4) No autoplay rotation control (pause/play button) and no pause-on-hover/focus behavior for autoplay, (5) No aria-live region for slide announcements when autoplay is active, (6) No prefers-reduced-motion handling for autoplay and transitions (known theme-wide issue), (7) Pagination progress bar has no accessible label or role. Navigation button aria-labels are already present and correct.",
+  "analysis": {
+    "requirement_source": "Block type doc references accessibility-patterns/carousel.md (WAI-ARIA Carousel Pattern)",
+    "gaps": [
+      {
+        "id": "A11Y-001",
+        "severity": "major",
+        "requirement": "Carousel container must have role='region' (or role='group') with aria-roledescription='carousel'",
+        "current": "The <section> element has role='region' implicitly (semantic HTML). It has aria-label='Content Carousel' when no heading is present. However, it is MISSING aria-roledescription='carousel' which is required by the WAI-ARIA carousel pattern to identify the widget type to assistive technologies.",
+        "fix": "Add aria-roledescription='carousel' to the swiper container div (the .swiper element) or the .swiper-parent wrapper. The outer <section> already provides the region landmark with aria-label/aria-labelledby; the aria-roledescription should go on the carousel container itself.",
+        "files": ["blocks/DynamicContentCarousel/DynamicContentCarousel.php", "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx"]
+      },
+      {
+        "id": "A11Y-002",
+        "severity": "major",
+        "requirement": "Each slide must have role='group' with aria-roledescription='slide' and an aria-label providing position info (e.g., '3 of 10')",
+        "current": "The .swiper-slide divs have no role, no aria-roledescription, and no aria-label. Swiper's A11y module can add some of this, but the current configuration does not explicitly configure slide role or labels. While the A11y module adds some ARIA by default, the explicit role='group' and aria-roledescription='slide' are WAI-ARIA requirements.",
+        "fix": "Add role='group' and aria-roledescription='slide' to each .swiper-slide div in the PHP template. Add aria-label with position information (e.g., 'Slide 1 of 6') using a counter variable in the PHP loop. The Swiper A11y module's default slide messaging may partially cover this, but explicit markup is more reliable.",
+        "files": ["blocks/DynamicContentCarousel/DynamicContentCarousel.php"]
+      },
+      {
+        "id": "A11Y-003",
+        "severity": "major",
+        "requirement": "Autoplay rotation must stop when any carousel element receives keyboard focus or mouse hover, and resume only when user explicitly activates a rotation control. A rotation control (pause/play button) must be provided and must be the first focusable element in the carousel.",
+        "current": "No rotation control exists. There is no pause/play button. There is no pause-on-hover or pause-on-focus behavior. The Swiper autoplay config does not include pauseOnMouseEnter:true or disableOnInteraction:true. When autoplay is enabled, users cannot stop the rotation without interacting with navigation buttons.",
+        "fix": "When autoplayCarousel is enabled: (1) Add a pause/play toggle button as the first focusable element inside the carousel controls area. Its accessible name should toggle between 'Stop slide rotation' and 'Start slide rotation'. Do NOT use aria-pressed. (2) Add pauseOnMouseEnter:true to the Swiper autoplay config in both JS and TSX files. (3) Add event listeners for focusin/focusout on the carousel container to pause/resume autoplay.",
+        "files": ["blocks/DynamicContentCarousel/DynamicContentCarousel.php", "blocks/DynamicContentCarousel/DynamicContentCarousel.js", "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx"]
+      },
+      {
+        "id": "A11Y-004",
+        "severity": "minor",
+        "requirement": "Slide wrapper may use aria-live='polite' (non-rotating) or aria-live='off' (auto-rotating) with aria-atomic='false' to announce slide changes to screen readers",
+        "current": "No aria-live region exists on the swiper-wrapper or any parent element. Swiper's A11y module provides a .swiper-notification element with role='alert' and aria-live='assertive', but this uses assertive priority which may be disruptive.",
+        "fix": "Add aria-live='off' to the .swiper-wrapper when autoplay is active, and aria-live='polite' when autoplay is paused/disabled. This should be managed dynamically by the frontend JS when the pause/play state changes. The Swiper A11y module's .swiper-notification (sr-only, aria-live='assertive') already handles per-slide announcements, so this is a secondary enhancement.",
+        "files": ["blocks/DynamicContentCarousel/DynamicContentCarousel.php", "blocks/DynamicContentCarousel/DynamicContentCarousel.js"]
+      },
+      {
+        "id": "A11Y-005",
+        "severity": "minor",
+        "requirement": "Respect prefers-reduced-motion: disable autoplay and reduce transition durations for users who prefer reduced motion",
+        "current": "No prefers-reduced-motion handling exists. This has been identified as a theme-wide issue affecting CardsCarousel, TestimonialsCarousel, and GalleryCarousel as well (see prior QA reports FQA-003). Autoplay runs regardless of user motion preferences. Swiper slide transitions use default timing.",
+        "fix": "In DynamicContentCarousel.js: check window.matchMedia('(prefers-reduced-motion: reduce)').matches before enabling autoplay. If the user prefers reduced motion, set autoplay:false regardless of the block attribute. Also add a CSS media query in swiper.css or a block-specific CSS file to reduce transition durations. NOTE: This is ideally a theme-wide fix applied to all carousel blocks simultaneously.",
+        "files": ["blocks/DynamicContentCarousel/DynamicContentCarousel.js", "resources/css/screen/swiper.css"],
+        "note": "Theme-wide concern. Fixing it here would set a pattern for CardsCarousel and TestimonialsCarousel to follow."
+      },
+      {
+        "id": "A11Y-006",
+        "severity": "minor",
+        "requirement": "Pagination must be accessible (keyboard navigable, labeled for screen readers)",
+        "current": "The pagination is a progressbar type (<div class='swiper-pagination'>). Progress bars are purely visual indicators with no interactive elements. Swiper's progressbar pagination does not generate focusable elements. The progress bar div has no role or aria-label.",
+        "fix": "Add role='progressbar' and aria-label (e.g., 'Carousel progress') to the .swiper-pagination element. Add aria-valuenow, aria-valuemin='0', and aria-valuemax='100' attributes that are updated by the frontend JS as slides change. Alternatively, since the navigation arrows provide the primary means of carousel control, the progressbar could simply have aria-hidden='true' if it is purely decorative. The latter approach is simpler and acceptable since navigation buttons are the primary interactive controls.",
+        "files": ["blocks/DynamicContentCarousel/DynamicContentCarousel.php", "blocks/DynamicContentCarousel/DynamicContentCarousel.js"]
+      }
+    ],
+    "already_implemented": [
+      {
+        "requirement": "Navigation buttons must have aria-label",
+        "status": "PASS",
+        "evidence": "Both prev and next buttons have aria-label and title attributes with translated text: 'Previous Item' and 'Next Item' (PHP lines 122-130)"
+      },
+      {
+        "requirement": "Section must have accessible name when no heading is present",
+        "status": "PASS",
+        "evidence": "The <section> has a conditional aria-label='Content Carousel' when heading is empty (PHP line 94, TSX line 364-366)"
+      },
+      {
+        "requirement": "Swiper A11y module included",
+        "status": "PASS",
+        "evidence": "Both JS (line 2) and TSX (line 13) import and use the A11y module in the Swiper config. This provides basic keyboard navigation (arrow keys) and screen reader notifications."
+      },
+      {
+        "requirement": "Keyboard navigation via arrow keys",
+        "status": "PASS",
+        "evidence": "Swiper's A11y module provides keyboard navigation out of the box when included in the modules array."
+      },
+      {
+        "requirement": "Navigation buttons are native <button> elements",
+        "status": "PASS",
+        "evidence": "Both prev and next controls use <button> elements (not divs), providing native keyboard support, focus management, and screen reader announcements."
+      },
+      {
+        "requirement": "Disabled state on navigation buttons",
+        "status": "PASS",
+        "evidence": "Swiper automatically adds the disabled attribute to nav buttons when at the start/end of non-looping carousels. The CSS handles disabled styling with opacity-50 and cursor-not-allowed (swiper.css line 73-75)."
+      }
+    ]
+  },
+  "fileChanges": [
+    {
+      "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.php",
+      "action": "modify",
+      "description": "Add WAI-ARIA carousel pattern attributes to carousel container and slides, plus autoplay rotation control button",
+      "details": "1. Add aria-roledescription='carousel' to the .swiper-parent div (line 111). This identifies the widget as a carousel to assistive technologies.\n\n2. Add role='group', aria-roledescription='slide', and aria-label='Slide N of M' to each .swiper-slide div (line 150). Use a counter variable ($slide_index) and $query->found_posts (or post_count) to generate the label.\n\n3. When $autoplayCarousel is true, render a pause/play toggle button as the FIRST focusable element inside the controls row (before pagination). The button should have: (a) a CSS class for JS targeting (e.g., 'carousel-autoplay-toggle'), (b) aria-label set to the initial state text 'Stop slide rotation', (c) data attribute data-label-pause and data-label-play for JS to toggle the accessible name.\n\n4. Add aria-hidden='true' to the .swiper-pagination progress bar (purely visual indicator; navigation buttons provide the interactive controls).",
+      "affectsPhp": true
+    },
+    {
+      "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.js",
+      "action": "modify",
+      "description": "Add autoplay pause-on-hover/focus behavior, rotation control toggle, prefers-reduced-motion check, and dynamic aria-live management",
+      "details": "1. Before creating the Swiper instance, check window.matchMedia('(prefers-reduced-motion: reduce)').matches. If true, force autoplay to false regardless of the data attribute.\n\n2. Add pauseOnMouseEnter:true to the autoplay config object so autoplay pauses when mouse enters the carousel.\n\n3. After Swiper initialization, if autoplay is enabled: (a) Find the .carousel-autoplay-toggle button. (b) Add a click event listener that calls swiper.autoplay.stop() or swiper.autoplay.start() and toggles the button's aria-label between 'Stop slide rotation' and 'Start slide rotation'. (c) Add focusin/focusout event listeners on the .swiper-parent element to pause autoplay on focus and resume on blur (only if the toggle is in 'playing' state).\n\n4. Manage aria-live on .swiper-wrapper: set to 'off' when autoplay is running, 'polite' when paused/stopped.",
+      "affectsPhp": false
+    },
+    {
+      "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+      "action": "modify",
+      "description": "Add aria-roledescription='carousel' to the editor's carousel container for parity with PHP",
+      "details": "The TSX renders the carousel via FilteredServerSideRender, so the PHP output is what appears in the editor preview. However, the section-level aria-label on the useBlockProps should be maintained. No additional TSX changes needed beyond ensuring the PHP changes are reflected in the SSR output. The Swiper config in TSX should also add pauseOnMouseEnter:true to the autoplay config for consistency, though this is less critical in the editor context.",
+      "affectsPhp": false
+    },
+    {
+      "file": "resources/css/screen/swiper.css",
+      "action": "modify",
+      "description": "Add prefers-reduced-motion media query to disable carousel animations and transitions",
+      "details": "Add a @media (prefers-reduced-motion: reduce) block that:\n1. Sets .swiper-wrapper transition-duration to 0ms (overrides Swiper's inline style)\n2. Disables the carousel-nav-btn gradient sweep animation\n3. Disables the swiper-pagination-progressbar-fill transition\n\nThis is a theme-wide fix that benefits all carousels (CardsCarousel, TestimonialsCarousel, DynamicContentCarousel) since they all use swiper.css.\n\nExample:\n@media (prefers-reduced-motion: reduce) {\n  .swiper-wrapper { transition-duration: 0ms !important; }\n  .carousel-nav-btn::before { transition: none; animation: none; }\n  .swiper-pagination-progressbar .swiper-pagination-progressbar-fill { transition: none; }\n}",
+      "affectsPhp": false
+    }
+  ],
+  "attributeChanges": [],
+  "designDecisions": [
+    {
+      "id": "A11Y-DEC-001",
+      "category": "behavior",
+      "decision": "Pagination progress bar should be aria-hidden='true' rather than given a progressbar role",
+      "recommendation": "The progressbar is a purely visual indicator. The navigation buttons provide the actual interactive controls for moving between slides. Adding role='progressbar' with dynamic aria-valuenow would add complexity with minimal benefit, since screen reader users navigate via the prev/next buttons. Setting aria-hidden='true' is simpler and avoids confusing screen readers with a non-interactive progressbar widget.",
+      "source": "WAI-ARIA best practice: avoid exposing purely decorative/visual-only elements to assistive technologies",
+      "needsUserInput": false
+    },
+    {
+      "id": "A11Y-DEC-002",
+      "category": "behavior",
+      "decision": "prefers-reduced-motion fix should be applied theme-wide in swiper.css rather than per-block",
+      "recommendation": "Since all three carousel blocks (CardsCarousel, TestimonialsCarousel, DynamicContentCarousel) share swiper.css for navigation button styles and all use the same Swiper pattern, the CSS-level reduced-motion handling should go in swiper.css. The JS-level autoplay check can be applied per-block for now, with a TODO to refactor into a shared utility later.",
+      "source": "Prior QA reports (FQA-003 in TestimonialsCarousel, FQA-002 in DynamicContentCarousel) identify this as theme-wide",
+      "needsUserInput": false
+    },
+    {
+      "id": "A11Y-DEC-003",
+      "category": "behavior",
+      "decision": "Rotation control button placement: first in the controls row, before pagination",
+      "recommendation": "Per WAI-ARIA carousel pattern, the rotation control must be the first tab-stop inside the carousel for easy location by keyboard users. Place it before the pagination and navigation elements in the controls row. Style it similarly to the carousel-nav-btn (same size, border, colors) with a pause/play icon.",
+      "source": "WAI-ARIA Carousel Pattern: 'Rotation control placement: Must be the first tab-stop inside the carousel for easy location by keyboard users'",
+      "needsUserInput": false
+    },
+    {
+      "id": "A11Y-DEC-004",
+      "category": "behavior",
+      "decision": "Only render autoplay toggle when autoplayCarousel is enabled",
+      "recommendation": "The pause/play button is only meaningful when autoplay is active. When autoplayCarousel is false, omit the button entirely to avoid confusing users with a non-functional control.",
+      "source": "Logical: control is irrelevant without autoplay",
+      "needsUserInput": false
+    }
+  ],
+  "requiresQA": true,
+  "qaScope": "functional",
+  "priority_order": [
+    {
+      "priority": 1,
+      "ids": ["A11Y-001", "A11Y-002"],
+      "reason": "Pure markup changes in PHP only. No JS logic needed. Low risk, high impact for screen reader users."
+    },
+    {
+      "priority": 2,
+      "ids": ["A11Y-003"],
+      "reason": "Requires PHP (button markup) + JS (event handling) changes. Most complex change but critical for autoplay accessibility."
+    },
+    {
+      "priority": 3,
+      "ids": ["A11Y-005"],
+      "reason": "Theme-wide CSS fix in swiper.css benefits all carousel blocks. JS check in DynamicContentCarousel.js is block-specific."
+    },
+    {
+      "priority": 4,
+      "ids": ["A11Y-004", "A11Y-006"],
+      "reason": "Enhancement-level changes. aria-live management is secondary to rotation control. Pagination aria-hidden is a quick markup addition."
+    }
+  ],
+  "notes": {
+    "theme_wide_impact": "Gaps A11Y-001 through A11Y-006 likely exist in CardsCarousel and TestimonialsCarousel as well. Fixing them in DynamicContentCarousel establishes the pattern for those blocks to follow.",
+    "swiper_a11y_module": "The Swiper A11y module (already included) provides some baseline ARIA support: it adds keyboard navigation via arrow keys, a screen-reader-only notification div (role='alert', aria-live='assertive'), and manages some focus behavior. However, it does NOT add role='group'/aria-roledescription='slide' to slides, does NOT add aria-roledescription='carousel' to the container, and does NOT provide a rotation control or pause-on-hover/focus behavior. These must be implemented manually.",
+    "no_attribute_changes": "All changes are in PHP markup, JS behavior, and CSS. No new block.json attributes are needed.",
+    "editor_vs_frontend": "Most a11y changes target the frontend (PHP + JS). The TSX/editor changes are minimal since the carousel section renders via FilteredServerSideRender (PHP output). The Swiper config in TSX should be updated for consistency but the editor is not the primary accessibility target."
+  }
+}

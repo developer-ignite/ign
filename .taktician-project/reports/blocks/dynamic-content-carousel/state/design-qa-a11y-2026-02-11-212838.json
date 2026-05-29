@@ -1,0 +1,135 @@
+{
+  "agent": "design",
+  "timestamp": "2026-02-11-212838",
+  "status": "PASS",
+  "blockName": "DynamicContentCarousel",
+  "output": {
+    "mode": "qa",
+    "context": "Post-accessibility changes verification -- checking for visual regressions after ARIA attributes, role/roledescription, aria-live, aria-label, and autoplay toggle button were added.",
+    "figmaNodeId": "785:33970",
+    "tolerance": "semantic (2-4px)",
+    "compositionGate": "PASS",
+    "compositionNotes": "Overall composition matches the Figma reference at 1440px. The header area with eyebrow, heading, description, and CTA button is correctly laid out with left-aligned heading and right-aligned description/button. The progress bar and navigation arrows sit between the header and card area. Three cards are visible with equal heights, each showing an image at top with rounded corners and a teal/accent background, followed by heading, body text, and a LEARN MORE CTA at the bottom.",
+    "breakpointChecks": [
+      {
+        "breakpoint": "1440px (desktop)",
+        "browsers": ["chromium", "firefox", "webkit"],
+        "status": "PASS",
+        "observations": [
+          "Layout matches Figma: 3-column card grid with consistent gap spacing",
+          "Header area with eyebrow, heading (Anton font), description, and CTA button is correctly positioned",
+          "Navigation arrows (prev/next) and pagination progress bar render correctly in the control bar",
+          "Cards display at equal height with accent-colored backgrounds",
+          "Card images have proper rounded corners and aspect ratio",
+          "Typography hierarchy (eyebrow, heading, body, CTA) is consistent",
+          "Dark background section with proper contrast for white text",
+          "All three browsers render identically with no cross-browser differences"
+        ]
+      },
+      {
+        "breakpoint": "1024px (laptop)",
+        "browsers": ["chromium", "firefox", "webkit"],
+        "status": "PASS",
+        "observations": [
+          "3-column layout maintained at laptop width",
+          "Cards scale proportionally with the viewport",
+          "Navigation controls remain properly positioned",
+          "No overflow or clipping issues",
+          "Cross-browser rendering is consistent"
+        ]
+      },
+      {
+        "breakpoint": "768px (tablet)",
+        "browsers": ["chromium", "firefox", "webkit"],
+        "status": "PASS",
+        "observations": [
+          "Layout adapts to show 2 visible cards with partial third card peeking",
+          "Header stacks appropriately -- heading and description are readable",
+          "Navigation arrows and pagination bar remain functional and visible",
+          "Card content (image, heading, body, CTA) maintains proper hierarchy",
+          "Equal-height cards still functioning correctly",
+          "Cross-browser rendering is consistent across Chromium, Firefox, and WebKit"
+        ]
+      },
+      {
+        "breakpoint": "375px (mobile)",
+        "browsers": ["chromium", "firefox", "webkit"],
+        "status": "PASS",
+        "observations": [
+          "Single card visible with proper mobile layout",
+          "Header area stacks vertically -- eyebrow, heading, description all readable",
+          "CTA button in header displays correctly",
+          "Navigation arrows and pagination bar are appropriately sized for mobile",
+          "Card images fill the card width with proper aspect ratio",
+          "Text is readable and does not overflow",
+          "Cross-browser rendering is consistent"
+        ]
+      }
+    ],
+    "a11yRegressionCheck": {
+      "status": "PASS",
+      "details": [
+        {
+          "check": "ARIA attributes are invisible",
+          "result": "PASS",
+          "notes": "aria-roledescription='carousel' on swiper-parent, role='group' + aria-roledescription='slide' + aria-label='Slide N of M' on each slide, aria-live on wrapper, aria-hidden on pagination -- all present in DOM but have zero visual impact. No layout shifts, no extra spacing, no visible text from ARIA attributes."
+        },
+        {
+          "check": "Autoplay toggle button fits design",
+          "result": "PASS (not visible on test page)",
+          "notes": "All test page instances have autoplay disabled (data-autoplay='0'), so the autoplay toggle button correctly does not render. The button uses the carousel-nav-btn class (40x48px mobile, 48x48px desktop, rounded-full, border, with Pause/Play SVG icon), which matches the existing nav button design language. When autoplay is enabled, the button renders inline with the pagination bar and nav arrows."
+        },
+        {
+          "check": "Section labeling",
+          "result": "PASS",
+          "notes": "Sections with headings use aria-labelledby pointing to the heading element. Sections without headings use aria-label='Content Carousel'. Both approaches are correct."
+        }
+      ]
+    },
+    "verificationChecklist": {
+      "noVisualRegressions": {
+        "status": "PASS",
+        "detail": "Compared implementation screenshots across all 3 browsers at all 4 breakpoints against Figma reference at 785:33970. No visual regressions detected. ARIA attributes are DOM-only and produce no visual output. Layout, spacing, typography, and colors are unchanged."
+      },
+      "equalHeightCards": {
+        "status": "PASS",
+        "detail": "CSS rule '.dynamic-content-carousel .swiper-slide > * { height: 100%; }' is present in swiper.css line 143-144. Visually confirmed in screenshots: cards within each carousel instance align to equal heights across all breakpoints. The card bottom edges (with LEARN MORE CTAs) align horizontally."
+      },
+      "imageHoverZoomCSS": {
+        "status": "PASS",
+        "detail": "CSS rules in swiper.css lines 147-156 are present: '.dynamic-content-carousel .card-post img, .card-team-member img { transition: transform 0.3s ease; }' and ':hover img { transform: scale(1.05); }'. Hover states cannot be verified in screenshots but the CSS is confirmed present."
+      },
+      "layoutCorrectAllBreakpoints": {
+        "status": "PASS",
+        "detail": "1440px: 3-column layout with full cards visible. 1024px: 3-column maintained. 768px: 2 cards visible with partial peek of third. 375px: Single card visible. All match expected responsive behavior."
+      }
+    },
+    "crossBrowserConsistency": {
+      "status": "PASS",
+      "notes": "Chromium, Firefox, and WebKit render identically across all 4 breakpoints. No browser-specific layout differences, font rendering issues, or visual artifacts detected."
+    },
+    "blockVariations": {
+      "tested": [
+        "Blog (posts with images, pagination + navigation)",
+        "Other Initiatives (posts with header description + CTA button)",
+        "Meet the Team (team members card type)",
+        "Browse Resources (resource card type, no images)",
+        "Our Policies (policy card type, no images)",
+        "Featured Posts (empty state -- no posts matching filter)",
+        "Hidden When Empty (policies, pagination + navigation)",
+        "Long heading stress test (extremely long heading + CTA)",
+        "Minimal Carousel (no pagination, no navigation)"
+      ],
+      "allRenderedCorrectly": true
+    },
+    "issues": [],
+    "issueCount": {
+      "critical": 0,
+      "major": 0,
+      "minor": 0,
+      "note": 0
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

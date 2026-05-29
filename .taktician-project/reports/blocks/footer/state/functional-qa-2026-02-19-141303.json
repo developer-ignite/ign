@@ -1,0 +1,116 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-19-141338",
+  "status": "PASS",
+  "blockName": "Footer",
+  "output": {
+    "scope": "fix-verification",
+    "fixVerified": "race-condition — useEffect directChildrenKey dependency",
+    "summary": {
+      "checksRun": 3,
+      "checksPassed": 3,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "detail": "taktician_validate_all passed. 0 errors in Footer block. 9 pre-existing react-hooks/exhaustive-deps warnings in other blocks (Accordion, Archive, ContentWithMedia, FullWidthMedia, PostHero, Tabs) — none in Footer. Sync: 1 expected false-positive warning (FooterInfo.tsx InspectorControls root vs PHP section — editor-only wrapper, not a frontend issue). Registration: 0 issues."
+      },
+      "fixSourceVerification": {
+        "status": "pass",
+        "file": "blocks/Footer/Footer.tsx",
+        "findings": {
+          "useSelectShape": {
+            "status": "pass",
+            "detail": "useSelect (lines 36–43) returns both directChildren (full block objects, for use in the effect body) and directChildrenKey (string, for use as the effect dependency). Key is computed as blocks.map(b => `${b.name}:${b.clientId}`).join(',') — a stable string that changes only when direct children are added, removed, or reordered.",
+            "code": "const key = blocks.map((b) => `${b.name}:${b.clientId}`).join(\",\");"
+          },
+          "useEffectDependency": {
+            "status": "pass",
+            "detail": "useEffect dependency array (line 77) is [directChildrenKey, clientId, replaceInnerBlocks] — uses the string key, not the directChildren object array. An eslint-disable comment (line 76) correctly suppresses the exhaustive-deps warning for the intentional directChildren omission, with an explanatory comment on lines 72–75.",
+            "code": "}, [directChildrenKey, clientId, replaceInnerBlocks]);"
+          },
+          "effectBodyCorrectness": {
+            "status": "pass",
+            "detail": "Effect body (lines 46–71) uses directChildren (the full block objects from the same selector call) to perform template enforcement: iterates TEMPLATE to find existing children by name, creates missing required blocks, then checks order via clientId comparison and calls replaceInnerBlocks only when the order or membership changed. Logic is correct and complete.",
+            "templateEnforcement": [
+              "Finds existing direct child matching each TEMPLATE entry by block name",
+              "Creates a new block for any required entry that is absent",
+              "Filters out any non-template direct children",
+              "Compares clientIds to detect reordering without unnecessary replacements",
+              "Calls replaceInnerBlocks(clientId, reordered, false) only when needsUpdate || !isSameOrder"
+            ]
+          },
+          "raceConditionFix": {
+            "status": "pass",
+            "detail": "Previous implementation used innerBlocks (full nested object tree) as the effect dependency. Any change to a deeply-nested descendant (e.g. editing a FooterInfoSocialItem attribute) would produce a new object reference, triggering the effect and causing replaceInnerBlocks to fire unnecessarily. The fix replaces this with directChildrenKey — a primitive string derived solely from direct children names and clientIds. Deeply-nested changes do not alter directChildrenKey, so the effect no longer fires spuriously."
+          }
+        }
+      },
+      "renderedOutput": {
+        "status": "pass",
+        "detail": "Page audit of https://ign.localhost/test-footer/ confirms all 7 footer sections render correctly and match the previous verified run.",
+        "results": {
+          "totalSections": 7,
+          "sectionsWithLogo": {
+            "indices": [
+              0,
+              6
+            ],
+            "imageCount": 1,
+            "logoLink": "href='/' with SVG child (text empty — expected, SVG has no text node)",
+            "assessment": "PASS — logo renders correctly in sections that have a logoId set"
+          },
+          "sectionsWithoutLogo": {
+            "indices": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "logoPresent": false,
+            "assessment": "PASS — logo area absent as expected (FQA-001 fix still holds)"
+          },
+          "linkCounts": [
+            32,
+            3,
+            25,
+            5,
+            7,
+            22,
+            32
+          ],
+          "linkCountsMatchPreviousRun": true,
+          "note": "editor-only class selectors (footer-inner, footer-info, footer-nav, footer-credits) correctly absent from frontend HTML — PHP renders via theme_block_props() which produces wp-block-takt-* class names, not the editor wrapper class names."
+        }
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build passes with 0 errors in Footer block",
+      "useSelect returns both directChildren (objects) and directChildrenKey (string) from same selector",
+      "directChildrenKey is computed as `name:clientId` pairs joined by comma — stable primitive",
+      "useEffect dependency array uses directChildrenKey string, not directChildren object reference",
+      "eslint-disable comment present with clear explanatory note for the intentional exhaustive-deps suppression",
+      "Effect body still correctly enforces template: finds existing, creates missing, detects reorder, calls replaceInnerBlocks only when needed",
+      "Race condition resolved: nested block changes (e.g. FooterInfoSocialItem edits) no longer alter directChildrenKey and will not trigger the effect",
+      "All 7 footer sections render correctly on test page with correct content",
+      "Logo anchor present/absent in correct sections — FQA-001 fix still intact"
+    ],
+    "resolvedIssues": [
+      {
+        "id": "race-condition",
+        "description": "useEffect fired on every nested block change due to innerBlocks object reference dependency",
+        "status": "resolved",
+        "verifiedBy": "Source review of Footer.tsx lines 36–77 confirming directChildrenKey string dependency"
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

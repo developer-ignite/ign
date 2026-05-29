@@ -1,0 +1,29 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-17-210124",
+  "status": "complete",
+  "output": {
+    "summary": "Remove the HTML tag hints '(H2)' and '(H3)' from the heading size toggle labels in the editor sidebar. This is a cosmetic TSX-only change affecting two string literals.",
+    "fileChanges": [
+      {
+        "file": "blocks/ContentWithMedia/ContentWithMedia.tsx",
+        "action": "modify",
+        "description": "Update heading size toggle option labels to remove HTML tag references",
+        "details": "Line 302: Change 'Regular (H2)' to 'Regular'. Line 305: Change 'Small (H3)' to 'Small'. These are the ToggleGroupControlOption label props inside the 'Heading Size' ToggleGroupControl.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "editor-ui",
+        "decision": "Remove HTML tag hints from heading size labels",
+        "source": "user-request",
+        "evidence": "User explicitly requested removing (H2) and (H3) from the heading size field labels"
+      }
+    ],
+    "requiresQA": false,
+    "qaScope": "none"
+  }
+}

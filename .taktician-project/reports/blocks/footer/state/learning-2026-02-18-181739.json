@@ -1,0 +1,30 @@
+{
+  "revision": 1,
+  "analysis": {
+    "mistake": "User feedback suggests developer agent may have used non-default tools (Write/Bash) instead of Edit tool when modifying existing block files. The developer-agent.md instructions do not have explicit rules about tool selection precedence.",
+    "expected": "Clear, enforced rules that guide agents to use Edit for modifying existing files, Write only for new files, and taktician tools instead of Bash for WordPress operations.",
+    "rootCause": "The developer-agent.md instructions lack explicit tool selection guidance. While it specifies WHICH tools to use in specific phases (Phase 6 for test pages, Phase 5.5 for validation), it does not establish a general principle: 'Always use Edit for existing files, Write only for new files' or 'Use taktician tools before Bash for theme/WordPress operations.' Agents must infer correct tool usage from generic tool documentation rather than from block-specific developer guidance.",
+    "rootCauseType": "ambiguous-instruction",
+    "responsiblePhase": "development"
+  },
+  "suggestions": [
+    {
+      "type": "general",
+      "action": "add",
+      "target": ".taktician/agents/developer-agent.md",
+      "section": "Tool Restrictions",
+      "content": "**Edit (default for modifying existing files):** Always use Edit when changing existing block files (.tsx, .php, .json, .css, .svg). Never use Write or Bash to overwrite existing files. Write tool is ONLY for creating new files that don't exist. Bash is ONLY for operations that cannot be performed with other tools (e.g., `bun run build`, `bun run format`).",
+      "rationale": "Establishes explicit precedence to prevent agents from using destructive Write operations on existing files, which can lose work if the file isn't read first.",
+      "implemented": false
+    },
+    {
+      "type": "general",
+      "action": "add",
+      "target": ".taktician/agents/developer-agent.md",
+      "section": "Tool Restrictions",
+      "content": "**WordPress operations (taktician tools first):** Always use `taktician_wp_*` tools for WordPress operations (list, get, create, update, delete posts/pages/media) before falling back to Bash. Always use `taktician_wp_raw_content` or `taktician_wp_count_blocks` to verify block instances exist on test pages, never use `taktician_wp_get` (which returns rendered HTML with stripped block comments).",
+      "rationale": "Ensures consistency across agents and prevents silent failures from Bash commands that don't validate WordPress state properly.",
+      "implemented": false
+    }
+  ]
+}

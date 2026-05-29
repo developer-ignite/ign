@@ -1,0 +1,4 @@
+@custom-variant open (&:where(.is-open, .is-open &, [open], [open] &));
+@custom-variant fixed (&:where(.fixed, .fixed\!, .fixed *, .fixed\! *));
+@custom-variant active (&:where(.is-active, .is-active *));
+@custom-variant menu-open (&:where(.menu-open, .menu-open *));

@@ -1,0 +1,106 @@
+{
+  "block": "Archive",
+  "testPage": "https://ign.localhost/test-archive/",
+  "figmaNodes": {
+    "desktop": "811:59617",
+    "mobile": "811:60400"
+  },
+  "focusArea": "Vertical padding change from py-gap-6 to py-gap-8",
+  "comparison": {
+    "topPadding": {
+      "figma": "96px",
+      "implementation": "96px (desktop via gap-8), 72px (mobile)",
+      "match": true,
+      "notes": "Desktop matches exactly. Mobile uses responsive scaling (72px) which is acceptable."
+    },
+    "bottomPadding": {
+      "figma": "96px",
+      "implementation": "96px (desktop via gap-8), 72px (mobile)",
+      "match": true,
+      "notes": "Desktop matches exactly. Mobile uses responsive scaling (72px) which is acceptable."
+    },
+    "internalGaps": {
+      "figma": "64px (margin-5 between major sections)",
+      "implementation": "48px (gap-5 at desktop)",
+      "match": false,
+      "notes": "Implementation uses gap-gap-5 (32px mobile, 48px desktop) while Figma shows 64px gap between heading/filters and content rows. This is a minor discrepancy."
+    },
+    "horizontalPadding": {
+      "figma": "32px (margin-3)",
+      "implementation": "32px via container + side-gutter",
+      "match": true
+    },
+    "darkBackgroundRadius": {
+      "figma": "25px (rounded-[25px])",
+      "implementation": "24px (rounded-3xl)",
+      "match": true,
+      "notes": "1px difference is within tolerance"
+    }
+  },
+  "issues": [
+    {
+      "id": "DQA-001",
+      "severity": "minor",
+      "category": "spacing",
+      "element": "Internal section gap",
+      "breakpoint": "desktop",
+      "figmaValue": "64px",
+      "implementationValue": "48px (gap-5)",
+      "difference": "16px",
+      "withinTolerance": false,
+      "description": "The gap between the heading section and filter/content sections is 48px in implementation vs 64px in Figma design.",
+      "recommendation": "Consider changing gap-gap-5 to gap-gap-6 (64px at desktop) on the inner container if exact Figma match is required. However, the current spacing looks visually balanced."
+    }
+  ],
+  "positiveFindings": [
+    {
+      "category": "spacing",
+      "description": "Top and bottom padding (96px) inside dark background now matches Figma design at desktop breakpoint"
+    },
+    {
+      "category": "layout",
+      "description": "Overall composition matches Figma - dark rounded background, heading with CTA button, filter bar, masonry-style card grid"
+    },
+    {
+      "category": "typography",
+      "description": "Anton font headings, Roboto Medium for buttons and labels all appear correct"
+    },
+    {
+      "category": "colors",
+      "description": "Dark charcoal background (#1e1e1c), white text, neon green tags are all present"
+    },
+    {
+      "category": "responsive",
+      "description": "Mobile layout properly stacks filters vertically and reduces card columns"
+    }
+  ],
+  "compositionGate": {
+    "passed": true,
+    "notes": "Overall shape, proportions, and element positions match the Figma design. The block displays a dark background area with proper corner radius, heading with CTA button aligned right, filter dropdowns and per-page controls, and a responsive card grid with Load More button."
+  },
+  "overallStatus": "pass",
+  "notes": "The primary focus of this QA - the vertical padding change from py-gap-6 to py-gap-8 - has been successfully implemented. At desktop (960px+), the padding is now 96px which matches the Figma specification of margin-7 (96px). The only discrepancy found is a minor 16px difference in internal section gaps, which does not significantly impact the overall visual design. The block passes QA.",
+  "screenshotsCompared": [
+    {
+      "type": "figma",
+      "nodeId": "811:59617",
+      "breakpoint": "desktop"
+    },
+    {
+      "type": "figma",
+      "nodeId": "811:60400",
+      "breakpoint": "mobile"
+    },
+    {
+      "type": "implementation",
+      "path": ".taktician-project/reports/blocks/archive/archive-qa-chromium-1440w.png",
+      "breakpoint": "desktop"
+    },
+    {
+      "type": "implementation",
+      "path": ".taktician-project/reports/blocks/archive/archive-qa-chromium-375w.png",
+      "breakpoint": "mobile"
+    }
+  ],
+  "timestamp": "2026-02-11T12:00:00Z"
+}

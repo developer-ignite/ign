@@ -1,0 +1,91 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/call-to-action",
+  "title": "Call to Action",
+  "category": "takt-theme",
+  "description": "A call-to-action section with heading, description, and buttons. Supports solid color or image backgrounds.",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "backgroundType": {
+      "type": "string",
+      "default": "color",
+      "enum": ["color", "image"]
+    },
+    "image": {
+      "type": "object",
+      "default": {
+        "id": null,
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "buttons": {
+      "type": "array",
+      "default": [
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "primary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "secondary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "tertiary",
+          "title": "",
+          "label": ""
+        }
+      ]
+    },
+    "accentColor": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "heading": "Make Your Voice Count, Shape Your Student Experience With IGNITE Today.",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "backgroundType": "image",
+      "image": {
+        "id": "https://picsum.photos/id/666/1440/600",
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      },
+      "buttons": [
+        { "url": "#", "variation": "primary", "title": "Become A Student Advocate" },
+        { "url": "#", "variation": "secondary", "title": "Work At IGNITE" }
+      ]
+    }
+  }
+}

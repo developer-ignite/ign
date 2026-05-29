@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/error404",
+  "title": "Error 404",
+  "category": "takt-theme-template",
+  "description": "Displays an error message for 404 pages with heading, description, and CTA buttons",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "multiple": false
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "buttons": {
+      "type": "array",
+      "default": [
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "primary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "secondary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "tertiary",
+          "title": "",
+          "label": ""
+        }
+      ]
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "heading": "404",
+      "description": "Sorry, the page you are looking for doesn't exist or has been moved.",
+      "buttons": [
+        {
+          "url": "#",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "primary",
+          "title": "Go to Homepage",
+          "label": ""
+        }
+      ]
+    }
+  }
+}

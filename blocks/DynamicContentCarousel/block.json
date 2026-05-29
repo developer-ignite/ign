@@ -1,0 +1,113 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/dynamic-content-carousel",
+  "title": "Dynamic Content Carousel",
+  "category": "takt-theme",
+  "description": "Displays dynamically queried posts in a carousel with accent-colored cards, configurable post types, taxonomy filtering, and automatic/manual selection modes.",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "buttons": {
+      "type": "array"
+    },
+    "postsType": {
+      "type": "string",
+      "default": "post",
+      "enum": ["post", "team_member", "resource", "policy", "tribe_events"]
+    },
+    "postsSource": {
+      "type": "string",
+      "default": "automatic",
+      "enum": ["automatic", "manual", "related"]
+    },
+    "selectedPosts": {
+      "type": "array",
+      "default": []
+    },
+    "postsLimit": {
+      "type": "number",
+      "default": 9
+    },
+    "hideIfEmpty": {
+      "type": "boolean",
+      "default": false
+    },
+    "fallbackToLatest": {
+      "type": "boolean",
+      "default": true
+    },
+    "selectedCategories": {
+      "type": "array",
+      "default": []
+    },
+    "selectedDepartments": {
+      "type": "array",
+      "default": []
+    },
+    "selectedAudiences": {
+      "type": "array",
+      "default": []
+    },
+    "selectedResourceTypes": {
+      "type": "array",
+      "default": []
+    },
+    "selectedPolicyTopics": {
+      "type": "array",
+      "default": []
+    },
+    "showPagination": {
+      "type": "boolean",
+      "default": true
+    },
+    "showNavigation": {
+      "type": "boolean",
+      "default": true
+    },
+    "loopCarousel": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayCarousel": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayDelay": {
+      "type": "number",
+      "default": 3
+    },
+    "showTags": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "eyebrow": "Work Integrated Learning Initiative",
+      "heading": "Other Initiatives",
+      "description": "Diam sed vestibulum et aliquam dignissim velit nulla.",
+      "postsType": "post",
+      "postsSource": "automatic"
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/accordion",
+  "title": "Accordion",
+  "category": "takt-theme",
+  "description": "Displays eyebrow, title, description, and buttons on one side and accordions on the other",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "blockVariation": {
+      "type": "string",
+      "default": "default",
+      "enum": ["default", "with-media"]
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "buttons": {
+      "type": "array"
+    },
+    "mediaType": {
+      "type": "string",
+      "default": "image",
+      "enum": ["image", "video"]
+    },
+    "mediaId": {
+      "type": "number"
+    },
+    "focalPoint": {
+      "type": "object",
+      "default": { "x": 0.5, "y": 0.5 }
+    },
+    "videoSource": {
+      "type": "string",
+      "default": "youtube",
+      "enum": ["file", "youtube", "vimeo"]
+    },
+    "videoFile": {
+      "type": "number"
+    },
+    "videoId": {
+      "type": "string"
+    },
+    "posterImage": {
+      "type": "object",
+      "default": { "id": null, "focalPoint": { "x": 0.5, "y": 0.5 } }
+    },
+    "exclusiveMode": {
+      "type": "boolean",
+      "default": false
+    },
+    "alwaysOneOpen": {
+      "type": "boolean",
+      "default": false
+    },
+    "enableFaqSchema": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "eyebrow": "Fees",
+      "heading": "Fueling Change Through Your Support",
+      "description": "IGNITE is your partner in discovering your full potential through your academic journey. With the valuable input from the Board of Directors and the passionate voices of student advocates, we are dedicated to provide you the tools you need to excel!",
+      "posterImage": {
+        "id": "https://picsum.photos/id/1026/800/600",
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    },
+    "innerBlocks": [
+      {
+        "name": "takt/accordion-item",
+        "attributes": { "title": "Health + Dental (Optional)" }
+      },
+      {
+        "name": "takt/accordion-item",
+        "attributes": { "title": "Leadership + Advocacy (Mandatory)" }
+      },
+      {
+        "name": "takt/accordion-item",
+        "attributes": { "title": "Membership Fees (Mandatory)" }
+      }
+    ]
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/archive",
+  "title": "Archive",
+  "category": "takt-theme",
+  "description": "Displays a filterable archive of posts from a custom post type with taxonomy filtering, search, pagination, and per-page controls.",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "blockVariation": {
+      "type": "string",
+      "default": "post"
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "buttons": {
+      "type": "array"
+    },
+    "displayFilters": {
+      "type": "boolean",
+      "default": true
+    },
+    "displaySearch": {
+      "type": "boolean",
+      "default": false
+    },
+    "displayPerPage": {
+      "type": "boolean",
+      "default": true
+    },
+    "postsPerPage": {
+      "type": "number",
+      "default": 9
+    },
+    "maxColumns": {
+      "type": "number",
+      "default": 3
+    },
+    "paginationMode": {
+      "type": "string",
+      "default": "load-more",
+      "enum": ["pagination", "load-more"]
+    },
+    "darkMode": {
+      "type": "boolean",
+      "default": true
+    },
+    "presetFilters": {
+      "type": "object",
+      "default": {}
+    },
+    "showTags": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "heading": "Archive",
+      "description": "Browse all items.",
+      "darkMode": true
+    }
+  }
+}

@@ -1,0 +1,215 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-13T16:51:16",
+  "status": "complete",
+  "severity": "none",
+  "output": {
+    "summary": "Add a darkMode boolean attribute (default: true) to the Archive block to toggle light/dark mode, following the established CardsCarousel/CardsGrid pattern. Fix btn-tertiary hover contrast bug where 'Read More'/'View Resource' buttons become invisible (white on white) when the archive is in light mode and resource/policy cards are hovered.",
+    "fileChanges": [
+      {
+        "file": "blocks/Archive/block.json",
+        "action": "modify",
+        "description": "Add darkMode boolean attribute with default true",
+        "details": "Add `\"darkMode\": { \"type\": \"boolean\", \"default\": true }` to the attributes object. Update the example to include `\"darkMode\": true`.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Archive/Archive.tsx",
+        "action": "modify",
+        "description": "Add darkMode toggle to editor UI and make dark mode classes conditional",
+        "details": "1. Add `darkMode: boolean` to ArchiveAttributes type. 2. Import `shadow` icon from `@wordpress/icons`, `BlockControls` and `ToolbarButton`/`ToolbarGroup` from WP components. 3. Add BlockControls toolbar button for dark mode toggle (same pattern as CardsCarousel). 4. Change section className from hardcoded `'archive dark bg-transparent! py-gap-8'` to conditional: `cn({ 'archive py-gap-8': true, 'dark bg-transparent!': attributes.darkMode })`. 5. Change the inner wrapper div from hardcoded dark-mode pseudo-element classes to conditional: `cn({ 'container grid grid-cols-1 gap-gap-5': true, 'relative grid grid-cols-1 gap-gap-5 before:absolute before:bg-charcoal before:rounded-3xl before:-z-1 before:-inset-x-(--side-gutter) before:-inset-y-gap-6 md:before:-inset-x-8 md:before:-inset-y-gap-8': attributes.darkMode })`.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Archive/Archive.php",
+        "action": "modify",
+        "description": "Make dark mode classes conditional using $darkMode attribute and add data-dark-mode attribute",
+        "details": "1. Change section from `theme_block_props('archive dark bg-transparent! py-gap-8')` to `theme_block_props(class_name(['archive py-gap-8' => true, 'dark bg-transparent!' => $darkMode]))`. 2. Change inner wrapper div from hardcoded dark pseudo-element classes to conditional using `class_name(['container grid grid-cols-1 gap-gap-5' => true])` for outer container and `class_name(['grid grid-cols-1 gap-gap-5' => true, 'relative before:absolute before:bg-charcoal before:rounded-3xl before:-z-1 before:-inset-x-(--side-gutter) before:-inset-y-gap-6 md:before:-inset-x-8 md:before:-inset-y-gap-8' => $darkMode])` for inner wrapper. 3. Add `data-dark-mode` attribute to section for JS to detect mode (needed for AJAX-loaded content to inherit the correct card styling).",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Archive/Archive.css",
+        "action": "modify",
+        "description": "Fix btn-tertiary hover contrast and add light mode support for card hover states and UI elements",
+        "details": "Key changes: 1. **btn-tertiary hover fix (Bug):** The resource/policy card hover transitions the card from bg-charcoal to bg-accent. In dark mode, `dark:hover:text-off-white` on `.btn-tertiary` would make the button text off-white/cream on a neon-green background. The existing `!important` overrides handle this for group-hover, but the btn-tertiary's own `:hover` pseudo-class (`dark:hover:text-off-white`) can still fire. Add `.archive:not(.dark) .card-resource .btn-tertiary, .archive:not(.dark) .card-policy .btn-tertiary { color: var(--color-charcoal); }` for light mode base. Also add `.archive:not(.dark) .card-resource .group:hover .btn-tertiary, .archive:not(.dark) .card-policy .group:hover .btn-tertiary { color: var(--color-charcoal) !important; }` to keep the btn-tertiary charcoal when card turns accent on hover. 2. **Light mode dropdown arrow:** The current select arrow SVG is hardcoded white. Add a `.archive:not(.dark) select` rule with a charcoal-colored arrow SVG. 3. **Light mode vertical dividers (blog):** The `rgba(255,255,255,0.2)` divider color should switch to `rgba(31,31,29,0.2)` in light mode for the blog xl layout. 4. **Light mode blog Load More button:** Remove the white-filled override when not in dark mode. 5. **Navigation pagination dark mode overrides:** The `.navigation .page-numbers` and prev/next buttons use hardcoded charcoal backgrounds. Add `.dark .navigation` overrides for white text and appropriate contrast.",
+        "affectsPhp": false
+      },
+      {
+        "file": "parts/card-resource.php",
+        "action": "modify",
+        "description": "Add dark-mode-aware classes so card works in both light and dark archive sections",
+        "details": "The card currently has hardcoded `bg-charcoal` and `border-off-white` assuming dark mode context. For light mode support: Change `bg-charcoal` to `dark:bg-charcoal bg-white` and `border-off-white` to `dark:border-off-white border-charcoal/10`. The hover states `group-hover:bg-accent group-hover:border-accent group-hover:text-charcoal` work in both modes since accent is always a bright color with charcoal text. Also the tag pills `bg-accent-lighter border-accent-light text-charcoal` work in both modes. The btn-tertiary already has `group-hover:text-charcoal!` which is correct for both modes.",
+        "affectsPhp": true
+      },
+      {
+        "file": "parts/card-policy.php",
+        "action": "modify",
+        "description": "Add dark-mode-aware classes so card works in both light and dark archive sections",
+        "details": "Same pattern as card-resource.php: Change `bg-charcoal` to `dark:bg-charcoal bg-white` and `border-off-white` to `dark:border-off-white border-charcoal/10` on the article element. Hover states remain the same.",
+        "affectsPhp": true
+      },
+      {
+        "file": "parts/card-post.php",
+        "action": "modify",
+        "description": "Verify blog card works in light mode - the card has no background so it inherits from section, which already works",
+        "details": "The blog card uses `dark:text-white` on the article which is already conditional. The `card-post-cta btn-tertiary` with `group-hover:text-[var(--accent-color)]!` should work in both modes. No structural changes needed, but verify the accent-color hover is visible against the off-white page background in light mode.",
+        "affectsPhp": false
+      },
+      {
+        "file": "resources/css/screen/navigation.css",
+        "action": "modify",
+        "description": "Add dark mode overrides for pagination within archive context",
+        "details": "The pagination `.page-numbers` text and backgrounds are hardcoded for light backgrounds (charcoal backgrounds, charcoal text). Add `.dark .navigation` overrides: 1. `.dark .navigation .nav-links::after` - change bar color from `rgba(31,31,29,0.5)` to `rgba(255,255,255,0.3)`. 2. `.dark .navigation .page-numbers` - white text color. 3. `.dark .navigation .page-numbers.current` - white text. 4. `.dark .navigation :is(.prev,.next)` - white background with charcoal arrow (invert). These overrides ensure pagination is visible in both dark and light archive modes.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [
+      {
+        "action": "add",
+        "name": "darkMode",
+        "type": "boolean",
+        "default": true,
+        "description": "Toggle dark mode on/off for the archive section. When true, displays charcoal pseudo-element background with white text (existing behavior). When false, displays on the page's off-white background with charcoal text."
+      }
+    ],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "color",
+        "question": "What should the resource/policy card background be in light mode?",
+        "recommendation": "Use `bg-white` with a subtle `border-charcoal/10` border. On hover, transition to `bg-accent` with `text-charcoal` (same accent hover as dark mode). This maintains the card distinction against the off-white page background while keeping the hover behavior consistent.",
+        "source": "existing-pattern",
+        "evidence": "CardsGrid items use bg-white in light mode with border styling. Resource/policy cards need distinct backgrounds since they don't have images.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-002",
+        "category": "color",
+        "question": "Should the team member cards change in light mode?",
+        "recommendation": "No changes needed. Team member cards use `bg-accent text-charcoal` which works on both light and dark backgrounds. The accent color card is already high-contrast.",
+        "source": "existing-pattern",
+        "evidence": "Card-team-member.php uses bg-accent which is neon-green - visible on both off-white and charcoal backgrounds.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-003",
+        "category": "color",
+        "question": "Should the testimonial cards change in light mode?",
+        "recommendation": "No changes needed. Testimonial cards use `bg-accent text-charcoal` which works on both backgrounds.",
+        "source": "existing-pattern",
+        "evidence": "Card-testimonial.php uses bg-accent rounded-3xl which is high-contrast on any background.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-004",
+        "category": "behavior",
+        "question": "How should filter dropdowns and form elements look in light mode?",
+        "recommendation": "The forms.css global styles handle light mode by default. The Archive.css overrides for the dropdown arrow SVG (currently white) need a light-mode variant with a charcoal stroke. The select elements will pick up the standard charcoal border/text from global form styles when not in dark mode.",
+        "source": "existing-pattern",
+        "evidence": "The `.archive select` block in Archive.css overrides the dropdown arrow to white for dark mode. Need a charcoal version for light mode.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-005",
+        "category": "color",
+        "question": "What is the 'read more button hover becomes white on white' bug?",
+        "recommendation": "The `.btn-tertiary` component CSS defines `hover:text-charcoal` and `dark:hover:text-off-white`. In the archive's dark mode, when a resource/policy card is hovered, the card background changes from charcoal to accent (neon-green). The btn-tertiary `dark:hover:text-off-white` would make the button text off-white/cream-colored on a neon-green background - not white-on-white literally, but very low contrast cream-on-green. The existing Archive.css `!important` overrides handle the group-hover scenario, but if the user directly hovers the btn-tertiary element itself, the component's own `:hover` pseudo may still fire. Fix by strengthening the Archive.css override specificity to cover direct hover on the btn-tertiary within a group-hovered card. Additionally, when light mode is added, the same issue would occur more visibly: off-white text on a light background. The fix covers both modes.",
+        "source": "code-analysis",
+        "evidence": "btn-tertiary CSS: `dark:hover:text-off-white` (button.css line 63). Archive.css lines 148-161 override for group:hover but not for direct btn-tertiary:hover within an already group-hovered card.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-006",
+        "category": "layout",
+        "question": "Should the dark mode pseudo-element vertical inset values change?",
+        "recommendation": "No. The existing values (`before:-inset-y-gap-6 md:before:-inset-y-gap-8`) already match the section padding (`py-gap-8`) per the project rule in taktician.md. In light mode, these pseudo-element classes are simply not rendered.",
+        "source": "project-rules",
+        "evidence": "taktician.md: 'dark mode vertical inset MUST match section vertical padding'",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-007",
+        "category": "behavior",
+        "question": "Should the Archive.js AJAX behavior change for light/dark mode?",
+        "recommendation": "No changes needed to Archive.js. The AJAX fetches the full page and extracts the matching archive section. The server will render the correct light/dark classes based on the block attribute, and the AJAX response will include the correct styling. The `data-dark-mode` attribute on the section can be used if JS-level detection is needed in the future, but currently the card partials should handle both modes via CSS classes.",
+        "source": "code-analysis",
+        "evidence": "Archive.js extracts `.archive-results` innerHTML from AJAX response - new cards will have correct classes based on server-rendered PHP.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-008",
+        "category": "color",
+        "question": "Should the blog post xl-desktop vertical dividers change in light mode?",
+        "recommendation": "Yes. The dividers use `rgba(255,255,255,0.2)` which is invisible on light backgrounds. Add `.archive:not(.dark)[data-post-type=\"post\"] .archive-results .grid > *::before` with `rgba(31,31,29,0.2)` background.",
+        "source": "code-analysis",
+        "evidence": "Archive.css lines 70-78 define white translucent dividers for xl blog layout.",
+        "needsUserInput": false
+      }
+    ],
+    "cardPartialAnalysis": {
+      "summary": "Five card partials are used across archive variations. Two (resource, policy) need light-mode background changes. Three (post, team-member, testimonial) work in both modes without changes.",
+      "cards": [
+        {
+          "partial": "parts/card-post.php",
+          "usedBy": "Blog (post) variation",
+          "currentStyling": "No card background (transparent), uses dark:text-white for text. Image with hover scale. Accent-colored CTA on hover.",
+          "lightModeChanges": "None needed - transparent background inherits from section, dark:text-white is already conditional.",
+          "hoverBehavior": "Image scales, CTA changes to accent color. Works in both modes."
+        },
+        {
+          "partial": "parts/card-team-member.php",
+          "usedBy": "Team Members variation",
+          "currentStyling": "bg-accent text-charcoal - accent-colored card with dark text.",
+          "lightModeChanges": "None needed - accent background is high-contrast on both off-white and charcoal.",
+          "hoverBehavior": "No hover background change. btn-tertiary has text-charcoal! forced."
+        },
+        {
+          "partial": "parts/card-resource.php",
+          "usedBy": "Resources variation",
+          "currentStyling": "bg-charcoal border-off-white - dark card for dark section.",
+          "lightModeChanges": "REQUIRED: Change to conditional `dark:bg-charcoal bg-white dark:border-off-white border-charcoal/10`.",
+          "hoverBehavior": "Card fills with accent color. btn-tertiary forced to charcoal via !important overrides."
+        },
+        {
+          "partial": "parts/card-policy.php",
+          "usedBy": "Policies variation",
+          "currentStyling": "bg-charcoal border-off-white - dark card for dark section.",
+          "lightModeChanges": "REQUIRED: Same as resource card.",
+          "hoverBehavior": "Same as resource card."
+        },
+        {
+          "partial": "parts/card-testimonial.php",
+          "usedBy": "Testimonials variation",
+          "currentStyling": "bg-accent text-charcoal - accent-colored card.",
+          "lightModeChanges": "None needed - accent background works on any parent.",
+          "hoverBehavior": "No card hover transition. Video button uses charcoal text."
+        }
+      ]
+    },
+    "bugAnalysis": {
+      "title": "Read More button hover becomes white on white",
+      "rootCause": "The `.btn-tertiary` component CSS (button.css) defines `dark:hover:text-off-white` for dark mode hover. In the archive's dark context, when a resource or policy card is hovered via the `.group` parent, the card background transitions from charcoal to accent (neon-green). The Archive.css has `!important` overrides for `.archive .card-resource .group:hover .btn-tertiary` forcing `color: var(--color-charcoal)`, but these only apply when the GROUP is hovered. If the user hovers directly over the btn-tertiary text itself, the component's own `dark:hover:text-off-white` can compete with or override the group-based rule, resulting in off-white/cream text on the neon-green hover background. When light mode is added, a similar issue occurs: `hover:text-charcoal` on btn-tertiary is fine on a white card, but the group-hover transitions the card to accent - the text stays correct. The actual 'white on white' scenario would occur if in light mode the btn-tertiary text were somehow styled white against the off-white page background.",
+      "fix": "Strengthen the Archive.css overrides to also cover `.btn-tertiary:hover` within the card context, not just `.group:hover .btn-tertiary`. Add rules for both `.dark` and non-dark scenarios."
+    },
+    "requiresQA": true,
+    "qaScope": "full",
+    "qaChecklist": [
+      "Verify dark mode toggle appears in block toolbar (shadow icon)",
+      "Verify dark mode (default) renders identically to current behavior",
+      "Verify light mode removes charcoal pseudo-element background",
+      "Verify light mode resource cards: white bg, charcoal/10 border, accent hover",
+      "Verify light mode policy cards: white bg, charcoal/10 border, accent hover",
+      "Verify light mode blog cards: transparent bg, text readable on off-white",
+      "Verify light mode team member cards: accent bg unchanged",
+      "Verify light mode testimonial cards: accent bg unchanged",
+      "Verify btn-tertiary hover in dark mode: text stays charcoal on accent-hover cards",
+      "Verify btn-tertiary hover in light mode: text stays charcoal, no white-on-white",
+      "Verify filter dropdowns have correct arrow color in both modes",
+      "Verify pagination is visible in both modes",
+      "Verify blog xl-desktop vertical dividers in both modes",
+      "Verify AJAX filtering works in both modes (load more, pagination, filters)",
+      "Verify ThemeHeading text contrast in light mode (heading/description should be charcoal)",
+      "Verify Load More button styling in both modes"
+    ]
+  }
+}

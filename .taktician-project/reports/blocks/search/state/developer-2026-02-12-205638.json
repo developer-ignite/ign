@@ -1,0 +1,98 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12-220602",
+  "status": "complete",
+  "blockName": "Search",
+  "output": {
+    "mode": "build",
+    "filesCreated": [
+      {
+        "path": "blocks/Search/block.json",
+        "purpose": "Block metadata and attributes - copied exactly from spec"
+      },
+      {
+        "path": "blocks/Search/index.tsx",
+        "purpose": "Block registration with icon"
+      },
+      {
+        "path": "blocks/Search/Search.tsx",
+        "purpose": "Editor component with RichText heading, FilteredServerSideRender, and sidebar controls"
+      },
+      {
+        "path": "blocks/Search/Search.php",
+        "purpose": "Frontend template - queries all public searchable post types, filters by post type, search, pagination with progress bar"
+      },
+      {
+        "path": "blocks/Search/Search.js",
+        "purpose": "Frontend JavaScript - AJAX filtering, search, pagination, URL state management, popstate handling"
+      },
+      {
+        "path": "blocks/Search/Search.css",
+        "purpose": "Block-specific styles - filter remove button X icon, card hover transitions"
+      },
+      {
+        "path": "blocks/Search/Search.svg",
+        "purpose": "Block icon (24x24, integer coordinates, filled paths only)"
+      },
+      {
+        "path": "blocks/Search/resources/IconSearch.svg",
+        "purpose": "Search magnifying glass icon for input field"
+      },
+      {
+        "path": "blocks/Search/resources/loading.svg",
+        "purpose": "Animated spinner for AJAX loading states"
+      },
+      {
+        "path": "parts/card-search.php",
+        "purpose": "Search result card template - post type pill (accent colors), title, excerpt, Learn More button"
+      }
+    ],
+    "componentModifications": [],
+    "queryVarRegistration": {
+      "modified": true,
+      "file": "inc/functions/archive-query-vars.php",
+      "added": "post_type_filter"
+    },
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Performance warnings for bundle size (expected, not blocking)"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "TSX and PHP structure match - heading uses RichText in TSX, h2 in PHP; FilteredServerSideRender targets .search-inner; all conditional classes synced"
+    },
+    "testPage": {
+      "created": true,
+      "url": "https://ign.localhost/test-search/",
+      "pageId": 180,
+      "slug": "test-search",
+      "verifiedBlockCount": 5,
+      "variations": [
+        "Default Search - Pagination Mode",
+        "Load More Mode",
+        "Minimal - No Filters, No Per Page",
+        "Custom Heading and Placeholder",
+        "Filters Only - No Per Page"
+      ]
+    },
+    "implementationNotes": {
+      "lightMode": "Block uses page background (off-white), not dark mode like Archive. No charcoal overlay or dark pseudo-elements.",
+      "searchBar": "Search bar on its own row per spec. Search input full-width with icon on left, submit button on right.",
+      "filterRow": "Filter-by dropdown and per-page selector on separate row below search per spec.",
+      "postTypeQuery": "PHP dynamically queries all public searchable post types using get_post_types(['public' => true, 'exclude_from_search' => false]). Excludes 'attachment' and 'page'.",
+      "filterDropdown": "Multi-select pattern from Archive block - hidden input + select, values comma-separated.",
+      "paginationProgressBar": "Custom progress bar below pagination numbers with gradient fill (neon-green to blue). Width calculated as (current_page / total_pages) * 100%.",
+      "noThemeHeading": "Uses inline RichText for heading only, no ThemeHeading component (no eyebrow, description, or buttons in header area per Figma).",
+      "cardTemplate": "parts/card-search.php renders uniform cards: post type pill (bg-accent-lighter, border-accent-light), title (text-header-5), excerpt, Learn More button.",
+      "singleColumn": "Results display in single-column grid (grid-cols-1) with 32px gap (gap-8) per spec.",
+      "ajaxPatterns": "All filter changes, search submissions, pagination clicks, and load-more use AJAX. URL state managed via pushState/popstate. Results container uses aria-live='polite'."
+    },
+    "blockers": [],
+    "fixesApplied": []
+  },
+  "tokensUsed": 95000,
+  "questionsForUser": []
+}

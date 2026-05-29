@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/team-member-cpt",
+  "title": "Team Member Editor",
+  "category": "takt-theme-template",
+  "description": "Editor interface for Team Member posts",
+  "textdomain": "takt",
+  "supports": {
+    "html": false,
+    "inserter": false,
+    "multiple": false
+  },
+  "attributes": {},
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {}
+  }
+}

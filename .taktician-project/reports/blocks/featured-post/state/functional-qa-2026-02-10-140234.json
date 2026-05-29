@@ -1,0 +1,97 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-10-140234",
+  "status": "FAIL",
+  "blockName": "FeaturedPost",
+  "output": {
+    "summary": {
+      "checksRun": 8,
+      "checksPassed": 6,
+      "checksFailed": 2,
+      "issuesFound": 3,
+      "critical": 0,
+      "major": 2,
+      "minor": 1
+    },
+    "checks": {
+      "build": { "status": "pass" },
+      "lint": { "status": "pass" },
+      "registration": { "status": "pass" },
+      "attributes": { "status": "pass" },
+      "edgeCases": { "status": "pass" },
+      "accessibility": {
+        "status": "fail",
+        "issues": 2,
+        "details": "Topic tag pill has no explicit text-charcoal class, so in .dark context the inherited white text renders on the light accent-lighter background, failing WCAG contrast. Featured images have empty alt text on the frontend because the PHP template relies on wp_get_attachment_image() with no fallback, unlike the TSX which falls back to postTitle."
+      },
+      "markupDuplication": { "status": "pass" },
+      "tsxPhpSync": {
+        "status": "fail",
+        "issues": 1,
+        "details": "TSX provides alt text fallback (featuredImage.alt_text || postTitle) but PHP does not pass a fallback alt to wp_get_attachment_image(). When media library alt is empty, TSX shows the post title while PHP shows empty alt."
+      },
+      "innerBlocks": { "status": "skipped", "reason": "Block does not use inner blocks" },
+      "specCompliance": { "status": "pass" }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "accessibility",
+        "severity": "major",
+        "description": "Topic tag pill text inherits white color in dark mode (.dark sets color: white). The pill has bg-accent-lighter (a light pastel green/yellow background) but no explicit text color override, so white-on-light-green fails WCAG AA contrast. Spec DEC-013 states: 'The pill text stays charcoal on the green background' -- this requires an explicit text-charcoal class on the pill span.",
+        "file": "blocks/FeaturedPost/FeaturedPost.php",
+        "line": 76,
+        "fix": "Add 'text-charcoal' to the pill span class list: 'inline-flex items-center justify-center px-2 py-1 rounded-full bg-accent-lighter border border-accent text-sm font-medium uppercase leading-[1.1] whitespace-nowrap shrink-0 text-charcoal'",
+        "alsoUpdate": "blocks/FeaturedPost/FeaturedPost.tsx:206 -- add 'text-charcoal' to the same span className"
+      },
+      {
+        "id": "FQA-002",
+        "check": "tsxPhpSync",
+        "severity": "major",
+        "description": "TSX provides alt text fallback for the featured image (featuredImage.alt_text || postTitle) but the PHP template passes no fallback alt attribute to wp_get_attachment_image(). When a media library image has no alt text set, the TSX renders the post title as alt while the PHP renders alt=\"\" (empty). This is both a TSX/PHP sync mismatch and an accessibility issue for informative images.",
+        "file": "blocks/FeaturedPost/FeaturedPost.php",
+        "line": 139,
+        "fix": "Pass an 'alt' key with a fallback in the attributes array: ['class' => 'w-full h-full object-cover', 'alt' => get_the_title($selectedPost)]. The wp_get_attachment_image function only uses the passed alt if the attachment has none set, but to guarantee a fallback, get the attachment alt first and fall back: $imgAlt = get_post_meta($featuredImageId, '_wp_attachment_image_alt', true); then pass 'alt' => $imgAlt ?: $postTitle.",
+        "alsoUpdate": null
+      },
+      {
+        "id": "FQA-003",
+        "check": "accessibility",
+        "severity": "minor",
+        "description": "The eyebrow span in PHP (line 82) outputs with classes 'uppercase text-sm font-medium leading-[1.1]' but has no explicit text color. In dark mode context it inherits white, which is correct. In light mode it inherits charcoal, which is correct. However, for defensive coding, an explicit color token would be safer, matching spec DEC-014 which notes the eyebrow changes color between modes. The .dark inheritance handles this correctly today, so this is informational only.",
+        "file": "blocks/FeaturedPost/FeaturedPost.php",
+        "line": 82,
+        "fix": "No fix required. Current inheritance from .dark is correct. Note for documentation only.",
+        "alsoUpdate": null
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors (webpack compiled successfully, size warnings only)",
+      "Block registers correctly with apiVersion 3, name takt/featured-post, all 8 attributes defined",
+      "All 5 required files present: block.json, index.tsx, FeaturedPost.tsx, FeaturedPost.php, FeaturedPost.svg",
+      "All attributes match spec: selectedPost (number), isReversed (boolean, default false), reverseRows (boolean, default false), darkMode (boolean, default false), buttonLabel (string, default 'Learn More'), headingSize (string, default 'regular', enum), eyebrow (string), anchor (string)",
+      "Test page has 8 block instances covering all spec variations: default, reversed, dark, dark+reversed, custom button label, small heading, eyebrow, reverseRows",
+      "All selectedPost values are real post IDs (119-122), not placeholders",
+      "headingSize='small' correctly renders h3 tag (section index 5 in page audit)",
+      "Section/container/content-column/media-column class logic is identical between TSX and PHP (isReversed, reverseRows, darkMode conditionals all match)",
+      "Dark mode sections (index 2, 3) correctly have 'dark' and 'bg-transparent!' classes",
+      "Button labels render correctly: 'Learn More', 'Read Full Story', 'Explore This Story', 'View Full Article on Our Blog'",
+      "Buttons link to correct post permalinks",
+      "Topic tag pills present on all 8 sections with category names",
+      "Eyebrow variation (section index 6) shows both topic tag pill and eyebrow text (2 matching spans)",
+      "No markup duplication detected -- single render path for all breakpoints",
+      "PHP template has proper early return for empty/missing/unpublished posts",
+      "Featured images use wp_get_attachment_image with 'full' size (supports srcset)",
+      "Image containers use aspect-[4/3] with overflow-hidden consistently",
+      "Dark mode image containers use rounded-xl, light mode uses rounded-3xl -- matches spec",
+      "Responsive layout works: single column on mobile (375px), two-column grid on tablet (768px) and desktop (1440px)"
+    ],
+    "screenshots": {
+      "mobile": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-qa-375w.png",
+      "tablet": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-qa-768w.png",
+      "desktop": ".taktician-project/reports/blocks/featured-post/screenshots/featured-post-qa-1440w.png"
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

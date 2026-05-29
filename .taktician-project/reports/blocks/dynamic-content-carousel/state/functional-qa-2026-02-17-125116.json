@@ -1,0 +1,110 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-17-125116",
+  "status": "PASS",
+  "blockName": "DynamicContentCarousel",
+  "output": {
+    "mode": "re-verification",
+    "revisionContext": "Attribute rename/removal, fallback logic extended to automatic mode, non-singular handling simplified, UI improvements",
+    "previousRun": ".taktician-project/reports/blocks/dynamic-content-carousel/state/functional-qa-fix-2026-02-17-111634.json",
+    "summary": {
+      "checksRun": 8,
+      "checksPassed": 8,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "notes": "Build compiles successfully. No lint errors or warnings in DynamicContentCarousel.tsx or DynamicContentCarousel.php. All 24 lint errors remain in other blocks only (FullWidthMedia, MainWrapper, TestimonialsCarousel)."
+      },
+      "sync": {
+        "status": "pass",
+        "notes": "All sync checks pass: phpExtractPattern, phpDocblock, htmlStructureSync, attributeUsage, contextConsistency, classNameInsideBlockProps, redundantNullCoalescing, phpFunctionExistence. Zero issues."
+      },
+      "registration": {
+        "status": "pass",
+        "notes": "schema, naming, fileReferences, childBlocks, attributeTypes all pass. block.json has correct attribute set."
+      },
+      "attributeChanges": {
+        "status": "pass",
+        "details": [
+          {
+            "change": "Removed relatedNonSingularBehavior",
+            "verification": "block.json: attribute absent. TSX type: field absent. PHP docblock: no @var for it. PHP logic: no reference to $relatedNonSingularBehavior. Raw content: no instances use this attribute. CONFIRMED removed everywhere."
+          },
+          {
+            "change": "Renamed relatedFallbackToLatest to fallbackToLatest",
+            "verification": "block.json: 'fallbackToLatest' present as boolean with default true. TSX type: 'fallbackToLatest: boolean'. TSX controls: uses attributes.fallbackToLatest in both automatic and related modes. PHP docblock: '@var bool $fallbackToLatest'. PHP logic: uses $fallbackToLatest on lines 133 and 137. Raw content: all variations use 'fallbackToLatest' key. CONFIRMED renamed consistently."
+          },
+          {
+            "change": "fallbackToLatest now applies to automatic AND related modes",
+            "verification": "TSX: ToggleControl for fallbackToLatest shown inside both postsSource === 'automatic' (line 311-327) and postsSource === 'related' (line 370-386) blocks with contextual help text. PHP: automatic mode (line 168) has new fallback branch: if (!$has_posts && $fallbackToLatest && !empty($args['tax_query'])) re-queries without taxonomy filters. Related mode (line 133) uses $fallbackToLatest for singular no-results fallback, line 137 uses it for non-singular fallback. CONFIRMED works in both modes."
+          }
+        ]
+      },
+      "automaticModeFallback": {
+        "status": "pass",
+        "notes": "PHP line 168: When automatic mode query with taxonomy filters returns no posts AND fallbackToLatest is true AND tax_query was non-empty, a second query runs without taxonomy filters. This correctly avoids unnecessary fallback when no filters were set (the initial query already returns latest). The condition !empty($args['tax_query']) prevents double-querying when no taxonomy filters are active."
+      },
+      "nonSingularHandling": {
+        "status": "pass",
+        "notes": "Related mode non-singular handling simplified. PHP line 137: elseif ($fallbackToLatest) on non-singular pages falls back to latest posts (using $fallback_args which already excludes current post). If fallbackToLatest is false, no query runs and $has_posts stays false, respecting hideIfEmpty. No separate relatedNonSingularBehavior attribute needed. CONFIRMED simplified correctly."
+      },
+      "uiControls": {
+        "status": "pass",
+        "details": [
+          {
+            "check": "Notice wrapped in BaseControl",
+            "status": "pass",
+            "evidence": "TSX line 346: <BaseControl __nextHasNoMarginBottom> wraps the <Notice> in related mode. This ensures proper spacing within the PanelBody."
+          },
+          {
+            "check": "hideIfEmpty has help text",
+            "status": "pass",
+            "evidence": "TSX lines 331-333 (automatic) and 391-393 (related): hideIfEmpty ToggleControl has help='Hides the section if no posts are found.' in both modes."
+          },
+          {
+            "check": "fallbackToLatest help text is contextual",
+            "status": "pass",
+            "evidence": "Automatic mode (line 316-318): 'Show latest posts when no posts match the selected filters'. Related mode (line 375-377): 'Show latest posts when no related posts are found'. Different help text per mode."
+          },
+          {
+            "check": "Control ordering",
+            "status": "pass",
+            "evidence": "Automatic mode order: TaxonomyMultiSelect(s) -> RangeControl (postsLimit) -> fallbackToLatest toggle -> hideIfEmpty toggle. Related mode order: Notice (info) -> RangeControl (postsLimit) -> fallbackToLatest toggle -> hideIfEmpty toggle. Logical ordering with filters first, then limits, then fallback/visibility behavior."
+          }
+        ]
+      },
+      "renderedOutput": {
+        "status": "pass",
+        "notes": "Page audit confirmed 16 swiper-parent sections rendered (17 block instances, 1 manual-empty has no carousel). All sections have role='region' and aria-roledescription='carousel'. 15 sections use aria-labelledby, 1 uses aria-label='Content Carousel' fallback (Empty Optional Fields variation). All Swiper instances initialized. Section child counts correct for each post type (6 posts, 3 team members, 3 resources, 3 policies). No pagination/navigation section correctly has data-navigation='0' and data-pagination='0'."
+      },
+      "testPageCompleteness": {
+        "status": "pass",
+        "notes": "17 block instances across 17 demo-container wrappers. New variations added: 'Automatic with Fallback Enabled' (tests fallbackToLatest=true in automatic mode) and 'Automatic with Fallback Disabled' (tests fallbackToLatest=false with hideIfEmpty=true). Previous 'Related Non-Singular: Show Latest' variation removed (no longer needed since relatedNonSingularBehavior was removed). Raw content confirms no stale references to removed attributes."
+      }
+    },
+    "passedChecks": [
+      "Build compiles without errors",
+      "TSX/PHP sync validation passes (all 8 sub-checks)",
+      "Block registration validation passes (all 5 sub-checks)",
+      "relatedNonSingularBehavior attribute fully removed from block.json, TSX, PHP",
+      "relatedFallbackToLatest consistently renamed to fallbackToLatest in block.json, TSX type, TSX controls, PHP docblock, PHP logic",
+      "fallbackToLatest toggle shown in both automatic and related editor modes",
+      "Automatic mode fallback logic correctly re-queries without taxonomy filters",
+      "Non-singular related mode handling simplified to use fallbackToLatest",
+      "Notice wrapped in BaseControl for proper spacing",
+      "hideIfEmpty has descriptive help text in both modes",
+      "fallbackToLatest has contextual help text per mode",
+      "Control ordering is logical (filters -> limit -> fallback -> visibility)",
+      "All 16 rendered carousel sections have correct ARIA attributes",
+      "Test page updated with new automatic-fallback variations"
+    ]
+  },
+  "tokensUsed": 35000,
+  "questionsForUser": []
+}

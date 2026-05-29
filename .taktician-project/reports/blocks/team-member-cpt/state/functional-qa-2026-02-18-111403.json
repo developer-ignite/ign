@@ -1,0 +1,183 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-18-112623",
+  "status": "FAIL",
+  "blockName": "TeamMemberCPT",
+  "output": {
+    "summary": {
+      "checksRun": 11,
+      "checksPassed": 7,
+      "checksFailed": 2,
+      "checksSkipped": 2,
+      "issuesFound": 3,
+      "critical": 2,
+      "major": 1,
+      "minor": 0
+    },
+    "contentComparison": {
+      "note": "CPT block — no frontend URL and no saved block markup in post content. Raw content is empty (expected: template-injected blocks have no saved markup). Content comparison skipped."
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "detail": "TypeScript compiles without errors. bun run build succeeds."
+      },
+      "lint": {
+        "status": "warning",
+        "detail": "24 lint errors and 8 warnings found, all in pre-existing files unrelated to TeamMemberCPT: MainWrapper/index.tsx (prettier + react-hooks), FullWidthMedia/FullWidthMedia.tsx (BaseControl label/id), TestimonialsCarousel/TestimonialsCarousel.tsx (no-nested-ternary). No errors in TeamMemberCPT files.",
+        "preExisting": true
+      },
+      "registration": {
+        "status": "pass",
+        "detail": "block.json is valid. name: takt/team-member-cpt, apiVersion: 3, category: takt-theme-template, attributes: {}, inserter: false, multiple: false, no render field. All file references exist."
+      },
+      "templateLock": {
+        "status": "pass",
+        "detail": "Confirmed via /wp/v2/types/team_member: template: [[\"takt/team-member-cpt\"]], template_lock: \"all\". Block is auto-inserted and cannot be removed."
+      },
+      "metaPersistence": {
+        "status": "pass",
+        "detail": "REST API GET /wp/v2/team_member/221 confirms: first_name='Alex', last_name='Johnson', excerpt.raw='Senior Developer'. All meta fields registered and persisting correctly.",
+        "fields": {
+          "first_name": "PASS — value 'Alex' persists in meta",
+          "last_name": "PASS — value 'Johnson' persists in meta",
+          "excerpt": "PASS — value 'Senior Developer' persists in excerpt.raw"
+        }
+      },
+      "featuredImageSupport": {
+        "status": "fail",
+        "severity": "critical",
+        "detail": "The 'thumbnail' feature is NOT present in the team_member post type's 'supports' array in inc/post-types/team_member.php (line 46). The developer's output states 'Added thumbnail to supports array' but this change is absent from the actual file. Without 'thumbnail' support, WordPress does not expose the 'featured_media' attribute in the REST API for team_member posts — confirmed by REST API response which has no 'featured_media' key. The block's getEditedPostAttribute('featured_media') call will always return 0/null, making featured image display non-functional.",
+        "file": "inc/post-types/team_member.php",
+        "line": 46,
+        "fix": "Add 'thumbnail' to the supports array: 'supports' => ['title', 'editor', 'excerpt', 'revisions', 'custom-fields', 'thumbnail']"
+      },
+      "autoTitleSync": {
+        "status": "fail",
+        "severity": "major",
+        "detail": "Test post (ID: 221) has first_name='Alex', last_name='Johnson' in meta but the post title is 'TEST: Team Member' — not 'Alex Johnson'. The auto-title sync useEffect in TeamMemberCPT.tsx fires inside the editor when meta changes, but the title was not synced. This could be because the test post was created/populated outside the block editor (bypassing the useEffect), OR the useEffect has a dependency issue. The editPost call in useEffect includes [firstName, lastName, editPost] as deps — editPost reference changes on every render which could cause issues. However, since the post was created via taktician_wp_create (REST API, not editor), this specific divergence is expected for the initial test post. A true test requires opening the editor and typing into the first/last name fields. Flagged as major for developer to verify the useEffect behaves correctly in the actual editor.",
+        "note": "The title discrepancy in the test post is likely due to the test data being set via REST API (outside editor) rather than typed in the editor. Developer should manually verify in the editor that typing first_name/last_name updates the post title.",
+        "file": "blocks/TeamMemberCPT/TeamMemberCPT.tsx",
+        "line": 106
+      },
+      "sidebarPanel": {
+        "status": "pass",
+        "detail": "team-member-cpt-panel.tsx registers PluginDocumentSettingPanel 'team-member-settings' with: TextControl for first_name, TextControl for last_name, TextareaControl for excerpt (role/job title). Post type guard 'if (postType !== team_member) return null' correctly implemented. Panel is imported in editor.js (line 9). Photo is handled by the existing featured-image.tsx which includes 'team_member' in its POST_TYPES array — no duplicate photo control needed in the sidebar panel."
+      },
+      "featuredImagePanel": {
+        "status": "pass",
+        "detail": "resources/js/editor/featured-image.tsx includes 'team_member' in POST_TYPES = ['post', 'team_member']. A PluginDocumentSettingPanel 'takt-featured-image-panel' renders for team_member posts with a MediaUploadPanel for the featured image. However, this panel writes both featured_media and meta._thumbnail_id simultaneously — but since thumbnail support is missing from the post type (see featuredImageSupport check), this panel will also fail to function correctly until thumbnail support is added."
+      },
+      "tsxPhpSync": {
+        "status": "skipped",
+        "reason": "CPT block has no PHP render file"
+      },
+      "innerBlocks": {
+        "status": "skipped",
+        "reason": "CPT block has no inner blocks"
+      },
+      "accessibility": {
+        "status": "pass",
+        "detail": "No custom ARIA patterns required for CPT editor-only block. Block editor infrastructure provides accessibility. No automated a11y patterns to test."
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "detail": "No markup duplication found in TeamMemberCPT.tsx or team-member-cpt-panel.tsx. Block body and sidebar panel use different controls (RichText vs TextControl) — not duplicated DOM."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "detail": "Block structure matches editorMarkupMap from planning spec: article wrapper with bg-accent/text-charcoal, photo area (p-4 > overflow-hidden rounded-xl > image), department badge (conditional), name div.text-header-3 with dual RichText spans, role div.text-header-5, CTA div.mt-auto > span.btn-tertiary with TertiaryArrow. All required files exist: block.json, index.tsx, TeamMemberCPT.tsx, TeamMemberCPT.svg, team-member-cpt-panel.tsx. editor.js import added."
+      },
+      "cptChecks": {
+        "CPT-001": {
+          "status": "pass",
+          "detail": "Planning flagged 'photo' meta registration as needed, but the user correction applied by the developer replaces the photo meta field with WordPress featured image (post thumbnail). The featured-image.tsx already handles team_member. This check is N/A as implemented — no 'photo' meta field is used. card-team-member.php was updated to use get_post_thumbnail_id() instead. The _thumbnail_id meta IS visible in the REST API (meta._thumbnail_id: 0). PASS for the as-implemented approach."
+        },
+        "CPT-002": {
+          "status": "pass",
+          "detail": "Template lock confirmed via REST API: /wp/v2/types/team_member shows template: [[takt/team-member-cpt]] and template_lock: 'all'."
+        },
+        "CPT-003": {
+          "status": "pass",
+          "detail": "block.json has 'inserter': false — block will not appear in block inserter search."
+        },
+        "CPT-004": {
+          "status": "needs-verification",
+          "detail": "Auto-title sync cannot be verified via REST API alone — requires editor interaction. The useEffect in TeamMemberCPT.tsx (line 106-109) watches firstName, lastName, and editPost. The test post title 'TEST: Team Member' vs meta 'Alex'/'Johnson' is likely because data was set via REST API rather than through the editor. Developer should verify this works by opening the editor and editing the name fields."
+        },
+        "CPT-005": {
+          "status": "pass",
+          "detail": "Excerpt field persists: REST API shows excerpt.raw = 'Senior Developer'. The RichText in the block body writes via editPost({ excerpt: value }) and the TextareaControl in sidebar also writes via editPost({ excerpt: value })."
+        },
+        "CPT-006": {
+          "status": "pass",
+          "detail": "Code review confirms department badge is conditionally rendered via departmentName && (...). The useSelect fetches department terms via coreStore.getEntityRecord. No department is assigned to the test post (department: []) — badge will not show until a department is assigned, which is correct conditional behavior."
+        },
+        "CPT-007": {
+          "status": "pass",
+          "detail": "Panel has first_name (TextControl), last_name (TextControl), role/excerpt (TextareaControl). Photo is handled by featured-image.tsx panel — no duplication needed. Post type guard confirmed."
+        },
+        "CPT-008": {
+          "status": "pass",
+          "detail": "Both TeamMemberCPT.tsx (line 111) and team-member-cpt-panel.tsx (line 38) have 'if (postType !== team_member) return null' guard."
+        },
+        "CPT-009": {
+          "status": "pass",
+          "detail": "Both block body (RichText) and sidebar panel (TextControl) write to the same meta fields via editPost({meta:{...}}). Since they read from the same coreEditorStore state, they stay in sync automatically."
+        },
+        "CPT-010": {
+          "status": "blocked",
+          "detail": "Photo display in block body cannot be verified: 'thumbnail' support is missing from the post type (FQA-001). The block reads featuredMediaId via getEditedPostAttribute('featured_media'), but this attribute is not exposed in the REST API without thumbnail support. The featuredMediaUrl will always be empty, so the placeholder 'Set a Featured Image' will always show — the photo display path is untestable until FQA-001 is fixed."
+        }
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "featuredImageSupport",
+        "severity": "critical",
+        "description": "'thumbnail' is NOT in the team_member post type supports array. Developer output claimed this was added, but the actual inc/post-types/team_member.php file (line 46) still has: 'supports' => ['title', 'editor', 'excerpt', 'revisions', 'custom-fields']. Without thumbnail support, WordPress does not expose 'featured_media' via REST API for team_member posts, making the featured image selection and display non-functional in both the block editor and the featured-image.tsx sidebar panel.",
+        "file": "inc/post-types/team_member.php",
+        "line": 46,
+        "fix": "Change line 46 to: 'supports' => ['title', 'editor', 'excerpt', 'revisions', 'custom-fields', 'thumbnail']",
+        "impact": "Featured image cannot be set or displayed for team members. The card-team-member.php template uses get_post_thumbnail_id() which will return 0/false for all team member posts, so no photo will appear on the frontend either."
+      },
+      {
+        "id": "FQA-002",
+        "check": "autoTitleSync",
+        "severity": "major",
+        "description": "Auto-title sync cannot be confirmed via REST API testing alone. The useEffect dependency array in TeamMemberCPT.tsx (line 109) includes 'editPost' which is a function reference that may cause excessive re-renders or missed updates. The test post title 'TEST: Team Member' was not auto-synced from the first_name/last_name meta values ('Alex'/'Johnson') — however, this is likely because the post was populated via REST API rather than through the block editor's useEffect. Developer must manually verify that typing in the first_name and last_name RichText fields updates the post title in real time.",
+        "file": "blocks/TeamMemberCPT/TeamMemberCPT.tsx",
+        "line": 106,
+        "fix": "Manually verify in the editor. If the useEffect fires correctly but editPost causes issues, consider removing editPost from the dependency array (it's a stable dispatch function but the linter requires it). A workaround: wrap editPost in useCallback or use useRef to hold the dispatch function.",
+        "note": "This is a verification gap, not a confirmed code bug. Severity is major because if it doesn't work, the post title will be out of sync with the name fields."
+      },
+      {
+        "id": "FQA-003",
+        "check": "lint",
+        "severity": "note",
+        "description": "Pre-existing lint errors in MainWrapper/index.tsx (prettier formatting + react-hooks/rules-of-hooks), FullWidthMedia/FullWidthMedia.tsx (BaseControl label without id), and TestimonialsCarousel/TestimonialsCarousel.tsx (no-nested-ternary) were present before this block was built. These are not introduced by TeamMemberCPT and should be addressed as a separate cleanup task.",
+        "file": "blocks/MainWrapper/index.tsx",
+        "fix": "Run bun run lint:fix to auto-fix prettier issues. Manually fix react-hooks/rules-of-hooks in MainWrapper and BaseControl id in FullWidthMedia."
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors",
+      "block.json registration is valid (takt/team-member-cpt, inserter:false, multiple:false, attributes:{})",
+      "Template and template_lock registered in team_member post type",
+      "Meta fields first_name and last_name persist correctly in REST API",
+      "Excerpt (role/job title) persists correctly in REST API",
+      "Post type guard implemented in both block component and sidebar panel",
+      "Sidebar panel registers PluginDocumentSettingPanel with all required fields",
+      "featured-image.tsx includes team_member in POST_TYPES for photo handling",
+      "No markup duplication between block body and sidebar panel",
+      "Block structure matches planning spec editorMarkupMap",
+      "editor.js import for team-member-cpt-panel added correctly",
+      "TSX/PHP sync skipped (no PHP render file — correct for CPT block)",
+      "Department badge conditionally rendered when taxonomy terms are assigned",
+      "No lint errors in TeamMemberCPT-specific files"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

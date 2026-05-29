@@ -1,0 +1,72 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-11-125029",
+  "status": "complete",
+  "blockName": "TestimonialsCarousel",
+  "output": {
+    "mode": "build",
+    "filesCreated": [
+      { "path": "blocks/TestimonialsCarousel/block.json", "purpose": "Block metadata and attributes" },
+      { "path": "blocks/TestimonialsCarousel/index.tsx", "purpose": "Block registration" },
+      { "path": "blocks/TestimonialsCarousel/TestimonialsCarousel.tsx", "purpose": "Editor component with FilteredServerSideRender, sidebar controls, Swiper init" },
+      { "path": "blocks/TestimonialsCarousel/TestimonialsCarousel.php", "purpose": "Frontend template with WP_Query, Swiper carousel, fade masks, video modal" },
+      { "path": "blocks/TestimonialsCarousel/TestimonialsCarousel.js", "purpose": "Frontend Swiper init, fade mask logic, video modal functionality" },
+      { "path": "blocks/TestimonialsCarousel/TestimonialsCarousel.svg", "purpose": "Block icon (24x24)" },
+      { "path": "blocks/TestimonialsCarousel/resources/ArrowLeft.svg", "purpose": "Left navigation arrow SVG" },
+      { "path": "blocks/TestimonialsCarousel/resources/ArrowRight.svg", "purpose": "Right navigation arrow SVG" }
+    ],
+    "componentModifications": [
+      {
+        "file": "inc/post-types/testimonial.php",
+        "description": "Added video meta fields (videoSource, videoFile, videoId) to testimonial post type registration, following team_member pattern.",
+        "fieldsAdded": ["videoSource (string, default 'file')", "videoFile (integer)", "videoId (string)"]
+      },
+      {
+        "file": "parts/card-testimonial.php",
+        "description": "Replaced simple blockquote+cite layout with new accent-colored card design: name (h3, text-header-5), program (from taxonomy via get_the_terms), styled italic message (blockquote), and conditional 'Watch the Video' button with video data attributes.",
+        "breaking": "Yes - existing Archive block using card-testimonial.php will also get the new design. This is intentional since the card is shared."
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": ["Asset size warnings (editor.js 325KiB, screen bundle 356KiB) - pre-existing, not caused by this block"]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "TSX uses FilteredServerSideRender so PHP template is the source of truth for carousel rendering. TSX renders heading area directly; PHP renders the full layout including carousel, cards, fade masks, and video modal."
+    },
+    "testPage": {
+      "created": true,
+      "url": "https://ign.localhost/?page_id=144",
+      "pageId": 144,
+      "slug": "test-testimonials-carousel",
+      "verifiedBlockCount": 6,
+      "variations": [
+        "Default - Automatic mode (9 items, pagination + navigation)",
+        "With eyebrow, buttons, and description (6 items)",
+        "Manual mode (3 selected posts: 133, 139, 140)",
+        "Minimal - heading only (9 items, default pagination/navigation)",
+        "With program filter (Hotel Management, program ID 19)",
+        "Hide if empty enabled (3 items)"
+      ]
+    },
+    "testData": {
+      "testimonialPosts": [133, 134, 139, 140, 141, 142, 143],
+      "programTerms": {
+        "19": "Hotel and Restaurant Operation Management",
+        "20": "Business Administration",
+        "21": "Computer Science"
+      },
+      "postsWithVideo": {
+        "133": { "videoSource": "youtube", "videoId": "dQw4w9WgXcQ" },
+        "139": { "videoSource": "youtube", "videoId": "dQw4w9WgXcQ" },
+        "140": { "videoSource": "vimeo", "videoId": "76979871" }
+      }
+    },
+    "blockers": [],
+    "fixesApplied": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

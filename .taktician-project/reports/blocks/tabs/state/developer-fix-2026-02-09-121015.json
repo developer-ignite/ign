@@ -1,0 +1,121 @@
+{
+  "agent": "developer-fix",
+  "timestamp": "2026-02-09-121015",
+  "status": "complete",
+  "blockName": "Tabs",
+  "output": {
+    "mode": "fix",
+    "fixesApplied": [
+      {
+        "id": "DQA-001",
+        "severity": "major",
+        "description": "Desktop tab button titles were 24px (text-header-5) but Figma specifies 40px. Changed to text-header-3 md:text-[2.5rem] which gives 32px base and 40px (2.5rem) on desktop.",
+        "files": [
+          {
+            "path": "blocks/Tabs/Tabs.tsx",
+            "line": 146,
+            "change": {
+              "from": "font-heading text-header-6 md:text-header-5 flex-1",
+              "to": "font-heading text-header-3 md:text-[2.5rem] flex-1"
+            }
+          },
+          {
+            "path": "blocks/Tabs/Tabs.php",
+            "line": 51,
+            "change": {
+              "from": "font-heading text-header-5 w-full",
+              "to": "font-heading text-header-3 md:text-[2.5rem] w-full"
+            }
+          }
+        ]
+      },
+      {
+        "id": "DQA-002",
+        "severity": "major",
+        "description": "Mobile accordion titles were 20px (text-header-6) but Figma specifies 32px. Changed to text-header-3 which gives 32px base, matching Figma exactly.",
+        "files": [
+          {
+            "path": "blocks/Tabs/Tabs.php",
+            "line": 84,
+            "change": {
+              "from": "font-heading text-header-6 flex-1",
+              "to": "font-heading text-header-3 flex-1"
+            }
+          },
+          {
+            "path": "blocks/Tabs/Tabs.tsx",
+            "line": 146,
+            "change": {
+              "from": "text-header-6 md:text-header-5",
+              "to": "text-header-3 md:text-[2.5rem]"
+            },
+            "note": "Combined with DQA-001 fix in single edit"
+          }
+        ]
+      },
+      {
+        "id": "DQA-003",
+        "severity": "major",
+        "description": "Inactive tab buttons in PHP missing h-[140px] class, causing layout shift before JS initializes. Added h-[140px] to inactive buttons (index !== 0) and bg-accent selected to active button (index === 0) in the class_name array.",
+        "files": [
+          {
+            "path": "blocks/Tabs/Tabs.php",
+            "line": 41,
+            "change": {
+              "from": "class_name([ 'tabs-button ... cursor-pointer' => true ])",
+              "to": "class_name([ 'tabs-button ... cursor-pointer' => true, 'h-[140px]' => $index !== 0, 'bg-accent selected' => $index === 0 ])"
+            }
+          }
+        ],
+        "note": "JS selectTab() continues to toggle h-[140px] and bg-accent/selected dynamically. Initial render now matches the post-JS state."
+      },
+      {
+        "id": "FQA-001",
+        "severity": "minor",
+        "description": "Converted CRLF line endings to LF in Tabs.tsx",
+        "files": [
+          {
+            "path": "blocks/Tabs/Tabs.tsx",
+            "change": "CRLF -> LF (entire file)"
+          }
+        ]
+      },
+      {
+        "id": "FQA-002",
+        "severity": "minor",
+        "description": "Converted CRLF line endings to LF in TabsItem.tsx",
+        "files": [
+          {
+            "path": "blocks/Tabs/TabsItem/TabsItem.tsx",
+            "change": "CRLF -> LF (entire file)"
+          }
+        ]
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "CSS parser warnings for custom gap variables (pre-existing)",
+        "Asset size limit warnings for editor.js and screen entrypoints (pre-existing)"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": [
+        "TSX desktop tab title: font-heading text-header-3 md:text-[2.5rem] flex-1",
+        "PHP desktop tab title: font-heading text-header-3 md:text-[2.5rem] w-full",
+        "PHP mobile tab title: font-heading text-header-3 flex-1",
+        "TSX uses md:h-[140px] (single responsive DOM); PHP uses h-[140px] (desktop-only DOM section) -- architecturally equivalent",
+        "TSX bg-accent toggled by currentTab state; PHP bg-accent applied to index === 0 (first tab active by default)"
+      ]
+    },
+    "typographyMapping": {
+      "desktop40px": "text-header-3 md:text-[2.5rem] -- text-header-3 provides 32px base; md:text-[2.5rem] overrides font-size to 40px on desktop. No existing header token maps to exactly 40px on desktop (text-header-3 = 30px at md, text-header-2 = 60px at md).",
+      "mobile32px": "text-header-3 -- resolves to 2rem (32px) at base, matching Figma's 32px mobile value exactly."
+    },
+    "blockers": []
+  },
+  "tokensUsed": 18000,
+  "questionsForUser": []
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/header-item",
+  "title": "Nav Item",
+  "category": "takt-theme",
+  "description": "Navigation link with optional dropdown submenu.",
+  "parent": ["takt/header"],
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "reusable": false
+  },
+  "attributes": {
+    "anchor": { "type": "string" },
+    "link": {
+      "type": "object",
+      "default": {
+        "title": "",
+        "url": "",
+        "postId": null,
+        "postType": null,
+        "opensInNewTab": false
+      }
+    },
+    "submenuAlignment": {
+      "type": "string",
+      "default": "left"
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 300,
+    "attributes": {
+      "link": { "title": "About", "url": "#" }
+    },
+    "innerBlocks": [
+      {
+        "name": "takt/header-sub-item",
+        "attributes": { "link": { "title": "Our Mission", "url": "#" } }
+      },
+      {
+        "name": "takt/header-sub-item",
+        "attributes": { "link": { "title": "Our Team", "url": "#" } }
+      }
+    ]
+  }
+}

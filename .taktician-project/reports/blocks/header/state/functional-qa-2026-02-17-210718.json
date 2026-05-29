@@ -1,0 +1,196 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-17-210718",
+  "status": "PASS",
+  "blockName": "Header",
+  "output": {
+    "summary": {
+      "checksRun": 9,
+      "checksPassed": 9,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "runType": "re-verify after developer fixes (revision 8)",
+    "fixesVerified": {
+      "fix1_cta_hover": {
+        "status": "FIXED",
+        "description": "hover:text-accent on CTA links (desktop + mobile), transition-colors present",
+        "evidence": {
+          "php_mobile_sep_link": "HeaderMain.php line 45: class includes 'transition-colors hover:text-accent'. Old 'hover:opacity-60' is absent.",
+          "php_desktop_sep_link": "HeaderMain.php line 114: class includes 'transition-colors hover:text-accent'. Old 'hover:opacity-60' is absent.",
+          "tsx_mobile_sep_link": "HeaderMain.tsx line 532: cn() string includes 'transition-colors hover:text-accent'. Old 'hover:opacity-60' is absent.",
+          "tsx_desktop_sep_link": "HeaderMain.tsx line 667: cn() string includes 'transition-colors hover:text-accent'. Old 'hover:opacity-60' is absent."
+        }
+      },
+      "fix2_search_hover": {
+        "status": "FIXED",
+        "description": "hover:text-accent transition-colors on search submit buttons (desktop + mobile)",
+        "evidence": {
+          "php_desktop_search_btn": "HeaderMain.php line 90: button class includes 'transition-colors hover:text-accent'.",
+          "php_mobile_search_btn": "HeaderMain.php line 164: button class includes 'transition-colors hover:text-accent'.",
+          "tsx_desktop_search_btn": "HeaderMain.tsx line 625: button className includes 'transition-colors hover:text-accent'.",
+          "tsx_mobile_search_btn": "HeaderMain.tsx line 748: button className includes 'transition-colors hover:text-accent'."
+        }
+      },
+      "fix3_dropdown_minwidth": {
+        "status": "FIXED",
+        "description": "md:min-w-[calc(100%+3rem)] on submenu container",
+        "evidence": {
+          "php": "HeaderMainItem.php line 55: class attribute includes 'md:min-w-[calc(100%+3rem)]' alongside existing 'md:min-w-max'.",
+          "tsx": "HeaderMainItem.tsx line 181: cn() string includes 'md:min-w-[calc(100%+3rem)]' alongside 'md:min-w-max'.",
+          "rendered": "page_audit extraSelector 'submenu_minw' found=true on sections 0, 2, 5, 7 (all 4 submenu-bearing instances with distinct submenu panels, plus section 0 counts 5 because it has 5 separate submenus). Sections without submenus (1, 3, 4, 6, 8) correctly show 0."
+        }
+      },
+      "fix4_transition_animation": {
+        "status": "FIXED",
+        "description": "transition-[transform,opacity] replaces transition-all on header-main wrapper",
+        "evidence": {
+          "php": "HeaderMain.php line 54: base class is 'transition-[transform,opacity]'. 'transition-all' is absent.",
+          "tsx": "HeaderMain.tsx line 548: cn() base includes 'transition-[transform,opacity]'. 'transition-all' is absent.",
+          "rendered_class_list": "All 9 sections show 'transition-[transform,opacity]' in their classes arrays (confirmed by direct inspection of page_audit section[0..8].classes). Note: the CSS selector 'transition_transform_opacity' page_audit extraSelector returned found=false for all sections — this is a known limitation of querySelector with special characters (comma inside brackets); the class presence is confirmed directly from the classes arrays."
+        }
+      },
+      "fix5_fixed_offset_32px": {
+        "status": "FIXED",
+        "description": "32px base gap added to --fixed-offset calculation in JS",
+        "evidence": {
+          "js": "HeaderMain.js line 96: 'Math.floor( offset ) + 32 + \"px\"'. Previously was 'Math.floor( offset ) + \"px\"'. The +32 integer addition happens before string concatenation, yielding e.g. '32px' when no other fixed elements are above."
+        }
+      },
+      "fix6_pseudo_w_full": {
+        "status": "FIXED",
+        "description": "before:md:w-full replaces before:md:right-0 on submenu hover-bridge pseudo-element",
+        "evidence": {
+          "php": "HeaderMainItem.php line 55: class includes 'before:md:w-full'. 'before:md:right-0' is absent.",
+          "tsx": "HeaderMainItem.tsx line 181: cn() string includes 'before:md:w-full'. 'before:md:right-0' is absent.",
+          "rendered": "page_audit extraSelector 'pseudo_w_full' found=true on sections 0 (count 5), 2 (count 1), 5 (count 1), 7 (count 1) — all submenu-bearing instances. Sections without submenus correctly show 0."
+        }
+      },
+      "fix7_focus_outline": {
+        "status": "FIXED",
+        "description": "outline outline-0 outline-transparent base state on all interactive top-level nav elements",
+        "evidence": {
+          "php_button": "HeaderMainItem.php line 39: button class includes 'outline outline-0 outline-transparent focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2'. Old 'focus-visible:outline' lone class is absent.",
+          "php_link": "HeaderMainItem.php line 29: ThemeLink className includes 'outline outline-0 outline-transparent focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2'.",
+          "php_subitem": "HeaderMainSubItem.php line 21: link className includes 'outline outline-0 outline-transparent focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2'.",
+          "tsx_button": "HeaderMainItem.tsx line 131: cn() string includes 'outline outline-0 outline-transparent focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2'.",
+          "tsx_link": "HeaderMainItem.tsx line 122: Link className includes 'outline outline-0 outline-transparent focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2'."
+        }
+      },
+      "fix8_rAF_focus": {
+        "status": "FIXED",
+        "description": "requestAnimationFrame wraps focus() after openSubmenu() on ArrowDown/Up from trigger",
+        "evidence": {
+          "js_arrowdown": "HeaderMain.js lines 427-432: when submenu is not open, openSubmenu(button) is called, then requestAnimationFrame defers focus to freshItems[0]. Comment '// Defer focus until after display:none is removed (fix 8)' confirms intent.",
+          "js_arrowup": "HeaderMain.js lines 443-448: same pattern, defers focus to freshItems[freshItems.length - 1].",
+          "already_open_path": "When submenu is already open (isOpen === true), the rAF is skipped and items[0]/items[last] is focused synchronously (lines 434, 450) — correct, as the element is already visible."
+        }
+      },
+      "fix9_items_requery": {
+        "status": "FIXED",
+        "description": "items re-queried inside handleSubmenuKeydown on every keydown",
+        "evidence": {
+          "js": "HeaderMain.js lines 360-362: inside handleSubmenuKeydown, 'const currentItems = Array.from(submenu.querySelectorAll(\"[role=\\\"menuitem\\\"]\"))' is called on each invocation. Comment '// Re-query items to avoid stale refs' confirms intent.",
+          "usage": "All ArrowDown/Up/Home/End cases within handleSubmenuKeydown now use 'currentItems' (lines 375-389) rather than the stale closure variable 'items'. The 'items' static snapshot is still used only in the trigger button's already-open path (lines 434, 450) where DOM stability is guaranteed."
+        }
+      }
+    },
+    "regressionChecks": {
+      "fixed_header_width": {
+        "status": "PASS",
+        "evidence": "All fixed-scroll instances (sections 0, 1, 2, 3, 5, 6, 7, 8) carry md:[&.scrolling]:left-1/2, md:[&.scrolling]:-translate-x-1/2, md:[&.scrolling]:w-(--max-container) or the hide-on-scroll-down equivalents. Not-fixed instance (section 4, data-fixed-scroll-desktop=0) has none of these — only base classes. PHP lines 55-60 and TSX lines 550-565 confirmed unchanged."
+      },
+      "z_index_stacking": {
+        "status": "PASS",
+        "evidence": "md:z-200 present in class list for all 8 fixed-scroll instances (sections 0-3, 5-8). Section 4 (not fixed) correctly absent. md:z-[210] on submenu divs: confirmed via PHP line 55 and TSX line 181 unchanged. page_audit submenu_minw selector also confirmed these submenus render correctly."
+      },
+      "dropdown_gap": {
+        "status": "PASS",
+        "evidence": "HeaderMainItem.php line 55 contains 'md:mt-6'. HeaderMainItem.tsx line 181 contains 'md:mt-6'. Unchanged."
+      },
+      "click_outside_close": {
+        "status": "PASS",
+        "evidence": "HeaderMain.js lines 529-543: document click handler iterates subMenuButtons, checks clickedInsideSubmenu and clickedTrigger. Logic unchanged."
+      },
+      "role_menubar": {
+        "status": "PASS",
+        "evidence": "HeaderMain.php line 150: <ul role=\"menubar\">. HeaderMain.tsx line 126: innerBlocksProps includes role: 'menubar'. page_audit: menubar_ul found=true, count=1 across all 9 sections."
+      },
+      "role_menuitem": {
+        "status": "PASS",
+        "evidence": "HeaderMainItem.php line 38: button role=\"menuitem\". Line 31: ThemeLink 'role' => 'menuitem'. HeaderMainItem.tsx lines 120, 138: role=\"menuitem\" on both Link and button. Unchanged."
+      },
+      "alTopLevelItems_traversal": {
+        "status": "PASS",
+        "evidence": "HeaderMain.js lines 294-342: allTopLevelItems selector, focusTopLevelItem helper, and plain-link keydown listeners all unchanged."
+      }
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "notes": "Build compiles without errors. 0 lint errors in Header block files (HeaderMain.tsx, HeaderMainItem.tsx, HeaderMainSubItem.tsx, HeaderMain.js, HeaderMainItem.php, HeaderMain.php). All 24 lint errors are pre-existing in unrelated blocks (MainWrapper, FullWidthMedia, TestimonialsCarousel)."
+      },
+      "registration": {
+        "status": "pass",
+        "notes": "taktician_validate_all registration check passed. All child blocks valid."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "notes": "taktician_validate_all sync check passed all 8 sub-checks: phpExtractPattern, phpDocblock, htmlStructureSync, attributeUsage, contextConsistency, classNameInsideBlockProps, redundantNullCoalescing, phpFunctionExistence. All 9 new fixes are applied consistently in both PHP and TSX."
+      },
+      "attributes": {
+        "status": "pass",
+        "notes": "No attribute schema changes in this revision. Previously verified passing."
+      },
+      "edgeCases": {
+        "status": "pass",
+        "notes": "Not-fixed instance (section 4) has only base transition-[transform,opacity] class — no z-index or positioning classes. Sections without submenus (1, 3, 4, 6, 8) correctly show submenu_minw=false and pseudo_w_full=false."
+      },
+      "interactiveBehavior": {
+        "status": "pass",
+        "notes": "All interactive fixes (8, 9) verified by code review. Fix 8 rAF deferral: openSubmenu() is synchronous (adds 'block' class), rAF fires after paint so display:none is removed before focus() is called. Fix 9 re-query: currentItems is fresh on every keydown, preventing stale-ref issues after any dynamic DOM changes in the submenu."
+      },
+      "accessibility": {
+        "status": "pass",
+        "notes": "All WAI-ARIA menubar pattern requirements satisfied. Focus outline base state (outline outline-0 outline-transparent) now correctly established on all interactive elements, preventing OS default outlines from showing in non-keyboard contexts while keeping focus-visible:outline-2 for keyboard users. Consistent across top-level buttons, top-level links, and sub-item links."
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "notes": "Unchanged. Dual search forms remain intentional (desktop utility row + mobile collapsible)."
+      },
+      "tsxPhpSync2": {
+        "status": "pass",
+        "notes": "All 9 fixes applied symmetrically in PHP and TSX. No structural divergence."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "notes": "All 9 revision-8 fixes applied. All regression checks pass. 9 block instances on test page, all inside demo containers."
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Fix 1 VERIFIED: hover:text-accent on desktop SEP link (PHP:114, TSX:667), mobile SEP link (PHP:45, TSX:532). hover:opacity-60 absent.",
+      "Fix 2 VERIFIED: hover:text-accent transition-colors on desktop search button (PHP:90, TSX:625) and mobile search button (PHP:164, TSX:748).",
+      "Fix 3 VERIFIED: md:min-w-[calc(100%+3rem)] on submenu div (PHP:55, TSX:181). Rendered: found on all 5 submenu-bearing instances per page_audit.",
+      "Fix 4 VERIFIED: transition-[transform,opacity] on header-main wrapper (PHP:54, TSX:548). transition-all absent. Class confirmed in all 9 rendered section class arrays.",
+      "Fix 5 VERIFIED: +32 added to --fixed-offset in JS calculateFixedOffset() (JS:96). String is Math.floor(offset) + 32 + 'px'.",
+      "Fix 6 VERIFIED: before:md:w-full on submenu pseudo-element (PHP:55, TSX:181). before:md:right-0 absent. Rendered: found on all 4 submenu-bearing instances per page_audit.",
+      "Fix 7 VERIFIED: outline outline-0 outline-transparent base state on all interactive top-level nav elements (PHP HeaderMainItem:29,39; PHP SubItem:21; TSX HeaderMainItem:122,131). focus-visible:outline-2 preserved.",
+      "Fix 8 VERIFIED: requestAnimationFrame wraps focus() after openSubmenu() on ArrowDown (JS:427-432) and ArrowUp (JS:443-448). Already-open path uses synchronous focus.",
+      "Fix 9 VERIFIED: items re-queried inside handleSubmenuKeydown via 'const currentItems = Array.from(submenu.querySelectorAll(...))' on each call (JS:360-362). All switch cases use currentItems.",
+      "Regression: fixed header width constraint intact across all 8 fixed-scroll instances.",
+      "Regression: md:z-200 on header-main, md:z-[210] on submenus — confirmed.",
+      "Regression: md:mt-6 dropdown gap confirmed in PHP and TSX.",
+      "Regression: click-outside handler logic unchanged and correct.",
+      "Regression: role=menubar confirmed rendered in all 9 instances.",
+      "Regression: role=menuitem on all top-level buttons and links confirmed.",
+      "Regression: allTopLevelItems traversal logic unchanged.",
+      "Build: 0 Header block lint errors. Sync: all 8 sub-checks pass. Registration: all checks pass."
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

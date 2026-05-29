@@ -1,0 +1,106 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-20-133732",
+  "status": "complete",
+  "blockName": "Footer",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "filesModified": [
+      {
+        "path": "blocks/Footer/FooterInfo/FooterInfo.php",
+        "changes": [
+          "CHG-001: line 69 — 'lg:w-[640px] lg:shrink-0' → 'lg:flex-[0_1_auto]' on right info group container",
+          "CHG-002: line 71 — 'sm:w-48' → 'sm:flex-1 sm:min-w-36' on Hours column",
+          "CHG-003: line 81 — 'sm:w-48' → 'sm:flex-1 sm:min-w-36' on Contact column",
+          "CHG-004: line 91 — 'sm:w-48' → 'sm:flex-1 sm:min-w-36' on Follow Us/Social column",
+          "CHG-005: line 54 — 'sm:w-[calc(50%-1rem)]' → 'sm:flex-1 sm:min-w-48' on address items"
+        ]
+      },
+      {
+        "path": "blocks/Footer/FooterInfo/FooterInfo.tsx",
+        "changes": [
+          "CHG-001: line 150 — 'lg:w-[640px] lg:shrink-0' → 'lg:flex-[0_1_auto]' on right info group container",
+          "CHG-002: line 152 — 'sm:w-48' → 'sm:flex-1 sm:min-w-36' on Hours column",
+          "CHG-003: line 172 — 'sm:w-48' → 'sm:flex-1 sm:min-w-36' on Contact column",
+          "CHG-004: line 200 — 'sm:w-48' → 'sm:flex-1 sm:min-w-36' on Follow Us/Social column",
+          "CHG-005: line 109 — 'sm:w-[calc(50%-1rem)]' → 'sm:flex-1 sm:min-w-48' on address items"
+        ]
+      }
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Pre-existing lint warnings in unrelated blocks (Accordion, Archive, ContentWithMedia, EventHero, FullWidthMedia, PostHero, Tabs) — react-hooks/exhaustive-deps, not introduced by this change",
+        "Sync check: false-positive root wrapper mismatch (InspectorControls vs section) — standard pattern for editor components with sidebar controls"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "note": "All 5 class changes applied identically to both TSX and PHP. The sync validator warning about root element mismatch is a known false positive for blocks using React Fragment with InspectorControls."
+    },
+    "testPage": {
+      "updated": false,
+      "note": "No test page update needed — block content unchanged, only CSS classes modified"
+    },
+    "blockers": [],
+    "fixesApplied": [
+      {
+        "id": "CHG-001",
+        "element": "Right info group container",
+        "old": "lg:w-[640px] lg:shrink-0",
+        "new": "lg:flex-[0_1_auto]",
+        "files": [
+          "blocks/Footer/FooterInfo/FooterInfo.php",
+          "blocks/Footer/FooterInfo/FooterInfo.tsx"
+        ]
+      },
+      {
+        "id": "CHG-002",
+        "element": "Hours column",
+        "old": "sm:w-48",
+        "new": "sm:flex-1 sm:min-w-36",
+        "files": [
+          "blocks/Footer/FooterInfo/FooterInfo.php",
+          "blocks/Footer/FooterInfo/FooterInfo.tsx"
+        ]
+      },
+      {
+        "id": "CHG-003",
+        "element": "Contact column",
+        "old": "sm:w-48",
+        "new": "sm:flex-1 sm:min-w-36",
+        "files": [
+          "blocks/Footer/FooterInfo/FooterInfo.php",
+          "blocks/Footer/FooterInfo/FooterInfo.tsx"
+        ]
+      },
+      {
+        "id": "CHG-004",
+        "element": "Follow Us / Social column",
+        "old": "sm:w-48",
+        "new": "sm:flex-1 sm:min-w-36",
+        "files": [
+          "blocks/Footer/FooterInfo/FooterInfo.php",
+          "blocks/Footer/FooterInfo/FooterInfo.tsx"
+        ]
+      },
+      {
+        "id": "CHG-005",
+        "element": "Address items",
+        "old": "sm:w-[calc(50%-1rem)]",
+        "new": "sm:flex-1 sm:min-w-48",
+        "files": [
+          "blocks/Footer/FooterInfo/FooterInfo.php",
+          "blocks/Footer/FooterInfo/FooterInfo.tsx"
+        ]
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

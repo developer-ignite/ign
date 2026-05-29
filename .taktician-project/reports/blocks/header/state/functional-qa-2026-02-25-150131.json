@@ -1,0 +1,160 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-25-150131",
+  "status": "PASS",
+  "blockName": "Header",
+  "output": {
+    "focusAreas": [
+      "Toggle label text in editor",
+      "mt-8 vs pt-8 on outer wrapper (TSX + PHP)",
+      "relative class on outer wrapper (TSX + PHP)",
+      "Overlay mode frontend behavior",
+      "Normal mode frontend behavior",
+      "Editor spaceholder for overlay mode",
+      "Fixed-on-scroll in both modes",
+      "Mobile menu in overlay mode"
+    ],
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 10,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "contentComparison": {
+      "note": "Code was modified (developer edit cycle) - full QA run performed"
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "detail": "taktician_validate_all passed. 0 errors. 11 warnings all pre-existing in unrelated blocks (Accordion, Archive, ContentWithMedia, EventHero, FullWidthMedia, PostHero, Tabs) - none in Header block files."
+      },
+      "lint": {
+        "status": "pass",
+        "detail": "No lint errors. Warnings are in unrelated blocks only."
+      },
+      "registration": {
+        "status": "pass",
+        "detail": "Block registered correctly. apiVersion, name, title, category, textdomain, file references all valid."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "detail": "phpExtractPattern: pass. phpDocblock: pass. attributeUsage: pass. contextConsistency: pass. The htmlStructureSync warning at depth 1 (TSX 0 vs PHP 3 elements) is a known pre-existing difference - the TSX renders conditionally via shouldDisplay() while PHP renders only when data is present, both producing equivalent real-world output. This was flagged in the developer's syncStatus notes.",
+        "preExistingWarning": "Structure difference at depth 1 is not new - noted by developer as pre-existing"
+      },
+      "focusArea1_toggleLabel": {
+        "status": "pass",
+        "description": "Toggle label text in editor",
+        "detail": "HeaderMain.tsx line 399 confirms: __('Display over the content (overlay mode)', 'takt'). Correct text is present. Previous incorrect label 'Display above content (overlay mode)' has been replaced.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "line": 399
+      },
+      "focusArea2_mt8NotPt8": {
+        "status": "pass",
+        "description": "mt-8 (not pt-8) on outer wrapper in both TSX and PHP",
+        "detail": "TSX line 472: 'relative flex flex-col gap-2 mt-8': true. PHP line 42: 'relative flex flex-col gap-2 mt-8' => true. Both use margin-top (mt-8), not padding-top (pt-8). Verified no pt-8 present in either file.",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.tsx:472",
+          "blocks/Header/HeaderMain/HeaderMain.php:42"
+        ]
+      },
+      "focusArea3_relativeClass": {
+        "status": "pass",
+        "description": "relative class on outer wrapper in both TSX and PHP",
+        "detail": "TSX line 472 and PHP line 42 both include 'relative' as part of the base class string 'relative flex flex-col gap-2 mt-8'. The relative positioning is always applied (condition: true), enabling the absolutely-positioned .header-main child to be contained correctly.",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.tsx:472",
+          "blocks/Header/HeaderMain/HeaderMain.php:42"
+        ]
+      },
+      "focusArea4_overlayModeFrontend": {
+        "status": "pass",
+        "description": "Overlay mode on frontend: header overlays content, content NOT pushed down",
+        "detail": "page_audit confirmed section index 10 (Display Above Content variation) has data-display-above-content='1' and the inner .header-main element carries classes 'absolute left-0 right-0 z-200' (confirmed via extra_selectors absoluteInnerHeader: found=true). PHP line 60: 'absolute left-0 right-0 z-200' => $displayAboveContent. Screenshot visually confirms the header bar overlays Lorem ipsum content without pushing it down. The negative margin '-mb-[var(--header-main-height,0px)]' is applied to the outer wrapper when displayAboveContent is true, pulling subsequent content up by the header height so it starts underneath the header.",
+        "screenshotEvidence": "header-overlay-check-1440w.png, header-overlay-mode-1440w.png"
+      },
+      "focusArea5_normalModeFrontend": {
+        "status": "pass",
+        "description": "Normal mode (non-overlay) still works correctly",
+        "detail": "9 out of 10 variations have data-display-above-content='0'. All render with mt-8 spacing, correct structure, and no absolute positioning on the header bar. Verified via page_audit sections 0-9 and desktop screenshots showing proper spacing between demo container heading and header bar.",
+        "screenshotEvidence": "header-verify-desktop-1440w.png"
+      },
+      "focusArea6_editorSpaceholder": {
+        "status": "pass",
+        "description": "Editor spaceholder: block toolbar/appender should not overlap header in overlay mode",
+        "detail": "TSX lines 237-250: useEffect with ResizeObserver measures headerRef.current.offsetHeight when displayAboveContent is true, stores in spaceholderHeight state. Lines 722-724: conditional editor-only spaceholder div rendered with style={{ height: spaceholderHeight }} when displayAboveContent && spaceholderHeight > 0. This div has aria-hidden='true' and is only in the TSX editor (not the PHP template), pushing the block appender below the absolute-positioned header. PHP template correctly omits this div since it only applies to editor context.",
+        "note": "Editor-only behavior - verified via code review since cannot interact with Gutenberg editor via automated testing"
+      },
+      "focusArea7_fixedOnScroll": {
+        "status": "pass",
+        "description": "Fixed-on-scroll works in both overlay and normal modes",
+        "detail": "The overlay variation (index 10) has fixedOnScrollDesktop=true and fixedOnScrollMobile=true. The .header-main element carries fixed-scroll data attributes (data-fixed-scroll-desktop='1', data-fixed-scroll-mobile='1') and the CSS classes for fixed positioning on scroll are applied conditionally. The useEffect scroll listener in TSX is wired to the header regardless of displayAboveContent state. PHP correctly outputs all data attributes. The 'absolute left-0 right-0 z-200' class applies at initial load; on scroll past start height, the JS adds 'scrolling' class which triggers fixed positioning via Tailwind modifiers.",
+        "variations": [
+          "index 0: fixedDesktop=1, fixedMobile=1, hideDown=0 - normal mode",
+          "index 3: fixedDesktop=1, fixedMobile=1, hideDown=1/1 - hide on scroll down",
+          "index 4: fixedDesktop=1, hideDownDesktop=1, fixedMobile=1, hideDownMobile=0 - desktop-only hide",
+          "index 5: fixedDesktop=0, fixedMobile=0 - not fixed at all",
+          "index 10: fixedDesktop=1, fixedMobile=1, overlay=1 - overlay + fixed"
+        ]
+      },
+      "focusArea8_mobileMenuOverlay": {
+        "status": "pass",
+        "description": "Mobile menu works in overlay mode",
+        "detail": "Mobile menu toggle tested at 375px viewport. Clicking 'Toggle Main Menu' button opens the collapsable nav panel, showing nav items (About, Health, Financial Wellbeing) with submenu chevrons, logo, and close (X) icon. The nav content appears correctly without layout breakage. The mobile toggle is present on all 10 variations including the overlay one (page_audit confirmed mobileToggle found=true on section 10). The mobile menu JS and aria-controls/aria-expanded wiring is identical between overlay and normal modes.",
+        "screenshotEvidence": "header-mobile-menu-open-375w.png"
+      },
+      "blockInstances": {
+        "status": "pass",
+        "detail": "10 takt/header instances confirmed on test page test-header (page ID 114)."
+      },
+      "accessibility": {
+        "status": "pass",
+        "detail": "Mobile toggle has aria-controls, aria-expanded, and aria-label='Toggle Main Menu'. Nav has role=menubar, aria-label, aria-orientation=horizontal. Search form has role=search. Logo link has aria-label. All interactive elements have focus-visible styles. Header collapsable nav has tabindex=-1 for programmatic focus management."
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build compiles without errors (0 errors, all warnings in unrelated blocks)",
+      "Toggle label correctly reads 'Display over the content (overlay mode)'",
+      "Outer wrapper uses mt-8 (not pt-8) in both TSX (line 472) and PHP (line 42)",
+      "Outer wrapper has relative class in both TSX (line 472) and PHP (line 42)",
+      "Overlay mode: header uses absolute positioning over content, content not pushed down",
+      "Overlay mode: negative margin -mb-[var(--header-main-height,0px)] collapses wrapper height",
+      "Normal mode: 9 variations render with correct structure and spacing",
+      "Editor spaceholder: ResizeObserver-driven div prevents appender overlap in overlay mode",
+      "Fixed-on-scroll: data attributes and CSS classes correct in both overlay and normal modes",
+      "Mobile menu: toggle, open/close animation, nav items all work at 375px",
+      "Mobile menu present on overlay variation (section index 10)",
+      "Block registration valid (apiVersion, name, files, attributes all correct)",
+      "PHP uses auto-extracted variables, correct @var docblock present",
+      "10 block instances on test page, all wrapped in takt/demo-container"
+    ],
+    "screenshots": {
+      "directory": ".taktician-project/reports/blocks/header/screenshots/2026-02-25-150045",
+      "files": [
+        "header-chromium-375w.png",
+        "header-chromium-768w.png",
+        "header-chromium-1024w.png",
+        "header-chromium-1440w.png",
+        "header-firefox-375w.png",
+        "header-firefox-768w.png",
+        "header-firefox-1024w.png",
+        "header-firefox-1440w.png",
+        "header-webkit-375w.png",
+        "header-webkit-768w.png",
+        "header-webkit-1024w.png",
+        "header-webkit-1440w.png"
+      ],
+      "visualObservations": {
+        "375px": "Mobile layout: header bar fills full width with logo left, hamburger toggle right. SEP mobile button appears above nav bar when configured. All 10 variations stack vertically. Overlay variation visible near bottom with header overlaying Lorem ipsum paragraphs.",
+        "768px": "Tablet layout: at 768px the viewport is just below the md:960px breakpoint so mobile layout applies - hamburger toggle visible, nav collapsed. Headers fill available width. Overlay variation shows header over content.",
+        "1024px": "Laptop layout: above 960px breakpoint so desktop layout applies - search box and SEP link visible in utility row, nav items in horizontal row. All variations show correct desktop structure. Overlay variation clearly shows header floating over Lorem ipsum text.",
+        "1440px": "Full desktop: all 10 variations visible. Normal variations show mt-8 spacing above header bar. Overlay variation (second-to-last section labeled 'DISPLAY ABOVE CONTENT (OVERLAY MODE)') shows header bar positioned absolutely over the Lorem ipsum scroll content - content starts from top of wrapper without being pushed down by header height. Footer renders correctly at bottom."
+      }
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

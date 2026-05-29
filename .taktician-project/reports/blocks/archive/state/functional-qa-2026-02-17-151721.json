@@ -1,0 +1,73 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-17-151802",
+  "status": "PASS",
+  "blockName": "Archive",
+  "output": {
+    "summary": {
+      "checksRun": 6,
+      "checksPassed": 6,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "fixVerification": {
+      "fixDescription": "Preset filter pills now render as non-interactive <span> elements without remove buttons or hover effects when displayFilters is false. A new .archive-preset-filters container and .archive-preset-pill CSS class were added.",
+      "previousIssueResolved": "FQA-002 from functional-qa-2026-02-17-132636.json (minor — data-preset-filters emitting [] instead of {}). Note: this fix did NOT address FQA-002; that remains as a pre-existing minor note. However no new issues were introduced by this fix."
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "detail": "TypeScript compiles without errors. bun run build succeeds. No Archive-specific lint errors. Two pre-existing warnings in Archive.tsx (lines 81, 104: react-hooks/exhaustive-deps) are unchanged and carry over from prior QA run."
+      },
+      "presetPillsNoRemoveButton": {
+        "status": "pass",
+        "requirement": "Preset pills render without X/remove buttons when displayFilters=false",
+        "evidence": "Section 15 ('Curated Resources', displayFilters=false, presetFilters={audience:[students]}): page audit confirms presetFilterContainer found=true, presetPillSpan found=true (count:1), interactivePillButton found=false (count:0), removeFilterDiv found=false (count:0). PHP condition at Archive.php:344 gates .archive-preset-filters on (! $displayFilters && ! empty($preset_filters) && $has_selected_option). The rendered <span> contains only the label text — no child .archive-remove-filter div."
+      },
+      "presetPillsNoHoverEffect": {
+        "status": "pass",
+        "requirement": "Preset pills have no hover effect (no gradient animation)",
+        "evidence": "PHP Archive.php:352 emits: <span class=\"archive-preset-pill inline-flex items-center border border-current rounded-full px-3 py-1 text-body-small uppercase font-medium tracking-wider\">. No cursor-pointer class, no hover: utility classes, no animation/gradient classes. Archive.js adds zero event listeners to .archive-preset-filters — the presetFiltersSelector variable is used only for AJAX innerHTML refresh (lines 132-137), not for click/hover handlers."
+      },
+      "presetPillsUseSpan": {
+        "status": "pass",
+        "requirement": "Preset pills use <span> not <button>",
+        "evidence": "PHP Archive.php:352 confirmed as <span class=\"archive-preset-pill ...\">. Page audit selector 'presetPillSpan' (.archive-preset-pill) found=true on section 15; selector 'interactivePillButton' (.archive-active-filters button[data-field]) found=false on section 15. The element is non-interactive and correctly excluded from tab order."
+      },
+      "ajaxRefreshesPresetPills": {
+        "status": "pass",
+        "requirement": "AJAX updates correctly refresh preset pills",
+        "evidence": "Archive.js lines 132-137 (newly added in this fix): var newPresetFilters = responseSection.querySelector(presetFiltersSelector); var oldPresetFilters = section.querySelector(presetFiltersSelector); if (oldPresetFilters && newPresetFilters) { oldPresetFilters.innerHTML = newPresetFilters.innerHTML; }. This mirrors the existing activeFilters refresh pattern at lines 126-130 and uses the same presetFiltersSelector ('.archive-preset-filters') variable declared at line 6. The guard (oldPresetFilters && newPresetFilters) ensures it only runs when both sides exist — correct, since this container only renders on displayFilters=false sections. Sections without a preset pill container are unaffected."
+      },
+      "interactivePillsUnchanged": {
+        "status": "pass",
+        "requirement": "Interactive filter pills (displayFilters=true) still have remove buttons and hover effects",
+        "evidence": "Section 14 ('Preset Filtered Resources', displayFilters=true, presetFilters={audience:[students]}): page audit confirms activeFiltersBar found=true, interactivePillButton found=true (count:1), removeFilterDiv found=true (count:1), filterForm found=true. The .archive-active-filters block in PHP (lines 320-340) is unchanged — still gated on ($show_filters && $displayFilters), still emits <button data-field data-value> with <div class=\"archive-remove-filter\"> inside. The buildButtons() JS function still inserts interactive button HTML including the remove div (Archive.js:302-308)."
+      },
+      "regressionCheck": {
+        "status": "pass",
+        "detail": "All 16 block instances render correctly. Sections without presetFilters show no .archive-preset-filters container (correct — PHP condition requires ! empty($preset_filters)). Sections with displayFilters=true and presetFilters show the interactive .archive-active-filters bar with buttons, not the non-interactive span pills. No regressions detected in filter form rendering, per-page selectors, load-more button, or pagination across all variants."
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build compiles without errors",
+      "Preset pills use <span class=\"archive-preset-pill\"> — not <button>",
+      "Preset pills have no cursor-pointer, no hover classes, no animation classes",
+      "No .archive-remove-filter div inside preset pill spans",
+      "No JS click/hover handlers attached to .archive-preset-filters",
+      "AJAX loadResults() refreshes .archive-preset-filters innerHTML when present",
+      "Interactive pills in .archive-active-filters (displayFilters=true) retain <button data-field> + .archive-remove-filter — unchanged",
+      "Section 15 (displayFilters=false): presetFilterContainer found, activeFiltersBar absent — correct",
+      "Section 14 (displayFilters=true): activeFiltersBar with interactive pill found, presetFilterContainer absent — correct",
+      "16/16 block instances render without errors",
+      "TSX/PHP sync: no $attributes[] extraction, docblock complete"
+    ],
+    "screenshot": ".taktician-project/reports/blocks/archive/screenshots/2026-02-17-151804/archive-preset-pills-fix-1440w.png"
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/form",
+  "title": "Form",
+  "category": "takt-theme",
+  "description": "Displays an eyebrow, title, description, and buttons with a form.",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "buttons": {
+      "type": "array",
+      "default": [
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "primary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "secondary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "tertiary",
+          "title": "",
+          "label": ""
+        }
+      ]
+    },
+    "headingPosition": {
+      "type": "string",
+      "default": "beside",
+      "enum": ["beside", "above"]
+    },
+    "formId": {
+      "type": "string"
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "eyebrow": "Contact Us",
+      "heading": "Have Questions? Get in Touch!",
+      "description": "Diam sed vestibulum et aliquam dignissim velit nulla. Orci ac aliquam justo amet sed. Porttitor nibh in lectus lectus enim nulla phasellus tellus commodo."
+    }
+  }
+}

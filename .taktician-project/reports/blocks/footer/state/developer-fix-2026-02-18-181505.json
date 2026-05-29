@@ -1,0 +1,60 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-18-181505",
+  "status": "complete",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "filesModified": [
+      {
+        "path": "blocks/Footer/FooterInfo/FooterInfo.tsx",
+        "purpose": "Added sm:flex-wrap to address items container; added sm:w-[calc(50%-1rem)] to each address item div"
+      },
+      {
+        "path": "blocks/Footer/FooterInfo/FooterInfo.php",
+        "purpose": "Mirrored TSX: added sm:flex-wrap to address items container; added sm:w-[calc(50%-1rem)] to each address item div"
+      },
+      {
+        "path": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/FooterInfoSocialItem.tsx",
+        "purpose": "Changed social link hover color from hover:text-blue to hover:text-accent"
+      },
+      {
+        "path": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/FooterInfoSocialItem.php",
+        "purpose": "Mirrored TSX: changed social link hover color from hover:text-blue to hover:text-accent"
+      }
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Pre-existing react-hooks/exhaustive-deps warnings in unrelated blocks (Accordion, Archive, ContentWithMedia, FullWidthMedia, PostHero, Tabs)"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "All four files updated in sync. Pre-existing false-positive warning on root wrapper mismatch (InspectorControls fragment vs section) is the standard pattern for all blocks in the theme."
+    },
+    "fixesApplied": [
+      {
+        "planRef": "DEC-001",
+        "description": "Address items container: flex flex-col sm:flex-row gap-8 → flex flex-col sm:flex-row sm:flex-wrap gap-8 in both TSX and PHP"
+      },
+      {
+        "planRef": "DEC-001",
+        "description": "Address item div: added sm:w-[calc(50%-1rem)] class in both TSX and PHP to constrain each address to half-width (two per row)"
+      },
+      {
+        "planRef": "DEC-002",
+        "description": "Social link anchor: hover:text-blue → hover:text-accent in both TSX and PHP"
+      }
+    ],
+    "blockers": [],
+    "testPage": {
+      "url": "https://ign.localhost/test-footer/",
+      "reused": true
+    }
+  }
+}

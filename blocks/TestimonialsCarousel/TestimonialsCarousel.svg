@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Container -->
+	<path d="M0,1v21h24V1H0ZM23,21H1V2h22v19Z"/>
+	<!-- Header area -->
+	<rect x="2" y="3" width="4" height="1"/>
+	<rect x="2" y="5" width="9" height="2"/>
+
+	<!-- Progress bar -->
+	<rect x="2" y="9" width="14" height="1"/>
+
+	<!-- Nav arrows -->
+	<rect x="19" y="9" width="2" height="1"/>
+	<rect x="21" y="9" width="1" height="1"/>
+
+	<!-- Cards (3 testimonial cards) -->
+	<path d="M2,12v7h6v-7H2ZM7,18H3v-5h4v5Z"/>
+	<path d="M9,12v7h6v-7H9ZM14,18h-4v-5h4v5Z"/>
+	<path d="M16,12v7h6v-7h-6ZM21,18h-4v-5h4v5Z"/>
+
+	<!-- Card text lines (quotes) -->
+	<rect x="3" y="13" width="4" height="1"/>
+	<rect x="10" y="13" width="4" height="1"/>
+	<rect x="17" y="13" width="4" height="1"/>
+</svg>

@@ -1,0 +1,30 @@
+{
+  "revision": 3,
+  "analysis": {
+    "mistake": "Two layout/spacing issues passed QA: (1) Images were thin vertical strips on desktop because aspect-auto and h-full utilities had no effect on a constrained container. (2) Excerpt text had no spacing before the CTA button because justify-between was applied to a flex-col column that couldn't justify in the vertical direction.",
+    "expected": "User expected images to maintain proper 4:3 proportions at all breakpoints and sufficient spacing (24px) between text group and CTA button, matching Figma design.",
+    "rootCause": "QA agent failed to visually compare rendered proportions against Figma design. Both issues are observable by taking a screenshot and comparing side-by-side: (1) image proportions visually distorted vs design, (2) text bunched against button vs design spacing. The issues passed QA because the agent did not perform pixel-level visual comparison of rendered output to Figma. Developer's fix attempts (md:aspect-auto, justify-between) reveal incomplete CSS understanding, but the real systemic failure was QA not catching visual mismatches through screenshot comparison.",
+    "rootCauseType": "design-interpretation",
+    "responsiblePhase": "qa"
+  },
+  "suggestions": [
+    {
+      "type": "general",
+      "action": "add",
+      "target": ".taktician/agents/design-agent.md",
+      "section": "Mode 3: Quality Assurance — Step 3.5: Explicit Pixel Comparison (MANDATORY)",
+      "content": "When verifying image aspect ratios in multi-column layouts (e.g., image panels, card galleries), take screenshots at every breakpoint AND manually measure rendered aspect ratios (width:height visual proportions). Compare to Figma measurements. This catches constraint failures where the image container has conflicting width/height/aspect-ratio rules that distort proportions visually despite correct CSS utilities appearing in code. Use browser DevTools to measure bounding box dimensions if unsure.",
+      "rationale": "Image aspect ratio issues are frequently caused by conflicting parent/child constraints that look correct in code but visually distort the element. Code review alone misses these failures.",
+      "implemented": false
+    },
+    {
+      "type": "general",
+      "action": "add",
+      "target": ".taktician/agents/design-agent.md",
+      "section": "Mode 3: Quality Assurance — Step 3: Detailed Visual Comparison",
+      "content": "For card/panel layouts with multiple text elements (heading, subtext, excerpt, CTA), verify spacing between each element by visual measurement, not by checking for flex/justify utility classes. Spacing can fail due to applied utilities being incompatible with the container layout direction (e.g., justify-between on flex-col). Measure vertical gaps from screenshot and compare to Figma spec for each element pair.",
+      "rationale": "Flex utilities can appear correct in code but fail to apply if the layout direction doesn't match their axis. Visual measurement catches these failures immediately.",
+      "implemented": false
+    }
+  ]
+}

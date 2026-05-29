@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "mode": "edit",
+  "blockName": "CallToAction",
+  "blockNameKebab": "call-to-action",
+  "blockPath": "blocks/CallToAction",
+  "reportDir": ".taktician-project/reports/blocks/call-to-action",
+  "stateDir": ".taktician-project/reports/blocks/call-to-action/state",
+  "phase": "review",
+  "status": "complete",
+  "revisionCycle": 0,
+  "maxRevisionCycles": 3,
+  "testPage": {
+    "url": "https://ign.localhost/test-call-to-action/",
+    "pageId": 42,
+    "verifiedBlockCount": 10
+  },
+  "figma": {
+    "url": null,
+    "nodeId": null,
+    "availability": {}
+  },
+  "guidance": {},
+  "editContext": {
+    "blockMeta": {
+      "name": "takt/call-to-action",
+      "title": "Call to Action",
+      "category": "takt-theme"
+    }
+  },
+  "changeRequest": "1. Review block type requirements (especially accessibility) and ensure the current implementation covers all requirements.\n2. Update the existing test page to follow new standards.\n3. Fix all bugs identified.",
+  "agentOutputs": [
+    {
+      "agent": "context",
+      "timestamp": "2026-02-12-224031",
+      "file": null,
+      "summary": "Context gathered."
+    },
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-12-224313",
+      "file": ".taktician-project/reports/blocks/call-to-action/state/planning-2026-02-12-224031.json",
+      "summary": "1 PHP a11y fix, test page rebuild with 10 scenarios."
+    },
+    {
+      "agent": "developer",
+      "timestamp": "2026-02-12-224600",
+      "file": ".taktician-project/reports/blocks/call-to-action/state/developer-2026-02-12-224031.json",
+      "summary": "PHP a11y fix applied. Test page rebuilt. Build passes."
+    },
+    {
+      "agent": "functionalQa",
+      "timestamp": "2026-02-12-224924",
+      "file": ".taktician-project/reports/blocks/call-to-action/state/functional-qa-2026-02-12-224924.json",
+      "summary": "9/10 checks passed. 1 minor issue."
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-12-225200",
+      "file": ".taktician-project/reports/blocks/call-to-action/call-to-action-report.md",
+      "summary": "Report generated with full documentation."
+    }
+  ],
+  "latestOutputs": {
+    "planning": ".taktician-project/reports/blocks/call-to-action/state/planning-2026-02-12-224031.json",
+    "developer": ".taktician-project/reports/blocks/call-to-action/state/developer-2026-02-12-224031.json",
+    "functionalQa": ".taktician-project/reports/blocks/call-to-action/state/functional-qa-2026-02-12-224924.json",
+    "designQa": null
+  },
+  "screenshots": {
+    "qaScreenshots": null,
+    "finalScreenshots": ".taktician-project/reports/blocks/call-to-action/screenshots"
+  },
+  "unresolvedIssues": [
+    {
+      "severity": "minor",
+      "source": "functionalQa",
+      "description": "Missing @var docblock at top of CallToAction.php for camelCase variables"
+    }
+  ],
+  "timestamps": {
+    "started": "2026-02-12-224031",
+    "lastUpdated": "2026-02-12-225200"
+  },
+  "agentSessions": {
+    "planning": "adb7d76",
+    "developer": "afa81f8",
+    "functionalQa": "ae95c89",
+    "designQa": null,
+    "report": "abcff90"
+  }
+}

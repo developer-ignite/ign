@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "outDir": "./public/js",
+    "jsx": "react-jsx",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["@wordpress/element", "@wordpress/compose"],
+    "paths": {
+      "parts/*": ["./parts/*"],
+      "resources/*": ["./resources/*"]
+    }
+  },
+  "include": [
+    "blocks/**/*", 
+    "parts/**/*", 
+    "resources/**/*", 
+    "types.d.ts",
+  ],
+}

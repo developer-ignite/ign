@@ -1,0 +1,173 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-12-214645",
+  "status": "FAIL",
+  "blockName": "Tabs",
+  "output": {
+    "mode": "qa",
+    "revisionScope": "Verify architectural changes: (1) summary visible on desktop with title, (2) background on each details element, (3) overall visual match unchanged",
+    "summary": "Visual QA FAIL. The architectural revision that moved bg-accent-lighter from the panels container to each individual <details> element causes a critical desktop layout issue. On desktop, inactive (closed) details elements still show their <summary> (tab title) -- this is correct per revision point 1. However, each details also has md:bg-accent-lighter, meaning ALL tab panels show their accent background stacked vertically in the right column, overlapping and creating a visual mess. The Figma design shows a single unified panel with one background containing only the active tab content. Mobile accordion is unaffected and renders correctly.",
+    "figmaNodesCompared": [
+      {
+        "nodeId": "785:34910",
+        "label": "Desktop 1 (Full Content with yellow/gold accent)",
+        "breakpoint": "desktop",
+        "compared": true
+      },
+      {
+        "nodeId": "807:58405",
+        "label": "Desktop 2 (Blue accent variant)",
+        "breakpoint": "desktop",
+        "compared": true
+      },
+      {
+        "nodeId": "785:33971",
+        "label": "Mobile (Accordion with orange accent)",
+        "breakpoint": "mobile",
+        "compared": true
+      }
+    ],
+    "compositionGate": {
+      "status": "FAIL",
+      "observations": [
+        "CRITICAL: On desktop, the right-side panel area shows ALL tab titles stacked vertically (e.g., 'Health + Dental Made', 'Financial Wellbeing + Support', 'Advocacy + Resources', 'Social + Community Spaces') instead of only the active tab's content. This is because each <details> element now has md:bg-accent-lighter and its <summary> is visible on desktop.",
+        "The inactive details summaries render as large Anton headings (~40px) overlapping with each details element's own accent-lighter background, creating a multi-layered, visually broken panel area.",
+        "Figma shows a single unified panel on the right with one accent-lighter background, rounded corners, containing only the active tab's title and content. The implementation instead shows N separate background-colored blocks stacked.",
+        "The active tab's content and title ARE present and correct, but they are visually indistinguishable from the other stacked tab titles because all details have the same background.",
+        "Mobile accordion layout is unaffected and renders correctly across all browsers."
+      ]
+    },
+    "revisionVerification": {
+      "revision1_summaryVisibleOnDesktop": {
+        "status": "PARTIAL_FAIL",
+        "observations": [
+          "PASS: The summary element IS now visible on desktop -- tab title renders at the top of the content area using Anton font at approximately 40px (text-[2.5rem]), which matches the Figma panel title size (font/size/3xl = 40px).",
+          "PASS: The plus/minus icon IS correctly hidden on desktop (md:hidden on the icon wrapper). Not visible in any desktop screenshot.",
+          "PASS: The summary has md:mb-8 (32px bottom margin) below the title, which matches the expected spacing.",
+          "FAIL: However, the summary is visible on ALL details elements (both active and inactive). On desktop, inactive (closed) details should hide their summary or their entire visual presence should be suppressed. Currently, the closed details show the summary as a large heading with accent-lighter background behind it, creating the stacking issue."
+        ]
+      },
+      "revision2_backgroundOnDetailsElement": {
+        "status": "FAIL",
+        "observations": [
+          "FAIL: The bg-accent-lighter is applied to every details element via md:bg-accent-lighter in the class list. On desktop, ALL details elements are visible (summary always shows), so ALL details get the accent-lighter background. This creates multiple stacked colored blocks instead of one unified panel.",
+          "Figma reference: The panel (node I785:34910;451:6900) is a SINGLE element with bg accent-lighter and rounded-[25px]. It is not N separate elements with individual backgrounds.",
+          "FAIL: Rounded corners (rounded-3xl = 24px) appear on EACH details element individually instead of on a single unified panel. This creates many small rounded rectangles rather than one large panel.",
+          "Per-tab colors: Cannot properly evaluate per-tab color on the panel because the stacking issue makes it impossible to visually confirm the correct behavior. The active tab's color IS applied to its details element, but inactive tabs also show their default accent-lighter, creating visual noise.",
+          "Mobile: The accent background on open accordion items works correctly. open:bg-accent applies only when the details is expanded, and only one is typically expanded at a time. No issue on mobile."
+        ]
+      },
+      "revision3_overallVisualMatch": {
+        "status": "FAIL",
+        "observations": [
+          "The overall visual appearance has REGRESSED from the previous implementation. Before the revision, the panels container had a single bg-accent-lighter creating a unified panel. Now, each details has its own background, but since all details are visible on desktop (summaries show), the stacking creates a completely different visual from the Figma design.",
+          "The header area (eyebrow, heading, description, buttons) is unaffected and still matches Figma correctly.",
+          "The tablist on the left (tab buttons) is unaffected and still matches Figma correctly -- border-only for inactive, accent fill for active, rounded-l-3xl, proper spacing.",
+          "Typography, colors, and spacing within individual elements are all correct. The issue is purely structural: multiple visible details with individual backgrounds vs. a single unified panel."
+        ]
+      }
+    },
+    "issues": [
+      {
+        "id": "DQA-R-001",
+        "severity": "critical",
+        "category": "layout",
+        "element": "Desktop tab panels area",
+        "breakpoint": "desktop (1024, 1440)",
+        "figmaValue": "Single panel with one accent-lighter background and rounded-[25px] corners containing only the active tab title + content",
+        "implementationValue": "N separate details elements each with md:bg-accent-lighter md:rounded-3xl, all visible (summaries showing), creating stacked colored blocks",
+        "difference": "Structural mismatch -- multiple stacked backgrounds vs single unified panel",
+        "withinTolerance": false,
+        "recommendation": "On desktop, inactive (closed) details elements must either: (A) be fully hidden (display:none or similar) so only the active/open details is visible with its background, OR (B) the background should only apply to the open details (e.g., using open:md:bg-accent-lighter instead of md:bg-accent-lighter), AND the summaries of closed details must be hidden on desktop. The simplest approach: keep md:bg-accent-lighter only on the open details (open:md:bg-accent-lighter) and hide the entire closed details element on desktop except for the active one. Alternatively, use the [open] attribute selector: .tabs-item:not([open]) should be hidden on desktop (md:hidden or md:!hidden when [open]).",
+        "fix": {
+          "files": [
+            {
+              "path": "blocks/Tabs/TabsItem/TabsItem.php",
+              "change": {
+                "from": "tabs-item group transition-all overflow-hidden border border-charcoal rounded-3xl md:border-0 md:bg-accent-lighter md:rounded-3xl",
+                "to": "tabs-item group transition-all overflow-hidden border border-charcoal rounded-3xl md:border-0 md:rounded-3xl md:hidden md:open:block md:open:bg-accent-lighter"
+              },
+              "explanation": "On desktop, hide ALL details elements by default (md:hidden). Only show the open one (md:open:block) and apply the accent-lighter background only to the open one (md:open:bg-accent-lighter). This restores the single-panel visual appearance. Closed details are completely hidden on desktop, so their summaries won't show. The active/open details shows summary (title) + content with proper background."
+            }
+          ],
+          "alternativeFix": {
+            "description": "If md:hidden/md:open:block doesn't work due to Tailwind specificity or details element behavior, an alternative is to use CSS: .tabs-item:not([open]) { display: none } at md breakpoint. Or use JS to add/remove a hidden class on inactive details elements in the selectTab function.",
+            "jsApproach": "In Tabs.js selectTab(), add: detailsItems.forEach((details, i) => { if (i === index) { details.classList.remove('md:hidden'); details.setAttribute('open', ''); } else { details.classList.add('md:hidden'); details.removeAttribute('open'); } });"
+          },
+          "verification": "After fix, desktop should show exactly ONE panel on the right with accent-lighter background and rounded corners, containing the active tab's title (from summary) and content. Switching tabs should change which panel is shown."
+        }
+      }
+    ],
+    "passItems": [
+      {
+        "category": "typography",
+        "observations": [
+          "Desktop summary title: Anton font at ~40px (text-[2.5rem]) matches Figma H5 (font/size/3xl = 40px)",
+          "Plus/minus icon correctly hidden on desktop via md:hidden",
+          "Summary mb-8 (32px) spacing on desktop matches expectation",
+          "Mobile summary: Shows normally with plus/minus icon, font sizes correct",
+          "Eyebrow, block heading, description, button text all match Figma"
+        ]
+      },
+      {
+        "category": "mobileAccordion",
+        "observations": [
+          "Mobile accordion at 375px and 768px renders correctly across all browsers",
+          "Border around each accordion item with rounded-3xl corners matches Figma mobile design",
+          "Plus/minus icons display correctly for expand/collapse",
+          "open:bg-accent applies correctly on expanded accordion items",
+          "Per-tab color on mobile details elements works when item is open"
+        ]
+      },
+      {
+        "category": "tablistDesktop",
+        "observations": [
+          "Tab buttons on the left column render correctly with border-l, border-t, border-b, rounded-l-3xl",
+          "Active tab shows bg-accent fill with description reveal animation",
+          "Inactive tabs show border-only styling",
+          "Tab button min-height ~140px matches Figma",
+          "Gap between tab buttons (gap-4 = 16px) matches Figma"
+        ]
+      },
+      {
+        "category": "headerSection",
+        "observations": [
+          "Two-column header with heading left, description + buttons right matches Figma",
+          "Heading uses Anton at 56px desktop, buttons have pill shape, description is 16px regular weight",
+          "Responsive stacking at mobile works correctly"
+        ]
+      },
+      {
+        "category": "crossBrowser",
+        "observations": [
+          "The stacking issue is consistent across Chromium, Firefox, and WebKit -- confirms it is a CSS/structural issue, not a browser rendering bug",
+          "Mobile rendering is identical across all three browsers"
+        ]
+      }
+    ],
+    "screenshotsProduced": [
+      "tabs-chromium-375w.png",
+      "tabs-chromium-768w.png",
+      "tabs-chromium-1024w.png",
+      "tabs-chromium-1440w.png",
+      "tabs-firefox-375w.png",
+      "tabs-firefox-768w.png",
+      "tabs-firefox-1024w.png",
+      "tabs-firefox-1440w.png",
+      "tabs-webkit-375w.png",
+      "tabs-webkit-768w.png",
+      "tabs-webkit-1024w.png",
+      "tabs-webkit-1440w.png"
+    ],
+    "notes": [
+      {
+        "id": "DQA-R-N-001",
+        "severity": "note",
+        "category": "architecture",
+        "observation": "The revision intent is sound: having the summary visible on desktop allows the tab title to appear at the top of the content panel without duplication. And putting the background on each details enables per-tab colors naturally. The missing piece is hiding the inactive details on desktop so only the open one is visible -- which would restore the single-panel appearance while keeping the new architecture."
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

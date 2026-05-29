@@ -1,0 +1,284 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-09-114800",
+  "status": "FAIL",
+  "blockName": "Header",
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 5,
+      "checksFailed": 5,
+      "issuesFound": 12,
+      "critical": 1,
+      "major": 7,
+      "minor": 3,
+      "note": 1
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "notes": "Build compiles successfully (webpack compiled with 3 warnings -- all size-related, no errors)"
+      },
+      "lint": {
+        "status": "warning",
+        "issues": [
+          {
+            "id": "FQA-001",
+            "severity": "minor",
+            "description": "CRLF line endings across all Header block TSX files (1153 auto-fixable errors from prettier/prettier rule)",
+            "files": [
+              "blocks/Header/index.tsx",
+              "blocks/Header/HeaderMain/index.tsx",
+              "blocks/Header/HeaderMain/HeaderMainItem/index.tsx",
+              "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/index.tsx"
+            ],
+            "autoFixable": true,
+            "fix": "Run: bun run lint:fix"
+          }
+        ]
+      },
+      "testPageVerification": {
+        "status": "pass",
+        "notes": "Test page contains 6 header block instances matching spec variations: Full Content, Minimal Content, Hide on Scroll Down (Desktop), Submenu Alignment Right, Many Nav Items (Overflow), Long Submenu Items. Real media (logoId: 6) used instead of placeholders."
+      },
+      "registration": {
+        "status": "pass",
+        "details": {
+          "header": "takt/header - apiVersion 3, anchor support, multiple: false, inserter: true",
+          "headerMain": "takt/header-main - apiVersion 3, parent: takt/header, anchor support, multiple: false",
+          "headerMainItem": "takt/header-main-item - apiVersion 3, parent: takt/header-main, anchor support",
+          "headerMainSubItem": "takt/header-main-sub-item - apiVersion 3, parent: takt/header-main-item, anchor support"
+        }
+      },
+      "attributes": {
+        "status": "pass",
+        "notes": "All spec-required attributes defined in block.json with correct types and defaults. Header (anchor), HeaderMain (anchor, logoId, sepLink, searchLink, mobileCtaText, mobileCtaLink, fixedOnScrollDesktop, hideOnScrollDownDesktop, fixedOnScrollMobile, hideOnScrollDownMobile), HeaderMainItem (anchor, link, submenuAlignment), HeaderMainSubItem (anchor, link). All verified on test page."
+      },
+      "accessibility": {
+        "status": "fail",
+        "issues": [
+          "FQA-004",
+          "FQA-005",
+          "FQA-006",
+          "FQA-007"
+        ]
+      },
+      "markupDuplication": {
+        "status": "fail",
+        "issues": [
+          "FQA-008",
+          "FQA-009"
+        ]
+      },
+      "tsxPhpSync": {
+        "status": "fail",
+        "issues": [
+          "FQA-010",
+          "FQA-011"
+        ]
+      },
+      "cssAdditions": {
+        "status": "fail",
+        "issues": [
+          "FQA-003"
+        ]
+      },
+      "specCompliance": {
+        "status": "fail",
+        "issues": [
+          "FQA-012"
+        ]
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "lint",
+        "severity": "minor",
+        "category": "formatting",
+        "description": "CRLF line endings across all Header block index.tsx files (1153 auto-fixable errors from prettier/prettier across the whole codebase, affecting Header block files specifically)",
+        "files": [
+          "blocks/Header/index.tsx",
+          "blocks/Header/HeaderMain/index.tsx",
+          "blocks/Header/HeaderMain/HeaderMainItem/index.tsx",
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/index.tsx"
+        ],
+        "fix": {
+          "type": "command",
+          "command": "bun run lint:fix"
+        }
+      },
+      {
+        "id": "FQA-003",
+        "check": "cssAdditions",
+        "severity": "major",
+        "category": "css-architecture",
+        "description": "A custom @custom-variant 'not-menu-open' was added to resources/css/screen/states.css (line 5). The user explicitly flagged that NO 'not-menu-open' custom variant should be added to states.css. Instead of creating a custom variant, the code should use standard CSS negation (e.g., :not(.menu-open)) directly in the class utilities. The current variant definition '@custom-variant not-menu-open (&:where(:not(.menu-open), :not(.menu-open) *));' should be removed, and all usages in HeaderMain.php (line 130) should be replaced with equivalent standard negation classes such as '[&:not(.menu-open)]:max-h-0 [&:not(.menu-open)]:opacity-0 [&:not(.menu-open)]:pointer-events-none' or use the default state approach (apply max-h-0 by default, only expand with menu-open:max-h-[2000px]).",
+        "file": "resources/css/screen/states.css",
+        "line": 5,
+        "fix": {
+          "type": "remove_line",
+          "file": "resources/css/screen/states.css",
+          "line": 5,
+          "current": "@custom-variant not-menu-open (&:where(:not(.menu-open), :not(.menu-open) *));",
+          "suggested": "Remove this line entirely. In HeaderMain.php, replace 'not-menu-open:max-h-0 not-menu-open:opacity-0 not-menu-open:pointer-events-none' with default-state classes (max-h-0 opacity-0 pointer-events-none) and only override with 'menu-open:max-h-[2000px] menu-open:opacity-100 menu-open:pointer-events-auto'. The default-collapsed approach is semantically cleaner: the element starts collapsed, and the menu-open variant expands it."
+        },
+        "alsoUpdate": [
+          "blocks/Header/HeaderMain/HeaderMain.php:130"
+        ]
+      },
+      {
+        "id": "FQA-004",
+        "check": "accessibility",
+        "severity": "major",
+        "category": "aria",
+        "description": "Mobile toggle button is missing aria-controls and aria-expanded attributes in the TSX editor component. The PHP template correctly has aria-controls, aria-expanded, and aria-label, but the TSX component at line 693-717 only has CSS visibility toggling without any ARIA attributes on the button element.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "line": 693,
+        "fix": {
+          "type": "add_attributes",
+          "current": "<button type=\"button\" className=\"md:hidden cursor-pointer w-7 **:w-full **:h-auto transition-colors\"",
+          "suggested": "<button type=\"button\" className=\"md:hidden cursor-pointer w-7 **:w-full **:h-auto transition-colors\" aria-controls={`${anchor}-site-header-collapsable`} aria-expanded={isMenuOpen} aria-label={__('Toggle Main Menu', 'takt')}"
+        },
+        "alsoUpdate": []
+      },
+      {
+        "id": "FQA-005",
+        "check": "accessibility",
+        "severity": "major",
+        "category": "semantic-html",
+        "description": "Logo link has empty alt text on rendered image. The page audit shows the logo image has alt=\"\" (empty). While this is acceptable for decorative images, a logo that also serves as a homepage link should have meaningful alt text (e.g., site name). The PHP template uses theme_output_svg_or_img($logoId) which may not set alt text automatically.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "line": 60,
+        "fix": {
+          "type": "review",
+          "note": "Verify that theme_output_svg_or_img() sets meaningful alt text for the logo. If not, pass alt text explicitly. The link has a title attribute with site name, but the image itself should also have alt text for screen readers."
+        }
+      },
+      {
+        "id": "FQA-006",
+        "check": "accessibility",
+        "severity": "major",
+        "category": "keyboard",
+        "description": "The chevron span inside the submenu button in PHP (HeaderMainItem.php line 59) uses 'aria-expanded:rotate-180' on the chevron span. However, aria-expanded is on the parent button element, not on the span. The CSS selector 'aria-expanded:rotate-180' on the span will never match because the span itself doesn't have aria-expanded. This should be changed to use a parent-aware selector like '[aria-expanded=true]_*:rotate-180' or target the button's aria-expanded state to affect the child span.",
+        "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+        "line": 59,
+        "fix": {
+          "type": "modify",
+          "note": "The chevron rotation won't work via CSS because aria-expanded is on the button, not the span. Either: (1) use a group pattern where the button has 'group' class and the span uses 'group-aria-expanded:rotate-180', or (2) handle the rotation via JS when toggling aria-expanded."
+        },
+        "alsoUpdate": [
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php:73"
+        ]
+      },
+      {
+        "id": "FQA-007",
+        "check": "accessibility",
+        "severity": "minor",
+        "category": "aria",
+        "description": "The mobile menu panel has role='navigation' AND is a <nav> element. The <nav> element already has an implicit 'navigation' role, so adding role='navigation' is redundant. Not a functional issue, but unnecessary.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "line": 132,
+        "fix": {
+          "type": "remove_attribute",
+          "current": "role=\"navigation\"",
+          "suggested": "Remove role=\"navigation\" since <nav> already implies it"
+        },
+        "alsoUpdate": [
+          "blocks/Header/HeaderMain/HeaderMain.tsx:731"
+        ]
+      },
+      {
+        "id": "FQA-008",
+        "check": "markupDuplication",
+        "severity": "major",
+        "category": "html-structure",
+        "description": "Nav items ($children) are output TWICE in HeaderMain.php -- once inside the desktop nav (line 105) and once inside the mobile nav panel (line 140). This means every nav item, including all sub-items and submenu dropdowns, is duplicated in the DOM. The page audit confirms this: Variation 1 (Full Content) has 55 links inside the header-main, but only ~28 unique links exist. Every submenu item appears 4 times (desktop dropdown + mobile inline accordion + desktop duplicate in mobile panel + mobile duplicate in desktop panel). This violates the spec's 'do not duplicate elements' instruction.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "line": 140,
+        "fix": {
+          "type": "refactor",
+          "note": "The $children inner blocks are echoed twice -- once at line 105 (desktop <ul>) and again at line 140 (mobile <ul>). Since inner blocks can only be rendered once in PHP, this creates two identical copies of the nav items in the DOM. This needs a different approach: either use CSS to reposition a single list between desktop horizontal and mobile vertical layouts, or use JavaScript to move the node between containers on breakpoint change."
+        },
+        "wcagCriteria": "Content duplication causes screen readers to announce nav items twice"
+      },
+      {
+        "id": "FQA-009",
+        "check": "markupDuplication",
+        "severity": "major",
+        "category": "html-structure",
+        "description": "HeaderMainItem.php renders TWO separate button elements for nav items with submenus -- one for desktop (line 51-62, class 'hidden md:flex') and one for mobile (line 65-76, class 'md:hidden'). It also renders TWO separate submenu containers -- desktop (line 79-88, '.header-main-item-submenu') and mobile (line 91-98, mobile submenu). Combined with FQA-008, each submenu item appears 4 times in the DOM. This is a significant duplication issue.",
+        "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+        "line": 51,
+        "fix": {
+          "type": "refactor",
+          "note": "Two approaches: (1) Use a single button and single submenu container, using CSS only to change layout between horizontal dropdown (desktop) and inline accordion (mobile). (2) If separate DOM structures are truly needed for desktop/mobile submenus, at minimum remove the FQA-008 duplication so each button+submenu pair only appears once. Currently: 2 buttons * 2 $children outputs = 4 copies of every submenu link."
+        }
+      },
+      {
+        "id": "FQA-010",
+        "check": "tsxPhpSync",
+        "severity": "major",
+        "category": "structure-mismatch",
+        "description": "TSX HeaderMainItem.tsx uses a SINGLE button element for items with submenus (line 128-170), toggling visibility with React state. PHP HeaderMainItem.php uses TWO separate buttons (desktop + mobile, lines 51-76), each with different class names and aria-controls pointing to different submenu containers. The TSX has one submenu dropdown (desktop only, line 173-190), while PHP has both a desktop dropdown and a mobile inline accordion (lines 79-98). The structures are fundamentally different.",
+        "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+        "line": 128,
+        "fix": {
+          "type": "review",
+          "note": "TSX and PHP should produce the same HTML structure. Either align PHP to match the TSX single-button pattern (using CSS to change layout), or update TSX to match PHP's dual-button pattern. The single-button pattern (TSX approach) is preferred as it avoids duplication."
+        },
+        "alsoUpdate": [
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php"
+        ]
+      },
+      {
+        "id": "FQA-011",
+        "check": "tsxPhpSync",
+        "severity": "minor",
+        "category": "class-mismatch",
+        "description": "Minor class differences between TSX and PHP in HeaderMain. TSX uses 'fixed!' (with important modifier, line 539) while PHP uses 'fixed' (without important, line 44). TSX nav bar does not include 'transition-all' class but PHP does (line 43). These mismatches may cause subtle behavioral differences between editor preview and frontend.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "line": 539,
+        "fix": {
+          "type": "align",
+          "note": "Ensure TSX and PHP use identical scroll behavior classes. Add 'transition-all' to TSX if PHP has it. Decide if 'fixed!' (important) is needed or if 'fixed' is sufficient for both."
+        },
+        "alsoUpdate": [
+          "blocks/Header/HeaderMain/HeaderMain.php:43-49"
+        ]
+      },
+      {
+        "id": "FQA-012",
+        "check": "specCompliance",
+        "severity": "critical",
+        "category": "content-duplication",
+        "description": "The spec explicitly states in implementationNotes.singleHtmlNoduplication: 'CRITICAL: The spec says do not duplicate elements.' The current PHP implementation outputs $children twice (FQA-008) and each nav item with submenus has 2 buttons + 2 submenu containers (FQA-009). The page audit shows Variation 1 (Full Content) has 55 links inside the header-main where the correct count should be approximately 28 unique links. Each submenu link appears up to 4 times in the DOM. This is a critical spec violation.",
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "line": 140,
+        "fix": {
+          "type": "refactor",
+          "note": "Restructure the PHP templates to output nav items only ONCE. Use CSS-only responsive layout changes (flex-direction, position, display) to adapt the same DOM between desktop and mobile views. The exception noted in the spec is the SEP link (which renders as a pill button ABOVE the nav bar on mobile vs inline text INSIDE the utility row on desktop -- these are structurally different positions so two elements is acceptable there)."
+        }
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors (webpack compiled with 3 warnings, all size-related)",
+      "All 4 blocks register correctly (Header, HeaderMain, HeaderMainItem, HeaderMainSubItem) with proper hierarchy and parent restrictions",
+      "All attributes defined in block.json with correct types and defaults matching spec",
+      "Test page contains 6 block variations with real media (logoId: 6), matching spec variations",
+      "SEP mobile pill button correctly appears only on variations with sepLink populated (Variation 1 and 3), correctly hidden on variations without (2, 4, 5, 6)",
+      "Minimal Content variation (2) correctly hides search link, SEP link, and mobile CTA",
+      "Scroll behavior data attributes correctly set on all variations",
+      "Hide on Scroll Down variation (3) correctly includes scrolling-down translate classes",
+      "Logo renders with link to homepage on all variations",
+      "Desktop nav and mobile menu panel present on all variations with nav items",
+      "Frontend JS (HeaderMain.js) properly implements scroll detection, menu toggle, focus trapping, submenu handling, and keyboard navigation",
+      "JS uses requestAnimationFrame throttling and passive: true on scroll listeners",
+      "JS implements Escape key to close mobile menu and return focus to toggle",
+      "JS implements ArrowUp/ArrowDown keyboard nav for desktop submenus",
+      "JS properly sets/removes inert attribute on mobile menu items"
+    ]
+  },
+  "tokensUsed": 45000,
+  "questionsForUser": []
+}

@@ -1,0 +1,127 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-20-022843",
+  "status": "PASS",
+  "blockName": "EventHero",
+  "output": {
+    "mode": "post-edit-reverification",
+    "overallResult": "PASS",
+    "changesVerified": [
+      "btn-tertiary -> btn-primary on external link button (TSX + PHP)",
+      "useTopicColor attribute removed (block.json + TSX + PHP)",
+      "Test page reduced from 6 to 5 variations (topic color variation removed)"
+    ],
+    "testPageUrl": "https://ign.localhost/test-event-hero/",
+    "screenshot": ".taktician-project/reports/blocks/event-hero/screenshots/2026-02-20-022817/event-hero-1440w.png",
+    "buildVerification": {
+      "status": "PASS",
+      "errors": 0,
+      "warnings": 11,
+      "warningDetails": "All warnings are pre-existing across multiple blocks. EventHero-specific warnings (react-hooks/exhaustive-deps at line 175) are identical to prior run — unchanged, not a regression."
+    },
+    "syncVerification": {
+      "status": "PASS",
+      "rootWrapperWarning": "Known false-positive (InspectorControls vs section) — same as PostHero, pre-existing.",
+      "allOtherChecks": "pass"
+    },
+    "changeVerification": {
+      "btnChange": {
+        "description": "External link button class changed from btn-tertiary to btn-primary",
+        "status": "VERIFIED",
+        "tsx": {
+          "line": 302,
+          "value": "\"btn-primary mt-6 inline-flex\"",
+          "confirmed": true
+        },
+        "php": {
+          "line": 167,
+          "value": "\"btn-primary mt-6 inline-flex\"",
+          "confirmed": true
+        }
+      },
+      "useTopicColorRemoval": {
+        "description": "useTopicColor attribute and all related logic removed",
+        "status": "VERIFIED",
+        "blockJson": {
+          "attributeAbsent": true,
+          "remainingAttributes": [
+            "anchor",
+            "showExcerpt"
+          ],
+          "exampleCleanedUp": true,
+          "confirmed": true
+        },
+        "tsx": {
+          "typeDefClean": "EventHeroAttributes has only anchor? and showExcerpt — useTopicColor gone",
+          "noUseTopicColorReferences": true,
+          "sectionClassName": "Plain string 'event-hero hero relative overflow-visible' — no cn() conditional needed at section level",
+          "firstAccentColorVariableRemoved": true,
+          "categoryAccentColorsRetained": "useSelect for per-pill accent colors correctly remains (still used for category pill styling)",
+          "confirmed": true
+        },
+        "php": {
+          "docblockClean": "Only @var string|null $anchor and @var bool $showExcerpt — useTopicColor gone",
+          "firstCategoryVariablesRemoved": true,
+          "themeBlockPropsSimplified": "theme_block_props('event-hero hero relative overflow-visible') — plain string, no conditional array",
+          "noUseTopicColorReferences": true,
+          "confirmed": true
+        }
+      },
+      "testPageUpdate": {
+        "description": "Test page reduced from 6 to 5 variations, topic color variation removed",
+        "status": "VERIFIED",
+        "expectedVariations": 5,
+        "actualVariations": 5,
+        "remainingVariations": [
+          "Default - Minimal Event",
+          "Full Content - All Fields Populated",
+          "Same-Day Event",
+          "Long Content - Edge Case",
+          "No External URL"
+        ],
+        "allChecks": "pass",
+        "confirmed": true
+      }
+    },
+    "regressionCheck": {
+      "status": "PASS",
+      "priorFixesIntact": {
+        "FQA001_wpDate": "wp_date() still used throughout date comparison and ISO attribute logic — confirmed",
+        "FQA002_timeElement": "<time datetime=\"...\"> still present in PHP (line 150) and <time dateTime={...}> in TSX (line 288) — confirmed"
+      },
+      "noNewIssues": true
+    },
+    "visualVerification": {
+      "status": "PASS",
+      "screenshotReviewed": true,
+      "observations": [
+        "5 hero instances render correctly at 1440px — gradient, layout, and titles all intact",
+        "No visual regressions — gradient backgrounds, hero structure unchanged",
+        "Topic color variation correctly absent (was 6th instance, now removed)",
+        "btn-primary styling not directly visible in test page context (no external URL in test page post meta) but class confirmed in code"
+      ]
+    },
+    "openIssues": [
+      {
+        "id": "FQA-003",
+        "severity": "note",
+        "status": "open — acknowledged, no fix required",
+        "description": "TSX always renders the date-time <time> element (with 'Event Date' placeholder when no startDate). PHP guards with if($date_time_display). Minor editor-vs-frontend discrepancy, harmless in practice."
+      },
+      {
+        "id": "FQA-004",
+        "severity": "note",
+        "status": "open — acknowledged, no fix required",
+        "description": "Lower group <div class='mt-12 flex flex-col gap-1'> always renders even when all children are absent. Not a real-world issue since TEC always populates _EventStartDate."
+      }
+    ],
+    "issuesSummary": {
+      "critical": 0,
+      "major": 0,
+      "minor": 0,
+      "notes": 2
+    }
+  },
+  "tokensUsed": 14000,
+  "questionsForUser": []
+}

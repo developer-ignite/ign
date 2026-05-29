@@ -1,0 +1,157 @@
+{
+  "envelope": {
+    "agent": "developer",
+    "blockName": "header",
+    "timestamp": "2026-02-14T03:57:22Z",
+    "status": "complete"
+  },
+  "output": {
+    "mode": "edit",
+    "summary": "Implemented all 9 targeted changes to the Header block: logo now spans full two-row height, submenu spacing and alignment adjustments, focus outlines for keyboard navigation, search placeholder uppercase with normal input text, fixed header width correction, keyboard arrow navigation fix, and demo container stacking context isolation.",
+    "filesModified": [
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMain.php",
+        "changes": [
+          "Removed **:max-h-[58px] constraint from logo to allow it to span full two-row height",
+          "Added left-0 and right-0 to fixed state classes for proper viewport-width spanning",
+          "Changed search input from uppercase to normal-case placeholder:uppercase for both desktop and mobile search"
+        ]
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "changes": [
+          "Mirrored PHP: removed **:max-h-[58px] from logo classes",
+          "Mirrored PHP: added left-0 and right-0 to fixed state classes",
+          "Mirrored PHP: changed search input to normal-case placeholder:uppercase for both desktop and mobile search"
+        ]
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+        "changes": [
+          "Added focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 to button and link elements",
+          "Added md:-ml-6 negative margin to submenu container for text alignment"
+        ]
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+        "changes": [
+          "Mirrored PHP: added focus-visible outline classes to Link and button",
+          "Mirrored PHP: added md:-ml-6 to submenu container"
+        ]
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.php",
+        "changes": [
+          "Added focus-visible outline classes to submenu links via className prop"
+        ]
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.tsx",
+        "changes": [
+          "Mirrored PHP: added focus-visible outline classes to Link component"
+        ]
+      },
+      {
+        "path": "blocks/Header/HeaderMain/HeaderMain.js",
+        "changes": [
+          "Refactored keyboard navigation: moved handleSubmenuKeydown attachment to initialization instead of inside click handler",
+          "Fixed currentIndex tracking by detecting document.activeElement position instead of maintaining separate counter",
+          "Keyboard navigation now works whether submenu is opened via click or keyboard (ArrowDown/ArrowUp)"
+        ]
+      },
+      {
+        "path": "blocks/DemoContainer/DemoContainer.php",
+        "changes": [
+          "Added isolate class to create new stacking context for each demo container"
+        ]
+      },
+      {
+        "path": "blocks/DemoContainer/DemoContainer.tsx",
+        "changes": [
+          "Mirrored PHP: added isolate class"
+        ]
+      }
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Asset size warnings (js/editor.js 346 KiB, js/screen.js) - pre-existing, not related to changes"
+      ]
+    },
+    "lintStatus": {
+      "passed": false,
+      "errors": [
+        "4 lint errors in unrelated blocks (Hero, TestimonialsCarousel) - pre-existing, not introduced by Header changes"
+      ],
+      "notes": "No lint errors in any Header-related files. All modified files pass linting."
+    },
+    "testPage": {
+      "url": "https://ign.localhost/test-header/",
+      "pageId": 114,
+      "note": "Existing test page should be reused. First block already has fixedOnScrollDesktop=true for testing fixed behavior. With isolate on DemoContainer, each header is now in its own stacking context."
+    },
+    "changesSummary": {
+      "1_logo_spans_two_rows": "Removed max-h-[58px] constraint so logo can scale to full height of the two-row right column (utility + nav rows). Logo link has self-stretch which makes it fill the row height.",
+      "2_submenu_gap": "Kept md:mt-4 as-is. The planning file analysis showed this creates the correct visual gap between the header bar and submenu dropdown.",
+      "3_submenu_text_alignment": "Added md:-ml-6 negative margin to submenu container (equal to the submenu's md:p-6 padding) so submenu item text aligns flush with parent menu item text.",
+      "4_demo_container_stacking": "Added isolate class to DemoContainer (both PHP and TSX) to create new stacking context per container, preventing fixed headers from affecting all blocks.",
+      "5_first_block_fixed": "No changes needed - first block on test page already has fixedOnScrollDesktop=true.",
+      "6_arrow_navigation_fix": "Refactored HeaderMain.js keyboard handler: moved submenu keydown listener from click handler to initialization, changed currentIndex tracking to use document.activeElement, so ArrowUp/ArrowDown now work whether menu is opened via click or keyboard.",
+      "7_focus_outline_visibility": "Added focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 to all interactive elements (menu buttons, links, submenu items) in both PHP and TSX.",
+      "8_search_placeholder_uppercase": "Changed search input classes from uppercase to normal-case placeholder:uppercase so placeholder is uppercase but user-typed text is normal case. Applied to both desktop and mobile search inputs in PHP and TSX.",
+      "9_fixed_header_width": "Added left-0 and right-0 to all fixed state classes (md:[&.scrolling]:left-0 md:[&.scrolling]:right-0 and mobile variants) so header spans full viewport width when fixed."
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "All changes made to both PHP and TSX files simultaneously. HTML structure, classes, and conditional logic remain in sync."
+    },
+    "blockers": [],
+    "fixesApplied": [
+      {
+        "id": "FIX-001",
+        "category": "layout",
+        "description": "Logo now spans full two-row height by removing max-height constraint",
+        "files": ["HeaderMain.php", "HeaderMain.tsx"]
+      },
+      {
+        "id": "FIX-002",
+        "category": "spacing",
+        "description": "Submenu text alignment via negative margin",
+        "files": ["HeaderMainItem.php", "HeaderMainItem.tsx"]
+      },
+      {
+        "id": "FIX-003",
+        "category": "layout",
+        "description": "Demo container stacking context isolation",
+        "files": ["DemoContainer.php", "DemoContainer.tsx"]
+      },
+      {
+        "id": "FIX-004",
+        "category": "behavior",
+        "description": "Keyboard arrow navigation fix",
+        "files": ["HeaderMain.js"]
+      },
+      {
+        "id": "FIX-005",
+        "category": "accessibility",
+        "description": "Focus outline visibility for keyboard users",
+        "files": ["HeaderMainItem.php", "HeaderMainItem.tsx", "HeaderMainSubItem.php", "HeaderMainSubItem.tsx"]
+      },
+      {
+        "id": "FIX-006",
+        "category": "behavior",
+        "description": "Search placeholder uppercase with normal input text",
+        "files": ["HeaderMain.php", "HeaderMain.tsx"]
+      },
+      {
+        "id": "FIX-007",
+        "category": "layout",
+        "description": "Fixed header width correction",
+        "files": ["HeaderMain.php", "HeaderMain.tsx"]
+      }
+    ]
+  }
+}

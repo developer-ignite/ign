@@ -1,0 +1,157 @@
+/* ==========================================================================
+   The Events Calendar — Content Typography
+
+   TEC ships its own typography for `.tribe-events-content` (the body of
+   single-event descriptions and excerpts). Those rules use single-class
+   selectors but are loaded later in the cascade than this stylesheet
+   because TEC injects its CSS via `tribe_asset` into the document body.
+
+   To win the cascade we match `.tribe-common.tribe-events` (already on the
+   wrapper) plus `.tribe-events-content` — three classes — which beats
+   TEC's `.tribe-common .tribe-events-content h2` (three classes) at the
+   same specificity AND also wins on cascade order because we explicitly
+   re-declare every property TEC sets.
+
+   The intent is to make event content read like a discourse-container
+   article: heading font for h1..h6, body font + spacing for p/ul/ol,
+   visible list bullets/numbers, blockquote rule, etc.
+
+   UI/layout overrides (search bar, buttons, view selector) live in
+   tribe-events.css.
+   ========================================================================== */
+
+.tribe-common.tribe-events .tribe-events-content,
+.tec-block__single-event .tribe-events-content {
+	@apply font-sans text-body;
+	color: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   Headings — restore heading font + theme heading sizes.
+   -------------------------------------------------------------------------- */
+
+.tribe-common.tribe-events .tribe-events-content :is(h1, h2, h3, h4, h5, h6),
+.tec-block__single-event .tribe-events-content :is(h1, h2, h3, h4, h5, h6) {
+	@apply font-heading mt-12 mb-6;
+	font-weight: inherit;
+	letter-spacing: normal;
+	text-transform: none;
+}
+
+.tribe-common.tribe-events .tribe-events-content h1,
+.tec-block__single-event .tribe-events-content h1 {
+	@apply text-header-2;
+}
+
+.tribe-common.tribe-events .tribe-events-content h2,
+.tec-block__single-event .tribe-events-content h2 {
+	@apply text-header-3;
+}
+
+.tribe-common.tribe-events .tribe-events-content h3,
+.tec-block__single-event .tribe-events-content h3 {
+	@apply text-header-4;
+}
+
+.tribe-common.tribe-events .tribe-events-content h4,
+.tec-block__single-event .tribe-events-content h4 {
+	@apply text-header-5;
+}
+
+.tribe-common.tribe-events .tribe-events-content h5,
+.tec-block__single-event .tribe-events-content h5 {
+	@apply text-header-6;
+}
+
+.tribe-common.tribe-events .tribe-events-content h6,
+.tec-block__single-event .tribe-events-content h6 {
+	@apply text-body-large;
+}
+
+/* First heading flush with the top of the content. */
+.tribe-common.tribe-events .tribe-events-content > :is(h1, h2, h3, h4, h5, h6):first-child,
+.tec-block__single-event .tribe-events-content > :is(h1, h2, h3, h4, h5, h6):first-child {
+	margin-top: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Paragraphs.
+   -------------------------------------------------------------------------- */
+
+.tribe-common.tribe-events .tribe-events-content p,
+.tec-block__single-event .tribe-events-content p {
+	@apply font-sans mb-6;
+	font-family: var(--font-sans);
+}
+
+/* --------------------------------------------------------------------------
+   Lists — visible bullets/numbers, indentation matching .discourse.
+   TEC strips list-style and padding-left on .tribe-events-content lists.
+   -------------------------------------------------------------------------- */
+
+.tribe-common.tribe-events .tribe-events-content :is(ul, ol),
+.tec-block__single-event .tribe-events-content :is(ul, ol) {
+	@apply font-sans mb-4 pl-[1.78em];
+}
+
+.tribe-common.tribe-events .tribe-events-content ul,
+.tec-block__single-event .tribe-events-content ul {
+	list-style: disc;
+}
+
+.tribe-common.tribe-events .tribe-events-content ol,
+.tec-block__single-event .tribe-events-content ol {
+	list-style: decimal;
+}
+
+.tribe-common.tribe-events .tribe-events-content :is(ul, ol) li,
+.tec-block__single-event .tribe-events-content :is(ul, ol) li {
+	@apply mb-2;
+}
+
+.tribe-common.tribe-events .tribe-events-content :is(ul, ol) :is(ul, ol),
+.tec-block__single-event .tribe-events-content :is(ul, ol) :is(ul, ol) {
+	@apply pl-[1.78em] mt-2;
+}
+
+/* --------------------------------------------------------------------------
+   Inline emphasis + links.
+   -------------------------------------------------------------------------- */
+
+.tribe-common.tribe-events .tribe-events-content :is(strong, b),
+.tec-block__single-event .tribe-events-content :is(strong, b) {
+	font-weight: 600;
+}
+
+.tribe-common.tribe-events .tribe-events-content :is(em, i),
+.tec-block__single-event .tribe-events-content :is(em, i) {
+	font-style: italic;
+}
+
+.tribe-common.tribe-events .tribe-events-content a,
+.tec-block__single-event .tribe-events-content a {
+	color: var(--color-charcoal);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	transition: color 0.2s ease;
+}
+
+.tribe-common.tribe-events .tribe-events-content a:hover,
+.tec-block__single-event .tribe-events-content a:hover {
+	color: var(--color-neon-green);
+}
+
+/* --------------------------------------------------------------------------
+   Blockquote.
+   -------------------------------------------------------------------------- */
+
+.tribe-common.tribe-events .tribe-events-content blockquote,
+.tec-block__single-event .tribe-events-content blockquote {
+	@apply border-l-5 pl-6 my-6;
+	font-style: italic;
+}
+
+.tribe-common.tribe-events .tribe-events-content blockquote p,
+.tec-block__single-event .tribe-events-content blockquote p {
+	@apply text-lg font-medium mb-4;
+}

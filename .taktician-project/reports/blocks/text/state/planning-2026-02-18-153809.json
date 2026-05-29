@@ -1,0 +1,43 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-18-153838",
+  "status": "complete",
+  "output": {
+    "summary": "Add conditional top padding to the Text block's right column (discourse div) when eyebrow is present, matching the ThemeHeading internal alignment pattern.",
+    "fileChanges": [
+      {
+        "file": "blocks/Text/Text.tsx",
+        "action": "modify",
+        "description": "Add conditional md:pt-[calc(0.875rem*1.1+1rem)] class to the discourse div when eyebrow attribute is present",
+        "details": "On line 66, change the static className on the discourse div to use a conditional class. When attributes.eyebrow is truthy, add 'md:pt-[calc(0.875rem*1.1+1rem)]' to the existing classes 'discourse md:col-start-2'. Use template literal or cn() utility for conditional class application. Example: className={`discourse md:col-start-2${attributes.eyebrow ? ' md:pt-[calc(0.875rem*1.1+1rem)]' : ''}`} or use the cn() utility if already imported.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Text/Text.php",
+        "action": "modify",
+        "description": "Add conditional md:pt-[calc(0.875rem*1.1+1rem)] class to the discourse div when $eyebrow is present",
+        "details": "On line 44, change the static class on the discourse div to conditionally include the padding class. When $eyebrow is non-empty, add 'md:pt-[calc(0.875rem*1.1+1rem)]' alongside existing classes. Pattern: <div class=\"discourse md:col-start-2<?php echo ! empty( $eyebrow ) ? ' md:pt-[calc(0.875rem*1.1+1rem)]' : ''; ?>\">. This mirrors the same conditional pattern used in parts/ThemeHeading.php line 78.",
+        "affectsPhp": true
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "spacing",
+        "decision": "Use md:pt-[calc(0.875rem*1.1+1rem)] on the right column conditionally when eyebrow is present",
+        "source": "user",
+        "evidence": "User explicitly requested this class. It matches the existing ThemeHeading internal pattern (parts/ThemeHeading.tsx line 179, parts/ThemeHeading.php line 78) which offsets the second column's content to align below the eyebrow text height (0.875rem font size * 1.1 line-height + 1rem gap)."
+      },
+      {
+        "id": "DEC-002",
+        "category": "layout",
+        "decision": "Condition on eyebrow presence only, not on 2-column mode",
+        "source": "existing-pattern",
+        "evidence": "The Text block is always in 2-column mode at md breakpoint (md:grid-cols-2 on line 47 of TSX). ThemeHeading uses columns={1} internally and the 2-col grid is at the block level. The padding only needs to be conditional on eyebrow presence since the grid is always 2-col."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

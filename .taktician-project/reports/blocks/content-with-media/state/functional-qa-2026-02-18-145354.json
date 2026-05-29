@@ -1,0 +1,118 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-18-145354",
+  "status": "PASS",
+  "blockName": "ContentWithMedia",
+  "output": {
+    "summary": {
+      "checksRun": 5,
+      "checksPassed": 4,
+      "checksFailed": 0,
+      "issuesFound": 2,
+      "critical": 0,
+      "major": 1,
+      "minor": 1
+    },
+    "context": "CSS-only change: new @utility bg-dark-pattern (bg-charcoal + background-image texture) swapped for before:bg-charcoal in TSX and PHP dark mode classes.",
+    "contentComparison": {
+      "rawContent": {
+        "changed": null,
+        "codeModified": true,
+        "canSkipTests": false,
+        "note": "Test page is trashed (status: trash, slug: test-content-with-media__trashed-2). taktician_compare_raw_content could not find slug. Full QA run performed using rendered content from WP REST API (page ID 184)."
+      }
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "bun run build and bun run lint both pass with 0 errors. One pre-existing lint warning in ContentWithMedia.tsx (react-hooks/exhaustive-deps on useEffect missing mediaRenderId dependency) — this is a pre-existing issue across multiple blocks, not introduced by this change."
+      },
+      "registration": {
+        "status": "pass",
+        "details": "block.json schema valid, name format correct (takt/content-with-media), all file references exist, attribute types valid."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "The before:bg-charcoal → before:bg-dark-pattern swap is correctly applied identically in both files.",
+        "evidence": [
+          {
+            "file": "blocks/ContentWithMedia/ContentWithMedia.tsx",
+            "lines": [
+              349,
+              375
+            ],
+            "class": "relative text-white before:absolute before:bg-dark-pattern before:rounded-3xl before:-z-1 before:-inset-(--side-gutter) md:before:-inset-8"
+          },
+          {
+            "file": "blocks/ContentWithMedia/ContentWithMedia.php",
+            "lines": [
+              62,
+              95
+            ],
+            "class": "relative text-white before:absolute before:bg-dark-pattern before:rounded-3xl before:-z-1 before:-inset-(--side-gutter) md:before:-inset-8"
+          }
+        ],
+        "automaticValidation": {
+          "phpExtractPattern": "pass",
+          "phpDocblock": "pass",
+          "htmlStructureSync": "warning — root wrapper mismatch (TSX has BlockControls as first child; PHP has section). This is a pre-existing false positive from the sync tool caused by editor-only controls in TSX. Not a functional issue.",
+          "attributeUsage": "pass",
+          "contextConsistency": "pass",
+          "phpFunctionExistence": "pass"
+        }
+      },
+      "bgDarkPatternUtility": {
+        "status": "pass",
+        "details": "The @utility bg-dark-pattern is correctly defined in resources/css/screen/colors.css at lines 130-136.",
+        "definition": {
+          "file": "resources/css/screen/colors.css",
+          "lines": "130-136",
+          "content": "@utility bg-dark-pattern { background-color: var(--color-charcoal); background-image: url('../images/dark-bg.png'); background-size: 500px auto; background-position: center; background-repeat: repeat; }"
+        },
+        "assetFile": "resources/images/dark-bg.png — confirmed present in git status as newly tracked."
+      },
+      "darkModeRendering": {
+        "status": "pass",
+        "details": "Rendered HTML from WP REST API (page ID 184) confirms the dark mode variation (variation 3: 'Single Image - Dark Mode') correctly outputs before:bg-dark-pattern on both the text column div and the media column div.",
+        "evidence": "Dark mode section class: 'content-with-media py-10 sm:py-16 dark bg-transparent! not-discourse wp-block-takt-content-with-media'. Text column class includes: 'relative text-white before:absolute before:bg-dark-pattern before:rounded-3xl before:-z-1 before:-inset-(--side-gutter) md:before:-inset-8'. Media column class includes the same."
+      },
+      "testPageStatus": {
+        "status": "warning",
+        "details": "Test page ID 184 has status: trash (slug: test-content-with-media__trashed-2). The page was trashed. Rendered HTML was still accessible via WP REST API and confirms correct output, but the live test URL (https://ign.localhost/test-content-with-media/) is no longer functional as a public page. Developer Agent should restore the test page."
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "testPageStatus",
+        "severity": "major",
+        "description": "Test page (ID 184) is in trash. Slug is now 'test-content-with-media__trashed-2'. The test URL https://ign.localhost/test-content-with-media/ is non-functional.",
+        "fix": "Restore the test page from trash via WordPress admin or WP REST API: PATCH /wp/v2/pages/184 with { status: 'publish' }.",
+        "impact": "Prevents future QA from loading the test page in a browser or via taktician_page_audit."
+      },
+      {
+        "id": "FQA-002",
+        "check": "build",
+        "severity": "minor",
+        "description": "Pre-existing lint warning in ContentWithMedia.tsx line 106: react-hooks/exhaustive-deps — useEffect missing dependency 'mediaRenderId'. Not introduced by this change.",
+        "file": "blocks/ContentWithMedia/ContentWithMedia.tsx",
+        "line": 106,
+        "fix": "Use functional update: setMediaRenderId(m => ...) to remove dependency on mediaRenderId in the useEffect dependency array.",
+        "note": "Same pattern exists in Accordion.tsx and FullWidthMedia.tsx. Pre-existing issue."
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors (0 TypeScript errors, 0 build errors)",
+      "Lint passes (0 errors, pre-existing warnings only)",
+      "Block registration valid (takt/content-with-media)",
+      "bg-dark-pattern @utility defined correctly in colors.css with charcoal background color + dark-bg.png texture",
+      "TSX uses before:bg-dark-pattern on both text and media columns when darkMode=true",
+      "PHP uses before:bg-dark-pattern on both text and media columns when $darkMode=true",
+      "TSX and PHP dark mode class strings match exactly (identical token-for-token)",
+      "Rendered HTML confirms before:bg-dark-pattern appears in live output for dark mode variation",
+      "No no-charcoal leftover class found in either TSX or PHP (swap is complete)"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

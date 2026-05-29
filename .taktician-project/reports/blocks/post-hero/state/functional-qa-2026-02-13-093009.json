@@ -1,0 +1,211 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-13-093133",
+  "status": "PASS",
+  "blockName": "PostHero",
+  "revisionContext": {
+    "type": "user-requested-revision",
+    "focusAreas": [
+      "Verify sprintf is used properly (not string concatenation) for author/date",
+      "Verify all topics render as pills (not just the first)",
+      "Verify NO duplicate variable declarations exist in PHP",
+      "Verify TSX and PHP are still in sync after changes"
+    ],
+    "previousIssues": [
+      "FQA-001: PHP manually extracted attributes",
+      "FQA-002: PHP missing @var docblock",
+      "FQA-003: TSX had unused variables"
+    ]
+  },
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 10,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "revisionVerification": {
+      "sprintfUsage": {
+        "status": "pass",
+        "tsx": {
+          "imported": true,
+          "authorLine": "Line 241-245: sprintf() with translatable string 'By: %s'",
+          "dateLine": "Line 250-254: sprintf() with translatable string 'Published on: %s'",
+          "notes": "Both author and date use sprintf() correctly with translator comments"
+        },
+        "php": {
+          "authorLine": "Line 110-114: sprintf() with translatable string 'By: %s'",
+          "dateLine": "Line 123-127: sprintf() with translatable string 'Published on: %s'",
+          "notes": "Both author and date use sprintf() correctly with translator comments"
+        },
+        "sync": "pass",
+        "notes": "TSX and PHP use identical sprintf() patterns. No string concatenation found."
+      },
+      "multipleTopicPills": {
+        "status": "pass",
+        "tsx": {
+          "structure": "Line 188-214: Wrapper div with 'flex flex-wrap gap-2', maps over allCategories array",
+          "loop": "allCategories.map( ( cat ) => ... ) renders one pill per category",
+          "notes": "Correctly loops through ALL categories, not just first"
+        },
+        "php": {
+          "structure": "Line 71-86: Wrapper div with 'flex flex-wrap gap-2', foreach loop over $categories",
+          "loop": "foreach ( $categories as $category ) renders one pill per category",
+          "notes": "Correctly loops through ALL categories, not just first"
+        },
+        "sync": "pass",
+        "testPageObservation": "Test post has only 1 category ('Student Life'), so only 1 pill renders. This is correct behavior. Code is structured to render multiple pills when multiple categories exist.",
+        "notes": "Both TSX and PHP correctly loop through all categories. Wrapper div with flex-wrap gap-2 allows pills to wrap on multiple lines if needed."
+      },
+      "noDuplicateVariables": {
+        "status": "pass",
+        "verified": [
+          "No $showExcerpt = $attributes['showExcerpt'] found",
+          "No $useTopicColor = $attributes['useTopicColor'] found"
+        ],
+        "notes": "PHP no longer manually extracts attributes. Uses auto-extracted variables directly with null coalescing (??) for safe defaults."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "structureMatches": [
+          "Section element with conditional firstAccentColor class",
+          "Top gradient div",
+          "Hero inner div with background image layer",
+          "Content layer with same padding calculations",
+          "Container > max-w-[700px] mr-auto wrapper",
+          "Upper group: flex flex-col gap-6",
+          "Pills wrapper: flex flex-wrap gap-2 (NEW)",
+          "Title: h1 with text-header-0 text-charcoal",
+          "Conditional excerpt with mt-6",
+          "Lower group: mt-12 flex flex-col gap-1",
+          "Author and date lines with sprintf()"
+        ],
+        "notes": "TSX and PHP structure remains perfectly synced after revision. All changes applied consistently to both files."
+      }
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "notes": "Build completes successfully with expected asset size warnings only."
+      },
+      "lint": {
+        "status": "pass",
+        "postHeroIssues": 2,
+        "severity": "minor",
+        "notes": "Only minor React Hook dependency warnings in PostHero.tsx (line 88). These are acceptable - the dependency array uses allCategories.map().join() which is a common pattern for array dependencies. All other lint warnings are in unrelated blocks."
+      },
+      "registration": {
+        "status": "pass",
+        "notes": "All required files exist. Block registration unchanged from previous QA."
+      },
+      "attributes": {
+        "status": "pass",
+        "notes": "Attributes unchanged. showExcerpt and useTopicColor both default to false."
+      },
+      "edgeCases": {
+        "status": "pass",
+        "notes": "Empty state handling correct: pills wrapper only renders when categories exist, excerpt only renders when showExcerpt=true AND excerpt exists, background image only renders when featured image exists."
+      },
+      "interactiveBehavior": {
+        "status": "skipped",
+        "reason": "No interactive elements - block displays static post content."
+      },
+      "accessibility": {
+        "status": "pass",
+        "patternCompliance": [
+          {
+            "pattern": "Landmarks",
+            "status": "pass",
+            "notes": "Uses semantic section element. Uses h1 for page heading. Background image has role='presentation' and alt=''."
+          }
+        ],
+        "semanticHTML": {
+          "status": "pass",
+          "notes": "Proper h1 heading, semantic section, paragraph tags for text. Div wrapper for pills with flex layout."
+        },
+        "keyboardNavigation": {
+          "status": "pass",
+          "notes": "No interactive elements requiring keyboard navigation."
+        },
+        "notes": "Accessibility unchanged from previous QA. All patterns correct."
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "notes": "No responsive duplication. Uses responsive utilities without duplicating markup."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "notes": "TSX and PHP are perfectly synced after revision. All changes applied consistently: sprintf() usage, multi-category loop, wrapper div structure, and no duplicate attribute extraction."
+      },
+      "innerBlocks": {
+        "status": "skipped",
+        "reason": "Block does not support inner blocks."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "notes": "Test page has 4 block variations. All render correctly per REST API content field."
+      }
+    },
+    "previousIssuesResolved": [
+      {
+        "id": "FQA-001",
+        "original": "PHP manually extracted attributes from $attributes array",
+        "resolution": "RESOLVED - Lines 10-11 removed. PHP now uses auto-extracted variables directly.",
+        "verified": "Grep search confirms no $showExcerpt = $attributes or $useTopicColor = $attributes found in PHP."
+      },
+      {
+        "id": "FQA-002",
+        "original": "PHP missing @var docblock for camelCase variables",
+        "resolution": "RESOLVED - Docblock added at lines 5-12 with @var annotations for $anchor, $showExcerpt, $useTopicColor, $content, and $block.",
+        "verified": "Grep search confirms '@var bool $showExcerpt' present in PHP line 7."
+      },
+      {
+        "id": "FQA-003",
+        "original": "TSX had unused variables: postId and featuredMediaId",
+        "resolution": "RESOLVED - Variables removed. TSX now only extracts 'post' from useSelect (line 35), not postId. featuredMediaUrl is used directly.",
+        "verified": "No unused variable lint errors for PostHero.tsx."
+      }
+    ],
+    "revisionImprovements": [
+      {
+        "improvement": "sprintf() for translatable strings",
+        "impact": "Author and date strings now use proper sprintf() formatting with translator comments, making them easier to translate to other languages.",
+        "implementation": "Both TSX (lines 241-245, 250-254) and PHP (lines 110-114, 123-127) use sprintf(__('By: %s', 'takt'), $author) pattern."
+      },
+      {
+        "improvement": "Multiple topic pills",
+        "impact": "Posts with multiple categories will now display all category pills, not just the first one. Pills wrap to multiple lines if needed.",
+        "implementation": "PHP uses foreach loop (lines 72-85), TSX uses .map() (lines 190-208). Both wrapped in flex flex-wrap gap-2 container (PHP line 71, TSX line 188)."
+      },
+      {
+        "improvement": "Removed duplicate attribute extraction",
+        "impact": "PHP code is cleaner and follows theme conventions. Reduces confusion about where variables come from.",
+        "implementation": "Removed $showExcerpt = $attributes['showExcerpt'] and $useTopicColor = $attributes['useTopicColor']. Uses auto-extracted variables with ?? null coalescing."
+      }
+    ],
+    "issues": [],
+    "passedChecks": [
+      "Build compiles without errors",
+      "No TypeScript errors in PostHero.tsx",
+      "Block registers correctly",
+      "Test page has 4 block variations",
+      "All block variations render correctly",
+      "sprintf() used correctly in both TSX and PHP for author/date",
+      "Topic pills loop through ALL categories in both TSX and PHP",
+      "Pills wrapper uses flex flex-wrap gap-2 for multi-line support",
+      "No duplicate $showExcerpt or $useTopicColor variable declarations in PHP",
+      "PHP has proper @var docblock for camelCase attributes",
+      "TSX and PHP structure perfectly synced",
+      "Conditional rendering matches between TSX and PHP",
+      "Background image uses role='presentation' and alt=''",
+      "Semantic HTML with section, h1, paragraph tags",
+      "No responsive markup duplication",
+      "Empty states handled correctly"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

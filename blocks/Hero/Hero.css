@@ -1,0 +1,119 @@
+/* Image reveal: the bottom mask animates from fully-closed (image hidden,
+   atmospheric gradient shows through) down to the resting mask position
+   (top 65% of image visible, fading to transparent at 90%). Uses @property
+   for smooth percentage interpolation — same technique as the button
+   gradient sweep. */
+@property --hero-mask-from {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 65%;
+}
+
+@property --hero-mask-to {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 90%;
+}
+
+.hero-image-reveal {
+	mask-image: linear-gradient(
+		to bottom,
+		black var(--hero-mask-from),
+		transparent var(--hero-mask-to)
+	);
+	-webkit-mask-image: linear-gradient(
+		to bottom,
+		black var(--hero-mask-from),
+		transparent var(--hero-mask-to)
+	);
+	/* Split into two parallel animations so the mask-to (bottom edge of
+	   the fade) leads the mask-from (top edge of the fade) during the
+	   reveal. The gap between them widens mid-animation (producing a
+	   longer soft fade edge) and closes back to the resting 25-point
+	   gap at the end. Using a single smooth curve per property avoids
+	   the "2-stage" feel that a mid-keyframe would introduce. */
+	animation:
+		hero-image-reveal-from 1800ms cubic-bezier(0.5, 0, 0.3, 1) both,
+		hero-image-reveal-to 1800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes hero-image-reveal-from {
+	from {
+		--hero-mask-from: 0%;
+	}
+	to {
+		--hero-mask-from: 65%;
+	}
+}
+
+@keyframes hero-image-reveal-to {
+	from {
+		--hero-mask-to: 0%;
+	}
+	to {
+		--hero-mask-to: 90%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.hero-image-reveal {
+		animation: none;
+	}
+}
+
+/* Distance the gradient element is shifted up at the start of the entrance
+   animation — large enough for its top edge to reach the top of the hero,
+   covering the image area during the mask-reveal so there's no "hole". */
+.hero {
+	--top-gradient-drop-from: calc(var(--header-height) + 180px);
+}
+
+@media (min-width: 768px) {
+	.hero {
+		--top-gradient-drop-from: calc(var(--header-height) + 300px);
+	}
+}
+
+.hero .top-gradient {
+	--offset: calc(var(--text-header-0) + (var(--text-sm) * 1.1));
+	position: absolute;
+	top: calc(var(--offset) * -1);
+	left: 0;
+	width: 100%;
+	height: calc(150vh + 60px);
+	z-index: 0;
+	pointer-events: none;
+	background:
+		linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--accent-color) 50%, transparent) 20%,
+			color-mix(in srgb, var(--color-off-white) 50%, transparent) 80%,
+			transparent
+		),
+		radial-gradient(
+			ellipse 30% 44% at 20% calc(45% + var(--offset)),
+			var(--gradient-left),
+			transparent
+		),
+		radial-gradient(
+			ellipse 44% 33% at 80% calc(30% + var(--offset)),
+			var(--gradient-right),
+			transparent
+		);
+	animation: top-gradient-drop 1800ms cubic-bezier(0.5, 0, 0.3, 1) both;
+}
+
+@keyframes top-gradient-drop {
+	from {
+		transform: translateY(calc(var(--top-gradient-drop-from) * -1));
+	}
+	to {
+		transform: translateY(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.hero .top-gradient {
+		animation: none;
+	}
+}

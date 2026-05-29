@@ -1,0 +1,96 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-12-131639",
+  "status": "complete",
+  "blockName": "Archive",
+  "output": {
+    "summary": "Six UI/UX changes to the Archive filter bar and card hover states: (1) constrain search input width to match filter dropdowns instead of growing to fill space, (2) add a search icon button inside the right side of the search input with padding so text does not go underneath, (3) fix dropdown arrow visibility in dark mode (currentColor in background-image SVGs does not work -- need a white-fill SVG for dark mode selects), (4) make per-page options column-aware (base 10 for 1/2/4 columns, base 9 for 3 columns, with multipliers 1x-5x), (5) fix resource card btn-tertiary hover contrast (dark:hover:text-off-white from the btn-tertiary component fights with group-hover:text-charcoal, causing brief dark-on-dark flash -- need to fully override btn-tertiary hover in archive context), (6) confirm resource/policy card hover changes background to accent color (already implemented via group-hover:bg-accent, working correctly).",
+    "fileChanges": [
+      {
+        "file": "blocks/Archive/Archive.php",
+        "action": "modify",
+        "description": "Restructure search input: constrain width, add search icon button inside input, compute column-aware per-page options",
+        "details": "1. SEARCH WIDTH: Change the search wrapper from 'max-sm:w-full grow-1 grid' to 'max-sm:w-full grid' (remove grow-1) and add 'min-w-58' to match the filter dropdown width. The search input should not grow to fill available space.\n2. SEARCH BUTTON: Replace the left-aligned search icon with a right-aligned clickable button inside the input. Use the grid overlay pattern (col-1 row-1) to position a <button type='submit'> with the search SVG icon at the right edge of the input. Add 'pr-12' to the input so text does not overlap the button. Remove the existing left-side search icon span and its 'pl-12' from the input.\n3. PER-PAGE OPTIONS: Replace the current per_page_options loop (lines 79-82) with column-aware logic:\n   - Determine base value: if maxColumns is 3, base = 9; otherwise base = 10\n   - Generate options: base * 1, base * 2, base * 3, base * 4, base * 5\n   - For 3 columns: 9, 18, 27, 36, 45\n   - For 1, 2, or 4 columns: 10, 20, 30, 40, 50\n   - The $postsPerPage attribute default should be ignored in favor of the computed base. However, the attribute value is still used when coming from URL or when explicitly set -- the per_page_options array is only for the dropdown choices.\n4. IMPORTANT: The postsPerPage attribute default in block.json stays at 9 (backward compatible). The PHP computes the dropdown options based on maxColumns. If the current postsPerPage value is not in the computed options list, it gets snapped to the closest option or the base value.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Archive/Archive.css",
+        "action": "modify",
+        "description": "Fix dropdown arrow in dark mode, fix btn-tertiary hover in archive card context",
+        "details": "1. DROPDOWN ARROW: The global forms.css uses background-image with fill='currentColor' which does NOT work in SVG data URIs -- currentColor is not resolved in background-image context. Add a dark-mode-specific rule in Archive.css:\n   .archive select { background-image: url(\"data:image/svg+xml,...white fill...\"); }\n   This overrides the global arrow with a white-filled version for the dark archive context. Also ensure the per-page select (w-16) has enough right padding to show the arrow without being clipped.\n2. BTN-TERTIARY HOVER FIX: The btn-tertiary component (button.css line 58-64) applies dark:hover:text-off-white which conflicts with the archive card group-hover:text-charcoal!. When the user hovers directly on the btn-tertiary inside a resource/policy card, the component's dark:hover:text-off-white can briefly flash off-white text against the charcoal background before the card transitions to accent. Fix by adding explicit overrides in Archive.css:\n   .archive .card-resource .group:hover .btn-tertiary,\n   .archive .card-resource .group:hover .btn-tertiary:hover,\n   .archive .card-resource .group:hover .btn-tertiary:focus,\n   .archive .card-resource .group:focus-within .btn-tertiary { color: var(--color-charcoal) !important; }\n   Same for .card-policy. Also suppress the hover:underline! on btn-tertiary in card context since the entire card is the interactive element:\n   .archive .card-resource .btn-tertiary:hover,\n   .archive .card-policy .btn-tertiary:hover { text-decoration: none !important; }\n3. SEARCH BUTTON STYLING: Add styles for the search submit button inside the input: position right, no background, currentColor icon, hover state.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Archive/Archive.tsx",
+        "action": "modify",
+        "description": "Update postsPerPage RangeControl to sync with maxColumns and use appropriate step/default",
+        "details": "The RangeControl for postsPerPage currently has step=3, min=3, max=24. Update:\n1. Change the step to be dynamic based on maxColumns: if maxColumns is 3, step=9; otherwise step=10.\n2. Change min to match the base: 9 for 3 columns, 10 for others.\n3. Change max to be 5x the base: 45 for 3 columns, 50 for others.\n4. When maxColumns changes, auto-update postsPerPage to the new base value (if the current value doesn't divide evenly by the new base).\n5. The RangeControl's onChange for maxColumns should also reset postsPerPage to the appropriate base value.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Archive/block.json",
+        "action": "modify",
+        "description": "Keep postsPerPage default at 9 for backward compatibility but document the column-aware behavior",
+        "details": "No structural change to block.json. The default of 9 is appropriate since the default maxColumns is 3 and base for 3 columns is 9. The column-aware per-page logic is handled entirely in PHP and TSX. No attribute changes needed.",
+        "affectsPhp": false
+      },
+      {
+        "file": "parts/card-resource.php",
+        "action": "modify",
+        "description": "No changes needed -- group-hover:bg-accent and group-hover:text-charcoal! are already correct",
+        "details": "The resource card already has the correct hover classes on the article element (group-hover:bg-accent group-hover:border-accent group-hover:text-charcoal) and btn-tertiary (group-hover:text-charcoal!). The hover contrast issue is a CSS specificity problem between the btn-tertiary component's dark:hover:text-off-white and the card's group-hover -- this is fixed in Archive.css, not in the card template.",
+        "affectsPhp": false
+      },
+      {
+        "file": "parts/card-policy.php",
+        "action": "modify",
+        "description": "No changes needed -- same as resource card, hover fix is in Archive.css",
+        "details": "The policy card already has group-hover:bg-accent group-hover:border-accent group-hover:text-charcoal on the article and group-hover:text-charcoal! on btn-tertiary. The CSS specificity fix in Archive.css covers this card too.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "category": "layout",
+        "question": "Should the search input width exactly match the filter dropdown width, or use a similar min-width constraint?",
+        "recommendation": "Use the same min-w-58 (232px) as the filter dropdowns and remove grow-1 so the search input does not expand. On mobile (max-sm), it goes full width like the dropdowns. This creates a consistent, compact filter bar.",
+        "needsUserInput": false
+      },
+      {
+        "category": "layout",
+        "question": "Should the search icon button trigger form submission or just be decorative?",
+        "recommendation": "Make it a <button type='submit'> so clicking the icon submits the search. The form already has a submit handler in JS that intercepts and does AJAX. Position it at the right edge of the input using the grid overlay pattern (col-1 row-1). Add pointer-events-auto on the button and remove pointer-events-none from the old icon span.",
+        "needsUserInput": false
+      },
+      {
+        "category": "layout",
+        "question": "For the dropdown arrow, should we fix the global forms.css or add an archive-specific override?",
+        "recommendation": "Add an archive-specific override in Archive.css. The global forms.css uses currentColor in a background-image data URI which fundamentally does not work (currentColor is not resolved in background-image context). However, fixing the global file may have unintended consequences across the theme. The archive-specific fix in Archive.css targets .archive select with a white-fill arrow SVG for the dark mode context. A separate task should be created to fix the global forms.css issue theme-wide.",
+        "needsUserInput": false
+      },
+      {
+        "category": "behavior",
+        "question": "When maxColumns changes in the editor, should postsPerPage automatically reset to the new base value?",
+        "recommendation": "Yes. When maxColumns changes, the TSX onChange handler should also update postsPerPage to the appropriate base (9 for 3 columns, 10 for others). This prevents orphan values (e.g., postsPerPage=9 with maxColumns=4 would show an awkward 9-item grid with 4 columns). The user can then adjust from the new base via the RangeControl.",
+        "needsUserInput": false
+      },
+      {
+        "category": "color",
+        "question": "How to resolve the btn-tertiary hover color conflict in dark mode card context?",
+        "recommendation": "Override btn-tertiary hover/focus colors in the archive CSS for card contexts. When the parent group is hovered (card is hovered), force the btn-tertiary to charcoal regardless of its own hover state. Also suppress the btn-tertiary underline on hover since the entire card is the click target. This uses CSS specificity (.archive .card-resource .group:hover .btn-tertiary:hover) with !important to override the component's dark:hover:text-off-white.",
+        "needsUserInput": false
+      },
+      {
+        "category": "layout",
+        "question": "Should the per-page select show the dropdown arrow? Currently it's w-16 text-center which may clip the arrow.",
+        "recommendation": "Widen the per-page select from w-16 (64px) to w-20 (80px) to accommodate the dropdown arrow indicator. The arrow needs ~28px of right padding (12px icon + 16px offset). At w-16 with pr-12, there would be very little room for the number text. At w-20, the number and arrow both fit comfortably.",
+        "needsUserInput": false
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "design"
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

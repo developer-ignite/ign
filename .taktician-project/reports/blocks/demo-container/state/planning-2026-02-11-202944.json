@@ -1,0 +1,381 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-11-202944",
+  "status": "complete",
+  "blockName": "DemoContainer",
+  "output": {
+    "meta": {
+      "blockName": "DemoContainer",
+      "namespace": "takt",
+      "title": "Demo Container",
+      "description": "A utility wrapper block for demo/test pages that provides a titled container around inner blocks. Not visible in the block inserter.",
+      "category": "theme",
+      "generatedAt": "2026-02-11T20:29:44Z",
+      "figmaNodeId": null,
+      "specFile": null
+    },
+    "files": {
+      "blockJson": "blocks/DemoContainer/block.json",
+      "indexTsx": "blocks/DemoContainer/index.tsx",
+      "componentTsx": "blocks/DemoContainer/DemoContainer.tsx",
+      "templatePhp": "blocks/DemoContainer/DemoContainer.php",
+      "iconSvg": "blocks/DemoContainer/DemoContainer.svg"
+    },
+    "blockTypePatterns": {
+      "source": "generic.md",
+      "requiredImports": {
+        "tsx": [
+          "useBlockProps",
+          "useInnerBlocksProps",
+          "RichText",
+          "cn",
+          "shouldDisplay",
+          "renameBlock"
+        ]
+      },
+      "requiredPatterns": [
+        { "pattern": "shouldDisplay", "usage": "Show description field when block is selected or has content" },
+        { "pattern": "renameBlock", "usage": "Sync list view name with the title field" },
+        { "pattern": "cn", "usage": "Conditional classes for first-child margin" },
+        { "pattern": "useInnerBlocksProps", "usage": "Render inner blocks area for child blocks" }
+      ],
+      "componentStructure": {
+        "wrapper": "div",
+        "container": "div.container"
+      },
+      "qualityChecklist": [
+        "TSX and PHP produce identical HTML structure",
+        "shouldDisplay() used for optional description field",
+        "renameBlock() syncs title to list view",
+        "Inner blocks rendered via useInnerBlocksProps / $children",
+        "Block hidden from inserter via supports.inserter: false",
+        "First-child margin-top uses var(--header-height)"
+      ]
+    },
+    "attributes": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": null,
+        "description": "HTML anchor for linking",
+        "optional": true,
+        "editorComponent": null,
+        "validation": null
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "",
+        "description": "The demo container title, displayed as a heading above the inner blocks. Used to label what block is being demonstrated.",
+        "optional": false,
+        "editorComponent": "RichText",
+        "validation": null
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": "",
+        "description": "Optional description text below the title, used to explain the demo variation or provide context.",
+        "optional": true,
+        "editorComponent": "RichText",
+        "validation": null
+      }
+    ],
+    "styling": {
+      "wrapper": {
+        "classes": "demo-container py-8 sm:py-12 first:mt-(--header-height)",
+        "element": "div",
+        "notes": "The outer wrapper. py-8/sm:py-12 provides vertical spacing between instances. first:mt-(--header-height) pushes the first instance below the fixed header."
+      },
+      "container": {
+        "classes": "container",
+        "element": "div",
+        "notes": "Standard theme container for horizontal padding/max-width."
+      },
+      "headerArea": {
+        "classes": "mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-charcoal/10",
+        "element": "div",
+        "notes": "Contains title and description. Bottom border provides visual separation from inner blocks. Only rendered when title or description has content."
+      },
+      "title": {
+        "classes": "text-header-4 uppercase text-charcoal",
+        "element": "h2",
+        "notes": "Uses the theme heading font (Anton) at header-4 size. Uppercase for clear labeling. Not a ThemeHeading component -- this is a simple RichText field for a utility block."
+      },
+      "description": {
+        "classes": "mt-2 text-body text-charcoal/60 max-w-2xl",
+        "element": "p",
+        "notes": "Muted text below the title. max-w-2xl prevents overly wide lines. Only rendered when description has content."
+      },
+      "innerBlocksArea": {
+        "classes": "",
+        "element": "div",
+        "notes": "No special styling -- inner blocks render naturally. The useInnerBlocksProps wrapper. In PHP, $children is echoed directly without a wrapper div when empty checks pass."
+      }
+    },
+    "responsive": {
+      "mobile": {
+        "breakpoint": "< 640px",
+        "behavior": "py-8 on wrapper, mb-6 pb-6 on header area. Title at header-4 mobile size (24px). Full width layout."
+      },
+      "tablet": {
+        "breakpoint": ">= 640px",
+        "behavior": "py-12 on wrapper (sm:py-12), mb-8 pb-8 on header area (sm:mb-8 sm:pb-8). Title scales up per header-4 responsive sizing."
+      },
+      "desktop": {
+        "breakpoint": ">= 1024px",
+        "behavior": "Same as tablet. No additional desktop-specific changes needed for this utility block."
+      }
+    },
+    "behavior": {
+      "emptyState": {
+        "title": "Always shown (required field). RichText with placeholder.",
+        "description": "Shown via shouldDisplay() -- visible when block is selected or has content.",
+        "innerBlocks": "Always shown. No appender restriction -- all blocks are allowed since this is a generic demo wrapper."
+      },
+      "optionalFields": {
+        "pattern": "shouldDisplay()",
+        "fields": ["description"]
+      },
+      "editorBehavior": {
+        "blockNaming": "renameBlock() syncs title content to block list view name",
+        "inserter": "Block is hidden from inserter (supports.inserter: false). Must be added programmatically or via test page creation."
+      }
+    },
+    "innerBlocks": {
+      "allowedBlocks": null,
+      "template": null,
+      "renderAppender": true,
+      "notes": "All blocks are allowed as children. No template -- starts empty. Default appender is used since the user needs to add any block they want to demo."
+    },
+    "accessibility": {
+      "wrapper": {
+        "role": "region",
+        "ariaLabel": "Derived from title attribute content"
+      },
+      "title": {
+        "element": "h2",
+        "notes": "Semantic heading element. Uses h2 since these containers are top-level page sections."
+      }
+    },
+    "blockJsonSpec": {
+      "$schema": "https://schemas.wp.org/trunk/block.json",
+      "apiVersion": 3,
+      "name": "takt/demo-container",
+      "title": "Demo Container",
+      "category": "takt-theme",
+      "description": "A utility wrapper for demo pages. Wraps a block instance with a title and description.",
+      "supports": {
+        "html": false,
+        "anchor": true,
+        "inserter": false
+      },
+      "attributes": {
+        "anchor": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "textdomain": "takt",
+      "example": {
+        "viewportWidth": 1400,
+        "attributes": {
+          "title": "Card Carousel - Default",
+          "description": "A carousel with 3 cards and navigation arrows."
+        }
+      }
+    },
+    "decisions": [
+      {
+        "id": "DEC-001",
+        "category": "layout",
+        "decision": "Use div as wrapper element instead of section, with role=region and aria-label from title",
+        "source": "spec",
+        "evidence": "This is a utility/demo container, not a semantic page section. Using div with role=region is more appropriate for a developer tooling block."
+      },
+      {
+        "id": "DEC-002",
+        "category": "typography",
+        "decision": "Use text-header-4 for the title (24px mobile, responsive larger on tablet+)",
+        "source": "spec",
+        "evidence": "Spec says neutral/utility-focused design. header-4 is appropriately sized -- prominent enough for labeling but not overly large like header-2."
+      },
+      {
+        "id": "DEC-003",
+        "category": "spacing",
+        "decision": "py-8 sm:py-12 for wrapper padding; mb-6 sm:mb-8 for header-to-content gap",
+        "source": "spec",
+        "evidence": "Spec requires good padding between heading area and inner blocks, and between instances. py-8 (32px) / sm:py-12 (48px) provides generous inter-instance spacing. mb-6/sm:mb-8 provides clear separation between header and content."
+      },
+      {
+        "id": "DEC-004",
+        "category": "layout",
+        "decision": "Use border-b border-charcoal/10 for visual separation between title/description and inner blocks",
+        "source": "spec",
+        "evidence": "Spec requires clear visual separation between the title/description and the inner blocks. A subtle bottom border on the header area achieves this in a neutral, utility-focused way."
+      },
+      {
+        "id": "DEC-005",
+        "category": "layout",
+        "decision": "first:mt-(--header-height) on wrapper for first-child margin-top",
+        "source": "spec",
+        "evidence": "Spec explicitly states: If the block is the first block of the page (:first-child), it should have a margin-top of var(--header-height)."
+      },
+      {
+        "id": "DEC-006",
+        "category": "layout",
+        "decision": "No ThemeHeading component -- use plain RichText fields for title and description",
+        "source": "spec",
+        "evidence": "This is a utility block, not a content section. ThemeHeading includes eyebrow, buttons, and heading size options that are unnecessary here. Simple RichText fields keep the block minimal."
+      },
+      {
+        "id": "DEC-007",
+        "category": "layout",
+        "decision": "Allow all blocks as inner block children, no template",
+        "source": "spec",
+        "evidence": "Spec says this wraps demo blocks created during development. Any block should be allowed since different blocks will be tested."
+      },
+      {
+        "id": "DEC-008",
+        "category": "layout",
+        "decision": "Hidden from block inserter via supports.inserter: false",
+        "source": "spec",
+        "evidence": "Spec explicitly states: This block won't be listed on the block lists (inserter)."
+      },
+      {
+        "id": "DEC-009",
+        "category": "typography",
+        "decision": "Description text uses text-charcoal/60 for muted appearance",
+        "source": "spec",
+        "evidence": "Spec requires neutral, utility-focused design. Muted description text de-emphasizes it relative to the title, creating clear hierarchy."
+      }
+    ],
+    "unresolvedDecisions": [],
+    "testPage": {
+      "slug": "test-demo-container",
+      "title": "Test: Demo Container",
+      "variations": [
+        {
+          "name": "Minimal - Title Only",
+          "purpose": "Tests required field only, no description, one inner block",
+          "attributes": {
+            "title": "Minimal Demo"
+          },
+          "innerBlocks": [
+            {
+              "name": "core/paragraph",
+              "attributes": {
+                "content": "This is a simple paragraph block inside the demo container."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Full Content - Title + Description + Inner Blocks",
+          "purpose": "Tests complete rendering with all fields populated",
+          "attributes": {
+            "title": "Cards Carousel - Full Content",
+            "description": "A fully populated demo container showing a carousel with navigation, pagination, and autoplay. This description provides context about what is being tested."
+          },
+          "innerBlocks": [
+            {
+              "name": "core/paragraph",
+              "attributes": {
+                "content": "Placeholder for a carousel block. In a real test page, this would be replaced with the actual block being demonstrated."
+              }
+            },
+            {
+              "name": "core/paragraph",
+              "attributes": {
+                "content": "A second paragraph to simulate multiple child elements."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Long Content - Edge Case",
+          "purpose": "Tests overflow/truncation with excessive text",
+          "attributes": {
+            "title": "This Is A Very Long Demo Container Title That Tests How The Block Handles Extremely Long Headings Without Breaking The Layout",
+            "description": "This is an extremely long description meant to test how the demo container handles verbose text. It should wrap gracefully within the max-w-2xl constraint and maintain proper spacing with the inner blocks below. The description provides detailed context about the block variation being tested, including edge cases, known issues, and specific configurations that are relevant to QA testing."
+          },
+          "innerBlocks": [
+            {
+              "name": "core/paragraph",
+              "attributes": {
+                "content": "Inner block content."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Empty Description - Optional Field Test",
+          "purpose": "Tests shouldDisplay() behavior for empty optional description",
+          "attributes": {
+            "title": "No Description Provided",
+            "description": ""
+          },
+          "innerBlocks": [
+            {
+              "name": "core/paragraph",
+              "attributes": {
+                "content": "The description field above should not render on the frontend."
+              }
+            }
+          ]
+        },
+        {
+          "name": "No Inner Blocks",
+          "purpose": "Tests empty inner blocks state",
+          "attributes": {
+            "title": "Empty Container - No Inner Blocks",
+            "description": "This container has no child blocks. The inner blocks area should still render the appender in the editor."
+          },
+          "innerBlocks": []
+        },
+        {
+          "name": "Multiple Inner Blocks",
+          "purpose": "Tests with several child blocks to verify spacing",
+          "attributes": {
+            "title": "Multiple Inner Blocks Test",
+            "description": "Container with several inner blocks to verify spacing between them."
+          },
+          "innerBlocks": [
+            {
+              "name": "core/heading",
+              "attributes": {
+                "content": "Section Heading",
+                "level": 3
+              }
+            },
+            {
+              "name": "core/paragraph",
+              "attributes": {
+                "content": "First paragraph of content inside the demo container."
+              }
+            },
+            {
+              "name": "core/paragraph",
+              "attributes": {
+                "content": "Second paragraph of content inside the demo container."
+              }
+            },
+            {
+              "name": "core/image",
+              "attributes": {}
+            }
+          ]
+        }
+      ],
+      "interactiveTests": []
+    },
+    "tokenUsage": {
+      "contextGathering": 0,
+      "figmaAnalysis": 0,
+      "designConsultation": 0,
+      "specGeneration": 0,
+      "total": 0
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

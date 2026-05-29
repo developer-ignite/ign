@@ -1,0 +1,107 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-11-133500",
+  "status": "PASS",
+  "blockName": "DynamicContentCarousel",
+  "output": {
+    "summary": {
+      "checksRun": 7,
+      "checksPassed": 7,
+      "checksFailed": 0,
+      "issuesFound": 3,
+      "critical": 0,
+      "major": 0,
+      "minor": 3
+    },
+    "context": "Re-check after padding refactor: section py-10 sm:py-24 changed to py-10 sm:py-16, container received py-10 md:py-24 to move vertical padding inside the charcoal background panel.",
+    "checks": {
+      "build": { "status": "pass", "notes": "Build compiles with only performance warnings (bundle size). No TypeScript errors." },
+      "lint": {
+        "status": "warning",
+        "issues": [
+          {
+            "id": "FQA-001",
+            "severity": "minor",
+            "description": "ArrowLeft import is defined but never used (line 21). SVGs are rendered via theme_block_asset() in PHP, so the TSX imports are unused.",
+            "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+            "line": 21,
+            "fix": "Remove unused ArrowLeft import"
+          },
+          {
+            "id": "FQA-002",
+            "severity": "minor",
+            "description": "ArrowRight import is defined but never used (line 22). Same reason as FQA-001.",
+            "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+            "line": 22,
+            "fix": "Remove unused ArrowRight import"
+          },
+          {
+            "id": "FQA-003",
+            "severity": "minor",
+            "description": "BaseControl with label but no id prop (line 198). WordPress lint rule requires id when label is passed.",
+            "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+            "line": 198,
+            "fix": "Add id prop to BaseControl, e.g. id=\"dynamic-content-carousel-selected-content\""
+          }
+        ],
+        "notes": "The __experimentalToggleGroupControl and react-hooks/exhaustive-deps warnings are pre-existing patterns used across the project and not introduced by this change."
+      },
+      "registration": { "status": "pass", "notes": "block.json valid, apiVersion 3, all files present." },
+      "attributes": { "status": "pass", "notes": "All attributes defined with correct types and defaults. No attribute changes in this revision." },
+      "accessibility": { "status": "pass", "notes": "Navigation buttons have aria-label and title. Sections with headings use aria-labelledby, sections without heading use aria-label='Content Carousel'. Swiper A11y module loaded." },
+      "tsxPhpSync": {
+        "status": "pass",
+        "notes": "TSX and PHP section classes match exactly: 'dynamic-content-carousel dark bg-transparent! py-10 sm:py-16'. Container classes match exactly: 'container relative py-10 md:py-24 before:absolute before:bg-charcoal before:rounded-3xl before:-z-1 before:-inset-(--side-gutter) md:before:-inset-8'. Both files updated consistently for the padding refactor."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "notes": "10 sections rendered on test page (9 block instances in raw content, one hideIfEmpty variation still shows because policies exist). All variations from spec present. Padding change is an intentional post-spec revision."
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "lint",
+        "severity": "minor",
+        "description": "ArrowLeft import is defined but never used",
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+        "line": 21,
+        "fix": "Remove unused import: import { ReactComponent as ArrowLeft } from './resources/ArrowLeft.svg';"
+      },
+      {
+        "id": "FQA-002",
+        "check": "lint",
+        "severity": "minor",
+        "description": "ArrowRight import is defined but never used",
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+        "line": 22,
+        "fix": "Remove unused import: import { ReactComponent as ArrowRight } from './resources/ArrowRight.svg';"
+      },
+      {
+        "id": "FQA-003",
+        "check": "lint",
+        "severity": "minor",
+        "description": "BaseControl with label but missing id prop",
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+        "line": 198,
+        "fix": "Add id=\"dynamic-content-carousel-selected-content\" to BaseControl"
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors",
+      "Block registers correctly with apiVersion 3",
+      "All attributes save with correct types and defaults",
+      "TSX and PHP markup match exactly after padding refactor",
+      "Section padding changed from py-10 sm:py-24 to py-10 sm:py-16 in both files",
+      "Container py-10 md:py-24 added in both files to place padding inside charcoal panel",
+      "Navigation buttons have proper aria-label and title attributes",
+      "Sections with headings use aria-labelledby, without use aria-label fallback",
+      "All 10 test page variations render correctly",
+      "Swiper initializes with correct data attributes on all carousel instances",
+      "hideIfEmpty variant still shows when policies exist (correct behavior)",
+      "Manual selection variant with empty selectedPosts correctly hides carousel"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

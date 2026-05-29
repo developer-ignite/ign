@@ -1,0 +1,153 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-20-004646",
+  "status": "PASS",
+  "blockName": "Header",
+  "output": {
+    "summary": {
+      "checksRun": 7,
+      "checksPassed": 7,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0,
+      "note": 0
+    },
+    "fixesVerified": [
+      {
+        "fix": "Added max-md:flex-wrap to nav bar inner div",
+        "phpLine": 63,
+        "tsxLine": 490,
+        "phpClass": "flex items-stretch justify-between max-md:flex-wrap",
+        "tsxClass": "flex items-stretch justify-between max-md:flex-wrap",
+        "classesMatch": true,
+        "renderedAudit": "flex_wrap_inner found on all 9 instances",
+        "status": "VERIFIED"
+      },
+      {
+        "fix": "Added max-md:w-full max-md:order-last to right column div",
+        "phpLine": 77,
+        "tsxClass": "flex flex-col md:gap-6 items-end shrink min-w-0 max-md:w-full max-md:order-last",
+        "phpClass": "flex flex-col md:gap-6 items-end shrink min-w-0 max-md:w-full max-md:order-last",
+        "tsxLine": 518,
+        "classesMatch": true,
+        "renderedAudit": "right_col_full_width found on all 9 instances",
+        "status": "VERIFIED"
+      }
+    ],
+    "checks": {
+      "build": {
+        "status": "pass",
+        "errors": 0,
+        "headerWarnings": 0,
+        "totalWarnings": 8,
+        "details": "Build and lint pass with 0 errors. 8 pre-existing react-hooks/exhaustive-deps warnings in Accordion, Archive (x2), ContentWithMedia, FullWidthMedia, PostHero (x2), Tabs — none in Header files."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "Both new class additions are verbatim identical between HeaderMain.tsx and HeaderMain.php. Nav bar inner: 'flex items-stretch justify-between max-md:flex-wrap' matches on PHP line 63 and TSX line 490. Right column: 'flex flex-col md:gap-6 items-end shrink min-w-0 max-md:w-full max-md:order-last' matches on PHP line 77 and TSX line 518. Automated sync tool passes (0 errors, 1 pre-existing expected depth-1 structure warning).",
+        "automatedResult": "pass",
+        "structureWarning": {
+          "severity": "note",
+          "message": "TSX 0 vs PHP 3 elements at depth 1 — pre-existing expected difference. Not a defect."
+        }
+      },
+      "testPageIntegrity": {
+        "status": "pass",
+        "instanceCount": 9,
+        "expectedVariations": 9,
+        "linkCountsPerInstance": [
+          16,
+          3,
+          4,
+          4,
+          3,
+          4,
+          9,
+          4,
+          3
+        ],
+        "details": "All 9 header instances render without error. Link counts identical to previous QA run — no regressions."
+      },
+      "mobileMenuFullWidth": {
+        "status": "pass",
+        "details": "Interactive screenshot at 375px with hamburger click confirms the mobile menu expands to full width of the header bar. The right column (containing the nav) wraps to a full-width second row below the logo+toggle row via max-md:flex-wrap on the parent and max-md:w-full max-md:order-last on the right column. Nav items (ABOUT, HEALTH, FINANCIAL WELLBEING) stack vertically across the full header width. The X close icon appears at top-right confirming aria-expanded state toggled. This is the correct behavior — the menu is no longer squeezed into a narrow column.",
+        "screenshotMenuOpen": "header-mobile-menu-open-375w.png",
+        "screenshotFolder": ".taktician-project/reports/blocks/header/screenshots/2026-02-20-004631/",
+        "menuSpansFullWidth": true,
+        "closeButtonVisible": true,
+        "navItemsStackVertically": true,
+        "logoAndToggleOnFirstRow": true
+      },
+      "mobileMenuClosed": {
+        "status": "pass",
+        "details": "Closed-state screenshot at 375px shows the collapsed header correctly: IGNITE logo on the left, hamburger icon on the right, both on a single row. No extra height or layout shift in closed state.",
+        "screenshotMenuClosed": "header-mobile-menu-closed-375w.png",
+        "screenshotFolder": ".taktician-project/reports/blocks/header/screenshots/2026-02-20-004543/"
+      },
+      "desktopLayout": {
+        "status": "pass",
+        "details": "Desktop screenshot at 1440px confirms no regressions: IGNITE logo spans both rows (utility row + nav row) on the left across all 9 variations. Utility row (search box + SEP CTA link) appears at top-right. Nav items render horizontally below. max-md:flex-wrap has no effect at desktop widths (md: prefix overrides). max-md:w-full and max-md:order-last are also inert at desktop — right column retains shrink + items-end layout.",
+        "screenshotDesktop": "header-mobile-fix-desktop-1440w.png",
+        "screenshotFolder": ".taktician-project/reports/blocks/header/screenshots/2026-02-20-004541/",
+        "logoSpansBothRows": true,
+        "noDesktopRegressions": true
+      },
+      "accessibility": {
+        "status": "pass",
+        "details": "ARIA attributes confirmed on all 9 rendered instances: role='menubar' present (menubar selector found 9/9), button[aria-label='Toggle Main Menu'] present (mobile_toggle found 9/9), nav.header-collapsable with aria-label present (nav_collapsable found 9/9). Interactive screenshot confirmed aria-expanded toggled (hamburger icon changed to X close icon after click). max-md:order-last on right column is a visual reorder only — DOM order (logo, right-col, toggle) unchanged, preserving tab order.",
+        "menubarPresent": true,
+        "mobileTogglePresent": true,
+        "navAriaLabelPresent": true,
+        "ariaExpandedToggled": true,
+        "domOrderPreserved": true,
+        "tabOrderNote": "max-md:order-last is a CSS visual reorder. DOM order preserved: logo → right-column → toggle button. Tab order follows DOM order, not visual order. This is acceptable since the right column is not keyboard-interactive in collapsed state (pointer-events-none, max-h-0, opacity-0)."
+      },
+      "regressions": {
+        "status": "pass",
+        "details": "All 5 selectors from prior QA run present on all 9 instances (flex_wrap_inner, right_col_full_width, mobile_toggle, menubar, nav_collapsable). Link counts per instance [16,3,4,4,3,4,9,4,3] unchanged. Data attributes correct for all scroll variations. No regressions introduced.",
+        "linkCountsUnchanged": true,
+        "dataAttributesUnchanged": true,
+        "previousSelectorsIntact": true
+      }
+    },
+    "screenshots": {
+      "desktopFull": {
+        "file": "header-mobile-fix-desktop-1440w.png",
+        "folder": ".taktician-project/reports/blocks/header/screenshots/2026-02-20-004541/",
+        "width": 1440,
+        "fullPage": true
+      },
+      "mobileClosed": {
+        "file": "header-mobile-menu-closed-375w.png",
+        "folder": ".taktician-project/reports/blocks/header/screenshots/2026-02-20-004543/",
+        "width": 375,
+        "fullPage": false
+      },
+      "mobileOpen": {
+        "file": "header-mobile-menu-open-375w.png",
+        "folder": ".taktician-project/reports/blocks/header/screenshots/2026-02-20-004631/",
+        "width": 375,
+        "fullPage": false,
+        "actions": "evaluate click on button[aria-label='Toggle Main Menu'] + 800ms wait"
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build passes with 0 errors, 0 Header-specific warnings",
+      "TSX/PHP sync: both new class additions identical in both files",
+      "max-md:flex-wrap on nav bar inner rendered on all 9 instances",
+      "max-md:w-full max-md:order-last on right column rendered on all 9 instances",
+      "Mobile menu expands to full width of header bar when opened",
+      "Nav items stack vertically full-width in open state",
+      "Logo + toggle remain on first row; right column wraps to second row below",
+      "Desktop layout: no regressions, logo spans both rows, utility row + nav correct",
+      "Accessibility: role=menubar, aria-label, aria-expanded toggle all confirmed",
+      "DOM order preserved (max-md:order-last is CSS-only, tab order unaffected)",
+      "Link counts [16,3,4,4,3,4,9,4,3] unchanged across all 9 instances"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

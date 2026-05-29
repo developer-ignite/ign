@@ -1,0 +1,76 @@
+/* Play icon container */
+.full-width-media-play-button .play-icon {
+	position: relative;
+	width: 128px;
+	height: 103px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Rounded rectangle background via pseudo-element */
+.full-width-media-play-button .play-icon::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: 12.8px;
+	opacity: 0.5;
+	--play-bg-color: #fbf6e2;
+	background:
+		linear-gradient(90deg, var(--play-bg-color), var(--play-bg-color)),
+		linear-gradient(90deg, var(--color-neon-green) 0%, var(--color-blue) 70%);
+	background-size:
+		100% 100%,
+		200% 100%;
+	background-position:
+		0 0,
+		100% 0;
+}
+
+/* Circle + play triangle SVG */
+.full-width-media-play-button .play-circle {
+	position: relative;
+	width: 54px;
+	height: 54px;
+	color: var(--color-off-white);
+	transition: color 0.3s ease;
+}
+
+/* Hover: gradient sweeps across rectangle, circle turns black */
+.full-width-media-play-button:is(:hover, :focus-visible) .play-icon::before {
+	animation: fwm-play-gradient-sweep 1s ease forwards;
+}
+
+.full-width-media-play-button:is(:hover, :focus-visible) .play-circle {
+	color: var(--color-charcoal);
+}
+
+@property --play-bg-color {
+	syntax: "<color>";
+	initial-value: #fbf6e2;
+	inherits: false;
+}
+
+@keyframes fwm-play-gradient-sweep {
+	0% {
+		--play-bg-color: #fbf6e2;
+		opacity: 0.5;
+		background-position:
+			0 0,
+			100% 0;
+	}
+	50% {
+		--play-bg-color: transparent;
+		opacity: 1;
+		background-position:
+			0 0,
+			100% 0;
+	}
+	100% {
+		--play-bg-color: transparent;
+		opacity: 1;
+		background-position:
+			0 0,
+			0% 0;
+	}
+}

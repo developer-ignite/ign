@@ -1,0 +1,82 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/header",
+  "title": "Header",
+  "category": "takt-theme-template",
+  "description": "Site header with navigation bar, logo, search, external link, and dropdown submenus.",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "inserter": true
+  },
+  "attributes": {
+    "anchor": { "type": "string" },
+    "logoId": { "type": "number" },
+    "sepLink": {
+      "type": "object",
+      "default": {
+        "title": "",
+        "url": "",
+        "opensInNewTab": true
+      }
+    },
+    "showSearch": {
+      "type": "boolean",
+      "default": true
+    },
+    "searchPlaceholder": {
+      "type": "string",
+      "default": "SEARCH"
+    },
+    "mobileCtaText": {
+      "type": "string",
+      "default": ""
+    },
+    "mobileCtaLink": {
+      "type": "object",
+      "default": {
+        "title": "",
+        "url": "",
+        "variation": "secondary"
+      }
+    },
+    "fixedOnScrollDesktop": {
+      "type": "boolean",
+      "default": true
+    },
+    "hideOnScrollDownDesktop": {
+      "type": "boolean",
+      "default": false
+    },
+    "fixedOnScrollMobile": {
+      "type": "boolean",
+      "default": true
+    },
+    "hideOnScrollDownMobile": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "sepLink": { "title": "MyHumber", "url": "#", "opensInNewTab": true }
+    },
+    "innerBlocks": [
+      {
+        "name": "takt/header-item",
+        "attributes": { "link": { "title": "About", "url": "#" } }
+      },
+      {
+        "name": "takt/header-item",
+        "attributes": { "link": { "title": "Services", "url": "#" } }
+      },
+      {
+        "name": "takt/header-item",
+        "attributes": { "link": { "title": "Events", "url": "#" } }
+      }
+    ]
+  }
+}

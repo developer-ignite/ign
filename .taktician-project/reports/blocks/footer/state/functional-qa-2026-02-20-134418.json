@@ -1,0 +1,137 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-20-134418",
+  "status": "PASS",
+  "blockName": "Footer",
+  "output": {
+    "summary": {
+      "checksRun": 7,
+      "checksPassed": 7,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "contentComparison": {
+      "html": {
+        "changed": true,
+        "codeModified": false,
+        "canSkipTests": false,
+        "reason": "HTML changed due to CSS class replacements — full QA run required"
+      }
+    },
+    "checksSkipped": [],
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "Build and lint pass with 0 errors. 10 pre-existing react-hooks/exhaustive-deps warnings in unrelated blocks (Accordion, Archive, ContentWithMedia, EventHero, FullWidthMedia, PostHero, Tabs) — not introduced by this change."
+      },
+      "registration": {
+        "status": "pass",
+        "details": "block.json schema valid, naming correct (takt/footer-info), all file references exist, attribute types valid."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "All 5 class changes applied identically in both TSX (FooterInfo.tsx) and PHP (FooterInfo.php). Verified line-by-line: CHG-001 lg:flex-[0_1_auto] on right group container (TSX:150, PHP:69), CHG-002/003/004 sm:flex-1 sm:min-w-36 on Hours/Contact/Social columns (TSX:152/172/200, PHP:71/81/91), CHG-005 sm:flex-1 sm:min-w-48 on address items (TSX:109, PHP:54). Sync validator warning about root wrapper mismatch (InspectorControls vs section) is a known false positive for editor components with sidebar controls.",
+        "syncWarning": "Root wrapper element mismatch (TSX uses InspectorControls/Fragment, PHP uses section) — known false positive, not a real issue."
+      },
+      "cssLayout": {
+        "status": "pass",
+        "details": "New fluid Tailwind classes confirmed present in rendered DOM via taktician_page_audit: sm:flex-1.sm:min-w-48 (address items) found on all 5 instances that have address data, sm:flex-1.sm:min-w-36 (Hours/Contact/Social) found on all 6 footer-info sections (3 columns each = 18 total elements), lg:flex-[0_1_auto] (right group container) found on all 6 footer-info sections. Old fixed-width classes (lg:w-[640px], lg:shrink-0, sm:w-48, sm:w-[calc(50%-1rem)]) are absent.",
+        "checks": [
+          {
+            "check": "Address items 2-per-row on desktop",
+            "status": "pass",
+            "observation": "At 1024px and 1440px, the full content variation (footer instance 1) shows 2 address items on the same row. Instance 3 (long address label) has 3 items — 2 on first row, 1 wrapping to second row. Correct flex-wrap behavior with sm:flex-1 sm:min-w-48 (192px floor)."
+          },
+          {
+            "check": "Hours/Contact/Follow Us distribute space evenly",
+            "status": "pass",
+            "observation": "At 768px and above, the three columns in the right group flex-row with sm:flex-1 giving each column equal share of available space. No column crowds another. Minimum 144px (min-w-36) prevents collapse."
+          },
+          {
+            "check": "Right group does not over-expand",
+            "status": "pass",
+            "observation": "lg:flex-[0_1_auto] on the right group container means grow:0, shrink:1, basis:auto. At 1440px the right group sizes to its children's intrinsic widths rather than a hard 640px, leaving the address/left section to fill remaining space."
+          }
+        ]
+      },
+      "responsiveLayout": {
+        "status": "pass",
+        "details": "Verified at 375, 768, 1024, and 1440px across Chromium, Firefox, and WebKit.",
+        "breakpoints": [
+          {
+            "width": 375,
+            "observation": "Mobile: all columns stack vertically — address items single column, Hours/Contact/Follow Us each in their own full-width row within the right group. No horizontal overflow. Clean stacking. All 6 footer variations render correctly."
+          },
+          {
+            "width": 768,
+            "observation": "Tablet: right group transitions to sm:flex-row, showing Hours/Contact/Follow Us side by side. Address items start to flex-wrap. Three columns in right group share available width equally. Footer nav columns also visible in multi-column row. Layout is clean with no crowding."
+          },
+          {
+            "width": 1024,
+            "observation": "Desktop (mid): Full content variation clearly shows 2 address items per row. Right group is separate from address section via lg:flex-row on the outer container. Hours/Contact/Follow Us columns are evenly distributed. Long address label variation shows 3 items with correct wrap. No overflow or visual anomalies across any of the 6 instances."
+          },
+          {
+            "width": 1440,
+            "observation": "Desktop (wide): Address items robustly 2-per-row in full content instance. Right group stays compact (no over-expansion) thanks to lg:flex-[0_1_auto]. The fluid layout fills the full footer width naturally. Footer nav section below renders cleanly in multi-column grid. The IGNITE logo variation (instance 7) shows logo + 2 address items side by side at desktop — correct. No regressions visible across any of 6 footer instances."
+          }
+        ]
+      },
+      "interactiveBehavior": {
+        "status": "skipped",
+        "reason": "Footer is a static layout block with no interactive elements."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "details": "Test page has 6 footer block instances, all inside takt/demo-container wrappers. All 5 class changes from planning spec (CHG-001 through CHG-005) are present in the rendered HTML. No stale markup or unresolved placeholders detected."
+      }
+    },
+    "screenshots": {
+      "directory": ".taktician-project/reports/blocks/footer/screenshots/2026-02-20-134247",
+      "browsers": [
+        "chromium",
+        "firefox",
+        "webkit"
+      ],
+      "widths": [
+        375,
+        768,
+        1024,
+        1440
+      ],
+      "files": [
+        "footer-chromium-375w.png",
+        "footer-chromium-768w.png",
+        "footer-chromium-1024w.png",
+        "footer-chromium-1440w.png",
+        "footer-firefox-375w.png",
+        "footer-firefox-768w.png",
+        "footer-firefox-1024w.png",
+        "footer-firefox-1440w.png",
+        "footer-webkit-375w.png",
+        "footer-webkit-768w.png",
+        "footer-webkit-1024w.png",
+        "footer-webkit-1440w.png"
+      ]
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build and lint pass (0 errors)",
+      "Block registration valid",
+      "TSX and PHP classes in perfect sync across all 5 changed elements",
+      "New CSS classes (sm:flex-1, sm:min-w-48, sm:min-w-36, lg:flex-[0_1_auto]) present in rendered DOM",
+      "Address items show 2 per row at 1024px and 1440px",
+      "Hours/Contact/Follow Us columns distribute space evenly via flex-1",
+      "Right group container does not over-expand (lg:flex-[0_1_auto])",
+      "Mobile 375px: all columns stack vertically, no overflow",
+      "Tablet 768px: right group shows horizontal flex row correctly",
+      "Desktop 1024px/1440px: fluid layout fills available space naturally",
+      "All 6 footer instances render correctly across all breakpoints",
+      "12 screenshots captured across 3 browsers x 4 widths"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

@@ -1,0 +1,843 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-09-114457",
+  "status": "complete",
+  "blockName": "Tabs",
+  "output": {
+    "meta": {
+      "blockName": "Tabs",
+      "namespace": "takt",
+      "title": "Tabs",
+      "description": "Displays a section with ThemeHeading and vertical tab navigation on the left with switchable content panels on the right. On mobile, tabs become accordions.",
+      "category": "takt-theme",
+      "generatedAt": "2026-02-09T11:44:57Z",
+      "figmaNodeIds": {
+        "desktop1": "785:34910",
+        "desktop2": "807:58405",
+        "mobile": "785:33971"
+      },
+      "specFile": "tabs"
+    },
+    "files": {
+      "parent": {
+        "blockJson": "blocks/Tabs/block.json",
+        "indexTsx": "blocks/Tabs/index.tsx",
+        "componentTsx": "blocks/Tabs/Tabs.tsx",
+        "templatePhp": "blocks/Tabs/Tabs.php",
+        "frontendJs": "blocks/Tabs/Tabs.js",
+        "iconSvg": "blocks/Tabs/Tabs.svg"
+      },
+      "child": {
+        "blockJson": "blocks/Tabs/TabsItem/block.json",
+        "indexTsx": "blocks/Tabs/TabsItem/index.tsx",
+        "componentTsx": "blocks/Tabs/TabsItem/TabsItem.tsx",
+        "templatePhp": "blocks/Tabs/TabsItem/TabsItem.php",
+        "iconSvg": "blocks/Tabs/TabsItem/TabsItem.svg"
+      }
+    },
+    "blockTypePatterns": {
+      "source": ".taktician/instructions/block-types/tabs.md",
+      "childSource": ".taktician/instructions/block-types/tabs-item.md",
+      "requiredImports": {
+        "parentTsx": [
+          "useSelect, dispatch from @wordpress/data",
+          "useRef, useState, useEffect, createContext from @wordpress/element",
+          "useBlockProps, useInnerBlocksProps, store as blockEditorStore from @wordpress/block-editor",
+          "cn, shouldDisplay, renameBlock from @taktdev/utilities",
+          "Appender, AdvancedRichText from @taktdev/components",
+          "ThemeHeading from parts/ThemeHeading"
+        ],
+        "childTsx": [
+          "useSelect from @wordpress/data",
+          "useState, useRef, useContext from @wordpress/element",
+          "useBlockProps, useInnerBlocksProps, InspectorControls, BlockControls, store as blockEditorStore from @wordpress/block-editor",
+          "PanelBody, TextControl, ToolbarGroup, ToolbarButton, Popover from @wordpress/components",
+          "cn, addButtonToBlock, renameBlock from @taktdev/utilities",
+          "edit as editIcon from @wordpress/icons",
+          "TabsCurrent from ../Tabs"
+        ]
+      },
+      "requiredPatterns": [
+        { "pattern": "shouldDisplay", "usage": "Show/hide content based on whether any fields are populated or inner blocks exist" },
+        { "pattern": "renameBlock", "usage": "Sync block name in list view with heading content" },
+        { "pattern": "TabsCurrent context", "usage": "React context to pass active tab index from parent to children" },
+        { "pattern": "tabsHeading sync", "usage": "useEffect to sync child tabTitle attributes to parent tabsHeading array" },
+        { "pattern": "Appender", "usage": "Custom appender for adding new tab items" },
+        { "pattern": "addButtonToBlock", "usage": "Add settings button to child block toolbar" }
+      ],
+      "componentStructure": {
+        "wrapper": "section.tabs",
+        "container": "div.container",
+        "header": "ThemeHeading (eyebrow, heading, description, buttons)",
+        "tabsArea": "div (contains left tab buttons and right content panel)",
+        "tabButtonsList": "div.tabs-buttons (vertical list of tab buttons on desktop)",
+        "contentPanel": "div.tabs-panel-content (right side content area)",
+        "tabsContainer": "div.tabs-container (inner blocks wrapper)"
+      },
+      "qualityChecklist": [
+        "Section with ThemeHeading header area",
+        "Vertical tab buttons on left (desktop)",
+        "Content panel on right (desktop) with accent-lighter background",
+        "Accordion pattern on mobile",
+        "Accent color on active tab button and content panel",
+        "One tab always selected on desktop",
+        "Multiple or no tabs open on mobile",
+        "When switching mobile to desktop: if all closed, first tab selected",
+        "tabsHeading synced from child tabTitle values",
+        "TabsCurrent React context for editor tab visibility",
+        "Frontend JS handles tab switching, keyboard nav, ARIA",
+        "Plus/minus toggle icon on mobile accordion items"
+      ]
+    },
+    "attributes": {
+      "parent": [
+        {
+          "name": "anchor",
+          "type": "string",
+          "description": "HTML anchor/ID for the section",
+          "optional": true,
+          "editorComponent": "native anchor support"
+        },
+        {
+          "name": "eyebrow",
+          "type": "string",
+          "description": "Small uppercase text above the heading",
+          "optional": true,
+          "editorComponent": "AdvancedRichText"
+        },
+        {
+          "name": "heading",
+          "type": "string",
+          "description": "Main heading text (Anton font). Used for renameBlock().",
+          "optional": false,
+          "editorComponent": "AdvancedRichText"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "Body text paragraph below/beside heading",
+          "optional": true,
+          "editorComponent": "AdvancedRichText"
+        },
+        {
+          "name": "buttons",
+          "type": "array",
+          "description": "CTA buttons in the header area",
+          "optional": true,
+          "editorComponent": "ThemeHeading buttons"
+        },
+        {
+          "name": "tabsHeading",
+          "type": "array",
+          "default": [],
+          "description": "Array of tab titles synced from child tabTitle attributes. Auto-managed, do not edit directly.",
+          "optional": false,
+          "editorComponent": "none (auto-synced)"
+        }
+      ],
+      "child": [
+        {
+          "name": "anchor",
+          "type": "string",
+          "description": "HTML anchor/ID for the tab item",
+          "optional": true
+        },
+        {
+          "name": "tabTitle",
+          "type": "string",
+          "description": "Tab button label text. Synced to parent tabsHeading array.",
+          "optional": false,
+          "editorComponent": "TextControl in sidebar + toolbar popover"
+        },
+        {
+          "name": "tabDescription",
+          "type": "string",
+          "description": "Short description text that appears below the tab title on the active tab button (both desktop and mobile). Visible in the tab button itself, not in the content panel.",
+          "optional": true,
+          "editorComponent": "TextControl in sidebar"
+        }
+      ]
+    },
+    "designAnalysis": {
+      "desktopLayout": {
+        "description": "Two-column layout below the ThemeHeading. Left column contains vertical tab buttons. Right column shows the content panel for the active tab.",
+        "sectionPadding": "py-10 sm:py-16 (64px top/bottom on desktop, matching Accordion pattern)",
+        "containerGap": "gap-16 (64px between heading and tabs area)",
+        "tabsArea": {
+          "layout": "flex horizontal (side by side)",
+          "gap": "none (tab buttons touch the content panel edge)",
+          "tabButtonsColumn": {
+            "width": "flex-1 (50%)",
+            "verticalPadding": "py-16 (64px top/bottom for the button list)",
+            "gap": "gap-4 (16px between tab buttons)"
+          },
+          "contentPanelColumn": {
+            "width": "flex-1 (50%)",
+            "alignment": "items-center (vertically centered content)"
+          }
+        }
+      },
+      "tabButton": {
+        "desktop": {
+          "description": "Rounded-left pill shape with left border only (border-l, border-t, border-b, no border-r). Contains heading text and optional description.",
+          "inactive": {
+            "border": "border border-charcoal (but only left, top, bottom - no right border)",
+            "borderRadius": "rounded-l-3xl (25px left corners only, no right corners)",
+            "background": "transparent",
+            "padding": "p-6 (24px all sides)",
+            "height": "h-[140px] (fixed height, vertically centered content)",
+            "titleFont": "font-heading text-header-5 (Anton, 40px on desktop)",
+            "titleColor": "text-charcoal"
+          },
+          "active": {
+            "border": "border border-charcoal (left, top, bottom only)",
+            "borderRadius": "rounded-l-3xl (25px left corners only)",
+            "background": "bg-accent (page accent color)",
+            "padding": "p-6 (24px all sides)",
+            "height": "auto (expands to fit content including description)",
+            "titleFont": "font-heading text-header-5 (Anton, 40px on desktop)",
+            "titleColor": "text-charcoal",
+            "descriptionFont": "text-base font-normal (General Sans, 16px)",
+            "descriptionColor": "text-charcoal",
+            "descriptionGap": "gap-6 (24px between title and description)"
+          }
+        },
+        "mobile": {
+          "description": "Full-width rounded box (accordion style). Has a plus/minus icon for open/close toggle.",
+          "inactive": {
+            "border": "border border-charcoal",
+            "borderRadius": "rounded-3xl (25px all corners)",
+            "background": "transparent",
+            "padding": "p-6 (24px)",
+            "layout": "flex items-start gap-4 (title left, icon right)",
+            "titleFont": "font-heading text-header-6 (Anton, 32px on mobile)",
+            "titleColor": "text-charcoal",
+            "icon": "Plus icon (18.67px, charcoal color)"
+          },
+          "active": {
+            "border": "border border-charcoal",
+            "borderRadius": "rounded-3xl (25px all corners)",
+            "background": "bg-accent (page accent color)",
+            "padding": "p-6 (24px)",
+            "titleFont": "font-heading text-header-6 (Anton, 32px on mobile)",
+            "titleColor": "text-charcoal",
+            "icon": "Minus icon (18.67px, charcoal color)",
+            "contentGap": "gap-4 (16px between header row and content)"
+          }
+        }
+      },
+      "contentPanel": {
+        "desktop": {
+          "description": "Right-side panel that displays the active tab's inner block content. Has a lighter accent background and rounded corners.",
+          "background": "bg-accent-lighter (lighter shade of page accent color)",
+          "borderRadius": "rounded-3xl (25px)",
+          "padding": "p-6 (24px)",
+          "gap": "gap-8 (32px between content sections)",
+          "headingFont": "font-heading text-header-5 (Anton, 40px) - this is the repeated tab title shown at the top of the panel",
+          "bodyFont": "text-base font-medium",
+          "innerContentLayout": "Inner blocks rendered as prose content. Sub-sections separated by horizontal dividers (border-t border-charcoal).",
+          "subSectionHeadingFont": "font-heading text-header-6 (Anton, 24px)",
+          "learnMoreButtons": "Tertiary-style link buttons with right arrow: 'LEARN MORE ->' uppercase"
+        },
+        "mobile": {
+          "description": "On mobile, the content panel is NOT a separate element. Content appears inline inside the open accordion item, below the title and description.",
+          "background": "Same accent color as the tab button (bg-accent, NOT bg-accent-lighter)",
+          "padding": "Inherits from the accordion item padding",
+          "note": "The 'second title' (the one that appears at the top of the desktop content panel) is HIDDEN on mobile per Figma annotation. Only the tab title in the accordion header is visible."
+        }
+      },
+      "figmaAnnotations": [
+        {
+          "source": "785:34910 (desktop1 active tab)",
+          "annotation": "Click for Select state. Colour will change based on the pillar. Description appears for active tab. One tab always active on default."
+        },
+        {
+          "source": "785:33971 (mobile open accordion header)",
+          "annotation": "Second title (Tab title) is hidden on mobile, only main (this one) is visible"
+        },
+        {
+          "source": "807:58405 (desktop2 content panel)",
+          "annotation": "Ability to stylize text: bold, italic, bullet points, numbered lists, etc."
+        }
+      ]
+    },
+    "styling": {
+      "section": {
+        "element": "section",
+        "classes": "tabs py-10 sm:py-16"
+      },
+      "container": {
+        "element": "div",
+        "classes": "container grid grid-cols-1 gap-y-10 sm:gap-y-16"
+      },
+      "themeHeading": {
+        "element": "ThemeHeading",
+        "props": {
+          "columns": 2,
+          "headingSize": 3,
+          "note": "Two-column layout: left = eyebrow+heading, right = description+buttons. headingSize=3 maps to text-header-3 (H3 style = font/size/5xl = 56px desktop per Figma)"
+        }
+      },
+      "tabsAreaDesktop": {
+        "element": "div",
+        "classes": "hidden md:flex items-start",
+        "description": "Two-column area: tab buttons left, content panel right. Hidden on mobile."
+      },
+      "tabButtonsListDesktop": {
+        "element": "div",
+        "classes": "flex-1 flex flex-col gap-4 py-16",
+        "role": "tablist",
+        "ariaOrientation": "vertical",
+        "description": "Vertical list of tab buttons on the left side"
+      },
+      "tabButtonDesktopInactive": {
+        "element": "button",
+        "classes": "tabs-button border-l border-t border-b border-charcoal rounded-l-3xl p-6 h-[140px] flex flex-col gap-6 items-start justify-center w-full text-left transition-colors cursor-pointer",
+        "role": "tab",
+        "description": "Inactive tab button with left-only border and rounded left corners"
+      },
+      "tabButtonDesktopActive": {
+        "element": "button",
+        "classes": "tabs-button selected border-l border-t border-b border-charcoal rounded-l-3xl p-6 flex flex-col gap-6 items-start justify-center w-full text-left bg-accent transition-colors cursor-pointer",
+        "role": "tab",
+        "description": "Active tab with accent background and auto height (no fixed height, expands for description)"
+      },
+      "tabButtonTitle": {
+        "element": "span",
+        "classes": "font-heading text-header-5 w-full",
+        "description": "Anton heading inside tab button, maps to 40px on desktop (text-header-5 = 3xl = 40px)"
+      },
+      "tabButtonDescription": {
+        "element": "span",
+        "classes": "text-base font-normal w-full",
+        "description": "Description text below title, only visible on active tab. General Sans (font-sans) by default."
+      },
+      "contentPanelDesktop": {
+        "element": "div",
+        "classes": "flex-1 flex items-center",
+        "description": "Right column wrapper that vertically centers the content panel"
+      },
+      "contentPanelInner": {
+        "element": "div",
+        "classes": "bg-accent-lighter rounded-3xl p-6 w-full",
+        "description": "The actual content panel with lighter accent background"
+      },
+      "tabsContainerDesktop": {
+        "element": "div",
+        "classes": "tabs-container",
+        "description": "Inner blocks wrapper inside the content panel"
+      },
+      "mobileAccordionArea": {
+        "element": "div",
+        "classes": "md:hidden flex flex-col gap-4",
+        "description": "Mobile-only accordion view. Shows all tabs as expandable accordion items."
+      },
+      "mobileAccordionItem": {
+        "element": "div",
+        "classes": "tabs-accordion-item border border-charcoal rounded-3xl transition-colors",
+        "description": "Each accordion item on mobile"
+      },
+      "mobileAccordionItemActive": {
+        "additionalClasses": "bg-accent border-accent is-open",
+        "description": "When open, the item gets accent background"
+      },
+      "mobileAccordionHeader": {
+        "element": "button",
+        "classes": "flex items-start gap-4 p-6 w-full text-left cursor-pointer",
+        "description": "Clickable header row with title and plus/minus icon"
+      },
+      "mobileAccordionTitle": {
+        "element": "span",
+        "classes": "font-heading text-header-6 flex-1",
+        "description": "Anton heading at 32px on mobile (text-header-6 = 2xl = 32px mobile)"
+      },
+      "mobileAccordionIcon": {
+        "element": "span",
+        "classes": "shrink-0 relative w-5 h-5",
+        "description": "Plus/minus toggle icon (~18.67px). Use CSS lines like the Accordion block does."
+      },
+      "mobileAccordionContent": {
+        "element": "div",
+        "classes": "px-6 pb-6 pt-0",
+        "description": "Content area below header, only visible when open"
+      },
+      "innerBlockContent": {
+        "element": "div",
+        "classes": "prose wide-prose no-edge-margin *:first:pt-0 *:first:pb-0",
+        "description": "Prose styling for inner block content within each tab panel"
+      }
+    },
+    "responsive": {
+      "mobile": {
+        "breakpoint": "< 768px (md)",
+        "behavior": "Tabs become accordion items. Each tab is a full-width rounded box. User can open multiple or no tabs. Plus/minus icon indicates open/close state. Content appears inline inside the open accordion item. The 'second title' (content panel heading) is hidden on mobile - only the accordion header title is visible. Description text appears below the title inside the accordion header when open.",
+        "layout": "Single column, stacked accordion items with gap-4",
+        "themeHeading": "Single column layout (stacked eyebrow, heading, description, buttons)"
+      },
+      "desktop": {
+        "breakpoint": ">= 768px (md)",
+        "behavior": "Two-column tab layout. Left column has vertical tab buttons (rounded-left with left/top/bottom border). Right column shows content panel with accent-lighter background. One tab is always selected. Active tab button has accent background and shows description text.",
+        "layout": "Two equal columns side by side",
+        "themeHeading": "Two-column layout (left: eyebrow+heading, right: description+buttons)"
+      }
+    },
+    "behavior": {
+      "desktopTabSelection": {
+        "description": "One tab must always be selected on desktop. Clicking a tab button selects it and shows its content panel. The active tab button gets bg-accent, shows the description, and loses its fixed height. The content panel updates to show the selected tab's inner blocks.",
+        "defaultTab": "First tab (index 0) is selected by default",
+        "alwaysOneSelected": true
+      },
+      "mobileAccordionBehavior": {
+        "description": "On mobile, tabs work like accordions. Multiple tabs can be open simultaneously. All tabs can be closed (no requirement for one to always be open).",
+        "multipleOpen": true,
+        "allCanBeClosed": true,
+        "toggleBehavior": "Clicking an accordion header toggles it open/closed"
+      },
+      "responsiveTransition": {
+        "description": "When resizing from mobile to desktop, if all accordion items are closed, the first tab should be automatically selected. This ensures the desktop constraint of 'one always selected' is maintained.",
+        "mobileToDesktop": "If no accordion is open, select first tab",
+        "desktopToMobile": "The currently selected tab's accordion should be open, others closed"
+      },
+      "emptyState": {
+        "fields": ["eyebrow", "heading", "description", "buttons"],
+        "pattern": "shouldDisplay() for ThemeHeading area"
+      },
+      "optionalFields": {
+        "pattern": "shouldDisplay()",
+        "fields": ["eyebrow", "description", "buttons", "tabDescription"]
+      },
+      "editorBehavior": {
+        "blockNaming": "renameBlock() synced with heading attribute",
+        "tabTitleSync": "useEffect watches innerBlocks tabTitle attributes and syncs to parent tabsHeading array",
+        "newTabAutoSelect": "When a new tab is added, auto-select it in the editor",
+        "tabContextProvider": "TabsCurrent React context wraps inner blocks with currentTab index"
+      }
+    },
+    "accentColorPattern": {
+      "description": "The background color of tab items depends on the page accent color, following the same pattern as the Accordion block. The accent color is set at the page level via CSS custom properties (--accent-color, --accent-color-light, --accent-color-lighter) and applied using utility classes (bg-accent, bg-accent-lighter).",
+      "referenceBlock": "blocks/Accordion/AccordionItem",
+      "usage": {
+        "activeTabButton": "bg-accent (the main accent color, e.g., yellow #ffd24c, blue #47cbf2, orange #f26d45)",
+        "contentPanel": "bg-accent-lighter (the lighter shade, e.g., yellow-lighter #ffedb7, blue-lighter #b5eafa)",
+        "mobileOpenAccordion": "bg-accent (same as active tab button on desktop)"
+      },
+      "cssVariables": {
+        "--accent-color": "Main accent color (set per page/section via color classes like .yellow, .blue, .orange, etc.)",
+        "--accent-color-light": "Light shade",
+        "--accent-color-lighter": "Lighter shade (used for content panel background)"
+      },
+      "utilityClasses": {
+        "bg-accent": "background-color: var(--accent-color)",
+        "bg-accent-lighter": "background-color: var(--accent-color-lighter)"
+      },
+      "noHardcodedColors": "Never hardcode hex values. Always use bg-accent / bg-accent-lighter utilities so the color adapts to the page's accent color setting."
+    },
+    "accessibility": {
+      "desktop": {
+        "tabList": {
+          "role": "tablist",
+          "ariaOrientation": "vertical",
+          "description": "The vertical tab button list"
+        },
+        "tabButton": {
+          "role": "tab",
+          "ariaSelected": "true for active tab, false for others",
+          "ariaControls": "ID of the corresponding tab panel",
+          "tabindex": "0 for active tab, -1 for inactive tabs",
+          "id": "Generated unique ID for aria-labelledby on panels"
+        },
+        "tabPanel": {
+          "role": "tabpanel",
+          "ariaLabelledby": "ID of the corresponding tab button",
+          "tabindex": "0",
+          "hidden": "true for non-active panels (use hidden + inert attributes)"
+        },
+        "keyboardNavigation": {
+          "ArrowDown": "Move focus to next tab",
+          "ArrowUp": "Move focus to previous tab",
+          "Home": "Move focus to first tab",
+          "End": "Move focus to last tab",
+          "Enter/Space": "Activate focused tab"
+        }
+      },
+      "mobile": {
+        "description": "On mobile, ARIA switches from tablist pattern to standard button/region pattern since it's accordion behavior.",
+        "accordionHeader": {
+          "element": "button",
+          "ariaExpanded": "true when open, false when closed",
+          "ariaControls": "ID of the accordion content panel"
+        },
+        "accordionContent": {
+          "role": "region",
+          "ariaLabelledby": "ID of the accordion header button",
+          "hidden": "true when closed (use hidden + inert)"
+        }
+      },
+      "responsiveModeSwitch": "On resize, switch ARIA roles between tablist mode (desktop) and button/region mode (mobile)"
+    },
+    "frontendJs": {
+      "fileName": "Tabs.js",
+      "initPattern": "DOMContentLoaded, querySelectorAll('.tabs')",
+      "mobileBreakpoint": "window.matchMedia('(max-width: 47.99rem)') to match md breakpoint at 48rem",
+      "features": [
+        "Tab selection on desktop (click tab button to switch)",
+        "Accordion toggle on mobile (click to open/close)",
+        "ARIA attribute management (roles, aria-selected, aria-expanded, aria-controls, aria-labelledby)",
+        "Keyboard navigation (ArrowUp/Down for vertical tabs, Home/End)",
+        "Responsive mode switching (resize handler)",
+        "Mobile-to-desktop transition: if all accordions closed, select first tab",
+        "Desktop-to-mobile transition: open the currently selected tab's accordion",
+        "Hidden + inert on non-active panels (desktop)",
+        "Hidden + inert on closed accordion content (mobile)",
+        "Plus/minus icon toggle animation on mobile"
+      ],
+      "stateManagement": {
+        "selectedTabIndex": "Track which tab is selected (desktop mode)",
+        "openAccordions": "Track which accordion items are open (mobile mode, Set or array of indices)",
+        "currentMode": "Track current mode (desktop vs mobile) to handle transitions"
+      }
+    },
+    "innerBlocksConfig": {
+      "parent": {
+        "allowedBlocks": ["takt/tabs-item"],
+        "template": [["takt/tabs-item"]],
+        "renderAppender": false,
+        "note": "Use custom Appender component for adding new tab items"
+      },
+      "child": {
+        "allowedBlocks": "any (no restriction)",
+        "template": [["core/paragraph"]],
+        "note": "Tab content can contain any blocks"
+      }
+    },
+    "decisions": [
+      {
+        "id": "DEC-001",
+        "category": "layout",
+        "question": "How should the tab buttons be shaped on desktop?",
+        "decision": "Left-border-only with rounded-l-3xl (25px left corners). No right border, creating a pill that connects to the content panel edge.",
+        "resolvedBy": "figma",
+        "rationale": "Figma design 785:34910 shows border-l, border-t, border-b (no border-r) with rounded-bl-[25px] rounded-tl-[25px]. The tab buttons visually merge with the content panel on the right."
+      },
+      {
+        "id": "DEC-002",
+        "category": "color",
+        "question": "What color should the active tab button use?",
+        "decision": "bg-accent (page accent color) for the active tab button background",
+        "resolvedBy": "figma",
+        "rationale": "Figma annotation on 785:34910 states 'Colour will change based on the pillar'. Desktop1 shows yellow (#ffd24c = accent for yellow pillar), Desktop2 shows blue (#47cbf2 = accent for blue pillar). This maps to bg-accent utility."
+      },
+      {
+        "id": "DEC-003",
+        "category": "color",
+        "question": "What color should the content panel use?",
+        "decision": "bg-accent-lighter for the content panel background",
+        "resolvedBy": "figma",
+        "rationale": "Desktop1 panel is #ffedb7 (yellow-lighter), Desktop2 panel is #b5eafa (blue-lighter). These map to the --accent-color-lighter CSS variable, used via bg-accent-lighter utility."
+      },
+      {
+        "id": "DEC-004",
+        "category": "behavior",
+        "question": "How should tabs behave on mobile?",
+        "decision": "Accordion pattern. Multiple can be open. All can be closed. Plus/minus icon toggle.",
+        "resolvedBy": "spec+figma",
+        "rationale": "Spec states: 'On mobile it's going to work like accordions. On mobile the user can have multiple or no tabs (accordions) open.' Figma mobile design (785:33971) shows full-width rounded boxes with plus/minus icons."
+      },
+      {
+        "id": "DEC-005",
+        "category": "behavior",
+        "question": "What happens when transitioning from mobile to desktop with all tabs closed?",
+        "decision": "Auto-select the first tab when switching from mobile (all closed) to desktop.",
+        "resolvedBy": "spec",
+        "rationale": "Spec states: 'When changing from mobile to desktop, if all tabs (accordions) are closed, the first one should be selected.'"
+      },
+      {
+        "id": "DEC-006",
+        "category": "layout",
+        "question": "Should the content panel heading (tab title repeated at top) be shown on mobile?",
+        "decision": "Hidden on mobile. Only the accordion header title is visible.",
+        "resolvedBy": "figma",
+        "rationale": "Figma annotation on mobile design (785:33971) states: 'Second title (Tab title) is hidden on mobile, only main (this one) is visible'."
+      },
+      {
+        "id": "DEC-007",
+        "category": "layout",
+        "question": "What heading size should the ThemeHeading use?",
+        "decision": "headingSize 3 with columns 2",
+        "resolvedBy": "figma",
+        "rationale": "Figma shows font/size/5xl (56px) for the heading, which maps to text-header-3 (2rem mobile, 3xl = ~48px responsive). ThemeHeading with headingSize=3 uses the H3 heading tier. The two-column layout is evident in all desktop Figma designs (eyebrow+heading left, description+buttons right)."
+      },
+      {
+        "id": "DEC-008",
+        "category": "layout",
+        "question": "Should inactive tab buttons have a fixed height?",
+        "decision": "Yes, inactive tab buttons have a fixed height of h-[140px] on desktop with vertically centered content. Active tab buttons have auto height to accommodate the description text.",
+        "resolvedBy": "figma",
+        "rationale": "Figma design context shows h-[140px] for inactive tab items and no fixed height for the active tab (which expands for description content)."
+      },
+      {
+        "id": "DEC-009",
+        "category": "color",
+        "question": "What color should the mobile accordion items use when open?",
+        "decision": "bg-accent (main accent color, NOT bg-accent-lighter)",
+        "resolvedBy": "figma",
+        "rationale": "Mobile Figma (785:33971) shows #f26d45 for the open accordion item, which is the orange accent main color (not lighter). This matches bg-accent."
+      },
+      {
+        "id": "DEC-010",
+        "category": "layout",
+        "question": "Should the tab content panel title be duplicated from the tab button title?",
+        "decision": "Yes, on desktop the content panel shows the active tab's title at the top as an H5-level heading (Anton, 40px). This is duplicated from the tab button. On mobile, this second title is hidden.",
+        "resolvedBy": "figma",
+        "rationale": "Both desktop Figma designs show the tab title repeated at the top of the content panel. Mobile annotation explicitly states the second title is hidden."
+      },
+      {
+        "id": "DEC-011",
+        "category": "typography",
+        "question": "What font should the tab button title use on desktop vs mobile?",
+        "decision": "Desktop: font-heading text-header-5 (Anton, font/size/3xl = 40px). Mobile: font-heading text-header-6 (Anton, font/size/2xl = 32px).",
+        "resolvedBy": "figma",
+        "rationale": "Desktop Figma uses Headline/H5 style (font/size/3xl = 40px). Mobile Figma uses Headline/H6 style (font/size/2xl = 32px)."
+      },
+      {
+        "id": "DEC-012",
+        "category": "behavior",
+        "question": "Should the tab description appear on inactive tab buttons?",
+        "decision": "No, the description text only appears on the active/selected tab button. Inactive buttons show only the title.",
+        "resolvedBy": "figma",
+        "rationale": "Figma designs show description text only in the active tab button (both desktop and mobile open accordion). Inactive buttons have fixed height with only the title visible."
+      },
+      {
+        "id": "DEC-013",
+        "category": "layout",
+        "question": "How should the content inside the content panel be structured?",
+        "decision": "The content panel contains inner blocks rendered as prose content. The tab content is free-form: it can include rich text, sub-sections with headings, bullet lists, and 'Learn More' link buttons with horizontal dividers between sections.",
+        "resolvedBy": "figma",
+        "rationale": "Figma designs show varied content including bold text, paragraphs, bullet lists, sub-headings (Headline/H7 = font/size/xl = 24px), and 'LEARN MORE' arrow links with divider lines between sections. The content panel annotation also states 'Ability to stylize text: bold, italic, bullet points, numbered lists, etc.' This is best handled by inner blocks."
+      },
+      {
+        "id": "DEC-014",
+        "category": "states",
+        "question": "Should a custom-variant for 'not-open' be added to states.css?",
+        "decision": "No custom variant needed. The Accordion uses native <details> open/not-open CSS pseudo-classes. For Tabs, we use JS-managed classes (.is-open, .selected) and the existing 'open' custom variant from states.css for the mobile accordion items.",
+        "resolvedBy": "existing-pattern",
+        "rationale": "The Accordion uses <details> HTML element which has native open/not-open support. Tabs will use div-based elements with JS-managed state classes. The 'open' custom variant in states.css already supports .is-open class matching."
+      },
+      {
+        "id": "DEC-015",
+        "category": "layout",
+        "question": "How should the tab description be handled as an attribute?",
+        "decision": "Add tabDescription as an optional string attribute on the child block (takt/tabs-item). This text appears below the tab title in the tab button on both desktop (active only) and mobile accordion header (open only).",
+        "resolvedBy": "figma",
+        "rationale": "The Figma designs show a description text (e.g., 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.') that appears below the tab title in the active tab button. This is distinct from the inner block content. It needs to be a separate attribute to display in the parent's tab navigation area."
+      }
+    ],
+    "cssRequirements": {
+      "statesCss": {
+        "description": "No changes needed to states.css. The existing 'open' custom variant supports .is-open class which will be used for the mobile accordion open state.",
+        "existingVariant": "@custom-variant open (&:where(.is-open, .is-open &, [open], [open] &));"
+      },
+      "additionalNote": "The tabDescription on mobile accordion items could use the open: variant for visibility toggling."
+    },
+    "tabDescriptionSync": {
+      "description": "Similar to tabsHeading, the parent needs a tabsDescription array synced from child tabDescription attributes, so the parent can render descriptions in the tab buttons.",
+      "parentAttribute": {
+        "name": "tabsDescription",
+        "type": "array",
+        "default": [],
+        "description": "Array of tab descriptions synced from child tabDescription attributes"
+      },
+      "syncLogic": "Same useEffect pattern as tabsHeading sync - watch innerBlocks for tabDescription changes and update parent array"
+    },
+    "testPage": {
+      "title": "TEST: Tabs",
+      "variations": [
+        {
+          "name": "Full Content (Yellow Accent)",
+          "description": "Complete block with all fields populated, on a page section with yellow accent color. Tests the primary design as shown in desktop1 Figma.",
+          "accentColor": "yellow",
+          "attributes": {
+            "eyebrow": "Quick Links",
+            "heading": "Still Looking for Support That Fits Your Student Life?",
+            "description": "Diam sed vestibulum et aliquam dignissim velit nulla. Orci ac aliquam justo amet sed. Porttitor nibh in lectus lectus enim nulla phasellus tellus commodo.",
+            "buttons": [
+              { "title": "Tell Us What You'd Like to See", "url": "#" },
+              { "title": "Our Impact", "url": "#" }
+            ]
+          },
+          "innerBlocks": [
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "Health + Dental Made", "tabDescription": "" },
+              "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Health and dental insurance coverage for students." } }]
+            },
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "Financial Wellbeing + Support", "tabDescription": "" },
+              "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Financial support programs and resources." } }]
+            },
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "Advocacy + Resources", "tabDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+              "innerBlocks": [
+                { "name": "core/paragraph", "attributes": { "content": "<strong>Mandatory Fee:</strong> $19.75 per semester\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique." } },
+                { "name": "core/heading", "attributes": { "content": "Student Advocates", "level": 4 } },
+                { "name": "core/paragraph", "attributes": { "content": "Learn more about student advocacy resources." } }
+              ]
+            },
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "Social + Community Spaces", "tabDescription": "" },
+              "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Community spaces and social events for students." } }]
+            }
+          ]
+        },
+        {
+          "name": "Blue Accent - Get Involved",
+          "description": "Tests blue accent color as shown in desktop2 Figma. Fewer tabs, no buttons.",
+          "accentColor": "blue",
+          "attributes": {
+            "eyebrow": "Take Part in Your IGNITE Election",
+            "heading": "Get Involved",
+            "description": "Every voice matters and IGNITE needs students just like you to help shape our campuses together, either as a candidate or voter.",
+            "buttons": []
+          },
+          "innerBlocks": [
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "How to Run", "tabDescription": "" },
+              "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Steps to run for a position on the IGNITE Board of Directors." } }]
+            },
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "How to Vote", "tabDescription": "" },
+              "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "How to cast your vote in IGNITE elections." } }]
+            },
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "Take Control of Your Student Experience", "tabDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+              "innerBlocks": [
+                { "name": "core/paragraph", "attributes": { "content": "Winning a seat on IGNITE's Board of Directors has so many benefits:" } },
+                { "name": "core/list", "attributes": { "values": "<li>sharpen your leadership, decision-making, and communication skills;</li><li>grow your professional network and personal social circles;</li><li>ensure that the student voice is heard when major decisions are made by IGNITE, Humber and UofGH;</li><li>all while being part of a team of like-minded people who are working together to improve student life.</li>" } }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Minimal Content",
+          "description": "Only required fields populated. Tests empty state handling for optional fields.",
+          "accentColor": "neon-green",
+          "attributes": {
+            "heading": "Overview"
+          },
+          "innerBlocks": [
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "Tab 1" },
+              "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Content for tab 1." } }]
+            },
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "Tab 2" },
+              "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Content for tab 2." } }]
+            }
+          ]
+        },
+        {
+          "name": "Many Tabs (Edge Case)",
+          "description": "Tests with many tabs to check vertical scrolling behavior on desktop and long accordion list on mobile.",
+          "accentColor": "orange",
+          "attributes": {
+            "heading": "All Services",
+            "description": "Explore all the services available to students."
+          },
+          "innerBlocks": [
+            { "name": "takt/tabs-item", "attributes": { "tabTitle": "Academic Support" }, "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Academic support resources." } }] },
+            { "name": "takt/tabs-item", "attributes": { "tabTitle": "Career Services" }, "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Career development services." } }] },
+            { "name": "takt/tabs-item", "attributes": { "tabTitle": "Health + Wellness" }, "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Health and wellness programs." } }] },
+            { "name": "takt/tabs-item", "attributes": { "tabTitle": "Financial Aid" }, "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Financial aid information." } }] },
+            { "name": "takt/tabs-item", "attributes": { "tabTitle": "Housing" }, "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Housing options and resources." } }] },
+            { "name": "takt/tabs-item", "attributes": { "tabTitle": "Student Life" }, "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Student life activities and events." } }] },
+            { "name": "takt/tabs-item", "attributes": { "tabTitle": "Transportation" }, "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Transportation services." } }] },
+            { "name": "takt/tabs-item", "attributes": { "tabTitle": "Technology" }, "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "IT and technology resources." } }] }
+          ]
+        },
+        {
+          "name": "Long Content in Tab",
+          "description": "Tests with extensive content in the active tab to verify scrolling behavior.",
+          "accentColor": "purple",
+          "attributes": {
+            "eyebrow": "Resources",
+            "heading": "Comprehensive Guide to Student Services at IGNITE",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+          },
+          "innerBlocks": [
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "Advocacy + Resources", "tabDescription": "Full description of all advocacy resources available to students through IGNITE." },
+              "innerBlocks": [
+                { "name": "core/paragraph", "attributes": { "content": "<strong>Mandatory Fee:</strong> $19.75 per semester" } },
+                { "name": "core/paragraph", "attributes": { "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla, ut commodo diam libero vitae erat. Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae risus tristique posuere." } },
+                { "name": "core/heading", "attributes": { "content": "Student Advocates", "level": 4 } },
+                { "name": "core/paragraph", "attributes": { "content": "Learn about student advocacy and how you can get involved." } },
+                { "name": "core/heading", "attributes": { "content": "Initiatives", "level": 4 } },
+                { "name": "core/paragraph", "attributes": { "content": "Current initiatives and projects supported by IGNITE." } },
+                { "name": "core/heading", "attributes": { "content": "DEI Resources", "level": 4 } },
+                { "name": "core/paragraph", "attributes": { "content": "Diversity, equity, and inclusion resources available to all students." } },
+                { "name": "core/heading", "attributes": { "content": "Clubs", "level": 4 } },
+                { "name": "core/paragraph", "attributes": { "content": "Student clubs and organizations that you can join." } }
+              ]
+            },
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "Short Tab" },
+              "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Minimal content." } }]
+            }
+          ]
+        },
+        {
+          "name": "Green Accent",
+          "description": "Tests green accent color variant.",
+          "accentColor": "green",
+          "attributes": {
+            "heading": "Environmental Initiatives",
+            "description": "Our commitment to sustainability and green campus operations."
+          },
+          "innerBlocks": [
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "Recycling Programs", "tabDescription": "Campus-wide recycling and waste reduction programs." },
+              "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Details about recycling programs on campus." } }]
+            },
+            {
+              "name": "takt/tabs-item",
+              "attributes": { "tabTitle": "Green Spaces" },
+              "innerBlocks": [{ "name": "core/paragraph", "attributes": { "content": "Campus green spaces and gardens." } }]
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "Test mobile accordion behavior: open/close multiple items, verify plus/minus icon toggles",
+        "Test desktop tab selection: click tabs, verify content panel changes, verify accent color on active tab",
+        "Test responsive transition: open 0 accordions on mobile, resize to desktop, verify first tab is auto-selected",
+        "Test responsive transition: select tab 3 on desktop, resize to mobile, verify tab 3 accordion is open",
+        "Test keyboard navigation on desktop: ArrowUp/Down to move between tabs, Enter/Space to select, Home/End for first/last",
+        "Test all accent colors: yellow, blue, orange, green, purple, neon-green",
+        "Verify content panel uses bg-accent-lighter (NOT bg-accent) on desktop",
+        "Verify mobile open accordion uses bg-accent (NOT bg-accent-lighter)",
+        "Verify the second title is hidden on mobile (only accordion header title visible)",
+        "Verify ARIA attributes switch between tablist mode (desktop) and button/region mode (mobile)"
+      ]
+    },
+    "tokenUsage": {
+      "contextGathering": 8000,
+      "figmaAnalysis": 12000,
+      "designConsultation": 0,
+      "specGeneration": 10000,
+      "total": 30000
+    }
+  },
+  "tokensUsed": 30000,
+  "questionsForUser": []
+}

@@ -1,0 +1,64 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-13T20:07:46Z",
+  "status": "complete",
+  "output": {
+    "summary": "Remove redundant headingId override from Form block and clean up manual aria-labelledby prop. Since Form is the only consumer of ThemeHeading's headingId prop, also remove headingId from ThemeHeading.php and ThemeHeading.tsx.",
+    "fileChanges": [
+      {
+        "file": "blocks/Form/Form.php",
+        "action": "modify",
+        "description": "Remove redundant $heading_id variable and manual aria-labelledby, remove headingId from ThemeHeading args",
+        "details": "1. Delete line 3: `$heading_id = theme_block_region_id();` — no longer needed. 2. On line 6, change `theme_block_props( 'form-block py-10 sm:py-16', [ 'aria-labelledby' => $heading_id ] )` to `theme_block_props( 'form-block py-10 sm:py-16' )` — theme_block_props auto-adds aria-labelledby when the block has a heading attribute, using theme_block_region_id() as the value, which is exactly what was being passed manually. 3. Remove line 28: `'headingId' => $heading_id,` from the ThemeHeading get_template_part args array.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Form/Form.tsx",
+        "action": "modify",
+        "description": "Remove headingId prop from ThemeHeading and manual aria-labelledby from useBlockProps",
+        "details": "1. Remove `headingId={ \\`form-heading-${ clientId }\\` }` prop from the ThemeHeading component (line 146). 2. Remove `'aria-labelledby': \\`form-heading-${ clientId }\\`` from the useBlockProps call (line 120). The editor ThemeHeading component does not need a custom ID — the frontend uses theme_block_region_id() automatically.",
+        "affectsPhp": false
+      },
+      {
+        "file": "parts/ThemeHeading.php",
+        "action": "modify",
+        "description": "Remove headingId prop support since no blocks use it anymore",
+        "details": "1. Remove line 10: `$headingId = $args['headingId'] ?? null;` 2. On line 70, change `echo 'id=\"' . ( $headingId ?? theme_block_region_id() ) . '\">';` to `echo 'id=\"' . theme_block_region_id() . '\">';` — the fallback was always theme_block_region_id(), and now no callers pass headingId.",
+        "affectsPhp": true
+      },
+      {
+        "file": "parts/ThemeHeading.tsx",
+        "action": "modify",
+        "description": "Remove headingId prop from type definition and component destructuring",
+        "details": "1. Remove `headingId?: string;` from HeadingProps type (line 21). 2. Remove `headingId,` from the destructured props (line 52). 3. Remove the conditional id spread `{ ...( headingId && { id: headingId } ) }` from the AdvancedRichText heading element (lines 187-189). The editor-side heading element does not need an id attribute since aria-labelledby linking is only relevant on the frontend PHP render.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "accessibility",
+        "decision": "Remove manual aria-labelledby from Form.php because theme_block_props() auto-adds it when the block has a heading attribute",
+        "source": "existing pattern",
+        "evidence": "inc/helpers/blocks.php lines 63-65: theme_block_props checks for heading attribute and auto-adds aria-labelledby => theme_block_region_id() when not manually provided"
+      },
+      {
+        "id": "DEC-002",
+        "category": "cleanup",
+        "decision": "Remove headingId prop from ThemeHeading entirely since Form was the only consumer",
+        "source": "existing pattern",
+        "evidence": "Grep search for headingId across all blocks/ and parts/ directories confirms only blocks/Form/Form.php and blocks/Form/Form.tsx pass this prop"
+      },
+      {
+        "id": "DEC-003",
+        "category": "accessibility",
+        "decision": "Remove headingId from ThemeHeading.tsx editor component entirely rather than keeping a no-op prop",
+        "source": "existing pattern",
+        "evidence": "The editor does not need id attributes for aria-labelledby linking — this is only relevant in the PHP frontend render where theme_block_region_id() handles it automatically"
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

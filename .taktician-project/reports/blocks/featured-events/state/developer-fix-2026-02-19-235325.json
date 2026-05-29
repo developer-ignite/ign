@@ -1,0 +1,89 @@
+{
+  "agent": "developer-fix",
+  "timestamp": "2026-02-19-235325",
+  "status": "complete",
+  "blockName": "FeaturedEvents",
+  "output": {
+    "issuesFixed": [
+      {
+        "id": "REV2-001",
+        "severity": "major",
+        "description": "ThemeHeading title was too small (headingSize: 3 = text-header-3, 32px/40px desktop).",
+        "fix": "Changed headingSize from 3 to 2 in both FeaturedEvents.php (line 97) and FeaturedEvents.tsx (line 145). headingSize: 2 maps to text-header-2 = 48px mobile / 60px desktop (var(--text-6xl)), the closest match to Figma's 56px target.",
+        "files": [
+          "blocks/FeaturedEvents/FeaturedEvents.php",
+          "blocks/FeaturedEvents/FeaturedEvents.tsx"
+        ],
+        "resolution": "resolved"
+      },
+      {
+        "id": "REV2-002",
+        "severity": "major",
+        "description": "Event title h3 had uppercase class applied; Figma shows no uppercase.",
+        "fix": "Removed `uppercase` from `<h3 class=\"text-header-2 uppercase\">` in parts/card-tribe_events.php. Now `<h3 class=\"text-header-2\">`.",
+        "files": [
+          "parts/card-tribe_events.php"
+        ],
+        "resolution": "resolved"
+      },
+      {
+        "id": "REV2-003",
+        "severity": "major",
+        "description": "Date badge was absolutely positioned top-2 right-2 on the inner frame. Figma shows badge as a natural flex child at bottom-right of the inner frame.",
+        "fix": "Restructured image half: inner frame is now `relative flex items-end` with `p-2` and `overflow-hidden`. Image is `absolute inset-0 w-full h-full object-cover rounded-lg` (fills behind). Badge is a natural flex child with `relative ml-auto` (no absolute), naturally positioned bottom-right inside the frame padding. Also added `aspect-[4/3] md:aspect-auto md:h-full` to give the inner frame appropriate dimensions on mobile and fill parent height on desktop.",
+        "files": [
+          "parts/card-tribe_events.php"
+        ],
+        "resolution": "resolved"
+      },
+      {
+        "id": "REV2-004",
+        "severity": "major",
+        "description": "btn-tertiary hover turned text black (hover:text-charcoal) because the section no longer has the `dark` class ancestor.",
+        "fix": "Added `group-hover:text-[var(--accent-color)]!` to the btn-tertiary span, matching the pattern used by card-post.php. This overrides the base hover:text-charcoal with the theme's neon-green accent color when the card group is hovered. Removed the now-incorrect `dark:hover:text-white dark:focus:text-white` utilities.",
+        "files": [
+          "parts/card-tribe_events.php"
+        ],
+        "resolution": "resolved"
+      },
+      {
+        "id": "REV2-005",
+        "severity": "major",
+        "description": "Anchor had fixed height md:h-[349px] extracted from Figma frame dimensions.",
+        "fix": "Removed `md:h-[349px]` from the anchor tag. Card height is now content-driven. The image inner frame uses `md:h-full` to fill the available height set by the content half.",
+        "files": [
+          "parts/card-tribe_events.php"
+        ],
+        "resolution": "resolved"
+      },
+      {
+        "id": "REV2-006",
+        "severity": "major",
+        "description": "Image container had no aspect ratio, causing it to collapse on mobile.",
+        "fix": "Added `aspect-[4/3]` to the inner image frame for mobile, with `md:aspect-auto md:h-full` to switch to height-driven sizing on desktop. The image itself uses `absolute inset-0` to fill the frame at all sizes.",
+        "files": [
+          "parts/card-tribe_events.php"
+        ],
+        "resolution": "resolved"
+      }
+    ],
+    "filesChanged": [
+      "blocks/FeaturedEvents/FeaturedEvents.php",
+      "blocks/FeaturedEvents/FeaturedEvents.tsx",
+      "parts/card-tribe_events.php"
+    ],
+    "validationResults": {
+      "passed": true,
+      "buildErrors": 0,
+      "buildWarnings": 8,
+      "syncErrors": 0,
+      "syncWarnings": 1,
+      "registrationErrors": 0,
+      "notes": "All 8 lint warnings are pre-existing react-hooks/exhaustive-deps issues in Accordion, Archive, ContentWithMedia, FullWidthMedia, PostHero, and Tabs — none in FeaturedEvents. The sync warning (root wrapper InspectorControls vs section) is expected for this editor-controls-only TSX pattern."
+    },
+    "screenshotPath": ".taktician-project/reports/blocks/featured-events/screenshots/detail/2026-02-19-235332/revision-2-verify-1440w.png",
+    "screenshotNotes": "Screenshot at 1440px confirms: event cards render with dark-pattern backgrounds on both halves, date badge positioned bottom-right inside image frame, event titles in Anton without uppercase, venue names visible below titles, VIEW EVENT button with arrow icon present. ThemeHeading section titles now larger (text-header-2). All 6 active block instances rendering correctly."
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

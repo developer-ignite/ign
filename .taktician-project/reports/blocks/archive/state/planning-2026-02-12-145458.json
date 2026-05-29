@@ -1,0 +1,31 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-12-145458",
+  "status": "complete",
+  "blockName": "Archive",
+  "output": {
+    "summary": "Fix missing spacing between filters and cards in the editor (TSX) preview. The FilteredServerSideRender component extracts the innerHTML of .archive-inner, losing the element itself and its classes (grid grid-cols-1 gap-gap-4). The wrapper <div> rendered by FilteredServerSideRender has no className, so the gap-gap-4 spacing between the filter bar and the results grid is absent in the editor. Fix by passing className='archive-inner grid grid-cols-1 gap-gap-4' to FilteredServerSideRender, matching the pattern used by TestimonialsCarousel, DynamicContentCarousel, and Form blocks.",
+    "fileChanges": [
+      {
+        "file": "blocks/Archive/Archive.tsx",
+        "action": "modify",
+        "description": "Add className prop to FilteredServerSideRender to replicate the .archive-inner element's classes",
+        "details": "Line 161: Change:\n  <FilteredServerSideRender querySelector=\".archive-inner\" />\nTo:\n  <FilteredServerSideRender querySelector=\".archive-inner\" className=\"archive-inner grid grid-cols-1 gap-gap-4\" />\n\nRationale: The FilteredServerSideRender component (from @taktdev/components) works by:\n1. Rendering the full PHP output in a hidden container\n2. Finding the element matching querySelector ('.archive-inner')\n3. Extracting that element's innerHTML (not outerHTML) -- line 82 of the component source\n4. Rendering the innerHTML inside a <div> wrapper with the className prop applied\n\nBecause innerHTML is used, the .archive-inner element itself (and its classes) are stripped. The className prop on FilteredServerSideRender is passed through to the wrapper <div> (line 167 of the component source), so adding 'archive-inner grid grid-cols-1 gap-gap-4' recreates the same structure.\n\nThe PHP frontend has:\n  <div class=\"archive-inner grid grid-cols-1 gap-gap-4\">\n    <div class=\"archive-filters ...\">...</div>\n    <div class=\"archive-results ...\">...</div>\n  </div>\n\nWithout className, the editor renders:\n  <div>  <!-- no grid, no gap -->\n    <div class=\"archive-filters ...\">...</div>\n    <div class=\"archive-results ...\">...</div>\n  </div>\n\nWith className, the editor renders:\n  <div class=\"archive-inner grid grid-cols-1 gap-gap-4\">  <!-- matches PHP -->\n    <div class=\"archive-filters ...\">...</div>\n    <div class=\"archive-results ...\">...</div>\n  </div>\n\nThis follows the established pattern in other blocks:\n- TestimonialsCarousel: className=\"swiper-parent overflow-hidden relative\"\n- DynamicContentCarousel: className=\"swiper-parent overflow-hidden grid grid-cols-1 grid-rows-1\"\n- Form: className=\"form-section-form\"",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "category": "layout",
+        "question": "Should the className include the 'archive-inner' class name in addition to the layout utilities?",
+        "recommendation": "Yes. Include 'archive-inner' for two reasons: (1) it maintains consistency with the PHP markup so any CSS rules targeting .archive-inner apply in both contexts, (2) it follows the convention seen in other blocks (e.g., Form uses className='form-section-form', TestimonialsCarousel uses className='swiper-parent ...'). The full className should be 'archive-inner grid grid-cols-1 gap-gap-4' to exactly match the PHP element.",
+        "needsUserInput": false
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "design"
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

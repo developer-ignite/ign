@@ -1,0 +1,85 @@
+@layer base {
+	:is(:root) {
+		--wp-admin--admin-bar--height: 0rem;
+	}
+}
+
+:root {
+	--header-height: 0rem;
+	--current-header-main-height: var(--header-main-height);
+	--current-header-height: var(--current-header-main-height);
+
+	--fixed-elements-height: calc(
+		var(--wp-admin--admin-bar--height, 0px) + var(--header-margin-top, 0px) +
+			var(--current-header-height, 0px)
+	);
+}
+
+:root body :where(.wp-site-blocks) > * {
+	margin-block-start: 0;
+	margin-block-end: 0;
+}
+
+/* Prevent absolutely positioned elements (like hero gradient) from extending page beyond content */
+.wp-site-blocks {
+	overflow-y: clip;
+}
+
+html {
+	scroll-padding-top: calc(var(--fixed-elements-height) + 32px);
+	scroll-behavior: smooth;
+}
+
+#wpadminbar {
+	position: fixed;
+	width: 100%;
+}
+
+@layer base {
+	*:focus-visible {
+		@apply outline-2 outline-black outline-dotted outline-offset-1;
+	}
+}
+
+.screen-reader-text {
+	@apply sr-only;
+}
+
+body > .editor-visual-editor__post-title-wrapper.edit-post-visual-editor__post-title-wrapper {
+	display: none !important;
+}
+
+body {
+	transition: background-color 0.3s ease;
+}
+
+/* Theme-wide prefers-reduced-motion: respect user preference for all animations and transitions */
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+/* Card content: extra spacing between image and text (md+ only; no padding on mobile) */
+.card-post .card-post-content {
+	@apply md:pt-6;
+}
+
+/* Generic card image hover zoom effect */
+.card-post img,
+.card-team-member img {
+	transition: transform 0.3s ease;
+}
+
+.card-post:hover img,
+.card-team-member:hover img {
+	transform: scale(1.05);
+}

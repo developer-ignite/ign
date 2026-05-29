@@ -1,0 +1,149 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-18-152706",
+  "status": "complete",
+  "blockName": "Header",
+  "output": {
+    "meta": {
+      "blockName": "Header",
+      "mode": "edit",
+      "changeRequest": "4 targeted CSS/layout fixes: dropdown nowrap, right-aligned offset, dashed focus outline, fixed header spacer",
+      "generatedAt": "2026-02-18-152706"
+    },
+    "changes": [
+      {
+        "id": "CHANGE-001",
+        "title": "Dropdown items whitespace-nowrap",
+        "description": "Add whitespace-nowrap to dropdown submenu item links so text does not wrap to multiple lines.",
+        "source": "user-request",
+        "files": [
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.php",
+            "action": "edit",
+            "detail": "Add `whitespace-nowrap` to the ThemeLink className string. Current className is `'py-2 font-sans font-medium text-base leading-[1.16] text-white uppercase no-underline! hover:text-accent transition-colors block focus-visible:text-accent focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2'`. Add `whitespace-nowrap` to it."
+          },
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.tsx",
+            "action": "edit",
+            "detail": "Add `whitespace-nowrap` to the Link className string. Current className is `'py-2 font-sans font-medium text-base leading-[1.16] text-white uppercase no-underline! hover:text-accent transition-colors block focus-visible:text-accent focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2'`. Add `whitespace-nowrap` to it."
+          }
+        ]
+      },
+      {
+        "id": "CHANGE-002",
+        "title": "Right-aligned dropdown offset with -mr-6",
+        "description": "When submenuAlignment is 'right', the dropdown needs -mr-6 to mirror the left-aligned behavior that uses -ml-6. The dropdown has p-6 padding, so the negative margin offsets the padding to align the content edge with the parent.",
+        "source": "user-request",
+        "files": [
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+            "action": "edit",
+            "detail": "In the submenu div class string, the conditional currently outputs `md:right-0` for right alignment. Change this to also include `md:-mr-6` when right-aligned. The current ternary is: `$submenuAlignment === 'right' ? 'md:right-0' : 'md:left-0'`. Change to: `$submenuAlignment === 'right' ? 'md:right-0 md:-mr-6' : 'md:left-0'`."
+          },
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+            "action": "edit",
+            "detail": "In the submenu div's cn() call, add `md:-mr-6` to the right-aligned conditional. Currently there are two conditions: `'md:left-0': attributes.submenuAlignment === 'left'` and `'md:right-0': attributes.submenuAlignment === 'right'`. Change the right condition to `'md:right-0 md:-mr-6': attributes.submenuAlignment === 'right'`."
+          }
+        ]
+      },
+      {
+        "id": "CHANGE-003",
+        "title": "Change focus-visible outline from solid to dashed",
+        "description": "Replace all instances of `focus-visible:outline-solid` with `focus-visible:outline-dashed` across all Header sub-block files. This affects interactive elements: links, buttons, and submenu items.",
+        "source": "user-request",
+        "files": [
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+            "action": "find-replace",
+            "find": "focus-visible:outline-solid",
+            "replace": "focus-visible:outline-dashed",
+            "detail": "Two occurrences: the ThemeLink className (line 29) and the button className (line 39)."
+          },
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+            "action": "find-replace",
+            "find": "focus-visible:outline-solid",
+            "replace": "focus-visible:outline-dashed",
+            "detail": "Three occurrences: the Link className (line 108), the button cn() string (line 117), and the inner Link inside button does not have outline (confirmed). Check all instances."
+          },
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.php",
+            "action": "find-replace",
+            "find": "focus-visible:outline-solid",
+            "replace": "focus-visible:outline-dashed",
+            "detail": "One occurrence in the ThemeLink className (line 21)."
+          },
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.tsx",
+            "action": "find-replace",
+            "find": "focus-visible:outline-solid",
+            "replace": "focus-visible:outline-dashed",
+            "detail": "One occurrence in the Link className (line 42)."
+          }
+        ]
+      },
+      {
+        "id": "CHANGE-004",
+        "title": "Fixed header spacer to prevent content shift",
+        "description": "When the header becomes position:fixed on scroll, it leaves the document flow and the page content jumps up. A spacer element is needed that occupies the header's height when it is fixed, preventing layout shift. The JS already tracks `--header-main-height` via a ResizeObserver/resize listener (HeaderMain.js line 166-173). The spacer should be a sibling div that becomes visible (with height = var(--header-main-height)) when the header has the `.scrolling` class.",
+        "source": "user-request",
+        "approach": "Add a spacer div as a sibling AFTER the header-main div in HeaderMain.php. The spacer uses CSS to respond to the header's scrolling state. When the `.header-main` element has the `.scrolling` class, the spacer should take up the header height. Use the existing `--header-main-height` CSS variable that the JS already sets.",
+        "files": [
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMain.php",
+            "action": "edit",
+            "detail": "Add a spacer div immediately after the closing `</div>` of the `.header-main` div (before the outer `</div>` that closes the block wrapper). The spacer should be: `<div class=\"header-main-spacer h-0 transition-[height] [.header-main.scrolling~&]:h-(--header-main-height)\"></div>`. This uses the sibling combinator (~) so when header-main has .scrolling, the spacer gets the header height. The spacer needs to be inside the block wrapper div but after the header-main div. The existing `--header-main-height` variable is already set by HeaderMain.js on `document.documentElement`, so reference it. Alternative simpler approach: set the spacer height directly in HeaderMain.js when scrolling class is toggled."
+          },
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMain.js",
+            "action": "edit",
+            "detail": "In the JS, after the header-main element gets the `.scrolling` class added (line 110), also find the spacer element (`.header-main-spacer` sibling) and set its height. When `.scrolling` is removed (line 150-153), reset the spacer height to 0. Specifically: 1) At initialization (around line 249), query the spacer: `const spacer = header.parentElement?.querySelector('.header-main-spacer');` 2) In updateScrollStatus, when adding 'scrolling' class: `if (spacer) spacer.style.height = header.offsetHeight + 'px';` 3) When removing 'scrolling' class: `if (spacer) spacer.style.height = '0';` This is simpler and more reliable than CSS-only with sibling selectors."
+          },
+          {
+            "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+            "action": "edit",
+            "detail": "Add a spacer div after the header-main div inside the block wrapper. This is for editor preview consistency. The spacer div: `<div className=\"header-main-spacer h-0\" />`. The editor's scroll behavior also manages the scrolling class, so the spacer should be present in the editor too."
+          }
+        ]
+      }
+    ],
+    "decisions": [
+      {
+        "id": "DEC-001",
+        "category": "styling",
+        "decision": "Use whitespace-nowrap on submenu item links",
+        "source": "user-request",
+        "evidence": "User explicitly requested dropdown items no-wrap"
+      },
+      {
+        "id": "DEC-002",
+        "category": "layout",
+        "decision": "Add md:-mr-6 to right-aligned dropdowns to mirror the existing md:-ml-6 on left-aligned dropdowns",
+        "source": "user-request",
+        "evidence": "User specified that dropdown has p-6 padding so right-aligned needs -mr-6 to offset, mirroring left-aligned -ml-6"
+      },
+      {
+        "id": "DEC-003",
+        "category": "accessibility",
+        "decision": "Change focus-visible outline style from solid to dashed across all header interactive elements",
+        "source": "user-request",
+        "evidence": "User explicitly requested focus-visible:outline-dashed instead of focus-visible:outline-solid"
+      },
+      {
+        "id": "DEC-004",
+        "category": "layout",
+        "decision": "Use a JS-driven spacer element to prevent content shift when header becomes fixed",
+        "source": "user-request",
+        "evidence": "User described the content shift problem and requested a spacer/placeholder. JS approach chosen because the existing HeaderMain.js already tracks header height and scroll state, making it the natural place to manage the spacer."
+      }
+    ],
+    "testPage": {
+      "url": "https://ign.localhost/test-header/",
+      "note": "Existing test page - no changes needed to test page content. All changes are CSS/JS behavioral and can be verified on the existing page."
+    },
+    "unresolvedDecisions": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

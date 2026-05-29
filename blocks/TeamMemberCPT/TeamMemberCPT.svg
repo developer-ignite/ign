@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Team member card: photo, department badge, name, role, CTA -->
+	<!-- Photo placeholder -->
+	<rect x="4" y="2" width="16" height="9"/>
+	<!-- Department badge -->
+	<rect x="4" y="13" width="5" height="1"/>
+	<!-- Name heading -->
+	<rect x="4" y="15" width="12" height="2"/>
+	<!-- Role / job title -->
+	<rect x="4" y="18" width="9" height="1"/>
+	<!-- CTA link -->
+	<rect x="4" y="21" width="6" height="1"/>
+</svg>

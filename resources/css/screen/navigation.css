@@ -1,0 +1,194 @@
+/* ─── Breadcrumbs ────────────────────────────────────────────────── */
+
+.breadcrumbs ol {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.breadcrumbs a {
+	text-decoration: none;
+}
+
+.breadcrumbs a:hover,
+.breadcrumbs a:focus-visible {
+	text-decoration: underline;
+}
+
+.breadcrumbs li + li::before {
+	content: "";
+	display: inline-block;
+	width: 0.5em;
+	height: 0.5em;
+	margin-right: 0.5rem;
+	vertical-align: 0.05em;
+	border-right: 1.5px solid currentColor;
+	border-top: 1.5px solid currentColor;
+	transform: rotate(45deg);
+}
+
+/* ─── Pagination ─────────────────────────────────────────────────── */
+
+.navigation {
+	.nav-links {
+		@apply flex
+	  flex-wrap
+	  gap-2
+	  max-xs:justify-center
+	  pb-3
+	  relative;
+
+		/* Single continuous gray bar for all items */
+		&::after {
+			content: "";
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 4px;
+			background: rgba(31, 31, 29, 0.5);
+			border-radius: 10px;
+		}
+	}
+
+	.page-numbers {
+		@apply leading-none
+	  text-center
+	  w-10
+	  h-10
+	  min-w-10
+	  min-h-10
+	  flex
+	  items-center
+	  justify-center
+	  text-[12px]
+	  font-medium
+	  transition-all
+	  no-underline!
+	  rounded-full
+	  relative;
+
+		/* Transparent border to prevent layout shift on hover */
+		border: 1px solid transparent;
+
+		/* Current page: bold, no hover, gradient bar overlay */
+		&.current {
+			@apply text-charcoal
+		font-bold
+		pointer-events-none;
+
+			/* Gradient bar overlaying the gray bar - compensates for 1px border on each side */
+			&::after {
+				content: "";
+				position: absolute;
+				bottom: -13px;
+				left: -1px;
+				width: calc(100% + 2px);
+				height: 4px;
+				background: linear-gradient(90deg, var(--color-neon-green), var(--color-blue));
+				border-radius: 10px;
+				z-index: 1;
+			}
+		}
+
+		/* Dots: no hover */
+		&.dots {
+			@apply pointer-events-none;
+		}
+
+		/* Hover effect: gradient background + border */
+		&:hover:not(.current):not(.dots),
+		&:focus:not(.current):not(.dots) {
+			@apply text-charcoal;
+			background: linear-gradient(135deg, var(--color-neon-green) 0%, var(--color-blue) 100%);
+			border: 1px solid var(--color-charcoal);
+		}
+	}
+
+	:is(.prev, .next) {
+		@apply w-10
+	  h-10
+	  rounded-full
+	  leading-none
+	  text-center
+	  transition-all
+	  flex
+	  items-center
+	  justify-center
+	  shrink-0
+	  border-0
+	  relative;
+
+		background: var(--color-charcoal);
+
+		span {
+			@apply sr-only;
+		}
+
+		/* Arrow icon using mask-image - white for contrast with black background */
+		&::before {
+			content: "";
+			display: block;
+			width: 14px;
+			height: 11px;
+			background: white;
+			transition: background 0.3s;
+			mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 21 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M20.2782 7.3211C20.4431 7.48613 20.5356 7.70982 20.5356 7.94306C20.5356 8.17629 20.4431 8.39998 20.2782 8.56501L13.2373 15.606C13.1567 15.6925 13.0595 15.7618 12.9516 15.8099C12.8436 15.858 12.7271 15.8839 12.6089 15.886C12.4907 15.8881 12.3733 15.8663 12.2637 15.8221C12.1541 15.7778 12.0546 15.7119 11.971 15.6283C11.8874 15.5448 11.8216 15.4452 11.7773 15.3356C11.733 15.226 11.7113 15.1086 11.7134 14.9905C11.7155 14.8723 11.7413 14.7557 11.7894 14.6478C11.8375 14.5398 11.9069 14.4427 11.9934 14.3621L17.5323 8.82318L0.880352 8.82318C0.64693 8.82318 0.423067 8.73045 0.25801 8.56539C0.0929562 8.40034 0.000230432 8.17648 0.000230442 7.94305C0.000230452 7.70963 0.0929562 7.48577 0.258011 7.32071C0.423067 7.15566 0.64693 7.06293 0.880352 7.06293L17.5323 7.06293L11.9934 1.52403C11.9069 1.44345 11.8375 1.34629 11.7894 1.23833C11.7413 1.13037 11.7155 1.01382 11.7134 0.895648C11.7113 0.777474 11.733 0.66009 11.7773 0.550499C11.8216 0.440908 11.8874 0.341356 11.971 0.257781C12.0546 0.174206 12.1542 0.108321 12.2637 0.0640554C12.3733 0.0197899 12.4907 -0.00194843 12.6089 0.000136627C12.7271 0.00222168 12.8436 0.0280873 12.9516 0.0761913C13.0595 0.124295 13.1567 0.193651 13.2373 0.280123L20.2782 7.3211Z' fill='currentColor'/%3E%3C/svg%3E");
+			mask-size: contain;
+			mask-repeat: no-repeat;
+			mask-position: center;
+			-webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 21 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M20.2782 7.3211C20.4431 7.48613 20.5356 7.70982 20.5356 7.94306C20.5356 8.17629 20.4431 8.39998 20.2782 8.56501L13.2373 15.606C13.1567 15.6925 13.0595 15.7618 12.9516 15.8099C12.8436 15.858 12.7271 15.8839 12.6089 15.886C12.4907 15.8881 12.3733 15.8663 12.2637 15.8221C12.1541 15.7778 12.0546 15.7119 11.971 15.6283C11.8874 15.5448 11.8216 15.4452 11.7773 15.3356C11.733 15.226 11.7113 15.1086 11.7134 14.9905C11.7155 14.8723 11.7413 14.7557 11.7894 14.6478C11.8375 14.5398 11.9069 14.4427 11.9934 14.3621L17.5323 8.82318L0.880352 8.82318C0.64693 8.82318 0.423067 8.73045 0.25801 8.56539C0.0929562 8.40034 0.000230432 8.17648 0.000230442 7.94305C0.000230452 7.70963 0.0929562 7.48577 0.258011 7.32071C0.423067 7.15566 0.64693 7.06293 0.880352 7.06293L17.5323 7.06293L11.9934 1.52403C11.9069 1.44345 11.8375 1.34629 11.7894 1.23833C11.7413 1.13037 11.7155 1.01382 11.7134 0.895648C11.7113 0.777474 11.733 0.66009 11.7773 0.550499C11.8216 0.440908 11.8874 0.341356 11.971 0.257781C12.0546 0.174206 12.1542 0.108321 12.2637 0.0640554C12.3733 0.0197899 12.4907 -0.00194843 12.6089 0.000136627C12.7271 0.00222168 12.8436 0.0280873 12.9516 0.0761913C13.0595 0.124295 13.1567 0.193651 13.2373 0.280123L20.2782 7.3211Z' fill='currentColor'/%3E%3C/svg%3E");
+			-webkit-mask-size: contain;
+			-webkit-mask-repeat: no-repeat;
+			-webkit-mask-position: center;
+		}
+
+		/* Hover: gradient background with black arrow for contrast */
+		&:hover,
+		&:focus {
+			background: linear-gradient(135deg, var(--color-neon-green) 0%, var(--color-blue) 100%);
+
+			&::before {
+				background: var(--color-charcoal);
+			}
+		}
+	}
+
+	.prev {
+		&::before {
+			transform: scaleX(-1); /* Flip arrow to point left */
+		}
+	}
+}
+
+/* Dark mode overrides for pagination within archive context */
+.dark .navigation {
+	.nav-links::after {
+		background: rgba(255, 255, 255, 0.3);
+	}
+
+	.page-numbers {
+		color: var(--color-white);
+
+		&.current {
+			color: var(--color-white);
+		}
+	}
+
+	:is(.prev, .next) {
+		background: var(--color-white);
+
+		&::before {
+			background: var(--color-charcoal);
+		}
+
+		&:hover,
+		&:focus {
+			background: linear-gradient(135deg, var(--color-neon-green) 0%, var(--color-blue) 100%);
+
+			&::before {
+				background: var(--color-charcoal);
+			}
+		}
+	}
+}

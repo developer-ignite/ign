@@ -1,0 +1,75 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12-135916",
+  "status": "complete",
+  "blockName": "Archive",
+  "mode": "fix",
+  "output": {
+    "filesModified": [
+      "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.php",
+      "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.css",
+      "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.tsx"
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "fixesApplied": [
+      {
+        "file": "blocks/Archive/Archive.php",
+        "description": "Restructured search input, added search submit button, implemented column-aware per-page options, widened per-page select",
+        "changes": [
+          "Lines 79-83: Replaced linear per-page options loop with column-aware base calculation. Base is 9 for 3 columns, 10 for 1/2/4 columns. Options are base * 1 through base * 5 (9,18,27,36,45 or 10,20,30,40,50)",
+          "Lines 242-255: Restructured search input wrapper from 'max-sm:w-full grow-1 grid' to 'max-sm:w-full min-w-58 grid' (constrained width, no grow). Replaced left-aligned icon span with right-aligned submit button. Removed 'pl-12' from input and added 'pr-12' instead. Button has type='submit', aria-label='Search', pointer-events-auto, and sits at right edge via col-1 row-1 justify-self-end",
+          "Line 267: Changed per-page select from 'w-16' to 'w-20' (64px to 80px) to accommodate dropdown arrow without clipping the number text"
+        ]
+      },
+      {
+        "file": "blocks/Archive/Archive.css",
+        "description": "Fixed dropdown arrow in dark mode, added search button hover, strengthened btn-tertiary overrides for archive card context",
+        "changes": [
+          "Lines 139-142: Added .archive select override with white-fill arrow SVG data URI. The global forms.css uses currentColor in background-image which fundamentally doesn't work (currentColor is not resolved in background-image context). This archive-specific rule provides a white arrow for the dark mode context",
+          "Lines 144-150: Added search submit button hover state (opacity 0.7 transition)",
+          "Lines 152-173: Replaced previous btn-tertiary overrides with stronger !important rules to fully override the btn-tertiary component's dark:hover:text-off-white. Previous rules on lines 122-126 and 134-137 were removed. New rules target .group:hover .btn-tertiary, .group:hover .btn-tertiary:hover, .group:hover .btn-tertiary:focus, and .group:focus-within .btn-tertiary for both resource and policy cards. Also suppresses hover:underline! on btn-tertiary in card context since the entire card is the interactive element"
+        ]
+      },
+      {
+        "file": "blocks/Archive/Archive.tsx",
+        "description": "Updated postsPerPage RangeControl to sync with maxColumns using column-aware base, step, min, max",
+        "changes": [
+          "Lines 47-50: Added base/step/min/max computation based on maxColumns. Base is 9 for 3 columns, 10 for others. Step equals base. Min equals base. Max equals base * 5",
+          "Lines 82-92: Updated postsPerPage RangeControl to use computed min/max/step instead of hardcoded 3/24/3",
+          "Lines 93-107: Updated maxColumns onChange handler to auto-reset postsPerPage when maxColumns changes. If current postsPerPage doesn't divide evenly by the new base, it's reset to the new base value. This prevents orphan values like postsPerPage=9 with maxColumns=4"
+        ]
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Webpack performance warnings (asset size limits) - informational only, no functional impact"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "PHP and TSX both implement column-aware per-page logic. PHP computes dropdown options, TSX controls RangeControl bounds and auto-resets postsPerPage on column change. No block.json changes needed (default of 9 is correct for default maxColumns of 3)."
+    },
+    "testPage": {
+      "exists": true,
+      "url": "https://ign.localhost/test-archive/",
+      "pageId": 118,
+      "note": "Test page already has 11 Archive variations from previous update. No test page changes needed for this fix."
+    },
+    "blockers": [],
+    "notes": [
+      "Search input now constrained to min-w-58 (232px) matching filter dropdowns, does not grow to fill space",
+      "Search icon moved from left to right and made into clickable submit button",
+      "Per-page options are column-aware: 9/18/27/36/45 for 3 columns, 10/20/30/40/50 for 1/2/4 columns",
+      "Per-page select widened from w-16 to w-20 to prevent dropdown arrow from clipping",
+      "Dropdown arrows now visible in dark mode via white-fill SVG override (global forms.css issue should be fixed theme-wide in separate task)",
+      "btn-tertiary hover contrast issue fully resolved with !important overrides in archive card context",
+      "When maxColumns changes in editor, postsPerPage auto-resets to appropriate base if current value doesn't match new base increment",
+      "All design decisions followed planning spec exactly, no improvisation"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

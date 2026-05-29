@@ -1,0 +1,146 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-11-164404",
+  "status": "FAIL",
+  "blockName": "TestimonialsCarousel",
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 8,
+      "checksFailed": 2,
+      "issuesFound": 2,
+      "critical": 1,
+      "major": 1,
+      "minor": 0
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "notes": "Build completed successfully with only performance warnings about bundle size"
+      },
+      "lint": {
+        "status": "pass",
+        "notes": "No lint errors in TestimonialsCarousel files. Only warnings about experimental WordPress APIs which are acceptable project-wide"
+      },
+      "registration": {
+        "status": "pass",
+        "notes": "block.json valid, all required files present, apiVersion 3, attributes properly defined"
+      },
+      "testPageVerification": {
+        "status": "pass",
+        "notes": "Test page contains 6 block instances with <!-- wp:takt/testimonials-carousel --> markers"
+      },
+      "attributes": {
+        "status": "pass",
+        "notes": "All attributes defined in block.json with correct types and defaults"
+      },
+      "accessibility": {
+        "status": "fail",
+        "issues": 1,
+        "notes": "Close button has proper aria-label and is focusable, but modal duplication issue affects accessibility"
+      },
+      "markupDuplication": {
+        "status": "fail",
+        "issues": 1,
+        "notes": "Critical: Modal is duplicated 6 times instead of rendered once globally"
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "notes": "TSX correctly does not render the modal (PHP-only). Main carousel structure matches between TSX and PHP"
+      },
+      "javascriptFunctionality": {
+        "status": "pass",
+        "notes": "JavaScript correctly targets .testimonial-video-close class, close button has both classes (testimonial-video-close for JS, modal-close-btn for styling)"
+      },
+      "specCompliance": {
+        "status": "pass",
+        "notes": "Test page variations match spec requirements"
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "markupDuplication",
+        "severity": "critical",
+        "description": "Modal is rendered 6 times (once per block instance) instead of once globally. The static $testimonial_modal_rendered flag is not working across multiple block renders.",
+        "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.php",
+        "line": 113,
+        "technicalDetail": "WordPress's block render system includes the template file within a function scope for each block instance. Static variables are scoped to the function, not globally, so each render creates a new scope and the static variable resets. Found 6 .testimonial-video-modal elements on page with 6 block instances.",
+        "impact": "Performance: 6x DOM nodes. Potential JS issues: querySelector('.testimonial-video-close') will only target the first modal's close button, which may cause modal functionality to break depending on DOM order.",
+        "fix": "Replace static variable with a global variable or use WordPress transients/options to track if modal has been rendered. Example:\n\nBefore lines 112-115:\nif ( ! isset( $GLOBALS['takt_testimonial_modal_rendered'] ) ) {\n\t$GLOBALS['takt_testimonial_modal_rendered'] = true;\n\nThis ensures the flag persists across all block renders in the same request.",
+        "alsoUpdate": null
+      },
+      {
+        "id": "FQA-002",
+        "check": "accessibility",
+        "severity": "major",
+        "description": "Close button positioning changed from overlapping corner to above video area, but class change may need verification for focus indicator visibility on dark backdrop",
+        "file": "resources/css/screen/swiper.css",
+        "line": 93,
+        "technicalDetail": "New .modal-close-btn class uses white border and white text (line 97-99) which provides good contrast on dark backdrop. However, focus indicator styles should be verified to ensure visibility. The carousel-nav-btn class had specific focus styles that may need to be replicated for modal-close-btn.",
+        "impact": "Keyboard users may have difficulty seeing focus state on the close button against the dark backdrop",
+        "fix": "Add explicit focus styles to .modal-close-btn class:\n\n.modal-close-btn:focus-visible {\n\t@apply ring-2 ring-white ring-offset-2 ring-offset-black/80;\n}\n\nOr use outline:\n\n.modal-close-btn:focus-visible {\n\toutline: 2px solid white;\n\toutline-offset: 4px;\n}",
+        "alsoUpdate": null
+      }
+    ],
+    "passedChecks": [
+      "Build compiles without errors (only bundle size warnings)",
+      "Block registers correctly with apiVersion 3",
+      "All block files present (block.json, index.tsx, TestimonialsCarousel.tsx, TestimonialsCarousel.php)",
+      "Test page has 6 block instances with proper <!-- wp: --> markers",
+      "All attributes defined with correct types and defaults",
+      "TSX does not render modal (PHP-only as intended)",
+      "Close button has both classes: testimonial-video-close (JS target) and modal-close-btn (CSS styling)",
+      "Close button has proper aria-label='Close video'",
+      "Close button is focusable",
+      "Close button positioned above video area (-top-12, md:-top-14)",
+      "JavaScript correctly selects via .testimonial-video-close class",
+      "modal-close-btn class exists in swiper.css with white border and icon for contrast",
+      "Carousel navigation buttons use separate carousel-nav-btn class",
+      "No lint errors in block files (only acceptable experimental API warnings)",
+      "Carousel renders with proper data attributes for Swiper configuration",
+      "Video buttons present on cards with videos"
+    ],
+    "detailedFindings": {
+      "modalRendering": {
+        "expected": "1 modal rendered globally, shared by all block instances",
+        "actual": "6 modals rendered (1 per block instance)",
+        "verification": "Playwright count: 6 .testimonial-video-modal elements, 6 .testimonial-video-close buttons"
+      },
+      "closeButtonClasses": {
+        "expected": "testimonial-video-close modal-close-btn",
+        "actual": "testimonial-video-close modal-close-btn",
+        "status": "PASS"
+      },
+      "closeButtonAria": {
+        "expected": "aria-label='Close video'",
+        "actual": "aria-label='Close video'",
+        "status": "PASS"
+      },
+      "closeButtonPosition": {
+        "expected": "Above video area (not overlapping corner)",
+        "actual": "absolute -top-12 right-0 md:-top-14",
+        "status": "PASS"
+      },
+      "cssClasses": {
+        "modalCloseBtn": {
+          "exists": true,
+          "location": "resources/css/screen/swiper.css:93-136",
+          "styling": "White border, white icon, gradient hover, isolated from carousel-nav-btn"
+        },
+        "carouselNavBtn": {
+          "exists": true,
+          "location": "resources/css/screen/swiper.css:32-90",
+          "styling": "Dark mode aware border/text, gradient hover"
+        }
+      },
+      "javascriptTargeting": {
+        "selector": ".testimonial-video-close",
+        "usage": "blocks/TestimonialsCarousel/TestimonialsCarousel.js:46",
+        "status": "Correct - uses querySelector once globally, not per-block"
+      }
+    }
+  },
+  "tokensUsed": 51000,
+  "questionsForUser": []
+}

@@ -1,0 +1,213 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-12-104854",
+  "status": "pass",
+  "type": "re-verification",
+  "blockName": "TestimonialsCarousel",
+  "testPage": {
+    "url": "https://ign.localhost/?page_id=144",
+    "pageId": 144
+  },
+  "buildStatus": "pass",
+  "previousIssues": {
+    "FQA-1": {
+      "title": "Swiper A11y Module Overriding Custom ARIA Labels",
+      "severity": "medium",
+      "status": "FIXED",
+      "developerFix": "Disabled Swiper A11y module with `a11y: { enabled: false }` in both TestimonialsCarousel.js (lines 50-52) and TestimonialsCarousel.tsx (lines 110-112)",
+      "verification": {
+        "slideAriaLabel": {
+          "expected": "Slide N of M format",
+          "actual": "Slide 1 of 7",
+          "status": "pass",
+          "notes": "Custom ARIA label from PHP (line 123) is now preserved"
+        },
+        "navigationAriaLabels": {
+          "expected": "Previous Item / Next Item",
+          "actual": "Previous Item / Next Item",
+          "status": "pass",
+          "notes": "Custom ARIA labels from PHP (lines 84, 91) are now preserved"
+        }
+      }
+    },
+    "FQA-2": {
+      "title": "Autoplay Features Not Testable",
+      "severity": "low",
+      "status": "FIXED",
+      "developerFix": "Enabled autoplay on first carousel instance with `autoplayCarousel: true, autoplayDelay: 5` in page content",
+      "verification": {
+        "rotationControlButton": {
+          "expected": "Button appears when autoplay enabled",
+          "actual": "Button present with pause icon",
+          "status": "pass",
+          "notes": "Button rendered as first element in carousel controls (PHP lines 66-74)"
+        },
+        "rotationButtonAriaLabel": {
+          "expected": "Dynamic aria-label: 'Stop slide rotation' when playing, 'Start slide rotation' when paused",
+          "actual": "Initial: 'Stop slide rotation', After click: 'Start slide rotation'",
+          "status": "pass",
+          "notes": "aria-label correctly updates via JS (lines 72, 80)"
+        },
+        "rotationButtonIconToggle": {
+          "expected": "Icon changes between pause and play",
+          "actual": "Toggles between pause icon (initial) and play icon (after click)",
+          "status": "pass",
+          "notes": "Icon swap verified visually in screenshots"
+        },
+        "ariaLiveManagement": {
+          "expected": "aria-live='off' when autoplay active, 'polite' when paused",
+          "actual": "Initial: 'off', After pause click: 'polite'",
+          "status": "pass",
+          "notes": "Correctly managed on .swiper-wrapper (JS lines 58, 75, 83)"
+        },
+        "focusBasedPause": {
+          "expected": "Autoplay pauses when carousel elements receive focus",
+          "actual": "Code implementation verified, focus ring visible on navigation buttons",
+          "status": "pass",
+          "notes": "focusin/focusout handlers implemented (JS lines 89-102), visible focus ring confirms :focus-visible styles working"
+        },
+        "prefersReducedMotion": {
+          "expected": "Autoplay disabled when user has prefers-reduced-motion preference",
+          "actual": "Code checks window.matchMedia('(prefers-reduced-motion: reduce)').matches",
+          "status": "code-verified",
+          "notes": "Implementation verified in JS code (lines 5-14), cannot functionally test without setting OS preference"
+        }
+      }
+    }
+  },
+  "regressionChecks": {
+    "ariaCarouselRoledescription": {
+      "status": "pass",
+      "expected": "aria-roledescription=\"carousel\"",
+      "actual": "aria-roledescription=\"carousel\"",
+      "notes": "Still correctly applied to .swiper-parent"
+    },
+    "ariaSlideRole": {
+      "status": "pass",
+      "expected": "role=\"group\"",
+      "actual": "role=\"group\"",
+      "notes": "Still correctly applied to all slides"
+    },
+    "ariaSlideRoledescription": {
+      "status": "pass",
+      "expected": "aria-roledescription=\"slide\"",
+      "actual": "aria-roledescription=\"slide\"",
+      "notes": "Still correctly applied to all slides"
+    },
+    "ariaPaginationHidden": {
+      "status": "pass",
+      "expected": "aria-hidden=\"true\"",
+      "actual": "aria-hidden=\"true\"",
+      "notes": "Still correctly applied to .swiper-pagination"
+    },
+    "modalAriaLabelledby": {
+      "status": "pass",
+      "expected": "aria-labelledby=\"testimonial-video-heading\"",
+      "actual": "aria-labelledby=\"testimonial-video-heading\"",
+      "notes": "Modal still uses aria-labelledby correctly"
+    },
+    "modalHeading": {
+      "status": "pass",
+      "expected": "Screen reader only heading present",
+      "actual": "Heading with text 'Video' present",
+      "notes": "Heading still present, updates with testimonial name on modal open"
+    },
+    "modalInertAttribute": {
+      "status": "pass",
+      "expected": "inert attribute when modal closed",
+      "actual": "inert attribute present",
+      "notes": "Modal still has inert attribute preventing interaction when closed"
+    },
+    "slideInertManagement": {
+      "status": "pass",
+      "expected": "Off-screen slides have inert attribute",
+      "actual": "17 of 40 slides have inert attribute",
+      "details": {
+        "totalSlides": 40,
+        "activeSlides": 23,
+        "inertSlides": 17
+      },
+      "notes": "Inert management still working correctly for off-screen slides"
+    },
+    "focusVisibleStyles": {
+      "status": "pass",
+      "expected": ":focus-visible styles on navigation buttons",
+      "actual": "Visible focus ring on navigation buttons when focused",
+      "notes": "CSS styles still applied, verified visually with focus ring"
+    },
+    "jsErrors": {
+      "status": "pass",
+      "expected": "No JavaScript errors",
+      "actual": "No errors detected",
+      "notes": "Page still loads and executes without JS errors"
+    }
+  },
+  "newIssues": [],
+  "screenshots": [
+    ".taktician-project/reports/blocks/testimonials-carousel/reverify-aria-labels-1440w.png",
+    ".taktician-project/reports/blocks/testimonials-carousel/test-rotation-toggle-1440w.png",
+    ".taktician-project/reports/blocks/testimonials-carousel/test-focus-pause-1440w.png",
+    ".taktician-project/reports/blocks/testimonials-carousel/comprehensive-reverification-1440w.png"
+  ],
+  "summary": {
+    "previousIssuesFixed": 2,
+    "previousIssuesRemaining": 0,
+    "regressionChecksPassed": 10,
+    "regressionChecksFailed": 0,
+    "newIssuesFound": 0,
+    "buildPassed": true,
+    "readyForDesignQA": true,
+    "readyForMerge": true
+  },
+  "filesVerified": [
+    "blocks/TestimonialsCarousel/TestimonialsCarousel.js",
+    "blocks/TestimonialsCarousel/TestimonialsCarousel.tsx",
+    "blocks/TestimonialsCarousel/TestimonialsCarousel.php",
+    "Page content: wp-content/pages/144"
+  ],
+  "codeChangesVerified": {
+    "TestimonialsCarousel.js": {
+      "change": "Added `a11y: { enabled: false }` at lines 50-52",
+      "verified": "Custom ARIA labels from PHP are now preserved in rendered HTML"
+    },
+    "TestimonialsCarousel.tsx": {
+      "change": "Added `a11y: { enabled: false }` at lines 110-112",
+      "verified": "Editor preview respects custom ARIA labels"
+    },
+    "PageContent": {
+      "change": "First carousel instance now has `autoplayCarousel: true, autoplayDelay: 5`",
+      "verified": "Autoplay features (rotation control, aria-live, focus pause) are now functional and testable"
+    }
+  },
+  "testCoverage": {
+    "aria": {
+      "carouselRoledescription": "tested",
+      "slideRole": "tested",
+      "slideRoledescription": "tested",
+      "slideLabel": "tested",
+      "navigationLabels": "tested",
+      "paginationHidden": "tested",
+      "modalLabelledby": "tested",
+      "modalHeading": "tested",
+      "modalInert": "tested"
+    },
+    "autoplay": {
+      "rotationControlButton": "tested",
+      "rotationButtonToggle": "tested",
+      "ariaLiveManagement": "tested",
+      "focusBasedPause": "code-verified",
+      "prefersReducedMotion": "code-verified"
+    },
+    "interactivity": {
+      "slideInertManagement": "tested",
+      "focusVisibleStyles": "tested",
+      "noJsErrors": "tested"
+    }
+  },
+  "conclusion": "All fixes verified successfully. Both previously identified issues (FQA-1: Swiper A11y override, FQA-2: Autoplay not testable) have been resolved. All 10 regression checks pass with no new issues found. The TestimonialsCarousel block now fully implements WAI-ARIA Carousel accessibility patterns as specified. Ready for Design QA review.",
+  "nextSteps": [
+    "Design QA: Visual review of carousel, rotation control button, focus states, and modal styling",
+    "Final approval and merge after Design QA passes"
+  ],
+  "tokensUsed": 66800
+}

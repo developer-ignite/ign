@@ -1,0 +1,94 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-17-200229",
+  "status": "complete",
+  "blockName": "TestimonialCPT",
+  "output": {
+    "mode": "build",
+    "filesCreated": [
+      {
+        "path": "blocks/TestimonialCPT/block.json",
+        "purpose": "Block metadata — category takt-theme-template, inserter: false, multiple: false, attributes: {}, no render field"
+      },
+      {
+        "path": "blocks/TestimonialCPT/index.tsx",
+        "purpose": "Block registration with save from @taktdev/utilities"
+      },
+      {
+        "path": "blocks/TestimonialCPT/TestimonialCPT.tsx",
+        "purpose": "Block editor component — reads/writes all meta fields via editPost, includes post type guard and auto-title sync"
+      },
+      {
+        "path": "blocks/TestimonialCPT/TestimonialCPT.svg",
+        "purpose": "Block icon — testimonial card with name, message lines, and video button indicator"
+      },
+      {
+        "path": "resources/js/editor/testimonial-cpt-panel.tsx",
+        "purpose": "PluginDocumentSettingPanel sidebar panel with all meta fields, registered via registerPlugin"
+      }
+    ],
+    "filesModified": [
+      {
+        "path": "resources/js/editor.js",
+        "purpose": "Added import for testimonial-cpt-panel sidebar panel"
+      },
+      {
+        "path": "inc/post-types/testimonial.php",
+        "purpose": "Added template: [['takt/testimonial-cpt']] and template_lock: 'all' to register_post_type args"
+      }
+    ],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "react-hooks/exhaustive-deps: useEffect missing editPost dependency (line 50 of TestimonialCPT.tsx) — matches pattern used across the codebase, acceptable"
+      ],
+      "preExistingLintErrors": [
+        "FullWidthMedia/FullWidthMedia.tsx — BaseControl label without id",
+        "MainWrapper/index.tsx — prettier formatting + unused var",
+        "TestimonialsCarousel/TestimonialsCarousel.tsx — no-nested-ternary"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "note": "CPT block — no PHP render file. TSX/PHP sync check passed (N/A). All sync, registration, and PHP function existence checks pass."
+    },
+    "validationStatus": {
+      "build": "pass",
+      "sync": "pass",
+      "registration": "pass",
+      "phpFunctionExistence": "pass"
+    },
+    "testPage": {
+      "created": true,
+      "type": "testimonial-post",
+      "postId": 216,
+      "url": "https://ign.localhost/wp-admin/post.php?post=216&action=edit",
+      "title": "Test Testimonial - QA",
+      "status": "draft",
+      "metaFieldsVisible": [
+        "name",
+        "message",
+        "videoSource",
+        "videoFile",
+        "videoId"
+      ],
+      "note": "Meta fields confirmed via REST API GET /wp/v2/testimonial/216"
+    },
+    "blockers": [],
+    "fixesApplied": [],
+    "implementationNotes": [
+      "Post type guard in both block component and sidebar panel (returns null if postType !== 'testimonial')",
+      "Auto-title sync: useEffect watches meta.name and calls editPost({ title: meta.name })",
+      "All 5 meta fields editable in both block body and sidebar panel (dual-location controls)",
+      "videoFile field uses MediaUpload with MediaUploadCheck — shows only when videoSource === 'file'",
+      "videoId field label dynamically changes to 'YouTube Video ID' or 'Vimeo Video ID' based on videoSource",
+      "videoSource uses ToggleGroupControl with three options: File, YouTube, Vimeo",
+      "Video section visually separated from text fields with border-t styling",
+      "Template lock 'all' added to testimonial post type — block is pre-inserted and cannot be added/removed/moved"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

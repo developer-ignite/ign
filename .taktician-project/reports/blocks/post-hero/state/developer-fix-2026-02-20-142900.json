@@ -1,0 +1,59 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-20-142900",
+  "status": "complete",
+  "blockName": "PostHero",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "filesModified": [
+      {
+        "path": "blocks/PostHero/PostHero.tsx",
+        "change": "Renamed 'hero-inner' class to 'post-hero-inner' on the inner wrapper div (line 124). Now matches PostHero.php which already used 'post-hero-inner'."
+      },
+      {
+        "path": "blocks/EventHero/EventHero.tsx",
+        "change": "Renamed 'hero-inner' class to 'event-hero-inner' on the inner wrapper div (line 216). Now matches EventHero.php which already used 'event-hero-inner'."
+      }
+    ],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "react-hooks/exhaustive-deps in PostHero.tsx (pre-existing, not introduced by this change)",
+        "react-hooks/exhaustive-deps in EventHero.tsx (pre-existing)",
+        "htmlStructureSync warning: false-positive due to InspectorControls as TSX root (pre-existing pattern across all blocks)"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "PostHero TSX/PHP now both use 'post-hero-inner'. EventHero TSX/PHP now both use 'event-hero-inner'. Both confirmed via grep of PHP files before applying TSX fixes."
+    },
+    "testPage": {
+      "updated": false,
+      "url": "https://ign.localhost/blog/test-post-hero/",
+      "pageId": 181,
+      "notes": "No test page content changes needed — this was a class-name sync fix only. The class has no CSS definition (purely semantic/structural), so rendered output is visually unchanged."
+    },
+    "fixesApplied": [
+      {
+        "id": "FIX-001",
+        "description": "PostHero.tsx: renamed inner wrapper class 'hero-inner' to 'post-hero-inner' to match PostHero.php (line 38).",
+        "files": [
+          "blocks/PostHero/PostHero.tsx"
+        ]
+      },
+      {
+        "id": "FIX-002",
+        "description": "EventHero.tsx: renamed inner wrapper class 'hero-inner' to 'event-hero-inner' to match EventHero.php (line 83). Same class-mismatch pattern found and fixed proactively.",
+        "files": [
+          "blocks/EventHero/EventHero.tsx"
+        ]
+      }
+    ],
+    "blockers": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

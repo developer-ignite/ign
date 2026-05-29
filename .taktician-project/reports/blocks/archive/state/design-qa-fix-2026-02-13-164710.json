@@ -1,0 +1,90 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-13-171502",
+  "status": "FAIL",
+  "blockName": "Archive",
+  "output": {
+    "mode": "qa",
+    "verificationContext": "Post-fix verification for DQA-001 (dark mode btn-tertiary hover contrast)",
+    "figmaReference": {
+      "nodeId": "811:59920",
+      "screenshotCaptured": true
+    },
+    "testPage": {
+      "url": "https://ign.localhost/test-archive/",
+      "verified": true
+    },
+    "tolerance": "2-4px (semantic)",
+    "screenshotsCaptured": {
+      "chromium": ["375w", "768w", "1024w", "1440w"],
+      "firefox": ["768w", "1024w", "1440w"],
+      "webkit": ["768w", "1024w", "1440w"],
+      "note": "Firefox and Webkit fail at 375w on this long test page (browser timeout). 375w verified in Chromium."
+    },
+    "hoverScreenshots": [
+      "archive-dark-resource-hover-1440w.png",
+      "archive-dark-policy-hover-1440w.png",
+      "archive-light-resource-hover-1440w.png"
+    ],
+    "dqa001Verification": {
+      "originalIssue": "btn-tertiary VIEW RESOURCE text on resource/policy cards in dark mode became low-contrast when hovered directly",
+      "fixApplied": "Added CSS rules in Archive.css forcing color: var(--color-charcoal) !important on .archive.dark .card-resource/.card-policy .btn-tertiary in base, hover, focus, group:hover states",
+      "checks": {
+        "darkModeHoverResourceCard": {
+          "status": "PASS",
+          "observation": "When first resource card is hovered (accent/lime background), VIEW RESOURCE text is clearly dark/charcoal with strong contrast. Readable."
+        },
+        "darkModeHoverPolicyCard": {
+          "status": "PASS",
+          "observation": "When first policy card is hovered (accent/lime background), VIEW RESOURCE text is clearly dark/charcoal with strong contrast. Readable."
+        },
+        "lightModeHoverResourceCard": {
+          "status": "PASS",
+          "observation": "Light mode resource cards show VIEW RESOURCE in charcoal text. All three cards visible and readable."
+        },
+        "darkModeDefaultState": {
+          "status": "FAIL",
+          "observation": "REGRESSION: On non-hovered dark mode cards, VIEW RESOURCE text is invisible. Charcoal text on charcoal card background (dark:bg-charcoal). Figma shows light/off-white text on non-hovered dark cards."
+        }
+      }
+    },
+    "compositionGate": "FAIL - Regression found in dark mode default state",
+    "issues": [
+      {
+        "id": "DQA-002",
+        "severity": "major",
+        "category": "color",
+        "element": "btn-tertiary VIEW RESOURCE on dark mode resource/policy cards (default state)",
+        "breakpoint": "all",
+        "figmaValue": "Light/off-white text on dark card background (non-hovered state)",
+        "implementationValue": "Charcoal text (var(--color-charcoal)) on charcoal card background -- invisible",
+        "difference": "Text completely invisible due to same-color foreground/background",
+        "withinTolerance": false,
+        "recommendation": "Remove the base-state selectors from the dark mode CSS override. Only the group:hover and standalone :hover/:focus states should force charcoal color. The base .archive.dark .card-resource .btn-tertiary and .archive.dark .card-policy .btn-tertiary selectors (lines 186, 193 in Archive.css) must be removed from the rule.",
+        "regression": true,
+        "regressionFrom": "DQA-001 fix",
+        "files": [
+          {
+            "path": "blocks/Archive/Archive.css",
+            "lines": "186-201",
+            "change": {
+              "from": ".archive.dark .card-resource .btn-tertiary,\n.archive.dark .card-resource .btn-tertiary:hover,\n.archive.dark .card-resource .btn-tertiary:focus,\n.archive.dark .card-resource .group:hover .btn-tertiary,\n.archive.dark .card-resource .group:hover .btn-tertiary:hover,\n.archive.dark .card-resource .group:hover .btn-tertiary:focus,\n.archive.dark .card-resource .group:focus-within .btn-tertiary,\n.archive.dark .card-policy .btn-tertiary,\n.archive.dark .card-policy .btn-tertiary:hover,\n.archive.dark .card-policy .btn-tertiary:focus,\n.archive.dark .card-policy .group:hover .btn-tertiary,\n.archive.dark .card-policy .group:hover .btn-tertiary:hover,\n.archive.dark .card-policy .group:hover .btn-tertiary:focus,\n.archive.dark .card-policy .group:focus-within .btn-tertiary {\n\tcolor: var(--color-charcoal) !important;\n}",
+              "to": ".archive.dark .card-resource .btn-tertiary:hover,\n.archive.dark .card-resource .btn-tertiary:focus,\n.archive.dark .card-resource .group:hover .btn-tertiary,\n.archive.dark .card-resource .group:hover .btn-tertiary:hover,\n.archive.dark .card-resource .group:hover .btn-tertiary:focus,\n.archive.dark .card-resource .group:focus-within .btn-tertiary,\n.archive.dark .card-policy .btn-tertiary:hover,\n.archive.dark .card-policy .btn-tertiary:focus,\n.archive.dark .card-policy .group:hover .btn-tertiary,\n.archive.dark .card-policy .group:hover .btn-tertiary:hover,\n.archive.dark .card-policy .group:hover .btn-tertiary:focus,\n.archive.dark .card-policy .group:focus-within .btn-tertiary {\n\tcolor: var(--color-charcoal) !important;\n}"
+            },
+            "verification": "After fix: non-hovered dark cards should show light/off-white VIEW RESOURCE text (inherited from dark mode parent). Hovered cards should show charcoal VIEW RESOURCE text."
+          }
+        ]
+      }
+    ],
+    "passedChecks": [
+      "Dark mode hover on resource card btn-tertiary: charcoal text, readable on accent background",
+      "Dark mode hover on policy card btn-tertiary: charcoal text, readable on accent background",
+      "Light mode hover on resource card btn-tertiary: charcoal text, readable on white/accent background",
+      "Overall layout and composition matches Figma at all breakpoints",
+      "Cross-browser consistency verified (Chromium, Firefox, Webkit) at 768, 1024, 1440"
+    ],
+    "summary": "DQA-001 hover fix partially works: hovered cards correctly show charcoal text on accent background. However, the fix introduced a regression (DQA-002): the base-state selectors also force charcoal on non-hovered dark cards, making VIEW RESOURCE text invisible (charcoal on charcoal). Fix: remove the two base-state selectors (.archive.dark .card-resource .btn-tertiary and .archive.dark .card-policy .btn-tertiary) from lines 186 and 193, keeping only the :hover, :focus, group:hover, and group:focus-within selectors."
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

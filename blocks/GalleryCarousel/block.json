@@ -1,0 +1,66 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/gallery-carousel",
+  "title": "Gallery Carousel",
+  "category": "takt-theme",
+  "description": "A full-width gallery section with a dark card, content header, and image carousel",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "buttons": {
+      "type": "array"
+    },
+    "showPagination": {
+      "type": "boolean",
+      "default": true
+    },
+    "showNavigation": {
+      "type": "boolean",
+      "default": true
+    },
+    "loopCarousel": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayCarousel": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayDelay": {
+      "type": "number",
+      "default": 3
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "eyebrow": "Previous Impact Reports",
+      "heading": "IGNITE Employees in Action",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    },
+    "innerBlocks": [
+      { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "https://picsum.photos/id/1040/800/600", "focalPoint": { "x": 0.5, "y": 0.5 } } } },
+      { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "https://picsum.photos/id/957/800/600", "focalPoint": { "x": 0.5, "y": 0.5 } } } },
+      { "name": "takt/gallery-carousel-item", "attributes": { "image": { "id": "https://picsum.photos/id/666/800/600", "focalPoint": { "x": 0.5, "y": 0.5 } } } }
+    ]
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-18-150319",
+  "status": "FAIL",
+  "blockName": "header",
+  "revisionCycle": 10,
+  "output": {
+    "summary": "Revision 10 QA pass. 2 of 3 developer fixes verified passing. 1 fix FAILED: the outline fix (focus-visible:outline-solid) does not override the global *:focus-visible rule in body.css because unlayered CSS has higher cascade priority than @layer utilities. New issue FQA-005 raised. focus-visible:text-accent (fix 1) PASSED. Dropdown min-width removal of md:min-w-max (fix 3) PASSED. All regression checks from revision 9 PASSED.",
+    "validationResults": {
+      "buildLint": "PASS — 0 errors, 8 pre-existing warnings in unrelated blocks",
+      "sync": "PASS",
+      "registration": "PASS"
+    },
+    "codeReviewResults": {
+      "fix1_focusVisibleTextAccent": {
+        "status": "VERIFIED_IN_CODE",
+        "details": "HeaderMainItem.php line 29 (simple link) and line 39 (button): focus-visible:text-accent present. HeaderMainSubItem.php line 21: focus-visible:text-accent present. HeaderMain.php: all interactive elements (mobile SEP link, desktop search button, desktop SEP link, mobile search button) have focus-visible:text-accent."
+      },
+      "fix2_outlineSolid": {
+        "status": "VERIFIED_IN_CODE_BUT_FAILS_LIVE",
+        "details": "HeaderMainItem.php lines 29 and 39: focus-visible:outline-solid present, outline outline-0 outline-transparent removed. HeaderMainSubItem.php line 21: same. However live browser test shows the fix does not work — see FQA-005."
+      },
+      "fix3_minWidthMax": {
+        "status": "VERIFIED_IN_CODE",
+        "details": "HeaderMainItem.php line 55: md:min-w-max removed, only md:min-w-[calc(100%+3rem)] remains."
+      },
+      "regressionFQA003_ariaLabel": {
+        "status": "VERIFIED_IN_CODE",
+        "details": "HeaderMain.php line 150: aria-label='Main navigation' still present on ul[role=menubar]."
+      },
+      "regressionFQA004_ariaOrientation": {
+        "status": "VERIFIED_IN_CODE",
+        "details": "HeaderMain.php line 150: aria-orientation='horizontal' still present on ul[role=menubar]."
+      }
+    },
+    "liveBrowserTestResults": {
+      "fix1_focusVisibleTextAccent": {
+        "status": "PASS",
+        "evidence": "Screenshot 2026-02-18-150101: focusVisible=true, color: rgb(212, 255, 69) — accent color correctly applied on keyboard focus."
+      },
+      "fix2_outlineSolid": {
+        "status": "FAIL",
+        "evidence": "Screenshots 2026-02-18-150042 and 2026-02-18-150101: focusVisible=true confirmed, but outline-style: dotted, outline-color: rgb(31,31,29) (dark/black). The focus-visible:outline-solid Tailwind utility class does not override the global *:focus-visible rule in body.css (lines 38-40). Root cause: the *:focus-visible rule is outside any @layer, giving it higher cascade priority than Tailwind's @layer utilities. The block-level utility classes cannot win this specificity battle.",
+        "rootCause": "body.css line 38-40: `*:focus-visible { @apply outline-2 outline-black outline-dotted outline-offset-1; }` is unlayered CSS (outside @layer). Tailwind utilities live in @layer utilities. Per CSS cascade, unlayered styles beat @layer styles regardless of specificity. The fix requires either: (a) moving the *:focus-visible rule into @layer base, or (b) using @layer utilities for the override rule in the block, or (c) using !important on the outline-style utility."
+      },
+      "fix3_minWidthMax": {
+        "status": "PASS",
+        "evidence": "Screenshot 2026-02-18-150148: min-width: calc(100% + 48px) (= calc(100%+3rem)), has min-w-max class: false. Submenu opens correctly."
+      },
+      "regression_FQA001_arrowDownIntoDropdown": {
+        "status": "PASS",
+        "evidence": "Screenshot 2026-02-18-150208: TAG: A | role: none | text: Who We Are | aria-expanded: n/a — ArrowDown from trigger button moves focus to first dropdown item (<a> element)."
+      },
+      "regression_FQA002_arrowUpIntoDropdown": {
+        "status": "PASS",
+        "evidence": "Screenshot 2026-02-18-150226: TAG: A | role: none | text: Work at Ignite | aria-expanded: n/a — ArrowUp from trigger button moves focus to last dropdown item."
+      },
+      "regression_escape_closesDropdown": {
+        "status": "PASS",
+        "evidence": "Screenshot 2026-02-18-150243: focus=About | btn aria-expanded=false | submenu hidden=true — Escape from inside dropdown closes it and returns focus to trigger."
+      },
+      "regression_CUSTOM011_tabClosesDropdown": {
+        "status": "PASS",
+        "evidence": "Screenshot 2026-02-18-150306: focus=Health | btn aria-expanded=false | submenu hidden=true — Tab from inside dropdown closes submenu and moves focus to next top-level item."
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-005",
+        "severity": "major",
+        "status": "open",
+        "title": "Focus outline is dotted black on menu items — focus-visible:outline-solid does not override body.css global rule",
+        "description": "The developer attempted to fix the focus outline by adding focus-visible:outline-solid to nav item buttons and links (HeaderMainItem.php, HeaderMainSubItem.php). However, the fix does not work in the browser. When a menu item button or link receives keyboard focus (focusVisible=true confirmed), the computed outline-style is 'dotted' and outline-color is rgb(31,31,29) (near-black), not the intended white solid outline.",
+        "rootCause": "body.css lines 38-40 declares `*:focus-visible { @apply outline-2 outline-black outline-dotted outline-offset-1; }` outside any CSS @layer. Per the CSS cascade specification, unlayered styles have higher priority than styles in named @layers. Tailwind v4 utility classes (including focus-visible:outline-solid, focus-visible:outline-white) are placed in @layer utilities, so they cannot override an unlayered rule even with the same or higher specificity.",
+        "fix": "Option A (recommended): Move the global *:focus-visible rule into @layer base in body.css: `@layer base { *:focus-visible { @apply outline-2 outline-black outline-dotted outline-offset-1; } }`. This would allow block-level utility classes in @layer utilities to override it. Option B: Add the override directly in body.css or a dedicated unlayered rule for .header-main *:focus-visible. Option C: Use Tailwind's ! modifier (e.g., focus-visible:outline-solid!) to force !important, but this is not recommended as a broad approach.",
+        "affectedFiles": [
+          "resources/css/screen/body.css (line 38-40 — global *:focus-visible rule needs to move into @layer base)",
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.php"
+        ],
+        "liveEvidence": "Screenshots 2026-02-18-150042 and 2026-02-18-150101 — computed style overlay shows outline-style: dotted, outline-color: rgb(31,31,29) with focusVisible: true"
+      }
+    ],
+    "previousIssuesStatus": {
+      "FQA-001": "VERIFIED FIXED (regression pass) — ArrowDown into dropdown focuses first <a> item",
+      "FQA-002": "VERIFIED FIXED (regression pass) — ArrowUp into dropdown focuses last <a> item",
+      "FQA-003": "VERIFIED FIXED (code review) — aria-label on ul[role=menubar] still present",
+      "FQA-004": "VERIFIED FIXED (code review) — aria-orientation='horizontal' on ul[role=menubar] still present"
+    },
+    "checksThisRevision": [
+      {
+        "check": "Build/lint/sync/registration validation",
+        "result": "PASS"
+      },
+      {
+        "check": "focus-visible:text-accent on keyboard focus (live)",
+        "result": "PASS — accent color rgb(212,255,69) applied"
+      },
+      {
+        "check": "focus-visible:outline-solid overrides global dotted outline (live)",
+        "result": "FAIL — outline still dotted black, see FQA-005"
+      },
+      {
+        "check": "md:min-w-max removed from submenu (live)",
+        "result": "PASS — min-width: calc(100%+48px), no min-w-max class"
+      },
+      {
+        "check": "ArrowDown into dropdown (regression)",
+        "result": "PASS"
+      },
+      {
+        "check": "ArrowUp into dropdown (regression)",
+        "result": "PASS"
+      },
+      {
+        "check": "Escape closes dropdown (regression)",
+        "result": "PASS"
+      },
+      {
+        "check": "Tab from dropdown closes submenu (regression)",
+        "result": "PASS"
+      }
+    ]
+  },
+  "questionsForUser": [],
+  "tokensUsed": null
+}

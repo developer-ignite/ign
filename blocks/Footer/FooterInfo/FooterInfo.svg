@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Container outline -->
+	<path d="M1,3v18h22V3H1ZM22,20H2V4h20v16Z"/>
+	<!-- Logo -->
+	<rect x="3" y="5" width="6" height="3"/>
+	<!-- Address section -->
+	<rect x="3" y="10" width="4" height="1"/>
+	<rect x="3" y="12" width="3" height="1"/>
+	<rect x="3" y="14" width="3" height="1"/>
+	<!-- Hours -->
+	<rect x="10" y="10" width="3" height="1"/>
+	<rect x="10" y="12" width="3" height="1"/>
+	<!-- Contact -->
+	<rect x="15" y="10" width="3" height="1"/>
+	<rect x="15" y="12" width="3" height="1"/>
+	<!-- Social icons -->
+	<rect x="20" y="10" width="1" height="1"/>
+	<rect x="20" y="12" width="1" height="1"/>
+</svg>

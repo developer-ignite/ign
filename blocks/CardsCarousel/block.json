@@ -1,0 +1,97 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/cards-carousel",
+  "title": "Cards Carousel",
+  "category": "takt-theme",
+  "description": "A carousel displaying multiple cards with accent-colored backgrounds, titles, descriptions, and tertiary buttons with arrow icons",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "darkMode": {
+      "type": "boolean",
+      "default": true
+    },
+    "eyebrow": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "buttons": {
+      "type": "array"
+    },
+    "showPagination": {
+      "type": "boolean",
+      "default": true
+    },
+    "showNavigation": {
+      "type": "boolean",
+      "default": true
+    },
+    "loopCarousel": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayCarousel": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayDelay": {
+      "type": "number",
+      "default": 3
+    },
+    "columns": {
+      "type": "number",
+      "default": 3,
+      "enum": [1, 2, 3]
+    }
+  },
+  "providesContext": {
+    "takt/cards-carousel/columns": "columns"
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "darkMode": true,
+      "eyebrow": "Partners",
+      "heading": "Fostering Partnerships that Meet Your Needs",
+      "description": "Diam sed vestibulum et aliquam dignissim velit nulla."
+    },
+    "innerBlocks": [
+      {
+        "name": "takt/cards-carousel-item",
+        "attributes": {
+          "title": "LGBTQ Resource Centre",
+          "description": "The centre advocates and works towards building safer, braver and positive spaces."
+        }
+      },
+      {
+        "name": "takt/cards-carousel-item",
+        "attributes": {
+          "title": "Black Students Support & Engagement",
+          "description": "A thriving hub of cultures, connections and empowerment for Black students."
+        }
+      },
+      {
+        "name": "takt/cards-carousel-item",
+        "attributes": {
+          "title": "Humber Indigenous Education & Engagement",
+          "description": "The centre honours a wide variety of faiths and traditions."
+        }
+      }
+    ]
+  }
+}

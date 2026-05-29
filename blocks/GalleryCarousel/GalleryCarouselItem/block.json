@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/gallery-carousel-item",
+  "title": "Gallery Carousel Item",
+  "category": "takt-theme",
+  "description": "A single image slide within the Gallery Carousel",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "image": {
+      "type": "object",
+      "default": {
+        "id": null,
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    }
+  },
+  "parent": ["takt/gallery-carousel"],
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 400,
+    "attributes": {
+      "image": {
+        "id": "https://picsum.photos/id/1040/800/600",
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    }
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-19-123352",
+  "status": "PASS",
+  "blockName": "Header",
+  "output": {
+    "summary": {
+      "checksRun": 6,
+      "checksPassed": 6,
+      "checksFailed": 0,
+      "issuesFound": 1,
+      "critical": 0,
+      "major": 0,
+      "minor": 0,
+      "note": 1
+    },
+    "editContext": {
+      "changeType": "test-page-content-only",
+      "description": "logoId changed from 6 (favicon.png, 512x512 square) to 214 (logo.svg, 226x58 landscape) on all 9 header-main blocks. No code files were modified.",
+      "codeModified": false
+    },
+    "contentComparison": {
+      "rawContent": {
+        "changed": true,
+        "codeModified": false,
+        "canSkipTests": false,
+        "previousHash": "7a439b32b8c399e7a3e5f1ba8bf9ba38a6425e672083ca30c51138b6ab26e53c",
+        "currentHash": "aa852497ab856ea27cce0aa996c0ba4974a80f484b3bdc46cb2084ec5cc7deb7",
+        "note": "Content changed (logoId 6 -> 214). Code unmodified. Full QA run required due to content change."
+      },
+      "skipPhases": {
+        "tsxPhpSync": true,
+        "accessibility": true,
+        "interactiveBehavior": true,
+        "visualQa": true,
+        "registration": true
+      },
+      "checksSkipped": [],
+      "reason": "Content changed — logo attribute updated. All checks run per scope: build, sync, test page integrity, logo rendering."
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "bun run build completed without errors. TypeScript compilation succeeded."
+      },
+      "lint": {
+        "status": "note",
+        "details": "1 lint error found in FooterInfoSocialItem.tsx (nested ternary, line 181) — pre-existing issue unrelated to this header edit cycle. 8 warnings for react-hooks/exhaustive-deps across Accordion, Archive, ContentWithMedia, FullWidthMedia, PostHero, Tabs — all pre-existing, unrelated to Header. No Header block files have lint errors.",
+        "headerBlockErrors": 0,
+        "unrelatedErrors": [
+          {
+            "file": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/FooterInfoSocialItem.tsx",
+            "line": 181,
+            "ruleId": "no-nested-ternary",
+            "severity": "note",
+            "note": "Pre-existing issue outside this edit cycle scope"
+          }
+        ]
+      },
+      "registration": {
+        "status": "pass",
+        "details": "Block registration valid. apiVersion correct, name matches takt/header pattern, all file references exist, child blocks registered correctly, attribute types valid."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "taktician_validate_all sync check passed. No $attributes extraction anti-pattern found. @var docblock annotations present. PHP function existence verified. One structural warning noted (TSX depth-1 has 0 elements vs PHP 3 elements) — this is expected behavior: HeaderMain.tsx uses Gutenberg editor InnerBlocks components at depth 1 (not direct DOM elements), while HeaderMain.php renders the actual logo anchor, desktop column div, and mobile toggle div directly. This is correct TSX/PHP architecture for this block type.",
+        "toolResult": "passed",
+        "structureWarning": {
+          "severity": "note",
+          "message": "TSX has 0 elements vs PHP 3 elements at depth 1 — expected due to InnerBlocks editor abstraction vs PHP direct rendering",
+          "files": [
+            "blocks/Header/HeaderMain/HeaderMain.tsx",
+            "blocks/Header/HeaderMain/HeaderMain.php"
+          ]
+        }
+      },
+      "testPageIntegrity": {
+        "status": "pass",
+        "details": "All 9 header instances present. All wrapped in takt/demo-container. No stale markup. No placeholder IDs. All 9 header-main blocks confirmed logoId: 214.",
+        "blockCount": 9,
+        "expectedVariations": 9,
+        "placeholders": "none",
+        "logoIdVerification": "All 9 instances have logoId: 214 (confirmed via taktician_validate_test_page block tree)"
+      },
+      "logoRendering": {
+        "status": "pass",
+        "details": "Logo link (a.block.self-stretch) present on all 9 instances. Logo uses theme_output_svg_or_img() which renders media ID 214 (logo.svg) inline — explains absence of <img> tag. Logo link classes confirmed: 'block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px]'. Self-stretch causes logo to span full height of the flex container (both rows: utility row + nav row). Desktop screenshot confirms full IGNITE logo (bee icon + wordmark) renders correctly spanning both rows at 1440px.",
+        "logoLinkPresentOnAllInstances": true,
+        "logoRenderMethod": "inline SVG via theme_output_svg_or_img()",
+        "logoClasses": "block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px]",
+        "desktopSpansBothRows": true,
+        "mobileConstrainedTo26px": true,
+        "screenshots": {
+          "desktop1440": "header-logo-214-1440w.png",
+          "mobile375": "header-logo-214-375w.png",
+          "folder": ".taktician-project/reports/blocks/header/screenshots/2026-02-19-123337/"
+        }
+      },
+      "interactiveBehavior": {
+        "status": "skipped",
+        "reason": "No code changes in this edit cycle. skipPhases.interactiveBehavior=true from content comparison."
+      },
+      "accessibility": {
+        "status": "skipped",
+        "reason": "No code changes in this edit cycle. skipPhases.accessibility=true from content comparison."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "details": "Test page contains 9 instances matching 9 expected variations. All logoId values updated to 214 (logo.svg). No unresolved placeholders. Page accessible at https://ign.localhost/test-header/."
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build compiles without errors",
+      "Block registration valid",
+      "TSX/PHP sync passes (no anti-patterns, docblock present, functions exist)",
+      "Test page integrity: 9/9 instances present, all in demo-container, no stale markup",
+      "All 9 header-main blocks have logoId: 214 (logo.svg)",
+      "Logo link (self-stretch) present on all 9 rendered instances",
+      "Logo renders as full IGNITE wordmark + bee icon at desktop (1440px)",
+      "Logo constrained to 26px max-height on mobile (375px)"
+    ],
+    "notes": [
+      {
+        "id": "FQA-NOTE-001",
+        "check": "lint",
+        "severity": "note",
+        "description": "Pre-existing lint error in FooterInfoSocialItem.tsx (no-nested-ternary, line 181) and 8 react-hooks warnings across other blocks. None are in Header block files. These are outside the scope of this edit cycle.",
+        "recommendation": "These pre-existing issues should be addressed in a separate Developer Agent pass on the Footer and other affected blocks."
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/accordion-item",
+  "title": "Accordion Item",
+  "category": "takt-theme",
+  "description": "An element with collapsible content",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "openByDefault": {
+      "type": "boolean",
+      "default": false
+    },
+    "accentColor": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "takt",
+  "parent": ["takt/accordion"],
+  "example": {
+    "viewportWidth": 550,
+    "attributes": {
+      "title": "Health + Dental (Optional)",
+      "openByDefault": true
+    },
+    "innerBlocks": [
+      {
+        "name": "core/paragraph",
+        "attributes": {
+          "content": "Humber Poly and UofGH, present! Your student advocates hit the College Student Alliance Advocacy Summit, making sure Ontario's decision-makers heard what matters to you."
+        }
+      }
+    ]
+  }
+}

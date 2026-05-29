@@ -1,0 +1,159 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-12-101006",
+  "status": "issues-found",
+  "blockName": "TestimonialsCarousel",
+  "testPage": {
+    "url": "https://ign.localhost/?page_id=144",
+    "pageId": 144
+  },
+  "buildStatus": "pass",
+  "checks": {
+    "ariaCarouselRoledescription": {
+      "status": "pass",
+      "expected": "aria-roledescription=\"carousel\" on .swiper-parent",
+      "actual": "aria-roledescription=\"carousel\"",
+      "notes": "Correctly applied to carousel container"
+    },
+    "ariaSlideAttributes": {
+      "status": "fail",
+      "expected": "role=\"group\", aria-roledescription=\"slide\", aria-label=\"Slide X of Y\"",
+      "actual": "role=\"group\", aria-roledescription=\"slide\", aria-label=\"1 / 7\" (Swiper format)",
+      "notes": "Swiper's A11y module is overriding custom aria-label. PHP sets 'Slide 1 of 7' but Swiper changes it to '1 / 7'. Navigation button labels also overridden from 'Previous Item'/'Next Item' to 'Previous slide'/'Next slide'.",
+      "impact": "MEDIUM - Screen reader users will hear different label format, but information is still conveyed",
+      "recommendation": "Either disable Swiper's A11y module or configure it to use custom labels via a11y.slideLabelMessage parameter"
+    },
+    "ariaNavigationLabels": {
+      "status": "fail",
+      "expected": "aria-label=\"Previous Item\" and aria-label=\"Next Item\"",
+      "actual": "aria-label=\"Previous slide\" and aria-label=\"Next slide\"",
+      "notes": "Swiper A11y module is overriding the custom aria-label attributes set in PHP",
+      "impact": "LOW - Labels are still descriptive and functional",
+      "recommendation": "Configure Swiper A11y module or remove it entirely"
+    },
+    "ariaPaginationHidden": {
+      "status": "pass",
+      "expected": "aria-hidden=\"true\" on .swiper-pagination",
+      "actual": "aria-hidden=\"true\"",
+      "notes": "Pagination correctly hidden from screen readers"
+    },
+    "modalAriaLabelledby": {
+      "status": "pass",
+      "expected": "aria-labelledby=\"testimonial-video-heading\" on modal",
+      "actual": "aria-labelledby=\"testimonial-video-heading\"",
+      "notes": "Modal uses aria-labelledby with sr-only heading as intended"
+    },
+    "modalHeading": {
+      "status": "pass",
+      "expected": "Screen reader only heading with id=\"testimonial-video-heading\"",
+      "actual": "Heading present with text \"Video\"",
+      "notes": "Heading text is generic 'Video' initially, gets updated with testimonial name on modal open (verified in JS code)"
+    },
+    "modalInertAttribute": {
+      "status": "pass",
+      "expected": "inert attribute on modal when hidden",
+      "actual": "inert attribute present",
+      "notes": "Modal correctly has inert attribute preventing interaction when closed"
+    },
+    "slideInertManagement": {
+      "status": "pass",
+      "expected": "Off-screen slides have inert attribute when loop mode is disabled",
+      "actual": "17 of 40 total slides have inert attribute (non-visible slides)",
+      "notes": "Inert management is working correctly. Only visible slides are interactive.",
+      "details": "Total slides: 40, Active slides: 23, Inert slides: 17"
+    },
+    "rotationControlButton": {
+      "status": "not-tested",
+      "expected": "Rotation control button appears when autoplay is enabled",
+      "actual": "No carousel on test page has autoplay enabled (all data-autoplay=\"0\")",
+      "notes": "Cannot verify rotation control button, aria-live management, or focus-based pause without a carousel that has autoplay enabled",
+      "recommendation": "Create or update a test carousel instance with autoplay enabled to verify this functionality"
+    },
+    "prefersReducedMotion": {
+      "status": "code-review-pass",
+      "expected": "Autoplay disabled when user has prefers-reduced-motion set",
+      "actual": "Code correctly checks window.matchMedia('(prefers-reduced-motion: reduce)').matches",
+      "notes": "Implementation verified in JS code (line 5-14), cannot functionally test without autoplay enabled on test page"
+    },
+    "focusVisibleStyles": {
+      "status": "pass",
+      "expected": ":focus-visible styles on .carousel-nav-btn",
+      "actual": "Styles defined in swiper.css: ring-2 ring-white ring-offset-2 ring-offset-charcoal",
+      "notes": "CSS rules added as documented in developer output"
+    },
+    "jsErrors": {
+      "status": "pass",
+      "expected": "No JavaScript errors",
+      "actual": "No errors detected",
+      "notes": "Page loads and executes without JS errors"
+    },
+    "tsxPhpSync": {
+      "status": "pass",
+      "expected": "TSX and PHP files should be in sync for structural changes",
+      "actual": "TSX uses FilteredServerSideRender - all rendering is done via PHP",
+      "notes": "No TSX changes needed as noted in developer output. All changes are in PHP template."
+    }
+  },
+  "issues": [
+    {
+      "severity": "medium",
+      "category": "accessibility",
+      "title": "Swiper A11y Module Overriding Custom ARIA Labels",
+      "description": "Swiper's built-in A11y module is overriding the custom aria-label attributes set in the PHP template. Slides show '1 / 7' instead of 'Slide 1 of 7', and navigation buttons show 'Previous slide'/'Next slide' instead of 'Previous Item'/'Next Item'.",
+      "impact": "Screen reader users will hear different label formats than intended, though the information is still conveyed.",
+      "location": "blocks/TestimonialsCarousel/TestimonialsCarousel.js and TestimonialsCarousel.tsx (Swiper initialization)",
+      "recommendation": "Either: (1) Remove A11y from the modules array, OR (2) Configure Swiper's A11y module with custom label messages using the a11y configuration parameter",
+      "references": [
+        "https://swiperjs.com/swiper-api#a11y",
+        "See DynamicContentCarousel implementation for reference"
+      ]
+    },
+    {
+      "severity": "low",
+      "category": "testing",
+      "title": "Autoplay Features Not Testable",
+      "description": "Test page does not have any carousel instances with autoplay enabled, preventing verification of: rotation control button, aria-live management, focus-based pause/resume, and prefers-reduced-motion handling.",
+      "impact": "Critical accessibility features related to autoplay cannot be functionally verified.",
+      "location": "Test page at https://ign.localhost/?page_id=144",
+      "recommendation": "Add or modify at least one carousel instance on the test page to enable autoplay (set autoplayCarousel attribute to true) to allow full QA verification"
+    }
+  ],
+  "passed": [
+    "Build status: no new errors or warnings",
+    "ARIA carousel roledescription correctly applied",
+    "ARIA slide attributes (role, aria-roledescription) correctly applied",
+    "Pagination correctly hidden with aria-hidden=\"true\"",
+    "Modal uses aria-labelledby with sr-only heading",
+    "Modal has inert attribute when closed",
+    "Inert attribute correctly managed on off-screen slides (17/40 slides inert)",
+    "No JavaScript errors on page load",
+    "Focus-visible styles defined in CSS",
+    "TSX/PHP sync maintained (FilteredServerSideRender handles all rendering)",
+    "prefers-reduced-motion check implemented in code"
+  ],
+  "screenshots": [
+    ".taktician-project/reports/blocks/testimonials-carousel/testimonials-carousel-qa-1440w.png",
+    ".taktician-project/reports/blocks/testimonials-carousel/aria-verification-1440w.png",
+    ".taktician-project/reports/blocks/testimonials-carousel/detailed-checks-1440w.png",
+    ".taktician-project/reports/blocks/testimonials-carousel/focus-styles-test-1440w.png"
+  ],
+  "summary": {
+    "totalChecks": 13,
+    "passed": 10,
+    "failed": 2,
+    "notTested": 1,
+    "buildPassed": true,
+    "readyForMerge": false,
+    "blockers": [
+      "Swiper A11y module override issue needs to be resolved",
+      "Autoplay features need functional testing with enabled autoplay"
+    ]
+  },
+  "nextSteps": [
+    "Developer: Remove Swiper A11y module from modules array OR configure it with custom labels",
+    "Developer: Add/enable autoplay on at least one test carousel instance",
+    "Functional QA: Re-test after fixes to verify ARIA labels and autoplay features",
+    "Design QA: Visual review after functional QA passes"
+  ],
+  "tokensUsed": 44920
+}

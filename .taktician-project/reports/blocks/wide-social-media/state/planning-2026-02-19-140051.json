@@ -1,0 +1,43 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-19-140051",
+  "status": "complete",
+  "output": {
+    "summary": "Right-align social media icons on desktop and remove row gap between wrapped lines",
+    "fileChanges": [
+      {
+        "file": "blocks/WideSocialMedia/WideSocialMedia.tsx",
+        "action": "modify",
+        "description": "Update <ul> classes to right-align items on desktop and remove row gap",
+        "details": "On the <ul> element (line 76), change classes from 'flex flex-col gap-4 md:flex-row md:flex-wrap md:items-center' to 'flex flex-col gap-4 md:flex-row md:flex-wrap md:items-center md:justify-end md:gap-0'. The gap-4 remains for mobile (flex-col stacking). On desktop, md:gap-0 removes all gap since each <li> has its own padding. md:justify-end right-aligns items, and wrapped lines inherit the same justification.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/WideSocialMedia/WideSocialMedia.php",
+        "action": "modify",
+        "description": "Mirror the same <ul> class changes in PHP frontend template",
+        "details": "On the <ul> element (line 31), change classes from 'flex flex-col gap-4 md:flex-row md:flex-wrap md:items-center' to 'flex flex-col gap-4 md:flex-row md:flex-wrap md:items-center md:justify-end md:gap-0'. Must stay in sync with TSX.",
+        "affectsPhp": true
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "layout",
+        "decision": "Add md:justify-end to right-align social icons on desktop. justify-end on a wrapping flex container ensures all lines (including wrapped) are right-aligned.",
+        "source": "user",
+        "evidence": "User requested: 'Align the social media icons to the right on desktop (justify-end on the ul). When icons wrap to multiple lines, wrapped lines should also be right-aligned.'"
+      },
+      {
+        "id": "DEC-002",
+        "category": "spacing",
+        "decision": "Add md:gap-0 to remove gap between items on desktop. Mobile retains gap-4 for vertical stacking. Item padding provides sufficient spacing on desktop.",
+        "source": "user",
+        "evidence": "User requested: 'Remove the gap between wrapped lines - the padding on each item element is sufficient spacing.'"
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/tabs",
+  "title": "Tabs",
+  "category": "takt-theme",
+  "description": "Displays a section with ThemeHeading and vertical tab navigation on the left with switchable content panels on the right. On mobile, tabs become accordions.",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "buttons": {
+      "type": "array"
+    },
+    "headingSize": {
+      "type": "string",
+      "default": "regular",
+      "enum": ["small", "regular", "big"]
+    },
+    "tabsHeading": {
+      "type": "array",
+      "default": []
+    },
+    "tabsDescription": {
+      "type": "array",
+      "default": []
+    },
+    "tabsColor": {
+      "type": "array",
+      "default": []
+    }
+  },
+  "providesContext": {
+    "takt/tabs/baseId": "anchor"
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "heading": "Overview",
+      "description": "Explore our features across different categories."
+    },
+    "innerBlocks": [
+      {
+        "name": "takt/tabs-item",
+        "attributes": { "tabTitle": "Tab 1" },
+        "innerBlocks": [
+          { "name": "core/paragraph", "attributes": { "content": "Content for tab 1." } }
+        ]
+      },
+      {
+        "name": "takt/tabs-item",
+        "attributes": { "tabTitle": "Tab 2" },
+        "innerBlocks": [
+          { "name": "core/paragraph", "attributes": { "content": "Content for tab 2." } }
+        ]
+      }
+    ]
+  }
+}

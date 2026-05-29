@@ -1,0 +1,86 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-13T20:09:50Z",
+  "status": "complete",
+  "severity": "none",
+  "output": {
+    "mode": "edit",
+    "summary": "Successfully added optional FAQ schema (JSON-LD) functionality to the Accordion block. Added enableFaqSchema boolean attribute, ToggleControl in the editor sidebar, and PHP logic to output FAQPage structured data when enabled.",
+    "filesModified": [
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/blocks/Accordion/block.json",
+        "purpose": "Added enableFaqSchema boolean attribute with default false",
+        "changes": [
+          "Added enableFaqSchema attribute definition after alwaysOneOpen"
+        ]
+      },
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/blocks/Accordion/Accordion.tsx",
+        "purpose": "Added enableFaqSchema to type definition and toggle control in Behavior panel",
+        "changes": [
+          "Added enableFaqSchema: boolean to AccordionAttributes type",
+          "Added ToggleControl for 'Enable FAQ schema (SEO)' in Behavior PanelBody",
+          "Toggle includes help text explaining it outputs FAQPage structured data"
+        ]
+      },
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/blocks/Accordion/Accordion.php",
+        "purpose": "Added JSON-LD FAQPage schema output logic",
+        "changes": [
+          "Added @var bool $enableFaqSchema to docblock",
+          "Added PHP logic after closing </section> to generate JSON-LD when enableFaqSchema is true",
+          "Iterates $block->inner_blocks to extract questions (from title attribute) and answers (from rendered inner blocks)",
+          "Uses wp_strip_all_tags() to convert content to plain text",
+          "Skips items with empty questions or answers",
+          "Outputs <script type=\"application/ld+json\"> with properly formatted FAQPage schema",
+          "Uses wp_json_encode() with JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE flags"
+        ]
+      }
+    ],
+    "attributesAdded": [
+      {
+        "name": "enableFaqSchema",
+        "type": "boolean",
+        "default": false,
+        "purpose": "Controls whether FAQPage JSON-LD structured data is output on the frontend"
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Existing performance warnings about bundle sizes (not related to changes)",
+        "Existing ESLint warnings about experimental APIs in Accordion.tsx (pre-existing, not introduced by changes)"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "TSX and PHP are in sync. The enableFaqSchema attribute exists in both TypeScript interface and PHP docblock. The toggle control in TSX is editor-only; the PHP implements the actual JSON-LD output."
+    },
+    "testPage": {
+      "updated": true,
+      "url": "https://ign.localhost/test-accordion/",
+      "pageId": 164,
+      "verifiedBlockCount": 13,
+      "newVariation": {
+        "title": "FAQ Schema Enabled",
+        "description": "Accordion with enableFaqSchema=true. Outputs FAQPage JSON-LD structured data for search engines. Check page source to verify <script type=\"application/ld+json\"> output.",
+        "attributes": {
+          "heading": "Frequently Asked Questions",
+          "enableFaqSchema": true
+        },
+        "items": 4
+      }
+    },
+    "implementationNotes": {
+      "schemaStructure": "Follows Google FAQPage schema specification with @context, @type: FAQPage, and mainEntity array of Question objects",
+      "questionExtraction": "Uses $inner_block->attributes['title'] from accordion-item blocks",
+      "answerExtraction": "Renders each accordion-item's inner_blocks and strips HTML tags to get plain text",
+      "validation": "Only includes items with non-empty question AND answer after trimming whitespace",
+      "outputLocation": "JSON-LD script placed immediately after closing </section> tag",
+      "encoding": "Uses wp_json_encode() with JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE for maximum compatibility"
+    },
+    "qaScope": "Functional QA should verify: (1) JSON-LD script appears in page source when enableFaqSchema=true, (2) script is absent when enableFaqSchema=false, (3) JSON structure matches Google FAQPage spec, (4) questions and answers are properly extracted and formatted, (5) empty items are excluded from schema",
+    "blockers": []
+  }
+}

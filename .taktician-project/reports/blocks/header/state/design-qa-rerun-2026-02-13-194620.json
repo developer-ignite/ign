@@ -1,0 +1,138 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-13-201952",
+  "status": "PASS",
+  "blockName": "Header",
+  "output": {
+    "mode": "qa",
+    "blockName": "Header",
+    "testPageUrl": "https://ign.localhost/test-header/",
+    "contentComparison": {
+      "html": {
+        "changed": true,
+        "codeModified": false,
+        "canSkipTests": false,
+        "message": "Content changed since last snapshot - running full visual QA"
+      }
+    },
+    "visualQaAction": "full-visual-qa",
+    "compositionGate": "PASS",
+    "compositionNotes": "Header renders as a compact horizontal dark bar with rounded corners. Logo properly constrained at ~58px on desktop. Search, SEP link, and nav items positioned correctly. Overall proportions and visual weight match Figma.",
+    "figmaNodesCompared": [
+      {
+        "nodeId": "785:34245",
+        "description": "Desktop closed",
+        "compared": true
+      },
+      {
+        "nodeId": "1417:2397",
+        "description": "Desktop About submenu",
+        "compared": true
+      },
+      {
+        "nodeId": "938:2419",
+        "description": "Desktop Health submenu",
+        "compared": true
+      },
+      {
+        "nodeId": "801:58305",
+        "description": "Mobile closed",
+        "compared": true
+      },
+      {
+        "nodeId": "811:61228",
+        "description": "Mobile open",
+        "compared": true
+      }
+    ],
+    "breakpointsChecked": [
+      "375px",
+      "768px",
+      "1024px",
+      "1440px"
+    ],
+    "browsersChecked": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "previousIssueVerification": [
+      {
+        "issueId": "DQA-001",
+        "description": "Logo oversized on desktop - no max-height constraint",
+        "previousSeverity": "critical",
+        "status": "RESOLVED",
+        "verification": "Logo now constrained by md:**:max-h-[58px] in both TSX and PHP. Visual inspection confirms logo renders at approximately 58px tall on desktop, matching Figma value of 57.685px. The logo is proportional and does not dominate the header bar."
+      }
+    ],
+    "verificationChecklist": [
+      {
+        "check": "Logo ~58px on desktop",
+        "status": "PASS",
+        "observation": "Logo is proportional within the header bar, approximately 58px tall on desktop. Not oversized. Matches Figma reference of 57.685px.",
+        "evidence": "max-md:**:max-h-[26px] md:**:max-h-[58px] applied in HeaderMain.php:74 and HeaderMain.tsx:592/603"
+      },
+      {
+        "check": "Submenu gap from header bar",
+        "status": "PASS",
+        "observation": "Submenu dropdown appears directly below the nav row using top-full positioning. The gap and alignment match the Figma About submenu (1417:2397) and Health submenu (938:2419) references."
+      },
+      {
+        "check": "Submenu text alignment with parent menu text",
+        "status": "PASS",
+        "observation": "Submenu items are left-aligned and uppercase, matching the Figma design. The slight left offset via md:-ml-6 positions the dropdown to align with the parent menu text."
+      },
+      {
+        "check": "Focus-visible outlines",
+        "status": "PASS",
+        "observation": "All interactive elements (nav items, submenu items, buttons, links) include focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 in both TSX and PHP. Cannot directly observe focus state in static screenshots, but code is consistent."
+      },
+      {
+        "check": "Search placeholder uppercase",
+        "status": "PASS",
+        "observation": "Search placeholder text 'SEARCH' is visible in implementation screenshots at all breakpoints. The input uses placeholder:uppercase and placeholder:text-white/60! classes, matching Figma's General Sans Medium 14px uppercase specification."
+      },
+      {
+        "check": "Overall visual match to Figma",
+        "status": "PASS",
+        "observation": "Dark rounded bar (#1e1e1c background, 25px border-radius), correct nav item spacing (gap-8 = 32px), search with bottom border, SEP link with separator pipe, mobile SEP button above header. All match Figma references across all 5 compared nodes."
+      }
+    ],
+    "crossBrowserConsistency": {
+      "status": "PASS",
+      "notes": "Chromium, Firefox, and WebKit render identically at all breakpoints. No browser-specific visual discrepancies observed."
+    },
+    "issues": [],
+    "positiveFindings": [
+      "Logo sizing fix is correctly applied and visually confirmed",
+      "All header variations render correctly (full content, minimal, hide-on-scroll, fixed, submenu alignment, overflow, long items, SEP-only)",
+      "Search placeholder is uppercase with correct font styling",
+      "Mobile layout matches Figma: SEP button above, logo + hamburger in bar",
+      "Cross-browser consistency is excellent across all three engines",
+      "Nav items properly wrap when there are many items (overflow test case)",
+      "Focus-visible outlines are coded on all interactive elements"
+    ],
+    "screenshots": {
+      "chromium": {
+        "375w": ".taktician-project/reports/blocks/header/screenshots/header-chromium-375w.png",
+        "768w": ".taktician-project/reports/blocks/header/screenshots/header-chromium-768w.png",
+        "1024w": ".taktician-project/reports/blocks/header/screenshots/header-chromium-1024w.png",
+        "1440w": ".taktician-project/reports/blocks/header/screenshots/header-chromium-1440w.png"
+      },
+      "firefox": {
+        "375w": ".taktician-project/reports/blocks/header/screenshots/header-firefox-375w.png",
+        "768w": ".taktician-project/reports/blocks/header/screenshots/header-firefox-768w.png",
+        "1024w": ".taktician-project/reports/blocks/header/screenshots/header-firefox-1024w.png",
+        "1440w": ".taktician-project/reports/blocks/header/screenshots/header-firefox-1440w.png"
+      },
+      "webkit": {
+        "375w": ".taktician-project/reports/blocks/header/screenshots/header-webkit-375w.png",
+        "768w": ".taktician-project/reports/blocks/header/screenshots/header-webkit-768w.png",
+        "1024w": ".taktician-project/reports/blocks/header/screenshots/header-webkit-1024w.png",
+        "1440w": ".taktician-project/reports/blocks/header/screenshots/header-webkit-1440w.png"
+      }
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

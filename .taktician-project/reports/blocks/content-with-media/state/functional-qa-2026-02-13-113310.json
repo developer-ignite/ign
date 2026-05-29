@@ -1,0 +1,182 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-13-113310",
+  "status": "PASS",
+  "blockName": "ContentWithMedia",
+  "output": {
+    "summary": {
+      "checksRun": 11,
+      "checksPassed": 11,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "Build completes successfully. Performance warnings are expected and acceptable (editor.js 339KB, screen.js 378KB)."
+      },
+      "lint": {
+        "status": "pass",
+        "details": "ContentWithMedia has only minor warnings: experimental API usage (__experimentalToggleGroupControl, __experimentalInputControl) and useEffect dependency array suggestion. These are consistent across all blocks in the theme and not specific to this block. No critical or major issues.",
+        "warnings": [
+          "Usage of experimental WordPress APIs (standard across theme)",
+          "useEffect has missing dependency 'mediaRenderId' (can use functional update, minor)"
+        ]
+      },
+      "registration": {
+        "status": "pass",
+        "details": "Block registered correctly. block.json has apiVersion 3, correct attribute types, example with innerBlocks. Deprecation handler exists in index.tsx."
+      },
+      "attributes": {
+        "status": "pass",
+        "details": "All attributes defined correctly. description and buttons attributes removed as planned. InnerBlocks replaced them successfully.",
+        "attributesRemoved": ["description", "buttons"],
+        "attributesRetained": ["anchor", "isReversed", "reverseRows", "darkMode", "eyebrow", "heading", "headingSize", "mediaType", "imageLayout", "images", "videoSource", "videoFile", "videoId", "posterImage"]
+      },
+      "edgeCases": {
+        "status": "pass",
+        "details": "Tested minimal content (heading + single paragraph with no buttons), empty eyebrow state, video embed with quote block, dark mode with list, and reversed layout. All edge cases render correctly.",
+        "testedCases": [
+          "Minimal content: heading + paragraph only (no buttons, no eyebrow)",
+          "Full content: eyebrow + heading + paragraph + buttons",
+          "With list: paragraph + list + button",
+          "With quote: paragraph + quote + buttons",
+          "Dark mode: all content types render with dark background",
+          "Reversed layout: media column position swaps correctly",
+          "Video embed: YouTube video with poster image and play button",
+          "Empty InnerBlocks wrapper: renders correctly when only heading is present"
+        ]
+      },
+      "innerBlocks": {
+        "status": "pass",
+        "details": "InnerBlocks implementation verified. Discourse wrapper applied correctly. Allowed blocks include core/paragraph, core/list, core/quote, core/separator, takt/button-row. Core/heading correctly excluded. Default template provides paragraph + button-row.",
+        "allowedBlocks": ["core/paragraph", "core/list", "core/quote", "core/separator", "takt/button-row"],
+        "template": "paragraph with placeholder + button-row with primary button",
+        "templateLock": false,
+        "wrapperClass": "discourse",
+        "renderVerification": {
+          "tsx": "useInnerBlocksProps({ className: 'discourse' }, { allowedBlocks, template, templateLock: false })",
+          "php": "if (!empty($children)) echo '<div class=\"discourse\">' . $children . '</div>';",
+          "sync": "pass"
+        }
+      },
+      "interactiveBehavior": {
+        "status": "pass",
+        "testsRun": [
+          {
+            "test": "Video play button functionality",
+            "status": "pass",
+            "details": "JS file exists (ContentWithMedia.js) and correctly handles file video playback and YouTube/Vimeo embed injection on play button click."
+          }
+        ]
+      },
+      "accessibility": {
+        "status": "pass",
+        "details": "Semantic HTML structure correct. Section has aria-labelledby pointing to heading ID. Play button has aria-label. No duplicate content or markup duplication detected.",
+        "checks": [
+          "aria-labelledby on section references heading ID (pass)",
+          "Heading hierarchy correct (h2/h3 based on headingSize attribute) (pass)",
+          "Play button has aria-label=\"Play video\" (pass)",
+          "Images have alt text (pass)",
+          "Discourse wrapper provides semantic prose styling (pass)",
+          "No ARIA violations detected (pass)"
+        ]
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "details": "No responsive markup duplication detected. Single HTML structure uses Tailwind responsive classes (md:col-start-1, md:col-start-2, etc.) for layout changes."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "TSX and PHP templates are perfectly synchronized. No manual attribute extraction in PHP (no $attributes['key'] pattern found). @var docblock present for all camelCase variables. Structure, classes, and conditional rendering match exactly.",
+        "verifiedSync": [
+          "No $attributes['key'] assignments in PHP (PASS)",
+          "@var docblock present with camelCase variables (PASS)",
+          "ThemeHeading props match (enableDescription=false, enableButtons=false in both) (PASS)",
+          "Discourse wrapper class matches (PASS)",
+          "$children conditional rendering matches TSX innerBlocksProps structure (PASS)",
+          "Dark mode classes match exactly (PASS)",
+          "Media column conditional classes match (PASS)"
+        ]
+      },
+      "deprecation": {
+        "status": "pass",
+        "details": "Deprecation/migration handler exists in index.tsx. Converts old description attribute to core/paragraph InnerBlock and old buttons array to takt/button-row with takt/button children. This preserves existing content automatically.",
+        "migrationFunction": "migrate(oldAttributes) converts description string to paragraph block and buttons array to button-row with button children"
+      },
+      "specCompliance": {
+        "status": "pass",
+        "details": "All planning spec requirements met. InnerBlocks render correctly (paragraph, list, quote, button-row). ThemeHeading only handles eyebrow+heading (enableDescription=false, enableButtons=false). Dark mode works with InnerBlocks. Discourse wrapper applied. Test page has 5 block variations covering all scenarios.",
+        "testPageVariations": 5,
+        "testPageBlockCount": 5,
+        "expectedVariations": "Full content, reversed layout, dark mode with list, video with quote, minimal content",
+        "allVariationsPresent": true
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build passes without errors (only expected performance warnings)",
+      "Lint passes for ContentWithMedia (only theme-wide experimental API warnings)",
+      "Block registered correctly with correct apiVersion, attributes, and example",
+      "description and buttons attributes successfully removed",
+      "InnerBlocks replace description/buttons with discourse wrapper",
+      "ThemeHeading correctly uses enableDescription=false and enableButtons=false",
+      "Allowed blocks include core/paragraph, core/list, core/quote, core/separator, takt/button-row",
+      "Core/heading correctly excluded from allowed blocks",
+      "Default template provides paragraph + button-row",
+      "InnerBlocks render correctly on frontend with discourse class",
+      "Dark mode styling applies correctly to InnerBlocks content",
+      "isReversed layout works with InnerBlocks",
+      "reverseRows (mobile ordering) works with InnerBlocks",
+      "Media column (image/video) renders correctly alongside InnerBlocks",
+      "Empty InnerBlocks state handled gracefully (conditional rendering in PHP)",
+      "Video playback JS works correctly",
+      "TSX and PHP templates perfectly synchronized",
+      "No manual $attributes['key'] extraction in PHP",
+      "@var docblock present for camelCase variables",
+      "Deprecation/migration handler exists and converts old content to InnerBlocks",
+      "Test page has 5 variations covering all scenarios",
+      "All accessibility checks pass (aria-labelledby, semantic HTML, no duplication)",
+      "Block preview in inserter works with updated example"
+    ],
+    "keyVerifications": {
+      "innerBlocksRenderCorrectly": {
+        "status": "verified",
+        "evidence": "Page audit shows 5 sections, all with discourse wrapper present. Paragraph, list, quote, and button-row all render correctly. Block count tool confirms InnerBlocks structure matches expected patterns."
+      },
+      "discourseClassApplied": {
+        "status": "verified",
+        "evidence": "All 5 sections have discourse wrapper (extraSelectors.discourse_wrapper: [true, true, true, true, true]). TSX uses useInnerBlocksProps({ className: 'discourse' }), PHP uses <div class=\"discourse\">."
+      },
+      "themeHeadingCorrect": {
+        "status": "verified",
+        "evidence": "ThemeHeading in both TSX and PHP has enableDescription=false and enableButtons=false. Rendered HTML shows theme-heading wrapper present in all sections with eyebrow and heading only."
+      },
+      "darkModeWorks": {
+        "status": "verified",
+        "evidence": "Section index 2 has 'dark bg-transparent!' classes applied. Page audit confirms dark mode section renders with InnerBlocks (paragraph + list + button). Text-white applied to content column."
+      },
+      "tsxPhpSync": {
+        "status": "verified",
+        "evidence": "grep for $attributes[ returns no matches. Both TSX and PHP use same wrapper structure, same classes, same conditional rendering. InnerBlocks wrapper matches exactly."
+      },
+      "deprecationExists": {
+        "status": "verified",
+        "evidence": "index.tsx has deprecated array with migrate function. Converts description to createBlock('core/paragraph') and buttons to createBlock('takt/button-row', {}, buttonBlocks)."
+      },
+      "blockCountCorrect": {
+        "status": "verified",
+        "evidence": "taktician_wp_count_blocks returned 5 total takt/content-with-media blocks. Structure tree shows all 5 have innerBlocks (paragraph, list, quote, button-row combinations)."
+      },
+      "buildPasses": {
+        "status": "verified",
+        "evidence": "bun run build completed with 3 warnings (performance, expected). No TypeScript errors."
+      }
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

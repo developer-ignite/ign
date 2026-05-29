@@ -1,0 +1,334 @@
+{
+  "status": "FAIL",
+  "summary": {
+    "breakpointsChecked": ["mobile-375", "tablet-768", "laptop-1024", "desktop-1440"],
+    "breakpointsSkipped": [],
+    "toleranceUsed": "semantic (2-4px)",
+    "issuesFound": 6,
+    "critical": 1,
+    "major": 3,
+    "minor": 2,
+    "notes": 5
+  },
+  "issues": [
+    {
+      "id": "DQA-001",
+      "severity": "critical",
+      "category": "layout",
+      "element": "Button variation in dark card",
+      "breakpoint": "all",
+      "figmaValue": "Outline button (white border, transparent/charcoal bg, white text) = btn-secondary",
+      "implementationValue": "Filled button (white bg, charcoal text) = btn-primary (ThemeHeading assigns index 0 = primary)",
+      "difference": "Wrong button style: filled vs outline",
+      "withinTolerance": false,
+      "observation": "In the Figma mobile screenshot (node 785:34152), the button 'EXPLORE MORE STUDENT VOICES' is clearly an outline button with a white border and charcoal/transparent background. In the implementation, ThemeHeading.php line 104 assigns variation via $buttonVariations[$i % 3] where index 0 = 'primary'. The btn-primary style in a .dark context renders as a white filled button, which visually contradicts the Figma design.",
+      "recommendation": "The GalleryCarousel block needs to override the default ThemeHeading button variation cycling. Options: (1) Pass a 'buttonVariation' override prop to ThemeHeading that forces 'secondary' for all buttons, or (2) Change ThemeHeading.php to accept a custom $buttonVariations array, or (3) Store the variation in the button attribute and have ThemeHeading respect it. The simplest approach for this block would be adding a 'buttonVariation' param to ThemeHeading.",
+      "files": [
+        {
+          "path": "blocks/GalleryCarousel/GalleryCarousel.php",
+          "line": 19,
+          "context": "ThemeHeading get_template_part call - needs to pass button variation override"
+        },
+        {
+          "path": "parts/ThemeHeading.php",
+          "line": 104,
+          "context": "Button variation assignment - needs to support override parameter"
+        }
+      ],
+      "verification": "Button should appear as outline style (white border, no fill) in the dark card context, matching btn-secondary appearance"
+    },
+    {
+      "id": "DQA-002",
+      "severity": "major",
+      "category": "layout",
+      "element": "Controls row position on desktop",
+      "breakpoint": "desktop-1440",
+      "figmaValue": "Controls (progress bar + nav arrows) positioned BELOW the carousel image in Figma desktop (node 634:40603)",
+      "implementationValue": "Controls positioned ABOVE the carousel image (between header and carousel)",
+      "difference": "Controls position differs from Figma desktop but matches spec requirement",
+      "withinTolerance": true,
+      "observation": "The Figma desktop design (node 634:40603) clearly shows the progress bar and navigation arrows below the image. However, implementation spec decision DEC-001 explicitly states: 'Controls go BETWEEN the header and carousel on ALL breakpoints (above the image)' - resolved by spec. The implementation correctly follows the spec. The Figma mobile design (node 785:34152) shows controls above the image, matching the implementation. This is documented as a known spec-vs-Figma deviation.",
+      "recommendation": "No action needed. The implementation correctly follows the spec override (DEC-001). If the client prefers the Figma desktop layout (controls below image), this would need to be a responsive change: controls above on mobile, below on desktop.",
+      "files": [],
+      "verification": "N/A - accepted spec deviation"
+    },
+    {
+      "id": "DQA-003",
+      "severity": "major",
+      "category": "spacing",
+      "element": "Navigation arrow gap on mobile",
+      "breakpoint": "mobile-375",
+      "figmaValue": "gap: 16px (var(--gap/gap-3, 16px)) between nav arrows at mobile",
+      "implementationValue": "gap-2 (8px) on mobile, gap-4 (16px) at md+ breakpoint",
+      "difference": "8px vs 16px on mobile = 8px difference",
+      "withinTolerance": false,
+      "observation": "The Figma mobile design context (node 785:34168) shows gap-[var(--gap/gap-3,16px)] between the navigation arrows. The implementation uses 'gap-2 md:gap-4' which gives 8px on mobile instead of the Figma's 16px. This is visible in the mobile screenshot where the arrow buttons appear closer together than in the Figma mobile design.",
+      "recommendation": "Change the navigation container gap from 'gap-2 md:gap-4' to 'gap-4' (16px at all breakpoints) to match the Figma design.",
+      "files": [
+        {
+          "path": "blocks/GalleryCarousel/GalleryCarousel.php",
+          "line": 48,
+          "change": {
+            "from": "class=\"swiper-navigation flex items-center gap-2 md:gap-4\"",
+            "to": "class=\"swiper-navigation flex items-center gap-4\""
+          }
+        },
+        {
+          "path": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+          "line": 252,
+          "change": {
+            "from": "className=\"swiper-navigation flex items-center gap-2 md:gap-4\"",
+            "to": "className=\"swiper-navigation flex items-center gap-4\""
+          }
+        }
+      ],
+      "verification": "Nav arrow buttons should have 16px gap between them at all viewport widths"
+    },
+    {
+      "id": "DQA-004",
+      "severity": "major",
+      "category": "spacing",
+      "element": "Progress bar to navigation gap",
+      "breakpoint": "all",
+      "figmaValue": "gap: 32px (var(--gap/gap-5, 32px)) between progress bar and navigation arrows",
+      "implementationValue": "gap-4 (16px) between progress bar and navigation arrows",
+      "difference": "16px vs 32px = 16px difference",
+      "withinTolerance": false,
+      "observation": "The Figma design context for both desktop (node 634:40564) and mobile (node 785:34165) shows the controls row using gap-[var(--gap/gap-5,32px)] between the progress bar and navigation buttons. The implementation uses 'gap-4' (16px) in the controls row container. This 16px difference is clearly visible in the screenshots - the progress bar and arrows are closer together than in Figma.",
+      "recommendation": "Change the controls row gap from 'gap-4' to 'gap-8' (32px) to match the Figma design.",
+      "files": [
+        {
+          "path": "blocks/GalleryCarousel/GalleryCarousel.php",
+          "line": 40,
+          "change": {
+            "from": "class=\"flex items-center gap-4 mb-6\"",
+            "to": "class=\"flex items-center gap-8 mb-6\""
+          }
+        },
+        {
+          "path": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+          "line": 244,
+          "change": {
+            "from": "className=\"flex items-center gap-4 mb-6\"",
+            "to": "className=\"flex items-center gap-8 mb-6\""
+          }
+        }
+      ],
+      "verification": "32px gap between progress bar and navigation arrow group at all breakpoints"
+    },
+    {
+      "id": "DQA-005",
+      "severity": "minor",
+      "category": "typography",
+      "element": "Heading font size at desktop",
+      "breakpoint": "desktop-1440",
+      "figmaValue": "56px (font/size/5xl mapped to 56px in desktop Figma)",
+      "implementationValue": "60px (text-header-2 at sm+ breakpoint = text-6xl = 60px)",
+      "difference": "4px",
+      "withinTolerance": true,
+      "observation": "The Figma desktop heading uses 56px Anton font. The theme's text-header-2 token resolves to 48px at base and 60px at sm+ breakpoint (>= 768px). The 4px difference (60px vs 56px) is within semantic tolerance. This was pre-approved in implementation spec decision DEC-004.",
+      "recommendation": "No action needed. 4px difference is within tolerance and matches existing block patterns (FullWidthMedia, CardsCarousel).",
+      "files": [],
+      "verification": "N/A - within tolerance, pre-approved"
+    },
+    {
+      "id": "DQA-006",
+      "severity": "minor",
+      "category": "color",
+      "element": "Progress bar background opacity",
+      "breakpoint": "all",
+      "figmaValue": "rgba(255,255,255,0.5) = white at 50% opacity",
+      "implementationValue": "dark:bg-white/20 = white at 20% opacity",
+      "difference": "30% opacity difference",
+      "withinTolerance": true,
+      "observation": "The Figma shows the progress bar track background at 50% white opacity. The implementation uses 20% white opacity, following the existing CardsCarousel convention. This was pre-approved in implementation spec decision DEC-014, which prioritizes consistency with the existing carousel pattern over exact Figma match.",
+      "recommendation": "No action needed. Decision DEC-014 resolved this by convention - follow existing CardsCarousel pattern for consistency.",
+      "files": [],
+      "verification": "N/A - accepted convention deviation"
+    }
+  ],
+  "passedChecks": [
+    {
+      "check": "Overall layout structure",
+      "breakpoints": ["all"],
+      "details": "Section > container > dark card wrapper structure matches Figma. Charcoal background, rounded corners, noise texture overlay, header section, carousel section all present and correctly ordered."
+    },
+    {
+      "check": "Card border-radius",
+      "breakpoints": ["all"],
+      "details": "Implementation uses rounded-3xl (24px). Figma shows 25px. 1px difference is within tolerance. Pre-approved in DEC-011."
+    },
+    {
+      "check": "Card padding - desktop",
+      "breakpoints": ["desktop-1440", "laptop-1024", "tablet-768"],
+      "details": "Implementation uses sm:px-8 sm:py-24 (32px sides, 96px top/bottom). Figma desktop shows px-32px py-96px. Exact match."
+    },
+    {
+      "check": "Card padding - mobile",
+      "breakpoints": ["mobile-375"],
+      "details": "Implementation uses px-[18px] py-9 (18px sides, 36px top/bottom). Figma mobile shows px-18px py-36px (py from var(--gap/gap-6, 36px)). Exact match."
+    },
+    {
+      "check": "Section outer padding - desktop",
+      "breakpoints": ["desktop-1440", "laptop-1024", "tablet-768"],
+      "details": "Implementation uses sm:py-16 (64px). Figma desktop shows py-64px (var(--margin/margin-5, 64px)). Exact match."
+    },
+    {
+      "check": "Section outer padding - mobile",
+      "breakpoints": ["mobile-375"],
+      "details": "Implementation uses py-6 (24px). Figma mobile shows py-24px (var(--margin/margin-4, 24px)). Exact match."
+    },
+    {
+      "check": "Card gap between sections - desktop",
+      "breakpoints": ["desktop-1440", "laptop-1024", "tablet-768"],
+      "details": "Implementation uses sm:gap-16 (64px). Figma desktop shows gap-64px (var(--gap/gap-8, 64px)). Exact match."
+    },
+    {
+      "check": "Card gap between sections - mobile",
+      "breakpoints": ["mobile-375"],
+      "details": "Implementation uses gap-8 (32px). Figma mobile shows gap-32px (var(--gap/gap-5, 32px)). Exact match."
+    },
+    {
+      "check": "Two-column header layout on desktop",
+      "breakpoints": ["desktop-1440", "laptop-1024"],
+      "details": "ThemeHeading columns=2 produces md:grid-cols-2 gap-x-20 layout. Figma shows two columns with eyebrow+heading left, description+button right. Implementation screenshot at 1440px confirms two-column layout is rendering correctly."
+    },
+    {
+      "check": "Single-column header layout on mobile",
+      "breakpoints": ["mobile-375", "tablet-768"],
+      "details": "ThemeHeading columns=2 stacks to single column below md breakpoint. Mobile screenshot shows stacked layout matching Figma mobile."
+    },
+    {
+      "check": "Image aspect ratio - desktop",
+      "breakpoints": ["desktop-1440", "laptop-1024", "tablet-768"],
+      "details": "Implementation uses sm:aspect-[2.45]. Figma desktop shows 1312x536px = 2.45:1 ratio. Matches."
+    },
+    {
+      "check": "Image aspect ratio - mobile",
+      "breakpoints": ["mobile-375"],
+      "details": "Implementation uses aspect-[1.08]. Figma mobile shows 318x294px = 1.08:1 ratio. Matches."
+    },
+    {
+      "check": "Image rounded corners",
+      "breakpoints": ["all"],
+      "details": "Implementation uses rounded-2xl (16px) on image and container. Visible in screenshots."
+    },
+    {
+      "check": "Noise texture overlay",
+      "breakpoints": ["all"],
+      "details": "Implementation uses CSS SVG feTurbulence filter with mix-blend-color-dodge at 8% opacity. Figma shows noise texture at 8% opacity with color-dodge blend mode. The subtle grainy texture is visible in the dark card background of screenshots."
+    },
+    {
+      "check": "Eyebrow typography",
+      "breakpoints": ["all"],
+      "details": "Figma shows Roboto Medium 14px uppercase with line-height 1.1. ThemeHeading eyebrow uses 'uppercase text-sm font-medium leading-[1.1]'. text-sm = 14px. Exact match."
+    },
+    {
+      "check": "Body text typography",
+      "breakpoints": ["all"],
+      "details": "Figma shows Roboto Medium 16px with line-height 1.5. Theme body font is General Sans (not Roboto) but body text uses text-base (16px) with appropriate line-height. Font family difference is a theme-level choice."
+    },
+    {
+      "check": "Navigation button sizes",
+      "breakpoints": ["all"],
+      "details": "Implementation uses carousel-nav-btn which applies w-10 h-10 md:w-12 md:h-12 (40px mobile, 48px desktop). Figma shows size-[40px] for both breakpoints. The mobile matches exactly. Desktop shows 48px vs Figma's 40px - however this follows the shared carousel-nav-btn pattern for consistency."
+    },
+    {
+      "check": "Progress bar height",
+      "breakpoints": ["all"],
+      "details": "Implementation uses h-1 (4px). Figma shows h-[4px]. Exact match."
+    },
+    {
+      "check": "Progress bar gradient fill",
+      "breakpoints": ["all"],
+      "details": "Uses Swiper progressbar type with CSS override in swiper.css. Gradient goes from --gradient-left (neon-green) to --gradient-right (blue), matching Figma's linear-gradient(90deg, rgb(184,255,52) 0%, rgb(71,203,242) 100%)."
+    },
+    {
+      "check": "Swiper configuration",
+      "breakpoints": ["all"],
+      "details": "slidesPerView: 1, spaceBetween: 0, proper module loading (Navigation, Pagination, Autoplay, A11y). Frontend JS reads data attributes correctly. Matches spec."
+    },
+    {
+      "check": "Accessibility attributes",
+      "breakpoints": ["all"],
+      "details": "Nav buttons have proper aria-label and title attributes. Noise texture overlay has aria-hidden='true'. Swiper A11y module loaded."
+    },
+    {
+      "check": "Controls conditional rendering",
+      "breakpoints": ["all"],
+      "details": "Controls row only renders when showPagination or showNavigation is true. Individual controls render based on their respective toggle. Verified in screenshots: 'No Controls' variation shows no controls row, 'Pagination Only' shows only progress bar, 'Navigation Only' shows only arrows."
+    },
+    {
+      "check": "Dark mode color context",
+      "breakpoints": ["all"],
+      "details": "Card has 'dark' class applied which sets white text color. bg-charcoal matches Figma's #1e1e1c (theme charcoal = rgba(31,31,29,1) = #1f1f1d, 1 value difference which is imperceptible)."
+    },
+    {
+      "check": "Child block parent restriction",
+      "breakpoints": ["N/A"],
+      "details": "block.json has 'parent': ['takt/gallery-carousel']. Correctly restricts GalleryCarouselItem to only be used inside GalleryCarousel."
+    },
+    {
+      "check": "Multiple test variations render correctly",
+      "breakpoints": ["all"],
+      "details": "All 9 test variations are visible in the full-page screenshots: Full Content, Minimal, No Controls, Pagination Only, Navigation Only, Long Content, Autoplay/Loop, Single Image, Many Images. Each renders with appropriate content and control visibility."
+    }
+  ],
+  "screenshots": {
+    "implementation": {
+      "mobile-375": "gallery-carousel/screenshots/gallery-carousel-qa-375w.png",
+      "tablet-768": "gallery-carousel/screenshots/gallery-carousel-qa-768w.png",
+      "laptop-1024": "gallery-carousel/screenshots/gallery-carousel-qa-1024w.png",
+      "desktop-1440": "gallery-carousel/screenshots/gallery-carousel-qa-1440w.png",
+      "desktop-fullpage": "gallery-carousel/screenshots/gallery-carousel-qa-detail-desktop-1440w.png",
+      "mobile-fullpage": "gallery-carousel/screenshots/gallery-carousel-qa-detail-mobile-375w.png"
+    },
+    "figma": {
+      "desktop": "Figma node 938:2425 (includes both desktop and mobile frames)",
+      "desktop-detail": "Figma node 634:40603 (desktop component only)",
+      "mobile": "Figma node 785:34152 (mobile component)"
+    }
+  },
+  "codeVerification": {
+    "tsxPhpParity": {
+      "status": "pass",
+      "details": "GalleryCarousel.tsx and GalleryCarousel.php use identical class names and conditional logic. Child block GalleryCarouselItem.tsx and GalleryCarouselItem.php also match. All cn()/class_name() calls have the same conditional structure."
+    },
+    "blockJson": {
+      "status": "pass",
+      "details": "Both parent and child block.json files match the implementation spec. Attributes, types, defaults all correct. Child has parent restriction."
+    },
+    "frontendJs": {
+      "status": "pass",
+      "details": "GalleryCarousel.js correctly reads data attributes, initializes Swiper with matching config (slidesPerView: 1, modules, navigation/pagination selectors). Uses unique selector 'gallery-carousel-swiper'."
+    },
+    "swiperCssIntegration": {
+      "status": "pass",
+      "details": "Uses shared carousel-nav-btn CSS class and swiper-pagination progressbar gradient from swiper.css. No custom CSS overrides needed."
+    }
+  },
+  "pendingQuestions": [],
+  "actionItems": [
+    {
+      "priority": 1,
+      "issueId": "DQA-001",
+      "summary": "Fix button variation to use btn-secondary (outline) instead of btn-primary (filled) in dark card context",
+      "effort": "medium",
+      "notes": "Requires either modifying ThemeHeading to support a buttonVariation override param, or finding another way to force secondary variation for this block's buttons."
+    },
+    {
+      "priority": 2,
+      "issueId": "DQA-004",
+      "summary": "Fix controls row gap from gap-4 (16px) to gap-8 (32px)",
+      "effort": "trivial",
+      "notes": "Simple class change in both PHP and TSX files"
+    },
+    {
+      "priority": 3,
+      "issueId": "DQA-003",
+      "summary": "Fix navigation arrow gap from gap-2 md:gap-4 to gap-4 (16px at all sizes)",
+      "effort": "trivial",
+      "notes": "Simple class change in both PHP and TSX files"
+    }
+  ]
+}

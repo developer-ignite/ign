@@ -1,0 +1,1292 @@
+{
+  "meta": {
+    "blockName": "Footer",
+    "namespace": "takt",
+    "title": "Footer",
+    "description": "Site footer with logo, contact information, navigation links, social media icons, and copyright credits on a dark charcoal card layout with gradient background",
+    "category": "takt-theme",
+    "generatedAt": "2026-02-06T10:30:00.000Z",
+    "figmaNodeId": "928:19448",
+    "specFile": null
+  },
+
+  "files": {
+    "footer": {
+      "blockJson": "blocks/Footer/block.json",
+      "indexTsx": "blocks/Footer/index.tsx",
+      "componentTsx": "blocks/Footer/Footer.tsx",
+      "templatePhp": "blocks/Footer/Footer.php",
+      "iconSvg": "blocks/Footer/Footer.svg"
+    },
+    "footerInfo": {
+      "blockJson": "blocks/Footer/FooterInfo/block.json",
+      "indexTsx": "blocks/Footer/FooterInfo/index.tsx",
+      "componentTsx": "blocks/Footer/FooterInfo/FooterInfo.tsx",
+      "templatePhp": "blocks/Footer/FooterInfo/FooterInfo.php",
+      "iconSvg": "blocks/Footer/FooterInfo/FooterInfo.svg"
+    },
+    "footerInfoSocial": {
+      "blockJson": "blocks/Footer/FooterInfo/FooterInfoSocial/block.json",
+      "indexTsx": "blocks/Footer/FooterInfo/FooterInfoSocial/index.tsx",
+      "componentTsx": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocial.tsx",
+      "templatePhp": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocial.php",
+      "iconSvg": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocial.svg"
+    },
+    "footerInfoSocialItem": {
+      "blockJson": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/block.json",
+      "indexTsx": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/index.tsx",
+      "componentTsx": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/FooterInfoSocialItem.tsx",
+      "templatePhp": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/FooterInfoSocialItem.php",
+      "iconSvg": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/FooterInfoSocialItem.svg"
+    },
+    "footerNav": {
+      "blockJson": "blocks/Footer/FooterNav/block.json",
+      "indexTsx": "blocks/Footer/FooterNav/index.tsx",
+      "componentTsx": "blocks/Footer/FooterNav/FooterNav.tsx",
+      "templatePhp": "blocks/Footer/FooterNav/FooterNav.php",
+      "iconSvg": "blocks/Footer/FooterNav/FooterNav.svg"
+    },
+    "footerNavColumn": {
+      "blockJson": "blocks/Footer/FooterNav/FooterNavColumn/block.json",
+      "indexTsx": "blocks/Footer/FooterNav/FooterNavColumn/index.tsx",
+      "componentTsx": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumn.tsx",
+      "templatePhp": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumn.php",
+      "iconSvg": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumn.svg"
+    },
+    "footerNavColumnItem": {
+      "blockJson": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumnItem/block.json",
+      "indexTsx": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumnItem/index.tsx",
+      "componentTsx": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumnItem/FooterNavColumnItem.tsx",
+      "templatePhp": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumnItem/FooterNavColumnItem.php",
+      "iconSvg": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumnItem/FooterNavColumnItem.svg"
+    },
+    "footerCredits": {
+      "blockJson": "blocks/Footer/FooterCredits/block.json",
+      "indexTsx": "blocks/Footer/FooterCredits/index.tsx",
+      "componentTsx": "blocks/Footer/FooterCredits/FooterCredits.tsx",
+      "templatePhp": "blocks/Footer/FooterCredits/FooterCredits.php",
+      "iconSvg": "blocks/Footer/FooterCredits/FooterCredits.svg"
+    },
+    "footerCreditsItem": {
+      "blockJson": "blocks/Footer/FooterCredits/FooterCreditsItem/block.json",
+      "indexTsx": "blocks/Footer/FooterCredits/FooterCreditsItem/index.tsx",
+      "componentTsx": "blocks/Footer/FooterCredits/FooterCreditsItem/FooterCreditsItem.tsx",
+      "templatePhp": "blocks/Footer/FooterCredits/FooterCreditsItem/FooterCreditsItem.php",
+      "iconSvg": "blocks/Footer/FooterCredits/FooterCreditsItem/FooterCreditsItem.svg"
+    }
+  },
+
+  "blockHierarchy": {
+    "description": "Deep inner block hierarchy following footer block-type pattern. The footer is divided into two visual cards: a top info card (logo + contact) and a bottom card (nav + credits). The bottom card uses an outer wrapper with two inner sections.",
+    "tree": [
+      "Footer (parent <footer>)",
+      "  FooterInfo (top card - logo + contact info)",
+      "    FooterInfoSocial (social media icons container)",
+      "      FooterInfoSocialItem (individual social icon + link) [repeatable]",
+      "  FooterNav (nav links section inside bottom card)",
+      "    FooterNavColumn (nav column with heading + links) [repeatable, 6 default]",
+      "      FooterNavColumnItem (individual nav link) [repeatable]",
+      "  FooterCredits (credits bar inside bottom card)",
+      "    FooterCreditsItem (individual legal link) [repeatable]"
+    ],
+    "notes": [
+      "FooterNav and FooterCredits share the same visual bottom card container. The outer rounded-[32px] wrapper with charcoal background is applied by Footer parent. FooterNav and FooterCredits are placed inside this wrapper, each with their own rounded-[25px] and charcoal background.",
+      "The decorative abstract shapes (2 in the wrapper area, 1 in the nav area) use mix-blend-mode darken/hue and are purely cosmetic. These should be hardcoded in the Footer parent and FooterNav PHP/TSX, not editable. They can be implemented later as a visual polish step.",
+      "The logo in FooterInfo is an editable media upload (icon + wordmark), stored as a single media ID."
+    ]
+  },
+
+  "blockTypePatterns": {
+    "source": "footer.md",
+    "requiredImports": {
+      "footerTsx": [
+        "{ useEffect } from '@wordpress/element'",
+        "{ useSelect, useDispatch } from '@wordpress/data'",
+        "{ createBlock } from '@wordpress/blocks'",
+        "{ useBlockProps, useInnerBlocksProps, store as blockEditorStore } from '@wordpress/block-editor'",
+        "{ cn } from '@taktdev/utilities'"
+      ],
+      "footerInfoTsx": [
+        "{ __ } from '@wordpress/i18n'",
+        "{ useBlockProps, InspectorControls, RichText } from '@wordpress/block-editor'",
+        "{ PanelBody, BaseControl, Button } from '@wordpress/components'",
+        "{ MediaUpload } from '@wordpress/block-editor'",
+        "{ cn, fetchMedia } from '@taktdev/utilities'",
+        "{ useInnerBlocksProps } from '@wordpress/block-editor'"
+      ],
+      "footerInfoSocialTsx": [
+        "{ __ } from '@wordpress/i18n'",
+        "{ useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor'",
+        "{ Appender } from '@taktdev/components'"
+      ],
+      "footerInfoSocialItemTsx": [
+        "{ __ } from '@wordpress/i18n'",
+        "{ useState, useRef } from '@wordpress/element'",
+        "{ useBlockProps, BlockControls, InspectorControls } from '@wordpress/block-editor'",
+        "{ ToolbarGroup, ToolbarButton, Popover, PanelBody, BaseControl, Button, ToggleControl, TextControl } from '@wordpress/components'",
+        "{ MediaUpload, MediaReplaceFlow } from '@wordpress/block-editor'",
+        "{ __experimentalLinkControl as LinkControl } from '@wordpress/block-editor'",
+        "{ fetchMedia, renameBlock } from '@taktdev/utilities'",
+        "{ ImageOrInlineSvg } from '@taktdev/components'"
+      ],
+      "footerNavTsx": [
+        "{ __ } from '@wordpress/i18n'",
+        "{ useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor'",
+        "{ Appender } from '@taktdev/components'"
+      ],
+      "footerNavColumnTsx": [
+        "{ __ } from '@wordpress/i18n'",
+        "{ useBlockProps, useInnerBlocksProps, RichText } from '@wordpress/block-editor'",
+        "{ cn, renameBlock } from '@taktdev/utilities'",
+        "{ Appender } from '@taktdev/components'"
+      ],
+      "footerNavColumnItemTsx": [
+        "{ __ } from '@wordpress/i18n'",
+        "{ useBlockProps } from '@wordpress/block-editor'",
+        "{ Link } from '@taktdev/components'",
+        "{ renameBlock } from '@taktdev/utilities'"
+      ],
+      "footerCreditsTsx": [
+        "{ __ } from '@wordpress/i18n'",
+        "{ useBlockProps, useInnerBlocksProps, RichText } from '@wordpress/block-editor'",
+        "{ cn } from '@taktdev/utilities'",
+        "{ Appender } from '@taktdev/components'"
+      ],
+      "footerCreditsItemTsx": [
+        "{ __ } from '@wordpress/i18n'",
+        "{ useBlockProps } from '@wordpress/block-editor'",
+        "{ Link } from '@taktdev/components'",
+        "{ renameBlock } from '@taktdev/utilities'"
+      ]
+    },
+    "requiredPatterns": [
+      { "pattern": "TEMPLATE + REQUIRED ordering", "usage": "Footer parent enforces section order with useEffect + replaceInnerBlocks" },
+      { "pattern": "useInnerBlocksProps", "usage": "All container blocks use for child block rendering" },
+      { "pattern": "Appender", "usage": "FooterInfoSocial, FooterNav (for columns), FooterNavColumn (for items), FooterCredits (for items)" },
+      { "pattern": "Link component", "usage": "FooterNavColumnItem and FooterCreditsItem for editable links" },
+      { "pattern": "renameBlock", "usage": "FooterNavColumn (heading), FooterNavColumnItem (link title), FooterCreditsItem (link title)" },
+      { "pattern": "RichText", "usage": "FooterInfo (address, hours, contact text), FooterNavColumn (heading), FooterCredits (copyright, attribution)" },
+      { "pattern": "fetchMedia + ImageOrInlineSvg", "usage": "FooterInfoSocialItem for inline SVG social icons" },
+      { "pattern": "Custom LinkControl popover", "usage": "FooterInfoSocialItem uses toolbar link popover (not inline text)" },
+      { "pattern": "MediaUpload + MediaReplaceFlow", "usage": "FooterInfoSocialItem for icon upload/replace, FooterInfo for logo upload" },
+      { "pattern": "theme_output_svg_or_img()", "usage": "PHP for social media icon SVGs" }
+    ],
+    "qualityChecklist": [
+      "Footer parent uses <footer> element (not <section>)",
+      "Footer parent has multiple: false to prevent duplicates",
+      "Footer parent uses TEMPLATE + REQUIRED + useEffect ordering pattern",
+      "Footer parent has no Appender (sections are fixed)",
+      "All section blocks have parent: ['takt/footer'] restriction",
+      "All section blocks have multiple: false",
+      "FooterNav uses <nav> with aria-label",
+      "FooterNavColumn links use <ul>/<li> structure",
+      "Social media items default opensInNewTab to true",
+      "Social media items use sr-only for accessibility",
+      "Social media items use theme_output_svg_or_img() in PHP",
+      "Copyright text uses dynamic year",
+      "Legal links render as underlined text",
+      "TSX and PHP produce identical HTML structure",
+      "All navigation uses semantic HTML",
+      "No hardcoded colors - uses theme tokens",
+      "Responsive: stacked on mobile, horizontal on desktop"
+    ]
+  },
+
+  "attributes": {
+    "footer": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": "",
+        "description": "HTML anchor for the footer",
+        "optional": true,
+        "editorComponent": null
+      }
+    ],
+
+    "footerInfo": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": "",
+        "description": "HTML anchor",
+        "optional": true,
+        "editorComponent": null
+      },
+      {
+        "name": "logoId",
+        "type": "number",
+        "default": null,
+        "description": "Media library ID for the footer logo (icon + wordmark combined image or SVG)",
+        "optional": true,
+        "editorComponent": "MediaUpload in InspectorControls sidebar panel"
+      },
+      {
+        "name": "addressLabel",
+        "type": "string",
+        "default": "Address",
+        "description": "Label above the address columns",
+        "optional": false,
+        "editorComponent": "RichText"
+      },
+      {
+        "name": "addressContent",
+        "type": "string",
+        "default": "",
+        "description": "Address content with multiple campuses. HTML content with bold campus names and address text. Use <strong> for campus names.",
+        "optional": true,
+        "editorComponent": "RichText (multiline, allows bold)"
+      },
+      {
+        "name": "hoursLabel",
+        "type": "string",
+        "default": "Hours",
+        "description": "Label above the hours text",
+        "optional": false,
+        "editorComponent": "RichText"
+      },
+      {
+        "name": "hoursContent",
+        "type": "string",
+        "default": "",
+        "description": "Hours of operation text",
+        "optional": true,
+        "editorComponent": "RichText"
+      },
+      {
+        "name": "contactLabel",
+        "type": "string",
+        "default": "Contact",
+        "description": "Label above the contact info",
+        "optional": false,
+        "editorComponent": "RichText"
+      },
+      {
+        "name": "contactContent",
+        "type": "string",
+        "default": "",
+        "description": "Contact information (phone, email). HTML content with line breaks.",
+        "optional": true,
+        "editorComponent": "RichText"
+      },
+      {
+        "name": "socialLabel",
+        "type": "string",
+        "default": "Follow Us",
+        "description": "Label above the social media icons",
+        "optional": false,
+        "editorComponent": "RichText"
+      }
+    ],
+
+    "footerInfoSocial": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": "",
+        "description": "HTML anchor",
+        "optional": true,
+        "editorComponent": null
+      }
+    ],
+
+    "footerInfoSocialItem": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": "",
+        "description": "HTML anchor",
+        "optional": true,
+        "editorComponent": null
+      },
+      {
+        "name": "link",
+        "type": "object",
+        "default": {
+          "title": "",
+          "url": "",
+          "opensInNewTab": true,
+          "label": ""
+        },
+        "description": "Social media link with URL and accessibility label. opensInNewTab defaults to true for social links.",
+        "optional": false,
+        "editorComponent": "Custom LinkControl popover in BlockControls toolbar"
+      },
+      {
+        "name": "logoId",
+        "type": "number",
+        "default": null,
+        "description": "Media library ID for the social media icon (SVG preferred for CSS fill control)",
+        "optional": true,
+        "editorComponent": "MediaUpload in toolbar + MediaReplaceFlow + InspectorControls panel"
+      }
+    ],
+
+    "footerNav": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": "",
+        "description": "HTML anchor",
+        "optional": true,
+        "editorComponent": null
+      }
+    ],
+
+    "footerNavColumn": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": "",
+        "description": "HTML anchor",
+        "optional": true,
+        "editorComponent": null
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "default": "",
+        "description": "Column heading (e.g. 'About', 'Health + Dental'). Uses Anton font at 16px/1.1.",
+        "optional": false,
+        "editorComponent": "RichText"
+      },
+      {
+        "name": "subHeading",
+        "type": "string",
+        "default": "",
+        "description": "Optional sub-heading below heading (e.g. 'EVENTS' in the Social + Community Spaces column). Uses Roboto 14px/1.1 Medium uppercase.",
+        "optional": true,
+        "editorComponent": "RichText"
+      }
+    ],
+
+    "footerNavColumnItem": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": "",
+        "description": "HTML anchor",
+        "optional": true,
+        "editorComponent": null
+      },
+      {
+        "name": "link",
+        "type": "object",
+        "default": {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "title": "",
+          "label": ""
+        },
+        "description": "Navigation link with URL, title, and optional accessibility label",
+        "optional": false,
+        "editorComponent": "Link component from @taktdev/components"
+      }
+    ],
+
+    "footerCredits": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": "",
+        "description": "HTML anchor",
+        "optional": true,
+        "editorComponent": null
+      },
+      {
+        "name": "copyrightText",
+        "type": "string",
+        "default": "",
+        "description": "Copyright text, e.g. 'IGNITE. All rights reserved.' The year is auto-prepended with the copyright symbol.",
+        "optional": false,
+        "editorComponent": "RichText"
+      },
+      {
+        "name": "attributionText",
+        "type": "string",
+        "default": "Website by <a href=\"https://takt.ca\">Takt</a>",
+        "description": "Attribution text with link. 'Takt' should be an underlined link.",
+        "optional": true,
+        "editorComponent": "RichText (allows links)"
+      }
+    ],
+
+    "footerCreditsItem": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": "",
+        "description": "HTML anchor",
+        "optional": true,
+        "editorComponent": null
+      },
+      {
+        "name": "link",
+        "type": "object",
+        "default": {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "title": "",
+          "label": ""
+        },
+        "description": "Legal/policy link (e.g. Privacy Policy, Terms of Service)",
+        "optional": false,
+        "editorComponent": "Link component from @taktdev/components"
+      }
+    ]
+  },
+
+  "styling": {
+    "footer": {
+      "element": "footer",
+      "classes": "footer relative overflow-hidden p-4 md:p-8",
+      "notes": "The footer wrapper has the gradient background applied via inline style or custom CSS. It uses overflow-hidden to clip the decorative shapes. Padding is 32px on desktop, can reduce on mobile.",
+      "background": {
+        "description": "Linear gradient from transparent to blue-50% opacity over off-white base",
+        "cssValue": "linear-gradient(180deg, rgba(71, 203, 242, 0) 6.73%, rgba(71, 203, 242, 0.5) 100%), linear-gradient(90deg, var(--color-off-white) 0%, var(--color-off-white) 100%)",
+        "implementation": "Apply via inline style or a custom utility class in CSS. Recommend a custom class .footer-bg in the block's scope or use Tailwind arbitrary: bg-[linear-gradient(...)]"
+      },
+      "innerWrapper": {
+        "element": "div",
+        "classes": "flex flex-col gap-4 items-stretch relative z-1",
+        "notes": "z-1 to sit above decorative shapes"
+      }
+    },
+
+    "decorativeShapes": {
+      "description": "2-3 abstract rotated shapes with mix-blend-mode. These are purely decorative, not editable.",
+      "implementation": "Use absolute positioned divs with background images or inline SVGs. Apply mix-blend-darken and mix-blend-hue. Rotate with rotate-[126.04deg] and rotate-[85.89deg]. These can be implemented as pseudo-elements or hardcoded divs.",
+      "shapes": [
+        {
+          "position": "top-left area of footer wrapper",
+          "mixBlendMode": "darken",
+          "rotation": "126.04deg",
+          "zIndex": "0 (behind content)"
+        },
+        {
+          "position": "top-right area of footer wrapper",
+          "mixBlendMode": "darken",
+          "rotation": "126.04deg",
+          "zIndex": "0 (behind content)"
+        },
+        {
+          "position": "inside bottom card / nav area",
+          "mixBlendMode": "hue",
+          "rotation": "85.89deg",
+          "zIndex": "0 (behind nav content)"
+        }
+      ],
+      "priority": "LOW - implement as visual polish after core functionality works. Can be deferred."
+    },
+
+    "footerInfo": {
+      "element": "section",
+      "classes": "bg-charcoal rounded-3xl p-8 text-white",
+      "notes": "Top card with logo and contact info. rounded-3xl is 24px vs Figma 25px (acceptable 1px difference).",
+      "logoArea": {
+        "element": "div",
+        "classes": "mb-8",
+        "logo": {
+          "element": "div",
+          "classes": "flex items-end gap-2.5",
+          "notes": "Logo icon + wordmark, approximately 67x58px combined. The logo is a single uploaded image/SVG."
+        },
+        "logoImage": {
+          "classes": "h-[58px] w-auto",
+          "notes": "Constrain height, auto width to maintain aspect ratio"
+        }
+      },
+      "infoRow": {
+        "element": "div",
+        "classes": "flex flex-col lg:flex-row gap-8",
+        "notes": "Flex row on desktop, stacked on mobile/tablet"
+      },
+      "infoSection": {
+        "element": "div",
+        "classes": "flex flex-col gap-3",
+        "label": {
+          "element": "h3",
+          "classes": "font-heading text-base leading-[1.1]",
+          "notes": "Anton 16px/1.1 - section labels like Address, Hours, Contact, Follow Us"
+        },
+        "content": {
+          "element": "div",
+          "classes": "text-xs font-medium leading-normal font-sans",
+          "notes": "Roboto 12px/1.5 Medium"
+        }
+      },
+      "addressSection": {
+        "element": "div",
+        "classes": "flex-1",
+        "addressColumns": {
+          "element": "div",
+          "classes": "flex flex-col sm:flex-row gap-8",
+          "notes": "Two campus address columns side-by-side on desktop, stacked on mobile"
+        },
+        "campusName": {
+          "classes": "font-bold",
+          "notes": "Roboto 12px/1.5 Bold for campus names like 'Humber North Campus'"
+        }
+      },
+      "rightInfoGroup": {
+        "element": "div",
+        "classes": "flex flex-col sm:flex-row gap-8 lg:w-[640px] lg:shrink-0",
+        "notes": "Hours, Contact, Follow Us columns. 640px fixed width on desktop per Figma.",
+        "column": {
+          "element": "div",
+          "classes": "flex flex-col gap-3 sm:w-48",
+          "notes": "192px width per Figma = w-48"
+        }
+      }
+    },
+
+    "footerInfoSocial": {
+      "element": "div",
+      "classes": "relative",
+      "innerList": {
+        "element": "div",
+        "classes": "flex gap-3 items-center",
+        "notes": "Horizontal row of social icons with 12px gap"
+      }
+    },
+
+    "footerInfoSocialItem": {
+      "element": "div",
+      "classes": "block list-none",
+      "link": {
+        "element": "a",
+        "classes": "block transition-colors w-6 h-6 no-underline! *:w-6 *:h-6 *:object-contain *:object-center text-white hover:text-blue",
+        "notes": "24x24px icons, white fill, hover to blue. Uses theme_output_svg_or_img() for SVG inline rendering."
+      },
+      "srOnly": {
+        "element": "span",
+        "classes": "sr-only",
+        "notes": "Screen reader text from link.title"
+      }
+    },
+
+    "bottomCardWrapper": {
+      "description": "The bottom card is a wrapper div rendered by the Footer parent that contains FooterNav and FooterCredits. It provides the outer rounded container.",
+      "element": "div",
+      "classes": "bg-charcoal rounded-[32px] overflow-hidden",
+      "notes": "The outer wrapper has 32px border radius. FooterNav and FooterCredits sit inside."
+    },
+
+    "footerNav": {
+      "element": "nav",
+      "ariaLabel": "Footer Navigation",
+      "classes": "bg-charcoal rounded-3xl p-8 text-white",
+      "notes": "Navigation section with 6 equal columns of links. rounded-3xl (24px) vs Figma 25px (acceptable).",
+      "innerGrid": {
+        "element": "div",
+        "classes": "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8",
+        "notes": "6 equal columns on desktop, 3 on tablet, 2 on mobile. Using grid for equal column distribution."
+      }
+    },
+
+    "footerNavColumn": {
+      "element": "div",
+      "classes": "flex flex-col gap-4 overflow-hidden",
+      "heading": {
+        "element": "h3",
+        "classes": "font-heading text-base leading-[1.1]",
+        "notes": "Anton 16px/1.1 column heading"
+      },
+      "subHeading": {
+        "element": "p",
+        "classes": "text-sm font-medium leading-[1.1] uppercase font-sans",
+        "notes": "Roboto 14px/1.1 Medium uppercase. Only shown if subHeading attribute has content. Used for 'EVENTS' sub-label."
+      },
+      "linksList": {
+        "element": "ul",
+        "classes": "flex flex-col gap-2 list-none",
+        "notes": "Vertical list of links with 8px gap"
+      }
+    },
+
+    "footerNavColumnItem": {
+      "element": "li",
+      "classes": "",
+      "link": {
+        "classes": "text-xs font-medium leading-normal font-sans no-underline! hover:underline! text-white",
+        "notes": "Roboto 12px/1.5 Medium, white text, no underline by default, underline on hover"
+      }
+    },
+
+    "footerCredits": {
+      "element": "div",
+      "classes": "bg-charcoal rounded-3xl px-8 py-4 text-white",
+      "notes": "Credits bar with 32px horizontal padding, 16px vertical padding",
+      "innerRow": {
+        "element": "div",
+        "classes": "flex flex-col sm:flex-row items-center gap-4 sm:gap-0",
+        "notes": "Three sections: copyright (left), attribution (center), legal links (right). Stacked on mobile."
+      },
+      "copyright": {
+        "element": "div",
+        "classes": "flex-1 text-xs font-medium leading-normal font-sans text-center sm:text-left",
+        "notes": "Dynamic year prepended: (c) {year} {copyrightText}"
+      },
+      "attribution": {
+        "element": "div",
+        "classes": "flex-1 text-xs font-medium leading-normal font-sans text-center",
+        "notes": "'Website by Takt' - Takt is underlined/linked"
+      },
+      "legalLinks": {
+        "element": "nav",
+        "ariaLabel": "Legal Links",
+        "classes": "flex-1",
+        "innerList": {
+          "element": "ul",
+          "classes": "flex flex-wrap gap-6 justify-center sm:justify-end list-none",
+          "notes": "Legal links with 24px gap, right-aligned on desktop"
+        }
+      }
+    },
+
+    "footerCreditsItem": {
+      "element": "li",
+      "classes": "",
+      "link": {
+        "classes": "text-xs font-medium leading-normal font-sans underline text-white",
+        "notes": "Roboto 12px/1.5 Medium, white text, always underlined"
+      }
+    }
+  },
+
+  "responsive": {
+    "mobile": {
+      "breakpoint": "< 640px",
+      "behavior": {
+        "footerWrapper": "p-4 (16px padding), gap-4",
+        "footerInfo": "p-4 or p-6. Info row stacks vertically. Address columns stack vertically.",
+        "rightInfoGroup": "Stacks vertically, full width",
+        "footerNav": "Grid cols 2. Columns stack in 2-column grid.",
+        "footerCredits": "Credits sections stack vertically, centered text",
+        "socialIcons": "Remain horizontal row",
+        "logo": "Stays same size or slightly smaller"
+      }
+    },
+    "tablet": {
+      "breakpoint": "640px - 1023px",
+      "behavior": {
+        "footerInfo": "Info row starts going horizontal with wrapping. Address columns go side-by-side.",
+        "rightInfoGroup": "Hours/Contact/Social go horizontal (flex-row)",
+        "footerNav": "Grid cols 3",
+        "footerCredits": "Credits bar goes horizontal",
+        "socialIcons": "Horizontal row"
+      }
+    },
+    "desktop": {
+      "breakpoint": ">= 1024px",
+      "behavior": {
+        "footerWrapper": "p-8 (32px padding), gap-4",
+        "footerInfo": "Full horizontal layout. Address section flex-1, right info group w-[640px].",
+        "footerNav": "6 equal columns (grid-cols-6)",
+        "footerCredits": "Three-column layout: copyright left, attribution center, legal right",
+        "socialIcons": "Horizontal row with gap-3"
+      }
+    }
+  },
+
+  "behavior": {
+    "emptyState": {
+      "footer": "Always visible - no shouldDisplay needed",
+      "footerInfo": "Always visible, logo area shows upload button if no logo set",
+      "socialIcons": "Show Appender when no social items exist",
+      "navColumns": "Show Appender when no columns exist. Each column shows Appender when no items exist.",
+      "credits": "Show Appender when no legal links exist"
+    },
+    "optionalFields": {
+      "pattern": "shouldDisplay() not used on footer blocks. Conditional rendering used for optional content like subHeading.",
+      "fields": ["subHeading (FooterNavColumn)", "logo (FooterInfo)", "attributionText (FooterCredits)"]
+    },
+    "editorBehavior": {
+      "blockNaming": "renameBlock() on FooterNavColumn (heading), FooterNavColumnItem (link title), FooterCreditsItem (link title), FooterInfoSocialItem (link title)",
+      "ordering": "Footer parent uses TEMPLATE + REQUIRED + useEffect pattern to enforce section order (FooterInfo, FooterNav, FooterCredits)",
+      "fixedSections": "Footer parent has no Appender. The three section blocks are fixed and cannot be reordered or added by the user.",
+      "navColumnAppender": "FooterNav allows adding/removing columns via Appender. Default template has 6 columns.",
+      "socialAppender": "FooterInfoSocial allows adding/removing social items via Appender."
+    }
+  },
+
+  "accessibility": {
+    "footer": {
+      "element": "<footer>",
+      "role": "contentinfo (implicit from <footer>)",
+      "notes": "Semantic footer element"
+    },
+    "footerNav": {
+      "element": "<nav>",
+      "ariaLabel": "Footer Navigation",
+      "notes": "Semantic nav with descriptive aria-label"
+    },
+    "footerNavColumn": {
+      "linksList": "Uses <ul>/<li> structure for link lists"
+    },
+    "footerCredits": {
+      "legalLinks": {
+        "element": "<nav>",
+        "ariaLabel": "Legal Links",
+        "notes": "Separate nav for legal/policy links"
+      }
+    },
+    "socialMediaItems": {
+      "link": "Has aria-label from link.label attribute",
+      "srOnly": "<span class='sr-only'> with link.title for screen readers",
+      "newTab": "target='_blank' rel='noopener noreferrer' for external links"
+    }
+  },
+
+  "blockJsonSpecs": {
+    "footer": {
+      "name": "takt/footer",
+      "title": "Footer",
+      "category": "takt-theme",
+      "description": "Site footer with logo, contact information, navigation links, social media, and copyright credits",
+      "supports": {
+        "html": false,
+        "anchor": true,
+        "inserter": true,
+        "multiple": false
+      },
+      "attributes": {
+        "anchor": { "type": "string" }
+      }
+    },
+    "footerInfo": {
+      "name": "takt/footer-info",
+      "title": "Footer Info",
+      "category": "takt-theme",
+      "description": "Footer information card with logo, address, hours, contact, and social media",
+      "parent": ["takt/footer"],
+      "supports": {
+        "html": false,
+        "anchor": true,
+        "inserter": false,
+        "multiple": false,
+        "reusable": false
+      },
+      "attributes": {
+        "anchor": { "type": "string" },
+        "logoId": { "type": "number" },
+        "addressLabel": { "type": "string", "default": "Address" },
+        "addressContent": { "type": "string", "default": "" },
+        "hoursLabel": { "type": "string", "default": "Hours" },
+        "hoursContent": { "type": "string", "default": "" },
+        "contactLabel": { "type": "string", "default": "Contact" },
+        "contactContent": { "type": "string", "default": "" },
+        "socialLabel": { "type": "string", "default": "Follow Us" }
+      }
+    },
+    "footerInfoSocial": {
+      "name": "takt/footer-info-social",
+      "title": "Social Media Links",
+      "category": "takt-theme",
+      "description": "Container for social media icon links",
+      "parent": ["takt/footer-info"],
+      "supports": {
+        "html": false,
+        "anchor": true,
+        "inserter": false,
+        "multiple": false,
+        "reusable": false
+      },
+      "attributes": {
+        "anchor": { "type": "string" }
+      }
+    },
+    "footerInfoSocialItem": {
+      "name": "takt/footer-info-social-item",
+      "title": "Social Media Link",
+      "category": "takt-theme",
+      "description": "Individual social media icon with link",
+      "parent": ["takt/footer-info-social"],
+      "supports": {
+        "html": false,
+        "anchor": true,
+        "reusable": false
+      },
+      "attributes": {
+        "anchor": { "type": "string" },
+        "link": {
+          "type": "object",
+          "default": {
+            "title": "",
+            "url": "",
+            "opensInNewTab": true,
+            "label": ""
+          }
+        },
+        "logoId": { "type": "number" }
+      }
+    },
+    "footerNav": {
+      "name": "takt/footer-nav",
+      "title": "Footer Navigation",
+      "category": "takt-theme",
+      "description": "Footer navigation links organized in columns",
+      "parent": ["takt/footer"],
+      "supports": {
+        "html": false,
+        "anchor": true,
+        "inserter": false,
+        "multiple": false,
+        "reusable": false
+      },
+      "attributes": {
+        "anchor": { "type": "string" }
+      }
+    },
+    "footerNavColumn": {
+      "name": "takt/footer-nav-column",
+      "title": "Navigation Column",
+      "category": "takt-theme",
+      "description": "A column of navigation links with a heading",
+      "parent": ["takt/footer-nav"],
+      "supports": {
+        "html": false,
+        "anchor": true,
+        "reusable": false
+      },
+      "attributes": {
+        "anchor": { "type": "string" },
+        "heading": { "type": "string", "default": "" },
+        "subHeading": { "type": "string", "default": "" }
+      }
+    },
+    "footerNavColumnItem": {
+      "name": "takt/footer-nav-column-item",
+      "title": "Navigation Link",
+      "category": "takt-theme",
+      "description": "Individual footer navigation link",
+      "parent": ["takt/footer-nav-column"],
+      "supports": {
+        "html": false,
+        "anchor": true,
+        "reusable": false
+      },
+      "attributes": {
+        "anchor": { "type": "string" },
+        "link": {
+          "type": "object",
+          "default": {
+            "url": "",
+            "postId": null,
+            "postType": null,
+            "opensInNewTab": false,
+            "title": "",
+            "label": ""
+          }
+        }
+      }
+    },
+    "footerCredits": {
+      "name": "takt/footer-credits",
+      "title": "Footer Credits",
+      "category": "takt-theme",
+      "description": "Copyright, attribution, and legal links bar",
+      "parent": ["takt/footer"],
+      "supports": {
+        "html": false,
+        "anchor": true,
+        "inserter": false,
+        "multiple": false,
+        "reusable": false
+      },
+      "attributes": {
+        "anchor": { "type": "string" },
+        "copyrightText": { "type": "string", "default": "" },
+        "attributionText": { "type": "string", "default": "Website by <a href=\"https://takt.ca\">Takt</a>" }
+      }
+    },
+    "footerCreditsItem": {
+      "name": "takt/footer-credits-item",
+      "title": "Legal Link",
+      "category": "takt-theme",
+      "description": "Individual legal/policy link in the footer credits bar",
+      "parent": ["takt/footer-credits"],
+      "supports": {
+        "html": false,
+        "anchor": true,
+        "reusable": false
+      },
+      "attributes": {
+        "anchor": { "type": "string" },
+        "link": {
+          "type": "object",
+          "default": {
+            "url": "",
+            "postId": null,
+            "postType": null,
+            "opensInNewTab": false,
+            "title": "",
+            "label": ""
+          }
+        }
+      }
+    }
+  },
+
+  "templateStructure": {
+    "footer": {
+      "TEMPLATE": [
+        ["takt/footer-info"],
+        ["takt/footer-nav"],
+        ["takt/footer-credits"]
+      ],
+      "REQUIRED": [
+        ["takt/footer-info"],
+        ["takt/footer-nav"],
+        ["takt/footer-credits"]
+      ],
+      "notes": "All three sections are required and fixed in order. The footer parent renders FooterInfo as a standalone card, then wraps FooterNav and FooterCredits in a shared bottom card div."
+    },
+    "footerInfo": {
+      "TEMPLATE": [
+        ["takt/footer-info-social"]
+      ],
+      "notes": "FooterInfo uses TEMPLATE pattern for the social block. The social block is a required child that appears in the 'Follow Us' section."
+    },
+    "footerNav": {
+      "defaultTemplate": [
+        ["takt/footer-nav-column", { "heading": "About" }],
+        ["takt/footer-nav-column", { "heading": "Health + Dental" }],
+        ["takt/footer-nav-column", { "heading": "Financial Wellbeing + Support" }],
+        ["takt/footer-nav-column", { "heading": "Advocacy + Resources" }],
+        ["takt/footer-nav-column", { "heading": "Social + Community Spaces" }],
+        ["takt/footer-nav-column", { "heading": "Student Voices" }]
+      ],
+      "notes": "FooterNav allows adding/removing columns via Appender. Default starts with 6 columns matching the Figma design."
+    },
+    "footerNavColumn": {
+      "defaultTemplate": [
+        ["takt/footer-nav-column-item"]
+      ],
+      "notes": "Each column starts with one empty link item. Users can add more via Appender."
+    },
+    "footerCredits": {
+      "defaultTemplate": [
+        ["takt/footer-credits-item"],
+        ["takt/footer-credits-item"],
+        ["takt/footer-credits-item"]
+      ],
+      "notes": "Start with 3 empty legal link items (Privacy Policy, Terms of Service, Cookies Settings). Users can add/remove via Appender."
+    }
+  },
+
+  "renderingNotes": {
+    "footerParentRendering": {
+      "description": "The Footer parent needs special rendering because FooterNav and FooterCredits share a visual bottom card wrapper. The parent must render the bottom card wrapper div around the FooterNav and FooterCredits children.",
+      "tsxApproach": "Do NOT use a single useInnerBlocksProps for all children. Instead, use useSelect to get inner blocks by clientId, then render them in custom layout. The top card (FooterInfo) renders standalone, and the bottom card wrapper div wraps FooterNav + FooterCredits.",
+      "phpApproach": "In PHP, parse $children to separate the three sections. Use parse_blocks() or regex to split, or use a simpler approach: render all children inside the bottom card wrapper and handle FooterInfo separately via its own card styling. ALTERNATIVE: Apply the bottom card wrapper inside Footer.php by splitting children.",
+      "recommendedApproach": "SIMPLEST: Let the Footer parent just render children in a flex column. Apply the bottom card wrapper styling to a div that contains FooterNav and FooterCredits. In TSX, use custom rendering with useSelect to get blocks. In PHP, use a counter or block name check to wrap the second and third children in the bottom card div.",
+      "phpImplementation": "Use render_blocks() to manually render each inner block, wrapping the nav and credits blocks in the bottom card div."
+    },
+    "alternativeSimplifiedApproach": {
+      "description": "A simpler alternative: instead of a shared bottom card wrapper, let FooterNav and FooterCredits each apply their own bg-charcoal rounded-3xl styling. Remove the outer 32px rounded wrapper. The visual difference is minimal - the outer rounded-[32px] wrapper adds only a very subtle extra rounding at the outer edge.",
+      "trade-off": "Simpler code vs. exact Figma match. The 32px outer radius wrapping both nav and credits into one card is a subtle visual detail.",
+      "recommendation": "Use the simplified approach for initial implementation. The visual difference between individual rounded cards vs. one wrapped card is minimal and can be refined later."
+    }
+  },
+
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "category": "layout",
+      "question": "How to handle the shared bottom card wrapper for FooterNav and FooterCredits?",
+      "decision": "Use simplified approach: FooterNav and FooterCredits each have their own bg-charcoal rounded-3xl. No outer 32px wrapper. This avoids complex child block splitting in PHP.",
+      "resolvedBy": "planning-agent",
+      "rationale": "The outer 32px rounded container adds minimal visual difference (only the outer edge rounding). The simplified approach is significantly easier to implement in WordPress block editor while maintaining nearly identical visual output. Can be refined later if needed."
+    },
+    {
+      "id": "DEC-002",
+      "category": "border-radius",
+      "question": "Figma shows 25px border radius on cards but Tailwind rounded-3xl is 24px",
+      "decision": "Use rounded-3xl (24px). 1px difference is imperceptible.",
+      "resolvedBy": "planning-agent",
+      "rationale": "Per token mapping rules: acceptable difference < 2px. rounded-3xl is the closest Tailwind token."
+    },
+    {
+      "id": "DEC-003",
+      "category": "typography",
+      "question": "Figma uses Roboto for body text but theme uses General Sans (font-sans)",
+      "decision": "Use font-sans (General Sans) as the body font, matching the theme configuration. Do not use Roboto.",
+      "resolvedBy": "figma-vs-theme",
+      "rationale": "The theme defines --font-sans as General Sans. All blocks in the codebase use font-sans for body text. Figma may show Roboto as a placeholder but the implementation should follow theme tokens. Per orchestrator guidance: conflictResolution.missingTokens = 'closest'."
+    },
+    {
+      "id": "DEC-004",
+      "category": "typography",
+      "question": "Section labels use Anton font at 16px. Theme has text-header-6 (xl/20px) as smallest header size.",
+      "decision": "Use font-heading text-base leading-[1.1] for section labels. This gives Anton at 16px/1.1 exactly matching Figma.",
+      "resolvedBy": "figma",
+      "rationale": "The 16px size is explicitly shown in Figma. text-base is 16px in Tailwind. We apply font-heading to get Anton, and use arbitrary leading-[1.1] to match the line height."
+    },
+    {
+      "id": "DEC-005",
+      "category": "layout",
+      "question": "How to structure address content - as separate fields for each campus or a single rich text block?",
+      "decision": "Use a single RichText field (addressContent) that allows bold formatting. Users write campus names in bold and addresses in normal text. The two-column layout for multiple campuses is achieved by the user adding content, but the actual two-column presentation is handled by CSS with a column wrapper.",
+      "resolvedBy": "planning-agent",
+      "rationale": "A single RichText is simpler than creating separate address block types. The Figma shows two campuses side-by-side, but this is content-specific. A rich text area with bold support is flexible enough for various address formats. NOTE: If the two-column address layout is critical, this could be revisited to use two separate RichText fields (campus1, campus2)."
+    },
+    {
+      "id": "DEC-006",
+      "category": "layout",
+      "question": "How to handle the decorative abstract shapes?",
+      "decision": "Defer decorative shapes to a visual polish step. They are not part of the core block functionality.",
+      "resolvedBy": "planning-agent",
+      "rationale": "The shapes are purely cosmetic, use mix-blend-mode effects, and require exact positioning. They add complexity without content value. Can be added as hardcoded elements in PHP/TSX once core functionality is working."
+    },
+    {
+      "id": "DEC-007",
+      "category": "color",
+      "question": "Footer background gradient uses color-blue (47CBF2) with 50% opacity",
+      "decision": "Use inline style or custom CSS class for the gradient: linear-gradient(180deg, transparent 6.73%, rgba(71, 203, 242, 0.5) 100%) with bg-off-white as base",
+      "resolvedBy": "figma",
+      "rationale": "The gradient is a specific design element that doesn't map to a simple Tailwind utility. Use bg-off-white on the outer wrapper and apply the gradient via inline style."
+    },
+    {
+      "id": "DEC-008",
+      "category": "layout",
+      "question": "Responsive behavior for mobile/tablet not provided in Figma",
+      "decision": "Infer standard responsive patterns: stack vertically on mobile, progressively go horizontal on larger screens",
+      "resolvedBy": "planning-agent",
+      "rationale": "Per orchestrator guidance: figmaAvailability.tablet = 'infer', figmaAvailability.mobile = 'infer'. Standard responsive convention: maintain same elements, stack on mobile."
+    },
+    {
+      "id": "DEC-009",
+      "category": "component",
+      "question": "Should ImageOrInlineSvg be used for social media items?",
+      "decision": "Check if ImageOrInlineSvg exists in @taktdev/components. If not available, use fetchMedia + manual SVG/img rendering. In PHP, use theme_output_svg_or_img().",
+      "resolvedBy": "planning-agent",
+      "rationale": "The footer block-type docs reference ImageOrInlineSvg from @taktdev/components. If it does not exist in this project, fall back to the alternative pattern used in this codebase. The developer agent should check availability and use the appropriate approach."
+    },
+    {
+      "id": "DEC-010",
+      "category": "layout",
+      "question": "Address section has two campus columns. Should this be two separate RichText fields or one?",
+      "decision": "Use two separate RichText fields: addressCampus1 and addressCampus2. This preserves the two-column layout from Figma.",
+      "decision_override": "REVISED from DEC-005. After further analysis, two separate fields better match the Figma layout where campuses are distinctly side-by-side.",
+      "resolvedBy": "planning-agent",
+      "rationale": "The Figma clearly shows two distinct campus columns with individual bold headings. Two separate RichText fields give precise control over the two-column layout. This is cleaner than trying to parse a single rich text field into columns."
+    }
+  ],
+
+  "revisedAttributes_footerInfo": {
+    "note": "Based on DEC-010, the footerInfo attributes are revised to use separate campus fields",
+    "attributes": {
+      "anchor": { "type": "string" },
+      "logoId": { "type": "number" },
+      "addressLabel": { "type": "string", "default": "Address" },
+      "campus1Name": { "type": "string", "default": "" },
+      "campus1Address": { "type": "string", "default": "" },
+      "campus2Name": { "type": "string", "default": "" },
+      "campus2Address": { "type": "string", "default": "" },
+      "hoursLabel": { "type": "string", "default": "Hours" },
+      "hoursContent": { "type": "string", "default": "" },
+      "contactLabel": { "type": "string", "default": "Contact" },
+      "contactContent": { "type": "string", "default": "" },
+      "socialLabel": { "type": "string", "default": "Follow Us" }
+    }
+  },
+
+  "testPage": {
+    "title": "TEST: Footer",
+    "variations": [
+      {
+        "name": "Full Content (Figma Match)",
+        "description": "Complete footer matching Figma design with all content populated",
+        "attributes": {
+          "footerInfo": {
+            "addressLabel": "Address",
+            "campus1Name": "Humber North Campus",
+            "campus1Address": "205 Humber College Blvd., IGNITE Student Centre, KX202, Toronto, ON M9W 5L7",
+            "campus2Name": "Humber Lakeshore Campus",
+            "campus2Address": "29 Colonel Samuel Smith Park Dr, IGNITE Student Centre, K Building, Toronto, ON M8V 4B6",
+            "hoursLabel": "Hours",
+            "hoursContent": "Monday through Friday,\n8:30am - 4:30pm",
+            "contactLabel": "Contact",
+            "contactContent": "416.675.5051\ninfo@ignitestudentlife.com",
+            "socialLabel": "Follow Us"
+          },
+          "footerInfoSocialItems": [
+            { "link": { "title": "Facebook", "url": "https://facebook.com/ignitestudentlife", "opensInNewTab": true, "label": "Follow us on Facebook" } },
+            { "link": { "title": "Instagram", "url": "https://instagram.com/ignitestudentlife", "opensInNewTab": true, "label": "Follow us on Instagram" } },
+            { "link": { "title": "TikTok", "url": "https://tiktok.com/@ignitestudentlife", "opensInNewTab": true, "label": "Follow us on TikTok" } },
+            { "link": { "title": "LinkedIn", "url": "https://linkedin.com/company/ignitestudentlife", "opensInNewTab": true, "label": "Follow us on LinkedIn" } },
+            { "link": { "title": "YouTube", "url": "https://youtube.com/ignitestudentlife", "opensInNewTab": true, "label": "Subscribe on YouTube" } }
+          ],
+          "footerNavColumns": [
+            {
+              "heading": "About",
+              "items": ["Who We Are", "Our Impact", "Careers", "Contact Us"]
+            },
+            {
+              "heading": "Health + Dental",
+              "items": ["Understand Coverage", "OptInto Plans", "File A Claim"]
+            },
+            {
+              "heading": "Financial Wellbeing + Support",
+              "items": ["IGNITE Bursary", "Wil Bursary", "Equity Scholarships", "Tax Clinic"]
+            },
+            {
+              "heading": "Advocacy + Resources",
+              "items": ["Student Advocates", "Initiatives", "DEI Resources", "Elections"]
+            },
+            {
+              "heading": "Social + Community Spaces",
+              "subHeading": "EVENTS",
+              "items": ["Clubs", "Soupbar", "Sleep Lounge", "Zen Zone", "Space Booking + Posting Requests"]
+            },
+            {
+              "heading": "Student Voices",
+              "items": ["News", "Subscribe to Newsletter"]
+            }
+          ],
+          "footerCredits": {
+            "copyrightText": "IGNITE. All rights reserved.",
+            "attributionText": "Website by <a href=\"https://takt.ca\">Takt</a>"
+          },
+          "footerCreditsItems": [
+            { "link": { "title": "Privacy Policy", "url": "/privacy-policy" } },
+            { "link": { "title": "Terms of Service", "url": "/terms-of-service" } },
+            { "link": { "title": "Cookies Settings", "url": "#", "label": "Manage cookie preferences" } }
+          ]
+        }
+      },
+      {
+        "name": "Minimal Content",
+        "description": "Only required fields, tests empty state handling",
+        "attributes": {
+          "footerInfo": {
+            "addressLabel": "Address",
+            "campus1Name": "",
+            "campus1Address": "",
+            "campus2Name": "",
+            "campus2Address": "",
+            "hoursLabel": "Hours",
+            "hoursContent": "",
+            "contactLabel": "Contact",
+            "contactContent": "",
+            "socialLabel": "Follow Us"
+          },
+          "footerNavColumns": [
+            { "heading": "About", "items": [] }
+          ],
+          "footerCredits": {
+            "copyrightText": "IGNITE.",
+            "attributionText": ""
+          },
+          "footerCreditsItems": []
+        }
+      },
+      {
+        "name": "Long Content",
+        "description": "Tests overflow/truncation with excessive text",
+        "attributes": {
+          "footerInfo": {
+            "addressLabel": "Office Address & Campus Locations",
+            "campus1Name": "Main Campus - North Building Complex and Student Services Centre",
+            "campus1Address": "This is a very long address that goes on and on to test how the layout handles excessive content. 1234 Very Long Street Name Boulevard, Suite 5678, Extra Long City Name, Province or State Code A1B 2C3, Country Name",
+            "hoursLabel": "Hours of Operation",
+            "hoursContent": "Monday through Friday: 8:30am - 4:30pm\nSaturday: 10:00am - 2:00pm\nSunday: Closed\nHoliday Hours: Please check website",
+            "contactLabel": "Contact Information",
+            "contactContent": "Main Office: 416.675.5051\nStudent Services: 416.675.5052\nemail@verylongemailaddress.institution.com\nsupport@verylongemailaddress.institution.com"
+          },
+          "footerNavColumns": [
+            {
+              "heading": "About Our Organization and What We Do For Students",
+              "items": ["Who We Are and What We Stand For", "Our Impact on Student Life and Campus Community", "Career Opportunities and Job Openings", "Contact Us for More Information", "Additional Link Item That Makes This Column Longer", "Yet Another Link to Test Overflow"]
+            }
+          ]
+        }
+      },
+      {
+        "name": "Single Campus",
+        "description": "Tests footer with only one campus address filled in",
+        "attributes": {
+          "footerInfo": {
+            "campus1Name": "Main Campus",
+            "campus1Address": "123 University Ave, Toronto, ON",
+            "campus2Name": "",
+            "campus2Address": ""
+          }
+        }
+      }
+    ],
+    "notes": [
+      "Verify logo upload and display works correctly (SVG and PNG)",
+      "Test social media icon upload with both SVG and PNG formats",
+      "Verify all links open correctly (internal vs external)",
+      "Check responsive behavior at 375px, 768px, 1024px, 1440px",
+      "Verify copyright year auto-updates",
+      "Check that nav columns reflow properly on smaller screens",
+      "Verify keyboard navigation through all interactive elements",
+      "Test with screen reader for proper semantic structure"
+    ]
+  },
+
+  "tokenMapping": {
+    "colors": [
+      { "element": "Footer wrapper background", "figmaValue": "#FBF6E2", "themeToken": "bg-off-white", "status": "EXACT" },
+      { "element": "Gradient overlay color", "figmaValue": "rgba(71, 203, 242, 0.5)", "themeToken": "color-blue at 50% opacity", "status": "EXACT" },
+      { "element": "Card backgrounds", "figmaValue": "#1F1F1D", "themeToken": "bg-charcoal", "status": "EXACT" },
+      { "element": "Text color on cards", "figmaValue": "#FFFFFF", "themeToken": "text-white", "status": "EXACT" }
+    ],
+    "typography": [
+      { "element": "Section labels (Address, Hours, etc.)", "figmaFont": "Anton 16px/1.1 Regular", "themeToken": "font-heading text-base leading-[1.1]", "status": "EXACT" },
+      { "element": "Body text", "figmaFont": "Roboto 12px/1.5 Medium", "themeToken": "font-sans text-xs font-medium leading-normal", "status": "MAPPED (Roboto->General Sans)" },
+      { "element": "Bold sub-labels", "figmaFont": "Roboto 12px/1.5 Bold", "themeToken": "font-sans text-xs font-bold leading-normal", "status": "MAPPED" },
+      { "element": "Events sub-heading", "figmaFont": "Roboto 14px/1.1 Medium uppercase", "themeToken": "font-sans text-sm font-medium leading-[1.1] uppercase", "status": "MAPPED" },
+      { "element": "Credits text", "figmaFont": "Roboto 12px/1.5 Medium", "themeToken": "font-sans text-xs font-medium leading-normal", "status": "MAPPED" }
+    ],
+    "spacing": [
+      { "element": "Footer wrapper padding", "figmaValue": "32px", "themeToken": "p-8", "status": "EXACT" },
+      { "element": "Card padding", "figmaValue": "32px", "themeToken": "p-8", "status": "EXACT" },
+      { "element": "Cards gap (vertical)", "figmaValue": "16px", "themeToken": "gap-4", "status": "EXACT" },
+      { "element": "Card internal gap", "figmaValue": "32px", "themeToken": "gap-8", "status": "EXACT" },
+      { "element": "Label to content gap", "figmaValue": "12px", "themeToken": "gap-3", "status": "EXACT" },
+      { "element": "Link to link gap", "figmaValue": "8px", "themeToken": "gap-2", "status": "EXACT" },
+      { "element": "Heading to links gap", "figmaValue": "16px", "themeToken": "gap-4", "status": "EXACT" },
+      { "element": "Social icons gap", "figmaValue": "12px", "themeToken": "gap-3", "status": "EXACT" },
+      { "element": "Legal links gap", "figmaValue": "24px", "themeToken": "gap-6", "status": "EXACT" },
+      { "element": "Credits vertical padding", "figmaValue": "16px", "themeToken": "py-4", "status": "EXACT" },
+      { "element": "Nav columns gap", "figmaValue": "32px", "themeToken": "gap-8", "status": "EXACT" }
+    ],
+    "borderRadius": [
+      { "element": "Top card", "figmaValue": "25px", "themeToken": "rounded-3xl (24px)", "difference": "1px", "status": "ACCEPTABLE" },
+      { "element": "Bottom card outer", "figmaValue": "32px", "themeToken": "rounded-[32px]", "status": "EXACT (arbitrary)" },
+      { "element": "Bottom card inner sections", "figmaValue": "25px", "themeToken": "rounded-3xl (24px)", "difference": "1px", "status": "ACCEPTABLE" }
+    ],
+    "sizing": [
+      { "element": "Social icons", "figmaValue": "24x24px", "themeToken": "size-6", "status": "EXACT" },
+      { "element": "Right info group width", "figmaValue": "640px", "themeToken": "w-[640px] or lg:w-[640px]", "status": "EXACT (arbitrary)" },
+      { "element": "Info column width", "figmaValue": "192px", "themeToken": "w-48", "status": "EXACT" }
+    ]
+  },
+
+  "unresolvedDecisions": [
+    {
+      "id": "UNRES-001",
+      "category": "component",
+      "question": "Is ImageOrInlineSvg available in @taktdev/components in this project?",
+      "options": ["Use ImageOrInlineSvg if available", "Use fetchMedia + wp_get_attachment_image / manual SVG rendering if not"],
+      "defaultIfNotAsked": "Developer agent should check availability and use appropriate approach",
+      "reason": "Grep search for ImageOrInlineSvg in blocks/ returned no results. The component may exist in @taktdev/components but not yet be used in this project."
+    },
+    {
+      "id": "UNRES-002",
+      "category": "visual",
+      "question": "Should the decorative abstract shapes be implemented in the initial build?",
+      "options": ["Implement now with hardcoded SVGs/images", "Defer to polish phase"],
+      "defaultIfNotAsked": "Defer to polish phase",
+      "reason": "Shapes are purely cosmetic, require specific assets and blend modes. Core functionality should work first."
+    }
+  ]
+}

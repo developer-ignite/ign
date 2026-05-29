@@ -1,0 +1,78 @@
+{
+  "agent": "planning",
+  "status": "complete",
+  "timestamp": "2026-02-19-123346",
+  "output": {
+    "summary": "Replace editor icons for FooterNavColumnItem, FooterInfoSocial, and FooterInfoSocialItem with simpler representative shapes, and add flex-wrap to FooterInfoSocial so social links wrap when there are too many.",
+    "fileChanges": [
+      {
+        "file": "blocks/Footer/FooterNav/FooterNavColumn/FooterNavColumnItem/FooterNavColumnItem.svg",
+        "action": "modify",
+        "description": "Replace arrow icon with a black rectangle representing a nav item",
+        "details": "Create a simple filled black rectangle (e.g., a horizontal bar) that visually represents a navigation link item. Use viewBox 0 0 24 24, fill currentColor, a rect element approximately 16x4 centered in the viewBox.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocial.svg",
+        "action": "modify",
+        "description": "Replace three circles with three squares 1px apart representing social icons",
+        "details": "Create three small filled squares arranged horizontally with 1px gaps between them. Use viewBox 0 0 24 24, fill currentColor. Three rects of equal size (e.g., 6x6) spaced 1px apart, centered vertically in the viewBox.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocialItem/FooterInfoSocialItem.svg",
+        "action": "modify",
+        "description": "Replace circle-plus icon with a simple black square",
+        "details": "Create a single filled black square centered in the viewBox. Use viewBox 0 0 24 24, fill currentColor, a single rect element (e.g., 14x14 centered at 5,5).",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocial.tsx",
+        "action": "modify",
+        "description": "Add flex-wrap to the social links ul so items wrap to the next line when there are too many",
+        "details": "Change className from 'flex gap-3 items-center' to 'flex flex-wrap gap-3 items-center' on the ul element (line 17).",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Footer/FooterInfo/FooterInfoSocial/FooterInfoSocial.php",
+        "action": "modify",
+        "description": "Add flex-wrap to the social links ul in PHP to match TSX",
+        "details": "Change the ul class from 'flex gap-3 items-center' to 'flex flex-wrap gap-3 items-center' on line 14.",
+        "affectsPhp": true
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "icon",
+        "decision": "FooterNavColumnItem icon: a horizontal filled rectangle representing a text line / nav item",
+        "source": "user-request",
+        "evidence": "User requested 'a black rectangle representing the item'"
+      },
+      {
+        "id": "DEC-002",
+        "category": "icon",
+        "decision": "FooterInfoSocial icon: three filled squares arranged horizontally with 1px gaps",
+        "source": "user-request",
+        "evidence": "User requested 'three squares 1px apart representing icons'"
+      },
+      {
+        "id": "DEC-003",
+        "category": "icon",
+        "decision": "FooterInfoSocialItem icon: a single filled square",
+        "source": "user-request",
+        "evidence": "User requested 'just a black square'"
+      },
+      {
+        "id": "DEC-004",
+        "category": "layout",
+        "decision": "Add flex-wrap to social links container so icons wrap to next line when too many are present",
+        "source": "user-request",
+        "evidence": "User asked to check that too many social links wraps; current code lacks flex-wrap, causing overflow instead of wrapping"
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "design"
+  }
+}

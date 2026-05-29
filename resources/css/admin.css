@@ -1,0 +1,74 @@
+/* Match InspectorControls spacing on PluginDocumentSettingPanel controls */
+.components-panel__body > .components-base-control:not(:last-child) {
+	margin-bottom: 16px;
+}
+
+/* Category accent color picker */
+.ign-accent-color-picker {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin: 4px 0;
+}
+
+.ign-accent-color-picker label {
+	cursor: pointer;
+}
+
+.ign-accent-color-picker input[type="radio"] {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.ign-color-swatch {
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	border: 3px solid transparent;
+	box-sizing: border-box;
+	transition: border-color 0.15s;
+}
+
+.ign-accent-color-picker input[type="radio"]:checked + .ign-color-swatch {
+	border-color: #1e1e1e;
+	box-shadow: inset 0 0 0 2px #fff;
+}
+
+.ign-accent-color-picker label:hover .ign-color-swatch {
+	border-color: #949494;
+}
+
+.ign-color-swatch--none {
+	background: #fff;
+	position: relative;
+	border-color: #ccc;
+}
+
+.ign-color-swatch--none::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 1px;
+	right: 1px;
+	height: 2px;
+	background: #cc1818;
+	transform: rotate(-45deg);
+	border-radius: 1px;
+}
+
+.ign-accent-color-picker input[type="radio"]:checked + .ign-color-swatch--none {
+	border-color: #1e1e1e;
+}
+
+.column-accent_color .ign-color-swatch {
+	width: 20px;
+	height: 20px;
+	vertical-align: middle;
+}
+
+/* Match InspectorControls spacing on PluginDocumentSettingPanel controls */
+.components-panel__body .components-base-control:not(:last-child) {
+	margin-bottom: 16px;
+}

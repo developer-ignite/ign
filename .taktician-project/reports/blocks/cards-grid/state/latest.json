@@ -1,0 +1,18 @@
+{
+  "blockName": "CardsGrid",
+  "blockNameKebab": "cards-grid",
+  "blockPath": "blocks/CardsGrid",
+  "reportDir": ".taktician-project/reports/blocks/cards-grid",
+  "stateDir": ".taktician-project/reports/blocks/cards-grid/state",
+  "testPage": {
+    "url": "https://ign.localhost/test-cards-grid/",
+    "pageId": 104
+  },
+  "latestOutputs": {
+    "context": ".taktician-project/reports/blocks/cards-grid/state/context-2026-02-12-211658.json",
+    "planning": ".taktician-project/reports/blocks/cards-grid/state/planning-2026-02-12-211658.json",
+    "developer": ".taktician-project/reports/blocks/cards-grid/state/developer-revision-2026-02-12-214250.json",
+    "functionalQa": ".taktician-project/reports/blocks/cards-grid/state/functional-qa-revision-2026-02-12-214250.json",
+    "designQa": ".taktician-project/reports/blocks/cards-grid/state/design-qa-revision-2026-02-12-213859.json"
+  }
+}

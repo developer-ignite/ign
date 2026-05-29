@@ -1,0 +1,45 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-12-210245",
+  "status": "PASS",
+  "blockName": "GalleryCarousel",
+  "output": {
+    "verificationType": "post-fix-verification",
+    "previousReport": "functional-qa-2026-02-12-205844.json",
+    "summary": {
+      "fixesVerified": 1,
+      "fixesPassed": 1,
+      "fixesFailed": 0,
+      "newIssuesFound": 0
+    },
+    "verifications": [
+      {
+        "originalIssue": "FQA-011",
+        "description": "Swiper-parent aria-labelledby had doubled '-heading' suffix, referencing non-existent element ID",
+        "status": "PASS",
+        "evidence": {
+          "variationsWithHeading": {
+            "count": 12,
+            "ariaAttribute": "aria-labelledby",
+            "sampleValues": [
+              "auto-2ef167c5e194aa7e944850a638e80753-heading",
+              "auto-ca58ea18e219b2c839c99f62bfe2789d-heading",
+              "auto-a270b2699d1bd247f7515c79745f2db5-heading"
+            ],
+            "allEndWithSingleHeadingSuffix": true,
+            "noneHaveDoubledSuffix": true
+          },
+          "variationWithoutHeading": {
+            "index": 12,
+            "ariaAttribute": "aria-label",
+            "value": "Gallery Carousel",
+            "hasAriaLabelledby": false
+          },
+          "analysis": "All 12 variations with headings now use aria-labelledby values ending in '-heading' (single suffix), matching the id that ThemeHeading outputs on the h2 element. The No Heading variation (index 12) correctly uses aria-label='Gallery Carousel' with no aria-labelledby. The fix is confirmed correct."
+        }
+      }
+    ]
+  },
+  "tokensUsed": 8500,
+  "questionsForUser": []
+}

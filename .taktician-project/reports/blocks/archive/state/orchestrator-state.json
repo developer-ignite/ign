@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "mode": "edit",
+  "blockName": "Archive",
+  "blockNameKebab": "archive",
+  "blockPath": "blocks/Archive",
+  "reportDir": ".taktician-project/reports/blocks/archive",
+  "stateDir": ".taktician-project/reports/blocks/archive/state",
+  "phase": "review",
+  "status": "complete",
+  "revisionCycle": 0,
+  "maxRevisionCycles": 3,
+  "testPage": {
+    "url": "https://ign.localhost/test-archive/",
+    "pageId": 118,
+    "verifiedBlockCount": 16
+  },
+  "figma": {
+    "url": "https://www.figma.com/design/bpRK9A1l2nTbWfMg1pX5yK/IGN-%7C-WEBSITE--INTERNAL-?node-id=811-59920",
+    "nodeId": "811-59920",
+    "availability": {
+      "desktop": "available"
+    }
+  },
+  "guidance": {},
+  "editContext": "stored",
+  "changeRequest": "Replace before:bg-charcoal with before:bg-dark-pattern in TSX and PHP dark mode classes",
+  "agentOutputs": [
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-18-150400",
+      "status": "PASS",
+      "summary": "Source verified: before:bg-charcoal replaced with before:bg-dark-pattern in TSX+PHP."
+    }
+  ],
+  "latestOutputs": {
+    "planning": null,
+    "developer": null,
+    "functionalQa": null,
+    "designQa": null
+  },
+  "screenshots": {
+    "qaScreenshots": ".taktician-project/reports/blocks/archive/screenshots",
+    "finalScreenshots": ".taktician-project/reports/blocks/archive/screenshots"
+  },
+  "unresolvedIssues": [],
+  "timestamps": {
+    "started": "2026-02-13-164710",
+    "lastUpdated": "2026-02-18T23:03:34.647Z",
+    "revision1Started": "2026-02-13-174038",
+    "revision1Completed": "2026-02-13-180300"
+  },
+  "agentSessions": {}
+}

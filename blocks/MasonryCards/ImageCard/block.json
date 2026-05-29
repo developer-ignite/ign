@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/image-card",
+  "title": "Image Card",
+  "category": "takt-theme",
+  "description": "An image card for use within Masonry Cards block",
+  "parent": ["takt/masonry-cards"],
+  "usesContext": ["masonryCards/columnCount", "masonryCards/masonryStyle"],
+  "supports": {
+    "html": false,
+    "reusable": false
+  },
+  "attributes": {
+    "image": {
+      "type": "object",
+      "default": {
+        "id": null,
+        "focalPoint": {
+          "x": 0.5,
+          "y": 0.5
+        }
+      }
+    },
+    "isTall": {
+      "type": "boolean",
+      "default": false
+    },
+    "alt": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 400,
+    "attributes": {
+      "image": {
+        "id": "https://picsum.photos/id/704/800/800",
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    }
+  }
+}

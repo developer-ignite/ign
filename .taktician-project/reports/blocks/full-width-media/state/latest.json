@@ -1,0 +1,14 @@
+{
+  "blockName": "FullWidthMedia",
+  "blockNameKebab": "full-width-media",
+  "blockPath": "blocks/FullWidthMedia",
+  "reportDir": ".taktician-project/reports/blocks/full-width-media",
+  "stateDir": ".taktician-project/reports/blocks/full-width-media/state",
+  "testPage": { "url": "https://ign.localhost/test-full-width-media/", "pageId": 40 },
+  "latestOutputs": {
+    "planning": ".taktician-project/reports/blocks/full-width-media/state/planning-2026-02-12-204500.json",
+    "developer": ".taktician-project/reports/blocks/full-width-media/state/developer-2026-02-12-204900.json",
+    "functionalQa": ".taktician-project/reports/blocks/full-width-media/state/functional-qa-2026-02-12-211900.json",
+    "designQa": null
+  }
+}

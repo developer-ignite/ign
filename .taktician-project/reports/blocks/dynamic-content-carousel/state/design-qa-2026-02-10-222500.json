@@ -1,0 +1,191 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-10-222500",
+  "status": "PASS",
+  "blockName": "DynamicContentCarousel",
+  "output": {
+    "compositionGate": "PASS",
+    "figmaNodeId": "785:33970",
+    "testPageUrl": "https://ign.localhost/test-dynamic-content-carousel/",
+    "tolerance": "semantic (2-4px)",
+    "breakpointsAnalyzed": ["desktop-1440", "laptop-1024", "tablet-768", "mobile-375"],
+    "screenshots": {
+      "implementation": {
+        "desktop": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/dynamic-content-carousel-qa-1440w.png",
+        "laptop": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/dynamic-content-carousel-qa-1024w.png",
+        "tablet": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/dynamic-content-carousel-qa-768w.png",
+        "mobile": ".taktician-project/reports/blocks/dynamic-content-carousel/screenshots/dynamic-content-carousel-qa-375w.png"
+      },
+      "figma": "Figma node 785:33970 screenshot captured via MCP get_screenshot"
+    },
+    "compositionAnalysis": {
+      "overallShape": "PASS - Dark charcoal section with rounded-3xl pseudo-element background matches Figma. Section padding (py-10 sm:py-16) creates appropriate vertical breathing room.",
+      "majorElements": "PASS - All major elements present and correctly positioned: ThemeHeading (2-column with eyebrow, heading, description, secondary button), controls row (progress bar + circular navigation arrows), 3-column card carousel.",
+      "relativeSizes": "PASS - Heading area proportional to card area. Cards equally sized in 3-column grid at desktop. Controls row is compact (~40-48px tall) matching Figma.",
+      "visualWeight": "PASS - Dark background with white text creates appropriate contrast. Accent-colored progress bar and card elements provide visual interest matching Figma.",
+      "overflow": "PASS - No content overflow or clipping observed at any breakpoint. Long heading variation wraps properly.",
+      "interactiveElements": "PASS - Navigation arrows visible and accessible. Progress bar visible. Secondary button in ThemeHeading visible on the full-content variation."
+    },
+    "detailedChecks": {
+      "layout": {
+        "status": "PASS",
+        "observations": [
+          "2-column ThemeHeading grid (md:grid-cols-2 gap-x-20) correctly splits eyebrow+heading left and description+button right at desktop, stacking on mobile",
+          "Controls row (flex items-center gap-4 mb-6) places progress bar and nav arrows on a single row between heading and cards",
+          "Swiper shows 3 slides at desktop (>=900px container), 2 at tablet (>=570px), 1 at mobile -- matches spec responsive breakpoints",
+          "spaceBetween=24 creates consistent card gaps matching Figma's visual spacing",
+          "Dark pseudo-element (before:bg-charcoal before:rounded-3xl before:-inset-(--side-gutter) md:before:-inset-8) creates the rounded dark background panel"
+        ]
+      },
+      "spacing": {
+        "status": "PASS",
+        "observations": [
+          "ThemeHeading margin (mb-8 md:mb-16) creates appropriate gap between heading area and controls row",
+          "Controls row margin (mb-6) separates progress bar/nav from cards",
+          "Section padding (py-10 sm:py-16) matches expected vertical rhythm",
+          "Container pseudo-element inset creates proper edge padding around content"
+        ]
+      },
+      "typography": {
+        "status": "PASS",
+        "observations": [
+          "Heading uses text-header-2 (headingSize=2) which renders the Anton font at the correct display size -- matches Figma heading proportions",
+          "Eyebrow uses uppercase text-sm font-medium -- matches Figma's small uppercase treatment",
+          "Description text appears at body size -- matches Figma right column description",
+          "Card headings use text-header-3 for post cards and text-header-5 for resource/policy cards -- appropriate for card context"
+        ]
+      },
+      "colors": {
+        "status": "PASS",
+        "observations": [
+          "Section uses dark mode (class='dark bg-transparent!') -- always dark per DEC-001",
+          "Background pseudo-element uses bg-charcoal -- matches Figma dark background",
+          "Text is white (via dark mode) -- matches Figma",
+          "Progress bar track uses dark:bg-white/20 -- subtle track visible in screenshots",
+          "Progress bar fill uses accent gradient (--gradient-left to --gradient-right) -- accent green visible in screenshots matching Figma",
+          "Navigation buttons use carousel-nav-btn with white border in dark mode -- matches Figma circular arrow buttons"
+        ]
+      },
+      "borderRadius": {
+        "status": "PASS",
+        "observations": [
+          "Background pseudo-element uses rounded-3xl -- creates the rounded panel matching Figma",
+          "Card images use rounded-xl -- visible rounded corners on card images",
+          "Navigation buttons use rounded-full -- circular matching Figma",
+          "Progress bar uses rounded-full -- matches Figma thin rounded bar"
+        ]
+      },
+      "alignment": {
+        "status": "PASS",
+        "observations": [
+          "ThemeHeading left column (eyebrow + heading) is left-aligned -- matches Figma",
+          "ThemeHeading right column (description + button) is left-aligned within its column -- matches Figma",
+          "Navigation arrows are right-aligned in the controls row (progress bar takes flex-1) -- matches Figma",
+          "Cards are evenly distributed across the carousel width"
+        ]
+      },
+      "proportions": {
+        "status": "PASS",
+        "observations": [
+          "3 equal-width cards at desktop matches Figma's 3-card layout",
+          "Card image aspect ratio (281/333 for posts, 395/317 for team members) creates visually appropriate proportions",
+          "Navigation buttons are w-10 h-10 / md:w-12 md:h-12 -- appropriately sized circles matching Figma"
+        ]
+      }
+    },
+    "variationChecks": [
+      {
+        "variation": "default-minimal (Blog)",
+        "status": "PASS",
+        "notes": "Heading only, no eyebrow/description/button. ThemeHeading correctly hides when only heading provided. 5 post cards loaded (3 visible at desktop)."
+      },
+      {
+        "variation": "full-content (Other Initiatives)",
+        "status": "PASS",
+        "notes": "All fields populated. 2-column ThemeHeading with eyebrow, heading, description, secondary button all render correctly. Matches Figma layout most closely."
+      },
+      {
+        "variation": "team-members (Meet the Team)",
+        "status": "PASS",
+        "notes": "Team member cards render with accent background, photo, department badge, name, role, and CTA. Card design matches the accent-background pattern shown in Figma."
+      },
+      {
+        "variation": "resources (Browse Resources)",
+        "status": "PASS",
+        "notes": "Resource cards render with dark background, audience/type badges, title, and CTA. No images as expected for resource cards."
+      },
+      {
+        "variation": "policies (Our Policies)",
+        "status": "PASS",
+        "notes": "Policy cards render with dark background, topic badges, title, and CTA. Compact card style appropriate for policy content."
+      },
+      {
+        "variation": "manual-selection (Featured Posts)",
+        "status": "PASS",
+        "notes": "Renders with all blog posts (selectedPosts populated in editor). Same card rendering as automatic mode."
+      },
+      {
+        "variation": "empty-optional (No heading fields)",
+        "status": "PASS",
+        "notes": "ThemeHeading correctly hidden when no eyebrow/heading/description/buttons provided. Carousel renders directly under container."
+      },
+      {
+        "variation": "hide-if-empty (Hidden When Empty)",
+        "status": "PASS",
+        "notes": "Section renders because policy posts exist. hideIfEmpty only hides when query returns zero results -- correct behavior."
+      },
+      {
+        "variation": "long-content (Edge Case)",
+        "status": "PASS",
+        "notes": "Long heading and description wrap properly within their columns. Long button text wraps within button. No overflow observed."
+      },
+      {
+        "variation": "no-pagination-no-nav (Minimal Carousel)",
+        "status": "PASS",
+        "notes": "Controls row correctly hidden when both showPagination and showNavigation are false. Only swiper container with cards renders. Confirmed by page audit: progressBar=false, navPrev=false, navNext=false, controlsRow=false."
+      }
+    ],
+    "accessibilityVisualChecks": {
+      "contrast": "PASS - White text on charcoal background provides sufficient contrast. Accent-colored elements (badges, progress bar) have adequate contrast against their backgrounds.",
+      "focusIndicators": "Note - Focus states on navigation buttons and card links not visually verifiable from static screenshots. CSS uses standard focus patterns from carousel-nav-btn class.",
+      "ariaAttributes": "PASS - Page audit confirms aria-labelledby attributes on sections linking to heading IDs. Navigation buttons have aria-label='Previous Item'/'Next Item' and title attributes."
+    },
+    "designChecklist": {
+      "typographyMatchesFigma": true,
+      "colorsUseThemeTokens": true,
+      "spacingMatchesFigma": true,
+      "layoutMatchesAtDesktop": true,
+      "layoutMatchesAtTablet": true,
+      "layoutMatchesAtMobile": true,
+      "aspectRatiosPreserved": true,
+      "contentAlignmentMatchesDesign": true,
+      "imagesHaveProperObjectFit": true,
+      "hoverStatesOnButtonsAndLinks": "unverified (static screenshots)",
+      "focusStatesOnKeyboardAccessible": "unverified (static screenshots)",
+      "smoothTransitionsWhereExpected": "unverified (static screenshots)",
+      "gradientsBackgroundsImplemented": true,
+      "allBlockVariationsWorking": true
+    },
+    "issues": [],
+    "notes": [
+      {
+        "id": "DQA-NOTE-001",
+        "severity": "note",
+        "category": "layout",
+        "element": "Card templates",
+        "observation": "Figma shows generic placeholder cards with teal accent background and serif headings. Implementation uses real card-post.php, card-team-member.php, card-resource.php, and card-policy.php templates which have their own established designs. This is intentional per planning decision DEC-004: card accent colors and styling come from post type card template parts, not from this block.",
+        "withinTolerance": true
+      },
+      {
+        "id": "DQA-NOTE-002",
+        "severity": "note",
+        "category": "layout",
+        "element": "Hover/focus states",
+        "observation": "Cannot verify hover states on navigation buttons (gradient sweep animation), card hover states (resource/policy cards have bg-accent hover), or focus indicators from static screenshots. CSS code includes appropriate transition and animation definitions.",
+        "withinTolerance": true
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

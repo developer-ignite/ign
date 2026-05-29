@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/header-sub-item",
+  "title": "Sub Item",
+  "category": "takt-theme",
+  "description": "Submenu link within a navigation item.",
+  "parent": ["takt/header-item"],
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "reusable": false
+  },
+  "attributes": {
+    "anchor": { "type": "string" },
+    "link": {
+      "type": "object",
+      "default": {
+        "title": "",
+        "url": "",
+        "postId": null,
+        "postType": null,
+        "opensInNewTab": false
+      }
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 300,
+    "attributes": {
+      "link": { "title": "Our Mission", "url": "#" }
+    }
+  }
+}

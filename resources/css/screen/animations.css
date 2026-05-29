@@ -1,0 +1,50 @@
+/* Base: hidden state for all animated elements */
+[data-animate] {
+	opacity: 0;
+	transition:
+		opacity 450ms cubic-bezier(0.25, 0.1, 0.25, 1),
+		transform 450ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+[data-animate].is-visible {
+	opacity: 1;
+}
+
+/* Fade-up: translateY(40px) -> 0 */
+[data-animate="fade-up"] {
+	transform: translateY(40px);
+}
+[data-animate="fade-up"].is-visible {
+	transform: translateY(0);
+}
+
+/* Fade-left: translateX(-40px) -> 0 (enters from the left) */
+[data-animate="fade-left"] {
+	transform: translateX(-40px);
+}
+[data-animate="fade-left"].is-visible {
+	transform: translateX(0);
+}
+
+/* Fade-right: translateX(40px) -> 0 (enters from the right) */
+[data-animate="fade-right"] {
+	transform: translateX(40px);
+}
+[data-animate="fade-right"].is-visible {
+	transform: translateX(0);
+}
+
+/* Fade-in: opacity only */
+[data-animate="fade-in"] {
+	/* transform stays default */
+}
+
+/* Scale-in: scale(0.97) -> 1 */
+[data-animate="scale-in"] {
+	transform: scale(0.97);
+	transition-duration: 700ms;
+}
+[data-animate="scale-in"].is-visible {
+	transform: scale(1);
+}
+

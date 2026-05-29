@@ -1,0 +1,130 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12-124003",
+  "status": "complete",
+  "blockName": "Archive",
+  "mode": "fix",
+  "output": {
+    "filesModified": [
+      "/var/www/ign/wp-content/themes/ign/parts/card-policy.php",
+      "/var/www/ign/wp-content/themes/ign/parts/card-resource.php",
+      "/var/www/ign/wp-content/themes/ign/parts/card-post.php",
+      "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.css",
+      "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.php",
+      "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.js"
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "fixesApplied": [
+      {
+        "file": "parts/card-policy.php",
+        "description": "Added group-hover:text-charcoal! to btn-tertiary span and group-hover classes to tag pills for proper inversion on hover",
+        "changes": [
+          "Line 17: Added 'group-hover:bg-white/80 group-hover:border-charcoal/20 transition-colors' to tag pills so they remain visible on accent hover background",
+          "Line 29: Added 'group-hover:text-charcoal!' to btn-tertiary span so the CTA text changes color when the card is hovered"
+        ]
+      },
+      {
+        "file": "parts/card-resource.php",
+        "description": "Added group-hover classes to tag pills and confirmed btn-tertiary already has correct hover styling",
+        "changes": [
+          "Lines 20, 27: Added 'group-hover:bg-white/80 group-hover:border-charcoal/20 transition-colors' to both audience and resource_type tag pills",
+          "Line 46: Confirmed btn-tertiary already has 'group-hover:text-charcoal!' from previous implementation"
+        ]
+      },
+      {
+        "file": "parts/card-post.php",
+        "description": "Added simultaneous image zoom and Learn More accent color on parent group hover",
+        "changes": [
+          "Line 26: Added 'group-hover:scale-105 transition-transform duration-300' to post thumbnail image",
+          "Line 49: Added 'group-hover:text-[var(--accent-color)]! transition-colors' to the card-post-cta span so both effects trigger on parent link hover"
+        ]
+      },
+      {
+        "file": "blocks/Archive/Archive.css",
+        "description": "Updated blog card CTA hover rule to use group hover and added policy btn-tertiary fix",
+        "changes": [
+          "Lines 111-114: Changed from '.card-post-cta:hover' to '.group:hover .card-post-cta' and '.group:focus-within .card-post-cta' so hovering anywhere on the card link triggers the accent color",
+          "Lines 135-138: Added CSS rule for policy card btn-tertiary to force charcoal color on hover (specificity override for btn-tertiary component)"
+        ]
+      },
+      {
+        "file": "blocks/Archive/Archive.php",
+        "description": "Added accessibility improvements: aria-live region enhancements, focus management attributes, disabled state support, and landmark roles",
+        "changes": [
+          "Line 192: Changed form role from 'form' to 'search' when search is enabled (dynamic role based on $show_search)",
+          "Line 259: Added aria-label='Clear all filters' to in-form Clear All button",
+          "Line 267: Added aria-label='Items per page' to per-page selector",
+          "Line 281: Added aria-label='Clear all filters' to active-filters Clear All button",
+          "Line 304: Added role='status' and aria-label='Loading results' to loading spinner",
+          "Line 309: Added role='region', aria-label='Archive results', and tabindex='-1' to results container for focus management and landmark navigation"
+        ]
+      },
+      {
+        "file": "blocks/Archive/Archive.js",
+        "description": "Added aria-busy toggling during AJAX loads, focus management after content updates, and disabled state management for Load More button",
+        "changes": [
+          "Line 54: Set aria-busy='true' on results container when AJAX starts (non-append mode)",
+          "Line 112: Move focus to results container after non-append AJAX load for screen reader awareness",
+          "Line 117: Set aria-busy='false' on results container when AJAX completes",
+          "Lines 218-223: Added aria-disabled='true', aria-busy='true', and originalText preservation to Load More button when clicked",
+          "Lines 91-100: Updated Load More button restoration logic to clear aria-disabled and aria-busy attributes",
+          "Lines 152-158: Added handleFilterPillKeyboard function for Enter/Space key support on filter pills",
+          "Line 177: Added keyboard event handler to active filters container",
+          "Lines 195-200: Added keyboard event handler to form-level Clear All button"
+        ]
+      },
+      {
+        "file": "test-page-content",
+        "description": "Rebuilt the test page with DemoContainer wrappers and all 11 variations including missing ones",
+        "changes": [
+          "Added DemoContainer wrapper around each Archive block variation with demoTitle and demoDescription",
+          "Added missing variations: Blog Archive - Long Content (Edge Case), Archive - Empty Optional Fields, Resources Archive - With Eyebrow, Blog Archive - Single Column",
+          "Total variations: 11 (up from 7)",
+          "Verified block count via taktician_wp_count_blocks: 11 takt/archive blocks confirmed"
+        ]
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Webpack performance warnings (asset size limits) - these are informational only and do not affect functionality"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "PHP files updated for card templates. Archive.php and Archive.js updated for accessibility. No TSX changes needed for this fix."
+    },
+    "testPage": {
+      "updated": true,
+      "url": "https://ign.localhost/test-archive/",
+      "pageId": 118,
+      "verifiedBlockCount": 11,
+      "variations": [
+        "Blog Archive - Full Content",
+        "Team Members Archive - Full Content",
+        "Resources Archive - Full Content",
+        "Policies Archive - Full Content",
+        "Testimonials Archive - Minimal",
+        "Blog Archive - Minimal (No Controls)",
+        "Blog Archive - Pagination Mode",
+        "Blog Archive - Long Content (Edge Case)",
+        "Archive - Empty Optional Fields",
+        "Resources Archive - With Eyebrow",
+        "Blog Archive - Single Column"
+      ]
+    },
+    "blockers": [],
+    "notes": [
+      "All hover effects now trigger on parent group hover/focus-within for better accessibility and consistent UX",
+      "Tag pills on policy and resource cards use group-hover:bg-white/80 group-hover:border-charcoal/20 to remain visible on accent background hover",
+      "Blog card image zoom (scale-105) and Learn More accent color now animate simultaneously when hovering the parent link",
+      "Accessibility improvements follow WAI-ARIA best practices: aria-busy for dynamic content, focus management after AJAX, keyboard support for interactive elements",
+      "Test page now has all 11 variations wrapped in DemoContainer blocks with descriptive titles and descriptions",
+      "No design decisions were made - all changes follow the exact specifications from the planning agent"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

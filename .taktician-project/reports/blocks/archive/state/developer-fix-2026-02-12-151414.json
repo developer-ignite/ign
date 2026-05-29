@@ -1,0 +1,60 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12-151414",
+  "status": "complete",
+  "blockName": "Archive",
+  "mode": "fix",
+  "revision": 4,
+  "output": {
+    "summary": "Replaced SelectControl with ToggleGroupControl for pagination mode in Archive.tsx for better UX. This provides a visual toggle interface instead of a dropdown, matching the pattern used throughout the codebase.",
+    "filesModified": [
+      "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.tsx"
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "fixesApplied": [
+      {
+        "file": "blocks/Archive/Archive.tsx",
+        "description": "Replaced SelectControl with ToggleGroupControl for pagination mode control",
+        "changes": [
+          "Lines 3-8: Updated import from @wordpress/components to replace SelectControl with __experimentalToggleGroupControl (aliased as ToggleGroupControl) and __experimentalToggleGroupControlOption (aliased as ToggleGroupControlOption)",
+          "Lines 113-129: Replaced SelectControl JSX with ToggleGroupControl containing two ToggleGroupControlOption children",
+          "Added __next40pxDefaultSize prop to ToggleGroupControl to match codebase convention",
+          "Simplified structure: removed options array, moved option definitions inline as child components"
+        ],
+        "pattern": "This follows the established pattern in other blocks: Form.tsx, Accordion.tsx, FullWidthMedia.tsx, ContentWithMedia.tsx, ButtonRow.tsx, CallToAction.tsx, DynamicContentCarousel.tsx, GalleryCarousel.tsx, Hero.tsx, MasonryCards.tsx, TestimonialsCarousel.tsx all use __experimentalToggleGroupControl with the alias convention."
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": []
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "TSX-only change. No PHP changes needed. The paginationMode attribute and its values ('load-more', 'pagination') remain unchanged."
+    },
+    "testPage": {
+      "exists": true,
+      "url": "https://ign.localhost/test-archive/",
+      "pageId": 118,
+      "note": "Test page already has 11 Archive variations. No test page changes needed for this fix."
+    },
+    "blockers": [],
+    "notes": [
+      "UX improvement: ToggleGroupControl provides a more intuitive visual toggle interface compared to a dropdown",
+      "The __experimental prefix with alias is the established convention in this codebase",
+      "__next40pxDefaultSize ensures consistent sizing with other inspector panel controls",
+      "The two options ('Load More' and 'Pagination') are now represented as ToggleGroupControlOption children",
+      "No behavioral changes - the control still sets the same paginationMode attribute with the same values",
+      "Build passes without errors, ready for use in the editor"
+    ],
+    "uxImprovement": {
+      "before": "SelectControl dropdown showing 'Load More' or 'Pagination' as a select option list",
+      "after": "ToggleGroupControl showing two horizontal toggle buttons for 'Load More' and 'Pagination', with the selected option visually highlighted",
+      "benefit": "More immediate visual feedback, clearer indication of the current selection, and easier to toggle between the two options without opening a dropdown"
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

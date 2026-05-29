@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/cards-carousel-item",
+  "title": "Cards Carousel Item",
+  "category": "takt-theme",
+  "description": "A card within the Cards Carousel block",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "button": {
+      "type": "object",
+      "default": {
+        "title": "",
+        "url": "",
+        "postId": null,
+        "opensInNewTab": false,
+        "label": ""
+      }
+    },
+    "accentColor": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "usesContext": ["takt/cards-carousel/columns"],
+  "textdomain": "takt",
+  "parent": ["takt/cards-carousel"],
+  "example": {
+    "viewportWidth": 400,
+    "attributes": {
+      "title": "LGBTQ Resource Centre",
+      "description": "The centre advocates and works towards building safer, braver and positive spaces where every identity is uplifted and celebrated."
+    }
+  }
+}

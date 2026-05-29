@@ -1,0 +1,286 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-09-153854",
+  "status": "PASS",
+  "blockName": "Tabs",
+  "output": {
+    "summary": {
+      "breakpointsChecked": ["mobile-375", "tablet-768", "laptop-1024", "desktop-1440"],
+      "breakpointsSkipped": [],
+      "toleranceUsed": "semantic (2-4px)",
+      "issuesFound": 2,
+      "critical": 0,
+      "major": 0,
+      "minor": 2,
+      "notes": 4
+    },
+    "figmaReferences": {
+      "desktop1": "785:34910 (Yellow accent - Quick Links variant)",
+      "desktop2": "807:58405 (Blue accent - Get Involved variant)",
+      "mobile": "785:33971 (Orange accent - Mobile accordion)"
+    },
+    "testPageVerification": {
+      "status": "pass",
+      "url": "https://ign.localhost/test-tabs/",
+      "blockInstancesFound": 6,
+      "variations": ["Yellow (Quick Links, 4 tabs)", "Blue (Get Involved, 3 tabs)", "Minimal (Overview, 2 tabs)", "Many tabs (All Services, 8 tabs)", "Long content (2 tabs)", "Green accent (Environmental, 2 tabs)"]
+    },
+    "passedChecks": [
+      {
+        "id": "PC-001",
+        "category": "layout",
+        "breakpoint": "desktop",
+        "description": "Two-column layout with tabs on left, content panel on right matches Figma structure exactly. Tablist column and content panel are flex-1 split (50/50)."
+      },
+      {
+        "id": "PC-002",
+        "category": "layout",
+        "breakpoint": "mobile",
+        "description": "Accordion layout with details/summary elements. Each tab item renders as a collapsible accordion with plus/minus icon. Layout correctly stacks vertically."
+      },
+      {
+        "id": "PC-003",
+        "category": "spacing",
+        "breakpoint": "desktop",
+        "description": "Tab buttons have correct min-h-[140px] matching Figma h-[140px]. Gap between buttons is gap-4 (16px) matching Figma gap-[16px]. Tab column has py-16 (64px) matching Figma py-[64px]."
+      },
+      {
+        "id": "PC-004",
+        "category": "border",
+        "breakpoint": "desktop",
+        "description": "Tab buttons have correct border-l border-t border-b (left, top, bottom only - no right border) matching Figma. Border radius is rounded-l-3xl (24px) which is within 1px tolerance of Figma's 25px."
+      },
+      {
+        "id": "PC-005",
+        "category": "color",
+        "breakpoint": "all",
+        "description": "Active tab background uses bg-accent which maps to the dynamic --accent-color CSS variable. Content panel uses bg-accent-lighter which correctly maps to the lighter shade. Colors match Figma: yellow = #ffd24c for active, #ffedb7 for panel; blue = #47cbf2 for active, #b5eafa for panel."
+      },
+      {
+        "id": "PC-006",
+        "category": "typography",
+        "breakpoint": "desktop",
+        "description": "Tab button title uses font-heading (Anton) with text-header-3 md:text-[2.5rem] (40px at desktop). Figma specifies font-size 40px (font/size/3xl). Match confirmed."
+      },
+      {
+        "id": "PC-007",
+        "category": "typography",
+        "breakpoint": "desktop",
+        "description": "Tab button title has leading-none which produces line-height: 1 on the title text. Figma shows leading-[1.1]. The difference is minimal (within tolerance for heading text that is typically single-line at desktop)."
+      },
+      {
+        "id": "PC-008",
+        "category": "layout",
+        "breakpoint": "desktop",
+        "description": "Content panel has rounded-3xl (24px) matching Figma rounded-[25px] within 1px tolerance. Panel padding is p-6 (24px) matching Figma p-[24px]."
+      },
+      {
+        "id": "PC-009",
+        "category": "spacing",
+        "breakpoint": "desktop",
+        "description": "Description on active tab correctly shows with mt-6 (24px margin-top) creating visual separation from the title. Animation uses max-h transition with opacity for smooth reveal/hide."
+      },
+      {
+        "id": "PC-010",
+        "category": "layout",
+        "breakpoint": "desktop",
+        "description": "Sticky positioning on tab column: md:sticky md:top-[calc(var(--fixed-elements-height)+32px)] md:self-start. This ensures the tablist stays visible while scrolling content panel."
+      },
+      {
+        "id": "PC-011",
+        "category": "layout",
+        "breakpoint": "desktop",
+        "description": "Tab items (details elements) also have sticky positioning: md:sticky md:top-[calc(var(--fixed-elements-height)+32px)] md:self-start. This keeps the active content panel visible."
+      },
+      {
+        "id": "PC-012",
+        "category": "color",
+        "breakpoint": "desktop",
+        "description": "Hover states implemented: hover:bg-accent-light on inactive tab buttons, hover:!bg-accent on selected tab button. This matches the expected behavior from the design."
+      },
+      {
+        "id": "PC-013",
+        "category": "border",
+        "breakpoint": "mobile",
+        "description": "Mobile accordion items have border border-charcoal rounded-3xl (24px) matching Figma rounded-[25px] within 1px. Full border on all sides, correct for mobile."
+      },
+      {
+        "id": "PC-014",
+        "category": "color",
+        "breakpoint": "mobile",
+        "description": "Mobile accordion active state uses open:bg-accent open:border-accent, correctly coloring the open accordion item with the accent color. The desktop version correctly removes this with md:open:bg-transparent."
+      },
+      {
+        "id": "PC-015",
+        "category": "layout",
+        "breakpoint": "mobile",
+        "description": "Summary element has hover:bg-accent-light for closed items and group-open:hover:bg-accent for open items, providing appropriate hover feedback."
+      },
+      {
+        "id": "PC-016",
+        "category": "typography",
+        "breakpoint": "mobile",
+        "description": "Mobile accordion title uses font-heading text-header-3 which at mobile resolves to 32px (2rem). Figma mobile shows text-[32px] (font/size/2xl). Match confirmed."
+      },
+      {
+        "id": "PC-017",
+        "category": "spacing",
+        "breakpoint": "mobile",
+        "description": "Mobile accordion items have gap-4 (16px) between them matching Figma gap-[16px]. Summary padding is p-6 (24px) matching Figma p-[24px]."
+      },
+      {
+        "id": "PC-018",
+        "category": "layout",
+        "breakpoint": "all",
+        "description": "ARIA attributes are correctly applied: tablist has role='tablist' with aria-orientation='vertical', tab buttons have role='tab' with aria-selected and aria-controls, content panels have role='tabpanel' with aria-labelledby."
+      }
+    ],
+    "issues": [
+      {
+        "id": "DQA-001",
+        "severity": "minor",
+        "category": "typography",
+        "element": "Tab button title line-height",
+        "breakpoint": "desktop",
+        "figmaValue": "leading-[1.1] (line-height: 1.1)",
+        "implementationValue": "leading-none (line-height: 1)",
+        "difference": "0.1 line-height units",
+        "withinTolerance": true,
+        "observation": "The tab button title uses leading-none which produces line-height:1. Figma specifies leading-[1.1]. For single-line tab titles this difference is invisible. For multi-line titles (e.g., 'Financial Wellbeing + Support'), it produces slightly tighter line spacing. Visually in the screenshots the text appears nearly identical to the Figma reference.",
+        "recommendation": "Change leading-none to leading-[1.1] on the tabs-button-title span in both Tabs.php (line 50) and Tabs.tsx (lines 152, 175) for exact match. Low priority as visual impact is minimal.",
+        "files": [
+          {
+            "path": "blocks/Tabs/Tabs.php",
+            "line": 50,
+            "change": {
+              "from": "tabs-button-title font-heading text-header-3 md:text-[2.5rem] leading-none w-full",
+              "to": "tabs-button-title font-heading text-header-3 md:text-[2.5rem] leading-[1.1] w-full"
+            }
+          },
+          {
+            "path": "blocks/Tabs/Tabs.tsx",
+            "line": 152,
+            "change": {
+              "from": "tabs-button-title font-heading text-header-3 md:text-[2.5rem] leading-none w-full",
+              "to": "tabs-button-title font-heading text-header-3 md:text-[2.5rem] leading-[1.1] w-full"
+            }
+          }
+        ]
+      },
+      {
+        "id": "DQA-002",
+        "severity": "minor",
+        "category": "spacing",
+        "element": "Content panel inner title margin-bottom",
+        "breakpoint": "desktop",
+        "figmaValue": "gap-[24px] between title and body text in content panel",
+        "implementationValue": "mb-8 (32px) on .tabs-item-desktop-title",
+        "difference": "8px",
+        "withinTolerance": false,
+        "observation": "The desktop title inside the content panel (tabs-item-desktop-title) has mb-8 (32px margin-bottom) but the Figma design context shows the gap between the title and body content is 24px (gap-[24px]). The 8px difference is visually noticeable as extra space below the content panel heading.",
+        "recommendation": "Change mb-8 to mb-6 (24px) on the desktop title in both TabsItem.php (line 30) and TabsItem.tsx (line 108).",
+        "files": [
+          {
+            "path": "blocks/Tabs/TabsItem/TabsItem.php",
+            "line": 30,
+            "change": {
+              "from": "tabs-item-desktop-title hidden md:block font-heading text-header-3 md:text-[2.5rem] mb-8",
+              "to": "tabs-item-desktop-title hidden md:block font-heading text-header-3 md:text-[2.5rem] mb-6"
+            }
+          },
+          {
+            "path": "blocks/Tabs/TabsItem/TabsItem.tsx",
+            "line": 108,
+            "change": {
+              "from": "tabs-item-desktop-title hidden md:block font-heading text-header-3 md:text-[2.5rem] mb-8",
+              "to": "tabs-item-desktop-title hidden md:block font-heading text-header-3 md:text-[2.5rem] mb-6"
+            }
+          }
+        ]
+      }
+    ],
+    "notes": [
+      {
+        "id": "NOTE-001",
+        "category": "border",
+        "description": "Border radius: Implementation uses rounded-l-3xl (24px) vs Figma's 25px. The 1px difference is within tolerance and visually imperceptible."
+      },
+      {
+        "id": "NOTE-002",
+        "category": "border",
+        "description": "Content panel border radius: Implementation uses rounded-3xl (24px) vs Figma's 25px. The 1px difference is within tolerance."
+      },
+      {
+        "id": "NOTE-003",
+        "category": "layout",
+        "description": "The second Figma desktop reference (807:58405, blue variant) shows items-center on the tab layout row, meaning the content panel vertically centers its content when shorter than the tab column. The implementation uses items-stretch which makes the panel fill the full height. The visual difference is only apparent with very short content. The items-stretch approach is more robust for content of varying lengths."
+      },
+      {
+        "id": "NOTE-004",
+        "category": "typography",
+        "description": "The text-header-3 utility provides font-family, font-size, line-height, and font-weight as a bundle. It is overridden at md with md:text-[2.5rem] (40px). The default text-header-3 line-height is 1.2, which gets overridden by the explicit leading-none. Figma specifies 1.1 line-height. The implementation should ideally use leading-[1.1] to match exactly."
+      }
+    ],
+    "screenshots": {
+      "implementation": {
+        "mobile-375": ".taktician-project/reports/blocks/tabs/screenshots/tabs-revalidation-375w.png",
+        "tablet-768": ".taktician-project/reports/blocks/tabs/screenshots/tabs-revalidation-768w.png",
+        "laptop-1024": ".taktician-project/reports/blocks/tabs/screenshots/tabs-revalidation-1024w.png",
+        "desktop-1440": ".taktician-project/reports/blocks/tabs/screenshots/tabs-revalidation-1440w.png"
+      },
+      "figma": {
+        "desktop-yellow": "Figma node 785:34910",
+        "desktop-blue": "Figma node 807:58405",
+        "mobile": "Figma node 785:33971"
+      }
+    },
+    "breakpointAnalysis": {
+      "desktop-1440": {
+        "status": "pass",
+        "observations": [
+          "Two-column layout renders correctly with tablist on left, content panel on right",
+          "Active tab (first by default) shows accent background color with description revealed via mt-6 animation",
+          "Inactive tabs show border-only styling with min-h-[140px] constraint",
+          "Content panel has accent-lighter background with rounded corners and proper padding",
+          "Content panel shows tab title, rich text body, and sub-sections with dividers",
+          "Multiple block variations display correctly: yellow (4 tabs), blue (3 tabs), minimal (2 tabs), many tabs (8 tabs), long content, green accent",
+          "Sticky positioning works for both tablist and content panels"
+        ]
+      },
+      "laptop-1024": {
+        "status": "pass",
+        "observations": [
+          "Same desktop layout applies at 1024px (above md breakpoint at 960px/60rem)",
+          "Columns are slightly narrower but proportions are maintained",
+          "Tab button titles wrap correctly with leading-none on multi-word titles",
+          "All interactive elements remain functional"
+        ]
+      },
+      "tablet-768": {
+        "status": "pass",
+        "observations": [
+          "Layout switches to mobile accordion mode (below md breakpoint)",
+          "Each tab renders as a details/summary accordion element",
+          "Accordion items have full border (border border-charcoal) and rounded-3xl corners",
+          "Plus/minus toggle icon renders correctly in top-right",
+          "Active/open accordion shows accent background color",
+          "Summary has correct hover states: hover:bg-accent-light for closed, group-open:hover:bg-accent for open",
+          "Content area shows with proper padding (px-6 pb-6 pt-2)"
+        ]
+      },
+      "mobile-375": {
+        "status": "pass",
+        "observations": [
+          "Accordion items stack vertically with gap-4 between them",
+          "Title font size is text-header-3 which resolves to 32px at mobile, matching Figma's text-[32px]",
+          "Rounded corners are fully visible on all accordion items",
+          "Overflow is correctly hidden (overflow-hidden on details element) preventing content from breaking border-radius",
+          "Open accordion shows content including description and discourse blocks",
+          "Section padding matches expected mobile values"
+        ]
+      }
+    }
+  },
+  "tokensUsed": 45000,
+  "questionsForUser": []
+}

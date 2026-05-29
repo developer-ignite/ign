@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/footer",
+  "title": "Footer",
+  "category": "takt-theme-template",
+  "description": "Site footer with logo, contact information, navigation links, social media, and copyright credits",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "inserter": true
+  },
+  "attributes": {
+    "anchor": { "type": "string" }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {},
+    "innerBlocks": [
+      {
+        "name": "takt/footer-info",
+        "attributes": {
+          "addressLabel": "Address",
+          "hoursLabel": "Hours",
+          "contactLabel": "Contact",
+          "socialLabel": "Follow Us"
+        }
+      },
+      {
+        "name": "takt/footer-nav",
+        "attributes": {}
+      },
+      {
+        "name": "takt/footer-credits",
+        "attributes": {
+          "copyrightText": "© 2025 IGNITE Student Union"
+        }
+      }
+    ]
+  }
+}

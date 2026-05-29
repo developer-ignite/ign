@@ -1,0 +1,116 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/content-with-media",
+  "title": "Content With Media",
+  "category": "takt-theme",
+  "description": "A section with content on one side and a multi-image collage on the other",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "isReversed": {
+      "type": "boolean",
+      "default": false
+    },
+    "reverseRows": {
+      "type": "boolean",
+      "default": false
+    },
+    "darkMode": {
+      "type": "boolean",
+      "default": false
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "headingSize": {
+      "type": "string",
+      "default": "regular",
+      "enum": ["small", "regular"]
+    },
+    "mediaType": {
+      "type": "string",
+      "default": "image",
+      "enum": ["image", "video"]
+    },
+    "imageLayout": {
+      "type": "string",
+      "default": "gallery",
+      "enum": ["single", "gallery"]
+    },
+    "images": {
+      "type": "array",
+      "default": [
+        { "id": null, "focalPoint": { "x": 0.5, "y": 0.5 } },
+        { "id": null, "focalPoint": { "x": 0.5, "y": 0.5 } },
+        { "id": null, "focalPoint": { "x": 0.5, "y": 0.5 } }
+      ]
+    },
+    "videoSource": {
+      "type": "string",
+      "default": "file",
+      "enum": ["file", "youtube", "vimeo"]
+    },
+    "videoFile": {
+      "type": "number"
+    },
+    "videoId": {
+      "type": "string"
+    },
+    "posterImage": {
+      "type": "object",
+      "default": {
+        "id": null,
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "eyebrow": "Work Integrated Learning Initiative",
+      "heading": "Featured Student Story",
+      "images": [
+        { "id": "https://picsum.photos/id/684/600/600", "focalPoint": { "x": 0.5, "y": 0.5 } },
+        { "id": "https://picsum.photos/id/704/600/600", "focalPoint": { "x": 0.5, "y": 0.5 } },
+        { "id": "https://picsum.photos/id/702/600/600", "focalPoint": { "x": 0.5, "y": 0.5 } }
+      ],
+      "posterImage": {
+        "id": "https://picsum.photos/id/667/800/600",
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    },
+    "innerBlocks": [
+      {
+        "name": "core/paragraph",
+        "attributes": {
+          "content": "Diam sed vestibulum et aliquam dignissim velit nulla. Orci ac aliquam justo amet sed. Porttitor nibh in lectus lectus enim nulla phasellus tellus commodo."
+        }
+      },
+      {
+        "name": "takt/button-row",
+        "innerBlocks": [
+          {
+            "name": "takt/button",
+            "attributes": {
+              "button": {
+                "url": "#",
+                "variation": "primary",
+                "title": "Learn More"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

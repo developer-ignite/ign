@@ -1,0 +1,5 @@
+/* Color lock: always use neon-green gradient regardless of page accent color */
+.gallery-carousel {
+	--gradient-left: var(--color-neon-green);
+	--gradient-right: var(--color-blue);
+}

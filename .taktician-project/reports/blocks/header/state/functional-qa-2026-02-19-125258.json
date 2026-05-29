@@ -1,0 +1,98 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-19-125348",
+  "status": "PASS",
+  "blockName": "Header",
+  "output": {
+    "summary": {
+      "checksRun": 5,
+      "checksPassed": 5,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0,
+      "note": 0
+    },
+    "fixesVerified": [
+      {
+        "fix": "Added text-white to logo container",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.php",
+          "blocks/Header/HeaderMain/HeaderMain.tsx"
+        ],
+        "status": "VERIFIED",
+        "evidence": "Page audit confirms a.self-center.text-white present on all 9 rendered instances"
+      },
+      {
+        "fix": "Changed self-stretch to self-center on logo container",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.php",
+          "blocks/Header/HeaderMain/HeaderMain.tsx"
+        ],
+        "status": "VERIFIED",
+        "evidence": "Page audit confirms self-stretch absent on all 9 instances; self-center present on all 9 instances"
+      }
+    ],
+    "checks": {
+      "build": {
+        "status": "pass",
+        "errors": 0,
+        "warnings": 8,
+        "headerBlockErrors": 0,
+        "details": "Build and lint pass with 0 errors. 8 react-hooks/exhaustive-deps warnings in Accordion, Archive, ContentWithMedia, FullWidthMedia, PostHero, Tabs — all pre-existing, none in Header files."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "Both HeaderMain.tsx (line 500, 511) and HeaderMain.php (line 70) have identical logo link classes: 'block self-center text-white w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px] focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2'. TSX has two logo elements: ImageDropUploader (no-logo placeholder, line 500) and <a> logo link (when logo set, line 511) — both have the matching class string. PHP has the single <a> element with the same class. Sync is correct.",
+        "classMatch": {
+          "tsx_placeholder": "block self-center text-white w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px] focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2",
+          "tsx_logo_link": "block self-center text-white w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px] focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2",
+          "php_logo_link": "block self-center text-white w-auto **:w-auto **:max-w-full **:h-full **:object-contain shrink-0 max-md:**:max-h-[26px] md:**:max-h-[58px] focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2",
+          "identical": true
+        },
+        "automatedSyncResult": "pass",
+        "structureWarning": {
+          "severity": "note",
+          "message": "TSX 0 vs PHP 3 elements at depth 1 — expected, pre-existing. TSX uses InnerBlocks editor abstraction; PHP renders DOM directly. Not a sync defect."
+        }
+      },
+      "logoVisibility": {
+        "status": "pass",
+        "details": "text-white confirmed on logo link anchor on all 9 rendered instances via page audit. Desktop screenshot (1440px) shows IGNITE logo rendered in white on charcoal background across all 9 header variations. Logo is clearly visible.",
+        "selfCenterPresentAllInstances": true,
+        "textWhitePresentAllInstances": true,
+        "selfStretchAbsentAllInstances": true
+      },
+      "logoAlignment": {
+        "status": "pass",
+        "details": "self-center confirmed on logo link anchor on all 9 rendered instances. self-stretch absent on all 9 instances. Desktop screenshot shows logo vertically centered within the header bar, not stretched to fill full height. The logo sits at the mid-point of the header height alongside the right column.",
+        "selfCenterCount": 9,
+        "selfStretchCount": 0
+      },
+      "regressions": {
+        "status": "pass",
+        "details": "All 9 header instances render correctly. Navigation links, SEP link, search, scroll behavior data attributes, and mobile toggle are all intact. Link counts per instance unchanged from previous QA run (16, 3, 4, 4, 3, 4, 9, 4, 3). Data attributes (data-fixed-scroll-desktop, data-fixed-scroll-mobile, data-hide-scroll-down-desktop, data-hide-scroll-down-mobile) match expected values for all 9 variations. No regressions detected.",
+        "instancesChecked": 9,
+        "linkCountsCorrect": true,
+        "dataAttributesCorrect": true
+      }
+    },
+    "screenshots": {
+      "desktop1440": "header-logo-fix-1440w.png",
+      "mobile375": "header-logo-fix-375w.png",
+      "folder": ".taktician-project/reports/blocks/header/screenshots/2026-02-19-125333/"
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build passes with 0 errors (0 Header-specific warnings)",
+      "TSX/PHP sync: logo link class strings identical in both files",
+      "text-white present on logo anchor in all 9 rendered instances",
+      "self-center present on logo anchor in all 9 rendered instances",
+      "self-stretch absent from all 9 rendered instances",
+      "No regressions: nav links, data attributes, and structure intact across all 9 variations"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

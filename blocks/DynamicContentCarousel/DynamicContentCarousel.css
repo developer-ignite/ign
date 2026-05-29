@@ -1,0 +1,63 @@
+/* Dynamic Content Carousel: equal-height cards via height chain */
+.dynamic-content-carousel .swiper-slide > * {
+	height: 100%;
+}
+
+/* Color lock: always use neon-green gradient regardless of page accent color */
+.dynamic-content-carousel {
+	--gradient-left: var(--color-neon-green);
+	--gradient-right: var(--color-blue);
+}
+
+/* ── Blog post type: alternating card layout and dividers ── */
+
+/* Even slides: swap image below text */
+.dynamic-content-carousel[data-post-type="post"]
+	.swiper-slide:nth-child(even)
+	article
+	> :first-child {
+	order: 1;
+}
+
+.dynamic-content-carousel[data-post-type="post"]
+	.swiper-slide:nth-child(even)
+	article
+	> :last-child {
+	order: 2;
+}
+
+/* Text-first cards: remove content top padding so pill is flush */
+.dynamic-content-carousel[data-post-type="post"] .swiper-slide:nth-child(even) .card-post-content {
+	padding-top: 0;
+}
+
+/* Extend swiper beyond container so edge slides are flush while keeping consistent card widths */
+.dynamic-content-carousel[data-post-type="post"] .dynamic-content-carousel-swiper {
+	width: calc(100% + 64px);
+	margin-left: -32px;
+}
+
+/* All slides get equal padding */
+.dynamic-content-carousel[data-post-type="post"] .swiper-slide {
+	position: relative;
+	padding-left: 32px;
+	padding-right: 32px;
+}
+
+/* Vertical dividers between slides */
+.dynamic-content-carousel[data-post-type="post"]
+	.swiper-slide-visible
+	+ .swiper-slide-visible::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 1px;
+	background: currentColor;
+}
+
+/* Blog card: increase gap between content and CTA (match Archive block) */
+.dynamic-content-carousel[data-post-type="post"] .card-post article > :last-child {
+	padding-top: 4rem;
+}

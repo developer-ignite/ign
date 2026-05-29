@@ -1,0 +1,159 @@
+{
+	"agent": "functional-qa",
+	"timestamp": "2026-02-12-171145",
+	"status": "FAIL",
+	"blockName": "MasonryCards",
+	"output": {
+		"summary": {
+			"checksRun": 6,
+			"checksPassed": 4,
+			"checksFailed": 2,
+			"issuesFound": 2,
+			"critical": 2,
+			"major": 0,
+			"minor": 0
+		},
+		"checks": {
+			"build": {
+				"status": "pass",
+				"details": "Build completed successfully with 3 warnings (pre-existing performance warnings, not related to changes)"
+			},
+			"testPageGate": {
+				"status": "pass",
+				"details": "Test page contains 12 instances of takt/masonry-cards block with comprehensive variations including text cards, image cards, tall cards, various column counts (2, 3, 4), masonry and aligned layouts"
+			},
+			"blockRegistration": {
+				"status": "pass",
+				"details": "ImageCard block.json correctly defines alt attribute with type string and default empty string. All required files exist."
+			},
+			"accessibility": {
+				"status": "fail",
+				"issues": 2,
+				"details": "Critical TSX/PHP sync failure: role='listitem' not rendering in frontend HTML. Grid role='list' works correctly.",
+				"patternCompliance": [
+					{
+						"pattern": "ARIA list semantics",
+						"status": "partial",
+						"details": "role='list' on grid container is correct and renders in HTML. role='listitem' on cards is broken - attribute not appearing in rendered HTML despite being in PHP templates."
+					}
+				]
+			},
+			"tsxPhpSync": {
+				"status": "fail",
+				"issues": 2,
+				"details": "Critical sync failure in card templates. TSX uses role in useBlockProps object, PHP attempts to add role as standalone attribute before theme_block_props() which creates invalid HTML syntax and causes role='listitem' to not render."
+			},
+			"imageAltAttribute": {
+				"status": "pass",
+				"details": "ImageCard block.json defines alt attribute. ImageCard.tsx has TextControl in sidebar. ImageCard.php conditionally passes alt to wp_get_attachment_image. Implementation is correct."
+			}
+		},
+		"issues": [
+			{
+				"id": "FQA-A11Y-001",
+				"check": "tsxPhpSync",
+				"severity": "critical",
+				"description": "role='listitem' not rendering in frontend HTML for TextCard",
+				"file": "blocks/MasonryCards/TextCard/TextCard.php",
+				"line": 18,
+				"details": "PHP template has `<div role=\"listitem\"` on line 18 as a standalone attribute before the opening tag is closed, followed by theme_block_props() call, followed by standalone `>` on line 40. This creates invalid HTML syntax. The role attribute is not being passed to theme_block_props() and is therefore stripped or ignored by WordPress rendering.",
+				"currentCode": "<div role=\"listitem\"\n<?php\n\ttheme_block_props([\n\t\t// classes...\n\t]);\n\t?>\n\t>",
+				"fix": "Pass role as second parameter to theme_block_props(). Change to:\n\n<div\n<?php\n\ttheme_block_props(\n\t\t[\n\t\t\t// classes...\n\t\t],\n\t\t[ 'role' => 'listitem' ]\n\t);\n\t?>\n\t>",
+				"verification": "The theme_block_props() function (inc/helpers/blocks.php line 55) accepts a second parameter $props for additional HTML attributes. On line 90-98, it merges $props into $args and passes them to get_block_wrapper_attributes(). This is the correct way to add custom attributes."
+			},
+			{
+				"id": "FQA-A11Y-002",
+				"check": "tsxPhpSync",
+				"severity": "critical",
+				"description": "role='listitem' not rendering in frontend HTML for ImageCard",
+				"file": "blocks/MasonryCards/ImageCard/ImageCard.php",
+				"line": 19,
+				"details": "Identical issue to FQA-A11Y-001. PHP template has `<div role=\"listitem\"` on line 19 as a standalone attribute before the opening tag is closed, followed by theme_block_props() call on line 21-39, followed by standalone `>` on line 40. This creates invalid HTML syntax and the role attribute does not render.",
+				"currentCode": "<div role=\"listitem\"\n<?php\n\ttheme_block_props([\n\t\t// classes...\n\t]);\n\t?>\n\t>",
+				"fix": "Pass role as second parameter to theme_block_props(). Change to:\n\n<div\n<?php\n\ttheme_block_props(\n\t\t[\n\t\t\t// classes...\n\t\t],\n\t\t[ 'role' => 'listitem' ]\n\t);\n\t?>\n\t>",
+				"alsoUpdate": "Same pattern needed in TextCard.php line 18-40"
+			}
+		],
+		"passedChecks": [
+			{
+				"check": "Build passes without TypeScript errors",
+				"details": "bun run build completed successfully"
+			},
+			{
+				"check": "ImageCard alt attribute defined in block.json",
+				"details": "alt attribute present with type 'string' and default empty string on line 29-32"
+			},
+			{
+				"check": "ImageCard alt text control in editor",
+				"details": "TextControl present in ImageCard.tsx lines 54-64 with proper label and help text"
+			},
+			{
+				"check": "ImageCard alt text passed to PHP correctly",
+				"details": "ImageCard.php lines 47-49 conditionally add alt to img_attrs when non-empty"
+			},
+			{
+				"check": "MasonryCards grid has role='list'",
+				"details": "role='list' present in MasonryCards.php line 32 and MasonryCards.tsx line 97, verified in rendered HTML via taktician_page_audit (12/12 sections have grid_container_with_role_list: true)"
+			},
+			{
+				"check": "Test page has comprehensive block variations",
+				"details": "12 masonry-cards instances with 54 total cards (mix of text and image), various column counts, masonry/aligned layouts, tall cards, edge cases"
+			}
+		],
+		"verificationDetails": {
+			"roleListVerification": {
+				"method": "taktician_page_audit",
+				"url": "https://ign.localhost/test-masonry-cards/",
+				"result": "All 12 masonry-cards sections have role='list' on grid container (extra_selectors.grid_container_with_role_list.found: true for all sections)",
+				"conclusion": "PASS - grid container role works correctly"
+			},
+			"roleListitemVerification": {
+				"method": "Bash curl + grep",
+				"command": "curl -s https://ign.localhost/test-masonry-cards/ | grep -o 'role=\"listitem\"' | wc -l",
+				"result": "0",
+				"expected": "54 (total card count from taktician_wp_count_blocks)",
+				"conclusion": "FAIL - role='listitem' not rendering in HTML"
+			},
+			"htmlSyntaxAnalysis": {
+				"finding": "PHP templates use invalid syntax: `<div role=\"listitem\"` followed by theme_block_props() followed by `>`. This pattern does not pass the role attribute to theme_block_props() and results in malformed HTML where the role attribute is either stripped or ignored.",
+				"correctPattern": "theme_block_props() accepts $props as second parameter (line 55 of inc/helpers/blocks.php). Custom attributes should be passed as [ 'role' => 'listitem' ] in the second parameter, not as standalone text before the function call.",
+				"reference": "inc/helpers/blocks.php lines 90-98 show how $props are merged into $args and passed to get_block_wrapper_attributes()"
+			},
+			"imageAltTextVerification": {
+				"blockJson": "alt attribute defined in ImageCard/block.json line 29-32",
+				"editorControl": "TextControl in ImageCard.tsx lines 54-64",
+				"phpRendering": "Conditional alt passing in ImageCard.php lines 47-49",
+				"conclusion": "PASS - alt text implementation is correct in all three layers"
+			}
+		},
+		"tsxPhpSyncAnalysis": {
+			"gridContainer": {
+				"tsx": "MasonryCards.tsx line 97: role: 'list' in useInnerBlocksProps first argument",
+				"php": "MasonryCards.php line 32: <div role=\"list\" class=\"...\">",
+				"sync": "PASS - Both use role='list' correctly"
+			},
+			"textCard": {
+				"tsx": "TextCard.tsx line 80: role: 'listitem' in useBlockProps argument object",
+				"php": "TextCard.php line 18: <div role=\"listitem\" before theme_block_props()",
+				"sync": "FAIL - TSX passes role via useBlockProps object (correct), PHP attempts standalone attribute (incorrect, causes role to not render)"
+			},
+			"imageCard": {
+				"tsx": "ImageCard.tsx line 105: role: 'listitem' in useBlockProps argument object",
+				"php": "ImageCard.php line 19: <div role=\"listitem\" before theme_block_props()",
+				"sync": "FAIL - Same issue as TextCard"
+			},
+			"correctPHPPattern": "theme_block_props() accepts two parameters: $classes (array) and $props (array). Custom HTML attributes like role should be passed as $props, not as standalone text. Example:\n\n<?php\ntheme_block_props(\n\t[ 'class-1' => true, 'class-2' => $condition ],\n\t[ 'role' => 'listitem', 'data-custom' => 'value' ]\n);\n?>"
+		},
+		"qaFocusResults": {
+			"roleListOnGrid": "PASS - Verified in rendered HTML via taktician_page_audit",
+			"roleListitemOnCards": "FAIL - Not present in rendered HTML",
+			"imageAltTextAttribute": "PASS - Attribute defined, control present, PHP implementation correct",
+			"customAltOverridesMediaLibrary": "NOT TESTED - Cannot verify without fixing role='listitem' issue first",
+			"emptyAltProducesDecorative": "NOT TESTED - Cannot verify without fixing role='listitem' issue first",
+			"screenReaderAnnouncement": "BLOCKED - role='listitem' must render before screen reader testing",
+			"masonryLayoutRegression": "PASS - Grid layout works correctly, nth-child selectors not affected by role='list' on container"
+		}
+	},
+	"tokensUsed": 64779,
+	"questionsForUser": []
+}

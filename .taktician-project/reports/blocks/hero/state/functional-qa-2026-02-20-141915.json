@@ -1,0 +1,215 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-20-142834",
+  "status": "PASS",
+  "blockName": "Hero",
+  "output": {
+    "summary": {
+      "checksRun": 6,
+      "checksPassed": 6,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "focusAreas": [
+      "Verify Hero.css .top-gradient is now scoped under .hero (check built CSS)",
+      "Verify Hero block gradient still renders correctly (not broken by scoping)",
+      "Verify no `hero` class leakage — Hero should not provide styles to other blocks",
+      "Both primary and secondary variations render correctly",
+      "No JS errors, ResizeObserver still works"
+    ],
+    "testPageVerification": {
+      "slug": "test-hero-block",
+      "url": "https://ign.localhost/test-hero-block/",
+      "blockCount": 12,
+      "blockName": "takt/hero",
+      "status": "pass",
+      "notes": "12 hero block instances found, all wrapped in takt/demo-container"
+    },
+    "contentComparison": {
+      "rawContent": {
+        "changed": false,
+        "codeModified": false,
+        "canSkipTests": true,
+        "message": "Content unchanged and no code modifications"
+      },
+      "html": {
+        "changed": true,
+        "codeModified": false,
+        "canSkipTests": false,
+        "message": "HTML snapshot updated — content changed from previous snapshot but code was not modified. Change is expected: new snapshot captured after developer-fix applied CSS scoping. Full QA run performed."
+      }
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "notes": "Build passes with zero errors. Pre-existing react-hooks/exhaustive-deps warnings in Accordion, Archive, ContentWithMedia, EventHero, FullWidthMedia, PostHero, Tabs — all pre-existing and unrelated to this change."
+      },
+      "cssScoping": {
+        "status": "pass",
+        "description": "Verified .top-gradient scoping in built CSS (public/css/screen.css)",
+        "findings": [
+          {
+            "selector": ".post-hero .top-gradient",
+            "line": 149,
+            "source": "blocks/PostHero/PostHero.css",
+            "status": "correctly scoped"
+          },
+          {
+            "selector": ".hero .top-gradient",
+            "line": 168,
+            "source": "blocks/Hero/Hero.css",
+            "status": "correctly scoped — was previously bare .top-gradient, now scoped under .hero"
+          },
+          {
+            "selector": ".event-hero .top-gradient",
+            "line": 193,
+            "source": "blocks/EventHero/EventHero.css",
+            "status": "correctly scoped"
+          }
+        ],
+        "noBareSelectorFound": true,
+        "notes": "All three .top-gradient rules in built CSS are scoped to their respective block class. No bare/global .top-gradient selector exists anywhere in the built output."
+      },
+      "gradientRendering": {
+        "status": "pass",
+        "description": "Hero block gradient renders correctly after scoping change",
+        "evidence": [
+          "Page audit confirms .hero .top-gradient present in all 12 Hero block instances",
+          "Hero PHP template has 'hero relative overflow-visible' on the section wrapper, so .hero parent class is always present, making .hero .top-gradient resolve correctly",
+          "Screenshots at 375, 768, 1024, 1440px all show gradient rendering as expected — neon-green/yellow-green gradient visible in every Hero instance"
+        ]
+      },
+      "classLeakage": {
+        "status": "pass",
+        "description": "Hero class namespace does not leak to PostHero or EventHero",
+        "findings": [
+          {
+            "block": "PostHero",
+            "wrapperClass": "post-hero relative overflow-visible",
+            "heroClassPresent": false,
+            "topGradientScoping": ".post-hero .top-gradient in PostHero.css"
+          },
+          {
+            "block": "EventHero",
+            "wrapperClass": "event-hero relative overflow-visible",
+            "heroClassPresent": false,
+            "topGradientScoping": ".event-hero .top-gradient in EventHero.css"
+          }
+        ],
+        "pageAuditCheck": {
+          "selector": "top-gradient-bare (.top-gradient not under .hero/.post-hero/.event-hero)",
+          "foundOnAnySection": false,
+          "notes": "No unscoped .top-gradient elements exist on the Hero test page"
+        },
+        "innerRenaming": [
+          {
+            "block": "PostHero",
+            "oldClass": "hero-inner",
+            "newClass": "post-hero-inner",
+            "status": "confirmed renamed in PostHero.php"
+          },
+          {
+            "block": "EventHero",
+            "oldClass": "hero-inner",
+            "newClass": "event-hero-inner",
+            "status": "confirmed renamed in EventHero.php"
+          }
+        ]
+      },
+      "variationRendering": {
+        "status": "pass",
+        "description": "Both primary and secondary variations render correctly",
+        "findings": [
+          {
+            "variation": "primary",
+            "cssClass": "hero--primary",
+            "observedBehavior": "Centered heading with max-w-[912px], larger heading font size (text-[2.5rem]/var(--text-header-0)), QuickNavigation inner block rendered where enabled, centered content layout"
+          },
+          {
+            "variation": "secondary",
+            "cssClass": "hero--secondary",
+            "observedBehavior": "Left-aligned heading with max-w-[700px], buttons rendered below description, left-aligned content layout"
+          },
+          {
+            "totalInstances": 12,
+            "withQuickNav": 7,
+            "withImage": 10,
+            "withoutImage": 2,
+            "notes": "Instances with and without images both render gradient correctly. Long heading (instance index 8) wraps cleanly without layout breakage."
+          }
+        ]
+      },
+      "jsResizeObserver": {
+        "status": "pass",
+        "description": "Hero.js ResizeObserver correctly uses scoped .hero .top-gradient selector",
+        "sourceFile": "blocks/Hero/Hero.js",
+        "selector": "document.querySelectorAll('.hero .top-gradient')",
+        "evidence": "Hero.js line 6 queries '.hero .top-gradient' — this matches the scoped selector and will only attach ResizeObserver to Hero block gradient elements, not PostHero or EventHero gradients. No JS errors observed in page load screenshots.",
+        "resizeObserverLogic": "Queries all .hero .top-gradient elements on DOMContentLoaded, finds nearest <main>, caps max-height to main.offsetHeight dynamically"
+      },
+      "sync": {
+        "status": "pass",
+        "notes": "taktician_validate_all sync check passed. Pre-existing warnings: missing @var docblock for blockVariation/enableQuickNav in Hero.php (minor, pre-existing), InspectorControls root mismatch (expected for Gutenberg editor blocks). No new sync issues introduced by this change."
+      },
+      "registration": {
+        "status": "pass",
+        "notes": "block.json passes all schema, naming, file reference, child block, and attribute type checks"
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build passes with zero errors",
+      "Hero.css .top-gradient is correctly scoped under .hero in source and built CSS (public/css/screen.css line 168)",
+      "PostHero.css scopes gradient under .post-hero (line 149), EventHero.css under .event-hero (line 193)",
+      "No bare/global .top-gradient selector exists in built output",
+      "Hero block gradient renders correctly at all 12 instances — scoping did not break gradient display",
+      "PostHero and EventHero wrappers no longer carry the hero class — class leakage eliminated",
+      "hero-inner renamed to post-hero-inner (PostHero) and event-hero-inner (EventHero)",
+      "Hero.js ResizeObserver uses .hero .top-gradient selector — correctly scoped, no PostHero/EventHero interference",
+      "Both primary (hero--primary) and secondary (hero--secondary) variations render correctly",
+      "Gradient visible at 375, 768, 1024, and 1440px across all browsers",
+      "Long heading (200+ chars) wraps cleanly without layout breakage",
+      "Instances with and without background images both render gradient correctly"
+    ],
+    "screenshots": {
+      "timestamp": "2026-02-20-142712",
+      "outputDir": ".taktician-project/reports/blocks/hero/screenshots/2026-02-20-142712",
+      "widths": [
+        375,
+        768,
+        1024,
+        1440
+      ],
+      "browsers": [
+        "chromium",
+        "firefox",
+        "webkit"
+      ],
+      "files": [
+        "hero-chromium-375w.png",
+        "hero-chromium-768w.png",
+        "hero-chromium-1024w.png",
+        "hero-chromium-1440w.png",
+        "hero-firefox-375w.png",
+        "hero-firefox-768w.png",
+        "hero-firefox-1024w.png",
+        "hero-firefox-1440w.png",
+        "hero-webkit-375w.png",
+        "hero-webkit-768w.png",
+        "hero-webkit-1024w.png",
+        "hero-webkit-1440w.png"
+      ],
+      "visualObservations": {
+        "375px": "Mobile layout renders correctly. Gradient present and prominent (neon-green to off-white fade) in all instances. Headings wrap cleanly. Primary variation centered, secondary left-aligned. QuickNavigation renders inline below heading. No horizontal scroll observed.",
+        "768px": "Tablet layout transitions cleanly. Gradient fills correctly. Image mask (bottom fade) works on instances with background images. Content padding increases appropriately. Both variations maintain correct alignment.",
+        "1024px": "Near-desktop layout. Heading sizes step up correctly. Gradient height capped to main element height via ResizeObserver (expected behavior). Primary variant wider max-width heading visible.",
+        "1440px": "Full desktop layout. All 12 instances display correctly. Primary variants show centered large headings with QuickNavigation. Secondary variants show left-aligned headings with buttons. Gradient is visible and correctly styled in all instances. No visual artifacts or broken styling observed."
+      }
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

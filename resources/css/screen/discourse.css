@@ -1,0 +1,753 @@
+/* ==========================================================================
+   Discourse Styles
+
+   Classes:
+   - .discourse: Text styling for discourse content
+   - .discourse-container-x: Side margins (horizontal centering)
+   - .discourse-container-y: Top/bottom margins (vertical spacing)
+   - .discourse-container: Combines both -x and -y behaviors
+
+   Width modifiers (standalone, includes text styling):
+   - .discourse-wide: Full width content
+   - .discourse-wide-container: Full width + x + y
+   - .discourse-wide-container-x: Full width + x
+   - .discourse-wide-container-y: Full width + y
+   - .discourse-narrow: Narrower content (max-w-220)
+   - .discourse-narrow-container: Narrow + x + y
+   - .discourse-narrow-container-x: Narrow + x
+   - .discourse-narrow-container-y: Narrow + y
+
+   Use .not-discourse to break out of the discourse scope.
+   Use .discourse-item on any element to receive discourse styles.
+   ========================================================================== */
+
+/* All discourse class variants */
+@scope (:where(
+  .discourse,
+  .discourse-container,
+  .discourse-container-x,
+  .discourse-container-y,
+  .discourse-wide,
+  .discourse-wide-container,
+  .discourse-wide-container-x,
+  .discourse-wide-container-y,
+  .discourse-narrow,
+  .discourse-narrow-container,
+  .discourse-narrow-container-x,
+  .discourse-narrow-container-y
+)) to (.not-discourse:not(.discourse-item), .discourse-item.not-discourse > *) {
+	/* ==========================================================================
+	 Text Styling (applies to all discourse classes)
+	 ========================================================================== */
+
+	/* Headings */
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		@apply font-heading mt-12 mb-6;
+	}
+
+	h1 {
+		@apply text-header-2;
+	}
+
+	h2 {
+		@apply text-header-3;
+	}
+
+	h3 {
+		@apply text-header-4;
+	}
+
+	h4 {
+		@apply text-header-5;
+	}
+
+	h5 {
+		@apply text-header-6;
+	}
+
+	h6 {
+		@apply text-body-large;
+	}
+
+	/* Body text */
+	p,
+	ul,
+	ol,
+	blockquote,
+	span,
+	figure,
+	.wp-block-columns,
+	.wp-block-group,
+	.discourse-item {
+		@apply font-sans;
+	}
+
+	figure {
+		@apply mb-6!;
+	}
+
+	/* Paragraph spacing */
+	p {
+		@apply mb-6;
+	}
+
+	/* Blockquotes */
+	blockquote {
+		@apply border-l-5 pl-6;
+
+		p {
+			@apply text-lg font-medium mb-4;
+		}
+
+		cite {
+			@apply text-sm font-light italic;
+		}
+	}
+
+	/* Lists */
+	ul,
+	ol {
+		@apply pl-[1.78em];
+
+		li {
+			@apply mb-2;
+		}
+
+		ul,
+		ol {
+			@apply pl-[1.78em] mt-2;
+
+			li {
+				@apply mb-2;
+			}
+		}
+	}
+
+	ul {
+		@apply mb-4 list-disc;
+	}
+
+	ol {
+		@apply list-decimal;
+	}
+
+	/* ==========================================================================
+	 Discourse Container X - Side margins via container class
+	 Applies to first-level content elements only
+	 ========================================================================== */
+
+	:scope:is(
+		.discourse-container-x,
+		.discourse-container,
+		.discourse-wide-container,
+		.discourse-wide-container-x,
+		.discourse-narrow-container,
+		.discourse-narrow-container-x
+	),
+	.wp-block-columns,
+	.wp-block-group,
+	.wp-block-column,
+	.wp-block-freeform > div,
+	.block-editor-block-preview__content-iframe > body > .block-editor-block-list__layout {
+		> :is(
+			p,
+			ul,
+			ol,
+			blockquote,
+			h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			h6,
+			span,
+			figure,
+			hr,
+			.wp-block-columns,
+			.wp-block-group,
+			.discourse-item
+		),
+		> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				hr,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item
+			).block-editor-block-list__block,
+		> .block-editor-inner-blocks
+			> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				hr,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item
+			).block-editor-block-list__block {
+			@apply w-(--max-container) mx-auto;
+		}
+	}
+
+	/* ==========================================================================
+	 Discourse without Container Y - Remove edge margins
+	 When discourse doesn't have container-y, first/last elements get no margins
+	 ========================================================================== */
+
+	:scope:not(
+		:is(
+			.discourse-container-y,
+			.discourse-container,
+			.discourse-wide-container,
+			.discourse-wide-container-y,
+			.discourse-narrow-container,
+			.discourse-narrow-container-y
+		)
+	),
+	.wp-block-columns,
+	.wp-block-group,
+	.wp-block-column {
+		/* First element */
+		> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			):first-child,
+		> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			).block-editor-block-list__block:first-child,
+		> .block-editor-inner-blocks
+			> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			).block-editor-block-list__block:first-child {
+			@apply mt-0!;
+		}
+
+		/* Last element */
+		> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			):last-child,
+		> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			).block-editor-block-list__block:last-child,
+		> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			).block-editor-block-list__block:nth-last-child(2):has(+ .block-list-appender),
+		> .block-editor-inner-blocks
+			> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			).block-editor-block-list__block:last-child,
+		> .block-editor-inner-blocks
+			> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			).block-editor-block-list__block:nth-last-child(2):has(+ .block-list-appender) {
+			@apply mb-0!;
+		}
+	}
+
+	/* ==========================================================================
+	 Discourse Container Y - Top/bottom margins
+	 Applies to first and last content elements only
+	 ========================================================================== */
+
+	:scope:is(
+		.discourse-container-y,
+		.discourse-container,
+		.discourse-wide-container,
+		.discourse-wide-container-y,
+		.discourse-narrow-container,
+		.discourse-narrow-container-y
+	),
+	.wp-block-freeform > div,
+	.block-editor-block-preview__content-iframe > body > .block-editor-block-list__layout {
+		/* First element */
+		> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			):first-child,
+		> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			).block-editor-block-list__block:first-child,
+		> .block-editor-inner-blocks
+			> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			).block-editor-block-list__block:first-child {
+			@apply mt-16!;
+		}
+
+		/* Last element */
+		> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			):last-child,
+		> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			).block-editor-block-list__block:last-child,
+		> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			).block-editor-block-list__block:nth-last-child(2):has(+ .block-list-appender),
+		> .block-editor-inner-blocks
+			> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			).block-editor-block-list__block:last-child,
+		> .block-editor-inner-blocks
+			> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item,
+				hr
+			).block-editor-block-list__block:nth-last-child(2):has(+ .block-list-appender) {
+			@apply mb-12!;
+		}
+
+		/* Last element followed by a full-width section (frontend) */
+		> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item
+			):not(.wp-block-image):has(
+				+ :is(div, section):not(.wp-block-columns, .wp-block-group, .wp-block[aria-hidden="true"])
+			) {
+			@apply mb-12!;
+		}
+
+		/* After full-width section (frontend) */
+		> :is(div, section):not(.wp-block-columns, .wp-block-group, .wp-block[aria-hidden="true"])
+			+ :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				figure,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item
+			) {
+			@apply mb-12!;
+		}
+	}
+
+	/* ==========================================================================
+	 Width Modifiers
+	 ========================================================================== */
+
+	/* Wide discourse - full width content */
+	:scope:is(
+		.discourse-wide,
+		.discourse-wide-container,
+		.discourse-wide-container-x,
+		.discourse-wide-container-y
+	) {
+		> :is(
+			p,
+			ul,
+			ol,
+			blockquote,
+			h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			h6,
+			span,
+			figure,
+			.wp-block-columns,
+			.wp-block-group,
+			.discourse-item
+		),
+		> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item
+			).block-editor-block-list__block,
+		> .block-editor-inner-blocks
+			> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item
+			).block-editor-block-list__block {
+			@apply max-w-[var(--discourse-wide,100%)];
+		}
+	}
+
+	/* Narrow discourse - constrained width content */
+	:scope:is(
+		.discourse-narrow,
+		.discourse-narrow-container,
+		.discourse-narrow-container-x,
+		.discourse-narrow-container-y
+	) {
+		> :is(
+			p,
+			ul,
+			ol,
+			blockquote,
+			h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			h6,
+			span,
+			figure,
+			.wp-block-columns,
+			.wp-block-group,
+			.discourse-item
+		),
+		> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item
+			).block-editor-block-list__block,
+		> .block-editor-inner-blocks
+			> .block-editor-block-list__layout
+			> :is(
+				p,
+				ul,
+				ol,
+				blockquote,
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				span,
+				figure,
+				.wp-block-columns,
+				.wp-block-group,
+				.discourse-item
+			).block-editor-block-list__block {
+			@apply max-w-[var(--discourse-narrow,55rem)];
+		}
+	}
+}

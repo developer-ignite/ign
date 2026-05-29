@@ -1,0 +1,66 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-11-133856",
+  "status": "complete",
+  "blockName": "TestimonialsCarousel",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "filesModified": [
+      {
+        "path": "blocks/TestimonialsCarousel/TestimonialsCarousel.php",
+        "changes": [
+          "Removed 'fade-out masks' from docblock comment",
+          "Removed data-at-beginning and data-at-end attributes from .swiper-parent div",
+          "Removed grid grid-cols-1 grid-rows-1 classes from .swiper-parent div (kept overflow-hidden)",
+          "Unwrapped .swiper-slides-wrapper div -- .swiper div now sits directly inside .swiper-parent",
+          "Removed fade mask comment and both fade mask divs (.testimonials-fade-left, .testimonials-fade-right)",
+          "Adjusted indentation of unwrapped children (reduced by one level)"
+        ]
+      },
+      {
+        "path": "blocks/TestimonialsCarousel/TestimonialsCarousel.tsx",
+        "changes": [
+          "Removed 'grid grid-cols-1 grid-rows-1' from FilteredServerSideRender className (kept 'swiper-parent overflow-hidden relative')"
+        ]
+      },
+      {
+        "path": "blocks/TestimonialsCarousel/TestimonialsCarousel.js",
+        "changes": [
+          "Removed 'on' property from Swiper config (init, slideChange, reachBeginning, reachEnd handlers)",
+          "Removed updateFadeMasks function",
+          "Removed MutationObserver block that watched data-at-beginning/data-at-end attributes and toggled fade mask opacity"
+        ]
+      }
+    ],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Asset size warnings for editor.js, screen bundle, and css/screen (pre-existing)"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "PHP and TSX are in sync -- both use 'swiper-parent overflow-hidden' without grid classes or data attributes"
+    },
+    "fixesApplied": [
+      {
+        "id": "REV2-DEC-001",
+        "description": "Removed .swiper-slides-wrapper div entirely, promoting .swiper div directly under .swiper-parent"
+      },
+      {
+        "id": "REV2-DEC-002",
+        "description": "Removed grid classes from .swiper-parent in both PHP and TSX"
+      },
+      {
+        "id": "REV2-DEC-003",
+        "description": "Removed all data-at-beginning/data-at-end attributes, Swiper event handlers, updateFadeMasks function, and MutationObserver from JS"
+      }
+    ],
+    "blockers": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

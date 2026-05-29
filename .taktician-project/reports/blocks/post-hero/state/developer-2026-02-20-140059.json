@@ -1,0 +1,35 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-20-140423",
+  "status": "complete",
+  "blockName": "PostHero",
+  "output": {
+    "mode": "build",
+    "filesCreated": [
+      {
+        "path": "blocks/PostHero/PostHero.js",
+        "purpose": "Frontend JS with ResizeObserver to cap .top-gradient max-height to <main> element height, scoped to .post-hero wrappers"
+      }
+    ],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": []
+    },
+    "syncStatus": {
+      "verified": true
+    },
+    "testPage": {
+      "created": false,
+      "url": "https://ign.localhost/blog/test-post-hero/",
+      "pageId": 181,
+      "note": "Test page exists as a post (type: post), not a page. State record was correct. Page verified as published at https://ign.localhost/blog/test-post-hero/"
+    },
+    "blockers": [],
+    "fixesApplied": [],
+    "notes": "PostHero.js follows the exact pattern of Hero.js but scopes querySelector to '.post-hero .top-gradient' instead of '.top-gradient'. This ensures the ResizeObserver only targets PostHero block instances and does not interfere with Hero block instances. The file is auto-bundled by the webpack glob pattern './blocks/**/!(*index).js' — no manual registration required. No CSS changes were needed as PostHero inherits the 150vh gradient height from Hero.css via the shared 'hero' class on the wrapper."
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

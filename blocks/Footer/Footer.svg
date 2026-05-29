@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Top card outline -->
+	<path d="M1,2v8h22V2H1ZM22,9H2V3h20v6Z"/>
+	<!-- Logo placeholder in top card -->
+	<rect x="3" y="4" width="5" height="2"/>
+	<!-- Info lines in top card -->
+	<rect x="3" y="7" width="4" height="1"/>
+	<rect x="9" y="7" width="3" height="1"/>
+	<rect x="14" y="7" width="3" height="1"/>
+	<rect x="19" y="7" width="2" height="1"/>
+	<!-- Bottom card outline -->
+	<path d="M1,11v11h22V11H1ZM22,21H2V12h20v9Z"/>
+	<!-- Nav columns in bottom card -->
+	<rect x="3" y="13" width="3" height="1"/>
+	<rect x="7" y="13" width="3" height="1"/>
+	<rect x="11" y="13" width="3" height="1"/>
+	<rect x="15" y="13" width="3" height="1"/>
+	<rect x="3" y="15" width="2" height="1"/>
+	<rect x="7" y="15" width="2" height="1"/>
+	<rect x="11" y="15" width="2" height="1"/>
+	<rect x="15" y="15" width="2" height="1"/>
+	<!-- Credits bar -->
+	<rect x="3" y="19" width="4" height="1"/>
+	<rect x="9" y="19" width="4" height="1"/>
+	<rect x="17" y="19" width="4" height="1"/>
+</svg>

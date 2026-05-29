@@ -1,0 +1,90 @@
+{
+  "agent": "developer",
+  "status": "complete",
+  "timestamp": "2026-02-11T16:57:13Z",
+  "mode": "edit",
+  "output": {
+    "filesModified": [
+      "/var/www/ign/wp-content/themes/ign/blocks/TestimonialsCarousel/TestimonialsCarousel.php",
+      "/var/www/ign/wp-content/themes/ign/blocks/TestimonialsCarousel/TestimonialsCarousel.js"
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "buildStatus": "pass",
+    "errors": [],
+    "changesSummary": {
+      "phpChanges": [
+        "Removed static $testimonial_modal_rendered guard (lines 113-116 and line 139)",
+        "Moved modal div from after </section> to inside <section> (before the closing </section> tag)",
+        "Changed inner wrapper from 'relative w-full max-w-4xl mx-4 scale-95 transition-transform duration-300' to 'testimonial-modal-content w-full max-w-4xl mx-4 overflow-y-auto max-h-full py-8 scale-95 transition-transform duration-300'",
+        "Removed absolute positioning from close button: removed 'absolute -top-12 right-0 md:-top-14 z-10' classes",
+        "Wrapped close button in a flex container: '<div class=\"flex justify-end mb-3\">...</div>' for right-alignment in normal flow",
+        "Added 'testimonial-modal-content' class to inner wrapper for JS targeting",
+        "Added 'overflow-y-auto max-h-full py-8' to inner wrapper for scrollability"
+      ],
+      "jsChanges": [
+        "Replaced single global modal query with module-level 'let currentModal = null' variable",
+        "Removed single videoContainer and closeBtn queries (lines 44-46)",
+        "Modified openModal to accept modal as first parameter: openModal(modal, videoSource, videoUrl, testimonialName)",
+        "openModal now queries videoContainer and closeBtn within the passed modal element",
+        "openModal sets currentModal = modal at the start",
+        "closeModal now operates on currentModal instead of a single global modal",
+        "closeModal sets currentModal = null after closing",
+        "Changed video button click handler to find modal via btn.closest('section.testimonials-carousel').querySelector('.testimonial-video-modal')",
+        "Changed close button binding to use event delegation: document.addEventListener('click', ...) with e.target.closest('.testimonial-video-close')",
+        "Changed click-outside handler to check currentModal instead of a single modal reference",
+        "Changed Escape key handler to check 'currentModal !== null' instead of modal classes",
+        "Changed focus trap to scope to currentModal instead of single modal",
+        "Updated scale transition selectors from '.relative' to '.testimonial-modal-content'",
+        "Fixed optional chaining assignment syntax (videoContainer?.textContent = '') to if statement for Babel compatibility"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "PHP and JS changes are properly coordinated. The modal HTML structure in PHP now includes the testimonial-modal-content class that JS targets for scale transitions. Each section has its own modal instance."
+    },
+    "buildOutput": {
+      "passed": true,
+      "warnings": [
+        "Asset size limit warnings (pre-existing)",
+        "Entrypoint size limit warnings (pre-existing)"
+      ],
+      "errors": [],
+      "lintWarnings": [
+        "Usage of __experimentalToggleGroupControl from @wordpress/components (pre-existing, not related to changes)",
+        "Usage of __experimentalToggleGroupControlOption from @wordpress/components (pre-existing, not related to changes)"
+      ],
+      "lintErrors": []
+    },
+    "implementationNotes": [
+      "Each TestimonialsCarousel block instance now has its own modal element inside the <section>",
+      "The static guard that prevented multiple modals has been removed",
+      "The close button is now in normal document flow, right-aligned above the video area using flexbox",
+      "The modal content area is scrollable when viewport height is too short (overflow-y-auto, max-h-full, py-8)",
+      "JS tracks the currently open modal via module-level currentModal variable",
+      "All event handlers (escape, click-outside, focus-trap) now reference currentModal instead of a single global modal",
+      "Scale transitions work correctly with the new .testimonial-modal-content selector",
+      "Optional chaining assignment was replaced with explicit null check for Babel compatibility"
+    ],
+    "qaReadiness": true,
+    "qaChecklist": [
+      "Video modal opens when clicking 'Watch the Video' button on any testimonial card",
+      "Modal opens within the correct section (inspect DOM to verify modal is inside <section>)",
+      "Close button appears right-aligned above the video, in normal document flow (not overlapping video)",
+      "Close button click closes the modal",
+      "Clicking outside the video area (on the dark overlay) closes the modal",
+      "Escape key closes the modal",
+      "Body scroll is locked when modal is open",
+      "Body scroll is restored when modal is closed",
+      "Focus moves to close button when modal opens",
+      "Focus returns to the video button when modal closes",
+      "Focus trap works (Tab cycles within modal)",
+      "Modal is scrollable when viewport height is too short for the video content",
+      "Multiple TestimonialsCarousel blocks on the same page each have their own modal and work independently",
+      "YouTube embed videos load and play correctly in modal",
+      "File-based videos load and play correctly in modal",
+      "Video content is cleared after modal close transition completes",
+      "Scale transition (scale-95 -> scale-100) still works on open/close"
+    ]
+  }
+}

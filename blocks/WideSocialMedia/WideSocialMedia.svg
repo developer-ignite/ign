@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Top border separator -->
+	<rect x="1" y="10" width="22" height="1"/>
+
+	<!-- Left: heading text -->
+	<rect x="2" y="13" width="6" height="2"/>
+
+	<!-- Right: social link items in a row -->
+	<rect x="12" y="13" width="3" height="2"/>
+	<rect x="16" y="13" width="3" height="2"/>
+	<rect x="20" y="13" width="3" height="2"/>
+</svg>

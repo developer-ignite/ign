@@ -1,0 +1,25 @@
+@import "editor/title.css";
+
+.justify-center {
+	justify-content: center;
+}
+
+.edit-site .block-editor-block-list__insertion-point.is-vertical.is-with-inserter {
+	display: none;
+}
+
+body.site-editor-php
+	.edit-site-sidebar-navigation-item.components-item:is(
+		#navigation-navigation-item,
+		#global-styles-navigation-item
+	) {
+	display: none !important;
+}
+
+.editor-resizable-editor.components-resizable-box__container.is-resizable {
+	min-height: calc(100% - 48px) !important;
+}
+
+.components-panel__body .components-h-stack > .components-base-control {
+	margin-bottom: 0;
+}

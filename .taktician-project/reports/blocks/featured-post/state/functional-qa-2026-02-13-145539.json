@@ -1,0 +1,234 @@
+{
+	"agent": "functional-qa",
+	"timestamp": "2026-02-13-145539",
+	"status": "FAIL",
+	"blockName": "FeaturedPost",
+	"output": {
+		"summary": {
+			"checksRun": 10,
+			"checksPassed": 7,
+			"checksFailed": 3,
+			"issuesFound": 4,
+			"critical": 0,
+			"major": 2,
+			"minor": 2
+		},
+		"checks": {
+			"build": {
+				"status": "pass",
+				"details": "Build completed successfully with only expected asset size warnings"
+			},
+			"lint": {
+				"status": "warning",
+				"details": "1 error and 2 warnings in FeaturedPost.tsx",
+				"issues": [
+					{
+						"severity": "minor",
+						"file": "FeaturedPost.tsx",
+						"line": 70,
+						"description": "Unused variable 'postPermalink'",
+						"fix": "Remove line 70 or prefix with underscore: const _postPermalink"
+					},
+					{
+						"severity": "minor",
+						"file": "FeaturedPost.tsx",
+						"line": 12,
+						"description": "Usage of experimental WordPress component __experimentalToggleGroupControl",
+						"fix": "This is acceptable for now as it's the standard control for this pattern"
+					},
+					{
+						"severity": "minor",
+						"file": "FeaturedPost.tsx",
+						"line": 13,
+						"description": "Usage of experimental WordPress component __experimentalToggleGroupControlOption",
+						"fix": "This is acceptable for now as it's the standard control for this pattern"
+					}
+				]
+			},
+			"registration": {
+				"status": "pass",
+				"details": "block.json is valid with correct apiVersion (3), name (takt/featured-post), title, category (takt-theme), and all required attributes defined with correct types and defaults"
+			},
+			"attributes": {
+				"status": "pass",
+				"details": "All 7 attributes from spec are correctly defined in block.json with proper types and defaults. Test page variations verify all attributes work correctly",
+				"attributesVerified": [
+					{"name": "selectedPost", "type": "number", "tested": true},
+					{"name": "isReversed", "type": "boolean", "default": false, "tested": true},
+					{"name": "reverseRows", "type": "boolean", "default": false, "tested": true},
+					{"name": "darkMode", "type": "boolean", "default": false, "tested": true},
+					{"name": "buttonLabel", "type": "string", "default": "Learn More", "tested": true},
+					{"name": "headingSize", "type": "string", "default": "regular", "enum": ["small", "regular"], "tested": true},
+					{"name": "eyebrow", "type": "string", "tested": true}
+				]
+			},
+			"edgeCases": {
+				"status": "pass",
+				"details": "Test page includes comprehensive edge case coverage including long button labels, combined attributes, dark mode variations, heading size variations, and eyebrow text variations. All render correctly without layout issues"
+			},
+			"interactiveBehavior": {
+				"status": "skipped",
+				"reason": "No interactive elements - block is content display only with static links"
+			},
+			"accessibility": {
+				"status": "pass",
+				"details": "All accessibility fixes from planning report have been correctly applied",
+				"checks": [
+					{
+						"check": "Image alt text fallback",
+						"status": "pass",
+						"details": "PHP line 152 correctly uses empty string fallback for decorative images (alt=\"\") instead of post title. TSX line 334 matches."
+					},
+					{
+						"check": "CTA link aria-label",
+						"status": "pass",
+						"details": "PHP line 114 correctly includes aria-label with format 'buttonLabel: postTitle' for screen reader context"
+					},
+					{
+						"check": "Semantic HTML",
+						"status": "pass",
+						"details": "Proper heading hierarchy (h2 for regular, h3 for small), semantic section wrapper, no layout tables"
+					},
+					{
+						"check": "Link text",
+						"status": "pass",
+						"details": "All CTA links have descriptive aria-label with post title context, addressing ambiguous 'Learn More' issue"
+					},
+					{
+						"check": "Keyboard navigation",
+						"status": "pass",
+						"details": "All interactive elements (CTA links) are keyboard accessible via standard link behavior"
+					}
+				],
+				"patternCompliance": "skipped - no WAI-ARIA patterns apply (content display block with standard link)"
+			},
+			"markupDuplication": {
+				"status": "pass",
+				"details": "No responsive duplication detected. Single DOM structure with CSS-only responsive behavior"
+			},
+			"tsxPhpSync": {
+				"status": "fail",
+				"details": "Major sync issue: PHP file uses manual attribute extraction instead of auto-extracted variables",
+				"issues": [
+					{
+						"id": "FQA-001",
+						"severity": "major",
+						"description": "PHP manually extracts attributes from $attributes array",
+						"file": "blocks/FeaturedPost/FeaturedPost.php",
+						"lines": "10-27",
+						"details": "The render_callback in inc/helpers/blocks.php already calls extract($attributes, EXTR_SKIP) on line 20, making all attributes available as local variables. Manual extraction is redundant and violates the theme convention.",
+						"fix": "Remove lines 10-27 and add @var docblock at top of file listing all attribute variables to prevent PHP_CodeSniffer warnings for camelCase variables",
+						"alsoUpdate": "None - TSX is correct"
+					},
+					{
+						"id": "FQA-002",
+						"severity": "major",
+						"description": "Missing @var docblock for auto-extracted attribute variables",
+						"file": "blocks/FeaturedPost/FeaturedPost.php",
+						"line": "1-8",
+						"details": "PHP_CodeSniffer warns about camelCase variables like $isReversed, $reverseRows, $darkMode, $buttonLabel, $headingSize, $eyebrow. The file needs a @var docblock documenting these auto-extracted attribute variables.",
+						"fix": "Add @var annotations for all camelCase attribute variables in the file header docblock"
+					}
+				],
+				"structureSync": {
+					"status": "pass",
+					"details": "HTML structure matches between TSX (lines 186-346) and PHP (lines 40-161). Element order, classes, and conditional rendering patterns are synchronized."
+				}
+			},
+			"innerBlocks": {
+				"status": "skipped",
+				"reason": "Block does not support inner blocks"
+			},
+			"specCompliance": {
+				"status": "pass",
+				"details": "Test page has 10 block instances matching the 10 variations specified in planning spec. All variations use correct self-closing block markup format and are wrapped in DemoContainer blocks with descriptive titles.",
+				"testPageValidation": {
+					"pageExists": true,
+					"pageId": 135,
+					"expectedVariations": 10,
+					"actualBlockCount": 10,
+					"formatCorrect": true,
+					"demoContainerWrapped": true,
+					"allVariationsTested": true
+				}
+			}
+		},
+		"issues": [
+			{
+				"id": "FQA-001",
+				"check": "tsxPhpSync",
+				"severity": "major",
+				"category": "sync",
+				"description": "PHP manually extracts attributes from $attributes array instead of using auto-extracted variables",
+				"file": "blocks/FeaturedPost/FeaturedPost.php",
+				"lines": "10-27",
+				"details": "The render_callback in inc/helpers/blocks.php already calls extract($attributes, EXTR_SKIP) on line 20, making all attributes available as local variables ($selectedPost, $isReversed, $reverseRows, $darkMode, $buttonLabel, $headingSize, $eyebrow). Manual extraction with $var = $attributes['key'] ?? default is redundant and violates theme conventions.",
+				"fix": "Remove lines 10-27: $selectedPost = $attributes['selectedPost'] ?? null; through $eyebrow = $attributes['eyebrow'] ?? ''; The variables are already available from auto-extraction. If defaults are needed, use null coalescing in usage: <?php if ( ! empty( $eyebrow ?? '' ) ) : ?>",
+				"impact": "Code duplication, violates theme convention, makes code harder to maintain. Not a runtime bug but incorrect pattern."
+			},
+			{
+				"id": "FQA-002",
+				"check": "tsxPhpSync",
+				"severity": "major",
+				"category": "sync",
+				"description": "Missing @var docblock for auto-extracted camelCase attribute variables",
+				"file": "blocks/FeaturedPost/FeaturedPost.php",
+				"lines": "1-8",
+				"details": "PHP_CodeSniffer warns about camelCase variables ($isReversed, $reverseRows, $darkMode, $buttonLabel, $headingSize, $eyebrow) because WordPress coding standards prefer snake_case. These warnings are expected for block attributes (which use camelCase from JavaScript), but the file needs @var annotations to document that these variables come from auto-extracted block attributes.",
+				"fix": "Add to the file header docblock after line 8:\n * Available variables (auto-extracted from $attributes):\n * @var int $selectedPost\n * @var bool $isReversed\n * @var bool $reverseRows\n * @var bool $darkMode\n * @var string $buttonLabel\n * @var string $headingSize\n * @var string $eyebrow\n *\n * Also available:\n * @var WP_Block $block Block instance\n * @var string $content Block content",
+				"impact": "PHP_CodeSniffer warnings for every use of camelCase variables. Makes linting output noisy."
+			},
+			{
+				"id": "FQA-003",
+				"check": "lint",
+				"severity": "minor",
+				"category": "code-quality",
+				"description": "Unused variable 'postPermalink' in FeaturedPost.tsx",
+				"file": "blocks/FeaturedPost/FeaturedPost.tsx",
+				"line": 70,
+				"details": "Line 70 declares const postPermalink = post?.link || '#'; but the variable is never used. The TSX editor preview doesn't render functional links (uses span.btn-primary instead of anchor), so the permalink is not needed in the editor.",
+				"fix": "Remove line 70: const postPermalink = post?.link || '#'; (or prefix with underscore if keeping for documentation: const _postPermalink)",
+				"impact": "Lint error, no runtime impact. Auto-fixable."
+			},
+			{
+				"id": "FQA-004",
+				"check": "lint",
+				"severity": "minor",
+				"category": "code-quality",
+				"description": "Experimental WordPress component warnings for ToggleGroupControl",
+				"file": "blocks/FeaturedPost/FeaturedPost.tsx",
+				"lines": "12-13",
+				"details": "Lines 12-13 import __experimentalToggleGroupControl and __experimentalToggleGroupControlOption. These are experimental WordPress components but are the standard recommended controls for this UI pattern (selecting between 'small' and 'regular' heading size).",
+				"fix": "No action needed - this is acceptable. When WordPress stabilizes these components, the imports can be updated.",
+				"impact": "Lint warnings only. No runtime impact. These components are stable in practice despite the experimental naming."
+			}
+		],
+		"passedChecks": [
+			"Build compiles without TypeScript errors",
+			"Block registers correctly with valid block.json",
+			"All attributes defined with correct types and defaults",
+			"Test page has 10 block instances with comprehensive variation coverage",
+			"Test page uses correct self-closing block markup format",
+			"All blocks wrapped in DemoContainer with descriptive titles",
+			"Accessibility fixes correctly applied: alt text fallback uses empty string for decorative images",
+			"Accessibility fixes correctly applied: CTA links have aria-label with post title context",
+			"TSX and PHP HTML structure synchronized",
+			"No responsive markup duplication",
+			"Post excerpt uses wp_kses_post() to prevent double-escaping",
+			"Semantic HTML with proper heading hierarchy (h2/h3)",
+			"All interactive elements keyboard accessible"
+		],
+		"recommendations": [
+			"Fix the manual attribute extraction in PHP (FQA-001) - this is a major convention violation that should be addressed before production",
+			"Add @var docblock annotations (FQA-002) to suppress PHP_CodeSniffer warnings for camelCase attribute variables",
+			"Remove unused postPermalink variable in TSX (FQA-003) to eliminate lint error"
+		],
+		"performanceNotes": [
+			"Featured images use wp_get_attachment_image() which includes srcset and sizes attributes for responsive images",
+			"No N+1 query issues - block fetches a single post by ID",
+			"Images use 'full' size with srcset as recommended"
+		]
+	},
+	"tokensUsed": 0,
+	"questionsForUser": []
+}

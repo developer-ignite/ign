@@ -1,0 +1,70 @@
+{
+  "agent": "developer",
+  "mode": "fix",
+  "timestamp": "2026-02-18-143530",
+  "qaFile": ".taktician-project/reports/blocks/header/state/functional-qa-2026-02-18-142951.json",
+  "blockPath": "blocks/Header",
+  "buildStatus": {
+    "build": "passed",
+    "lint": "passed",
+    "sync": "passed",
+    "registration": "passed"
+  },
+  "filesModified": [
+    "blocks/Header/HeaderMain/HeaderMain.js",
+    "blocks/Header/HeaderMain/HeaderMain.php",
+    "blocks/Header/HeaderMain/HeaderMain.tsx"
+  ],
+  "fixes": [
+    {
+      "id": "FQA-001",
+      "severity": "critical",
+      "description": "Submenu item selector '[role=\"menuitem\"]' targeted <li> elements which cannot receive programmatic .focus(). Changed all 3 query locations to use submenuItemSelector constant '[role=\"menuitem\"] a, [role=\"menuitem\"] button' to target the actual focusable <a> elements inside each <li>.",
+      "locations": [
+        "Line 351 (static snapshot 'items' array)",
+        "handleSubmenuKeydown re-query ('currentItems')",
+        "requestAnimationFrame callbacks ('freshItems') for ArrowDown and ArrowUp"
+      ],
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.js"
+      ],
+      "approach": "Extracted selector into a top-level constant 'submenuItemSelector' and replaced all 3 querySelectorAll calls that were used for focus management.",
+      "status": "done"
+    },
+    {
+      "id": "FQA-002",
+      "severity": "critical",
+      "description": "Same root cause as FQA-001 — ArrowDown/Up navigation within the dropdown also used '[role=\"menuitem\"]' in handleSubmenuKeydown. Fixed by the same submenuItemSelector change.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "FQA-003",
+      "severity": "major",
+      "description": "Added aria-label=\"Main navigation\" to <ul role=\"menubar\"> in HeaderMain.php and useInnerBlocksProps first arg in HeaderMain.tsx.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.php",
+        "blocks/Header/HeaderMain/HeaderMain.tsx"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "FQA-004",
+      "severity": "major",
+      "description": "Added aria-orientation=\"horizontal\" to <ul role=\"menubar\"> in HeaderMain.php and useInnerBlocksProps first arg in HeaderMain.tsx.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.php",
+        "blocks/Header/HeaderMain/HeaderMain.tsx"
+      ],
+      "status": "done"
+    }
+  ],
+  "lintFix": {
+    "description": "Prettier formatting error introduced by __() call spacing — changed __( \"Main navigation\", \"takt\" ) to __(\"Main navigation\", \"takt\") to match project prettier config.",
+    "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+    "status": "fixed"
+  },
+  "errors": []
+}

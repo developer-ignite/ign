@@ -1,0 +1,36 @@
+{
+  "agent": "developer",
+  "mode": "edit",
+  "timestamp": "2026-02-18-150101",
+  "block": "gallery-carousel",
+  "change": "Replace before:bg-charcoal with before:bg-dark-pattern in dark mode container classes",
+  "filesModified": [
+    "blocks/GalleryCarousel/GalleryCarousel.tsx",
+    "blocks/GalleryCarousel/GalleryCarousel.php"
+  ],
+  "changes": [
+    {
+      "file": "blocks/GalleryCarousel/GalleryCarousel.tsx",
+      "line": 164,
+      "old": "before:bg-charcoal",
+      "new": "before:bg-dark-pattern"
+    },
+    {
+      "file": "blocks/GalleryCarousel/GalleryCarousel.php",
+      "line": 6,
+      "old": "before:bg-charcoal",
+      "new": "before:bg-dark-pattern"
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "errors": 0,
+    "warnings": 10,
+    "warningsArePreExisting": true,
+    "build": "pass",
+    "lint": "pass",
+    "sync": "pass",
+    "registration": "pass"
+  },
+  "status": "completed"
+}

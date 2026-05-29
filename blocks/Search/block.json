@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/search",
+  "title": "Search",
+  "category": "takt-theme",
+  "description": "A site-wide search block that queries all public post types with post-type filtering, keyword search, pagination or load-more, and customizable per-page display.",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string",
+      "default": "Search Results"
+    },
+    "searchPlaceholder": {
+      "type": "string",
+      "default": "Search"
+    },
+    "displayFilters": {
+      "type": "boolean",
+      "default": true
+    },
+    "displayPerPage": {
+      "type": "boolean",
+      "default": true
+    },
+    "postsPerPage": {
+      "type": "number",
+      "default": 9
+    },
+    "paginationMode": {
+      "type": "string",
+      "default": "pagination"
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "heading": "Search Results",
+      "searchPlaceholder": "Search"
+    }
+  }
+}

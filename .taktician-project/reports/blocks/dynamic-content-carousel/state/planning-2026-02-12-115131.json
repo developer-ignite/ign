@@ -1,0 +1,137 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-12T11:51:31Z",
+  "status": "completed",
+  "severity": "info",
+  "output": {
+    "summary": "Move dynamic-content-carousel-scoped styles from swiper.css into a new block-specific CSS file (DynamicContentCarousel.css). Consolidate the duplicated card image hover zoom effect (currently in both swiper.css and Archive.css) into a shared global location. Add a theme-wide prefers-reduced-motion rule in body.css so all transitions/animations across the theme respect user preferences, instead of only the swiper module.",
+    "analysis": {
+      "stylesInSwiperCss": {
+        "blockSpecific": [
+          {
+            "selector": ".dynamic-content-carousel .swiper-slide > *",
+            "property": "height: 100%",
+            "purpose": "Equal-height card chain — ensures cards stretch to fill swiper slide",
+            "verdict": "MOVE to DynamicContentCarousel.css — truly block-specific carousel layout"
+          }
+        ],
+        "duplicatedCardHoverZoom": [
+          {
+            "selector": ".dynamic-content-carousel .card-post img, .dynamic-content-carousel .card-team-member img",
+            "property": "transition: transform 0.3s ease",
+            "duplicateIn": "blocks/Archive/Archive.css lines 134-138 (.archive .card-team-member img, .archive .card-post img)",
+            "verdict": "REMOVE from both locations — make generic on .card-post and .card-team-member directly"
+          },
+          {
+            "selector": ".dynamic-content-carousel .card-post:hover img, .dynamic-content-carousel .card-team-member:hover img",
+            "property": "transform: scale(1.05)",
+            "duplicateIn": "blocks/Archive/Archive.css lines 139-142",
+            "verdict": "REMOVE from both locations — make generic"
+          }
+        ],
+        "reducedMotionRules": [
+          {
+            "selector": ".dynamic-content-carousel .card-post img, .dynamic-content-carousel .card-team-member img (inside @media prefers-reduced-motion)",
+            "property": "transition: none !important",
+            "verdict": "REMOVE — will be covered by theme-wide reduced-motion rule"
+          }
+        ],
+        "sharedSwiperStyles": [
+          {
+            "description": "CSS custom properties (:root), .swiper-notification, .swiper-controls hiding logic, progress bar gradient, .carousel-nav-btn, .modal-close-btn, @keyframes carousel-nav-gradient-sweep, and generic swiper prefers-reduced-motion rules",
+            "verdict": "KEEP in swiper.css — these are shared swiper infrastructure used by multiple carousel blocks"
+          }
+        ]
+      },
+      "cardTemplatesAnalysis": {
+        "cardPost": "parts/card-post.php — has overflow-hidden container (line 23 div.overflow-hidden) wrapping the image. Hover zoom will work if applied to .card-post img globally.",
+        "cardTeamMember": "parts/card-team-member.php — has overflow-hidden container (line 22 div.overflow-hidden) wrapping the image. Hover zoom will work if applied to .card-team-member img globally.",
+        "cardResource": "parts/card-resource.php — NO image element, only text and taxonomy pills. Hover effect is bg-color change via Tailwind classes.",
+        "cardPolicy": "parts/card-policy.php — NO image element, only text and taxonomy pills. Hover effect is bg-color change via Tailwind classes.",
+        "conclusion": "Only card-post and card-team-member have images with overflow-hidden containers. These are the only two that need hover zoom."
+      },
+      "reducedMotionAnalysis": {
+        "currentState": "prefers-reduced-motion is ONLY handled in swiper.css (lines 163-182). No theme-wide rule exists.",
+        "gaps": [
+          "body.css has scroll-behavior: smooth (line 26) with NO reduced-motion override",
+          "body.css has body transition: background-color 0.3s (line 48) with NO reduced-motion override",
+          "Archive.css card hover transitions (.archive .card-resource article, .archive .card-policy article) have NO reduced-motion handling",
+          "Archive.css card image hover zoom (.archive .card-team-member img, .archive .card-post img) has NO reduced-motion handling"
+        ],
+        "recommendation": "Add a theme-wide @media (prefers-reduced-motion: reduce) rule in body.css that blanket-disables transitions and animations (similar to Tailwind's motion-reduce utilities). This replaces per-component reduced-motion overrides and ensures no future CSS additions miss this."
+      },
+      "blockCssPattern": {
+        "precedent": "blocks/Archive/Archive.css is the only existing block with its own CSS file",
+        "bundling": "webpack.config.js line 33: glob.sync('./blocks/**/*.css') auto-includes any CSS file in any block folder into the screen.css bundle",
+        "convention": "Name the file blocks/DynamicContentCarousel/DynamicContentCarousel.css to match the Archive pattern"
+      }
+    },
+    "fileChanges": [
+      {
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.css",
+        "action": "create",
+        "description": "Create block-specific CSS file for DynamicContentCarousel",
+        "details": "Contains only the truly block-specific style: .dynamic-content-carousel .swiper-slide > * { height: 100%; } for equal-height card chain within the carousel. This is the only rule that is unique to this block's carousel layout and cannot be generalized. Auto-bundled by webpack via glob.sync('./blocks/**/*.css').",
+        "affectsPhp": false
+      },
+      {
+        "file": "resources/css/screen/swiper.css",
+        "action": "modify",
+        "description": "Remove all .dynamic-content-carousel-scoped styles",
+        "details": "Remove lines 147-181: the equal-height card chain rule (moves to DynamicContentCarousel.css), the card image hover zoom rules (moving to body.css as generic card styles), and the block-scoped reduced-motion rules for card images (replaced by theme-wide rule). Keep all shared swiper infrastructure intact (CSS vars, .swiper-notification, .swiper-controls, progress bar, .carousel-nav-btn, .modal-close-btn, @keyframes, and the generic swiper reduced-motion rules for .swiper-wrapper, .carousel-nav-btn::before, .modal-close-btn::before, .swiper-pagination-progressbar).",
+        "affectsPhp": false
+      },
+      {
+        "file": "resources/css/screen/body.css",
+        "action": "modify",
+        "description": "Add theme-wide prefers-reduced-motion rule and generic card hover zoom styles",
+        "details": "1) Add a @media (prefers-reduced-motion: reduce) block that: (a) sets html { scroll-behavior: auto; }, (b) applies a broad *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } rule. This is the standard approach (similar to CSS reset patterns) that ensures all animations and transitions respect user preference without needing per-component overrides. 2) Add generic card image hover zoom styles (not scoped to any block): .card-post img, .card-team-member img { transition: transform 0.3s ease; } and .card-post:hover img, .card-team-member:hover img { transform: scale(1.05); } — these work everywhere cards are used. Both will automatically respect reduced-motion via the blanket rule above.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Archive/Archive.css",
+        "action": "modify",
+        "description": "Remove duplicated card image hover zoom styles",
+        "details": "Remove lines 133-142: the .archive .card-team-member img, .archive .card-post img transition and hover scale rules. These are now handled generically in body.css without needing block-scoped selectors. The Archive-specific styles (alternating layout, dividers, filter button, resource/policy card transitions, blog card CTA hover) remain.",
+        "affectsPhp": false
+      },
+      {
+        "file": "resources/css/screen/swiper.css",
+        "action": "modify",
+        "description": "Simplify the prefers-reduced-motion block",
+        "details": "After the theme-wide reduced-motion rule is added in body.css, the per-component reduced-motion overrides in swiper.css (lines 163-182) become redundant for most rules. However, the !important overrides on .swiper-wrapper { transition-duration: 0ms !important; } are needed because Swiper JS sets inline styles. Keep ONLY the .swiper-wrapper transition-duration override (which fights inline styles), and the .swiper-pagination-progressbar-fill transition override (also fighting inline styles). Remove the .carousel-nav-btn::before, .modal-close-btn::before, and .dynamic-content-carousel card image overrides — the theme-wide rule handles these.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-019",
+        "category": "css-architecture",
+        "question": "Should the card image hover zoom be generic (applied to .card-post and .card-team-member globally) or scoped per-block?",
+        "recommendation": "Make it generic. Both Archive and DynamicContentCarousel apply identical hover zoom (scale 1.05, 0.3s ease). The card templates already have overflow-hidden containers. Any context where these cards appear should get the zoom effect. This eliminates duplication and ensures future blocks using these cards automatically get the hover zoom.",
+        "evidence": "Archive.css lines 133-142 and swiper.css lines 151-160 are identical. card-post.php line 23 and card-team-member.php line 22 both have overflow-hidden wrappers.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-020",
+        "category": "accessibility",
+        "question": "Should prefers-reduced-motion be handled theme-wide or per-component?",
+        "recommendation": "Theme-wide. The current approach of only handling it in swiper.css leaves gaps: body.css smooth scrolling, Archive.css transitions, and any future CSS additions. A blanket rule in body.css (animation-duration: 0.01ms, transition-duration: 0.01ms) is the industry standard approach used by modern CSS resets. The 0.01ms value (not 0ms) ensures JavaScript transitionend/animationend events still fire. Swiper's inline-style overrides still need specific !important rules since they bypass CSS specificity.",
+        "evidence": "Only swiper.css has prefers-reduced-motion handling. body.css scroll-behavior: smooth and Archive.css transition rules have no reduced-motion overrides. MDN and WCAG 2.1 SC 2.3.3 recommend respecting this preference globally.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-021",
+        "category": "css-architecture",
+        "question": "Where should block-specific CSS live for DynamicContentCarousel?",
+        "recommendation": "Create blocks/DynamicContentCarousel/DynamicContentCarousel.css following the Archive block precedent. Webpack auto-bundles via glob.sync('./blocks/**/*.css'). No PHP changes needed.",
+        "evidence": "blocks/Archive/Archive.css exists as the established pattern. webpack.config.js line 33 auto-includes block CSS files.",
+        "needsUserInput": false
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "design",
+    "qaReason": "CSS refactoring changes selectors and specificity. Need to verify: (1) card hover zoom works in both DynamicContentCarousel and Archive, (2) carousel equal-height layout still works, (3) prefers-reduced-motion disables all animations, (4) Swiper navigation/pagination animations still work in normal mode."
+  }
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<path d="M0,5v14h24V5H0ZM23,18H1V6h22v12Z"/>
+	<rect x="2" y="7" width="4" height="1"/>
+	<rect x="7" y="7" width="3" height="1"/>
+	<rect x="2" y="9" width="9" height="2"/>
+	<rect x="2" y="12" width="9" height="1"/>
+	<rect x="2" y="14" width="7" height="1"/>
+	<rect x="2" y="16" width="4" height="1"/>
+	<rect x="13" y="7" width="9" height="10"/>
+</svg>

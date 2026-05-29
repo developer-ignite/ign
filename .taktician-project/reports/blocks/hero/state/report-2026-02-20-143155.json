@@ -1,0 +1,23 @@
+{
+  "agent": "report",
+  "timestamp": "2026-02-20-143155",
+  "status": "complete",
+  "blockName": "Hero",
+  "output": {
+    "reportPath": ".taktician-project/reports/blocks/hero/hero-report.md",
+    "updateType": "edit-mode",
+    "sectionsUpdated": [
+      "header-date",
+      "development-notes-scoped-selectors",
+      "validation-summary",
+      "changelog"
+    ],
+    "changelogEntries": 1,
+    "newEntry": {
+      "timestamp": "2026-02-20 14:32 PST",
+      "change": "Made Hero block fully independent. Scoped .top-gradient CSS under .hero parent selector so Hero.css styles no longer leak to PostHero/EventHero. Renamed hero-inner references in sibling blocks. Each hero-family block now owns its own gradient styles. Functional QA PASS, 6/6 checks, 0 issues."
+    }
+  },
+  "tokensUsed": 8500,
+  "questionsForUser": []
+}

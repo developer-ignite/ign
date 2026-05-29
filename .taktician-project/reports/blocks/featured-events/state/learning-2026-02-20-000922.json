@@ -1,0 +1,82 @@
+{
+  "revision": 2,
+  "analysis": {
+    "mistake": "Six issues across typography, layout, and styling: (1) heading too small (mapped to H3 style without checking px), (2) uppercase class on card title (developer assumed Anton = stylized), (3) badge absolute positioning (literal frame extraction), (4) tertiary button black on hover in dark (context lost when dark class removed), (5) fixed height md:h-[349px] treated as CSS constraint instead of frame dimension, (6) image missing aspect ratio constraint",
+    "expected": "Implementation should match Figma visually: proper heading size, no uppercase on natural font, badge flex positioning, dark-mode-aware button hover, responsive sizing with aspect ratio, image constraints",
+    "rootCause": "Multi-phase issue: Planning agent mapped style names without verifying pixel values. Structural analysis extracted frame dimensions and positioning literally. Developer implemented spec mechanically without semantic analysis. Missing content-resilience validation and dark-mode context validation across phases.",
+    "rootCauseType": "missing-general-rule",
+    "responsiblePhase": "planning"
+  },
+  "suggestions": [
+    {
+      "type": "project-specific",
+      "action": "add",
+      "section": "Typography Rules",
+      "content": "When mapping font sizes from Figma style names (H1, H2, H3) to Tailwind/theme tokens, ALWAYS verify the pixel size matches the intended visual scale in Figma. Style names are guides, not truth. Check Figma design context output for exact px values and cross-reference with headingSize attribute documentation.",
+      "rationale": "Prevents planning agents from mapping style names to wrong size attributes without verification.",
+      "implemented": true
+    },
+    {
+      "type": "project-specific",
+      "action": "add",
+      "section": "Typography Rules",
+      "content": "Anton font is not italic and does not have built-in styling. Never add `uppercase` or `italic` classes to Anton-based text unless explicitly shown in Figma. The font's natural slant is a design characteristic, not a CSS transform.",
+      "rationale": "Clarifies that Anton font styling decisions require explicit Figma evidence, not assumptions based on visual appearance.",
+      "implemented": true
+    },
+    {
+      "type": "project-specific",
+      "action": "add",
+      "section": "Layout Patterns",
+      "content": "When implementing badge or status elements positioned at corners of cards, use flex/absolute positioning per Figma layout flow (not literal Figma frame dimensions). If Figma shows an element in a corner via flexbox or flow layout, extract the positioning intent, not the frame pixel coordinates.",
+      "rationale": "Prevents literal extraction of frame coordinates which don't represent actual CSS layout intent.",
+      "implemented": true
+    },
+    {
+      "type": "project-specific",
+      "action": "add",
+      "section": "Component Preferences",
+      "content": "Tertiary button styling (`btn-tertiary`) depends on dark-mode context for correct hover states. When dark mode is applied to parent section via `dark` class, ensure button styling inherits the dark context. Never remove parent `dark` class without auditing child button hover/focus states.",
+      "rationale": "Documents that tertiary buttons require context awareness for color consistency in dark mode.",
+      "implemented": true
+    },
+    {
+      "type": "general",
+      "action": "rewrite",
+      "target": ".taktician/agents/planning-agent.md",
+      "section": "Phase 2: Analyze Figma Design",
+      "existingContent": "### 2.2 Extract Design Tokens\n\nFor every visual element, extract properties using this generic format:",
+      "content": "### 2.2 Extract Design Tokens\n\nFor every visual element, extract properties using this generic format. **CRITICAL:** When Figma style names are used (e.g., H1, H2, H3 for headings), ALWAYS verify the actual pixel size in Figma's design context output and cross-reference with theme tokens. Do not map style names to attributes without checking pixel values — a \"H3\" style might be 56px visually but map to a smaller headingSize.",
+      "rationale": "Adds explicit validation step to prevent planning agents from mapping style names without pixel-level verification.",
+      "implemented": false
+    },
+    {
+      "type": "general",
+      "action": "rewrite",
+      "target": ".taktician/agents/planning-agent.md",
+      "section": "Phase 3: Map to Theme Tokens",
+      "existingContent": "### Mapping Rules\n\n| Category | Exact Match | Close Match | No Match |\n|----------|-------------|-------------|----------|\n| **Colors** | Use token directly | Use closest token, document difference | Flag as `NEW_COLOR_NEEDED` |\n| **Spacing** | Use Tailwind class | Use nearest class, document if diff > 4px | Use arbitrary value `[Xpx]` |\n| **Border radius** | Use Tailwind class | Use nearest class, document if diff > 2px | Use arbitrary value |\n| **Typography** | Map to theme tokens | Map size/weight to Tailwind classes | Flag as `NEW_FONT_NEEDED` |",
+      "content": "### Mapping Rules\n\n| Category | Exact Match | Close Match | No Match |\n|----------|-------------|-------------|----------|\n| **Colors** | Use token directly | Use closest token, document difference | Flag as `NEW_COLOR_NEEDED` |\n| **Spacing** | Use Tailwind class | Use nearest class, document if diff > 4px | Use arbitrary value `[Xpx]` |\n| **Border radius** | Use Tailwind class | Use nearest class, document if diff > 2px | Use arbitrary value |\n| **Typography** | Map to theme tokens | Map size/weight to Tailwind classes | Flag as `NEW_FONT_NEEDED` |\n| **Positioning/Layout** | Map to Tailwind layout classes | Map to flex/grid flow semantics | Do NOT extract literal frame coordinates — always interpret positioning intent from auto-layout or manual arrangement |",
+      "rationale": "Prevents structural analysis from treating Figma frame coordinates as CSS values; requires semantic interpretation of layout instead.",
+      "implemented": false
+    },
+    {
+      "type": "general",
+      "action": "add",
+      "target": ".taktician/agents/planning-agent.md",
+      "section": "Phase 3: Map to Theme Tokens",
+      "content": "**Image/Media Content-Resilience:** All images and media elements MUST include bounding constraints: `aspect-ratio` or `max-h-[Xpx]` paired with width constraints. Do not use fixed `h-[Xpx]` alone. Frame height in Figma is a layout container dimension, not a content constraint. Extract max-height from Figma measurements, add aspect ratio for responsive scaling.",
+      "rationale": "Prevents fixed heights from being treated as CSS constraints when they should be frame dimensions; requires explicit aspect-ratio or max-height for content resilience.",
+      "implemented": false
+    },
+    {
+      "type": "general",
+      "action": "add",
+      "target": ".taktician/agents/developer-agent.md",
+      "section": "Phase 3: TSX/PHP Sync",
+      "content": "When syncing conditional classes between TSX and PHP, especially for dark-mode context, audit all child components that depend on the parent context. Before removing a parent `dark` class or context-dependent class, verify that no child elements (buttons, text colors, borders) rely on it for hover/focus states.",
+      "rationale": "Ensures developer agent checks for context-dependent styling when removing or modifying parent context classes.",
+      "implemented": false
+    }
+  ]
+}

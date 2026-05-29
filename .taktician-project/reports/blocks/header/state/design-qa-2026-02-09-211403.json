@@ -1,0 +1,214 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-09-211403",
+  "status": "PASS",
+  "blockName": "Header",
+  "output": {
+    "summary": {
+      "breakpointsChecked": ["desktop-1440", "mobile-375"],
+      "breakpointsSkipped": [],
+      "toleranceUsed": "semantic (2-4px)",
+      "figmaNodesCompared": [
+        { "nodeId": "785:34245", "description": "Desktop header (closed)" },
+        { "nodeId": "801:58305", "description": "Mobile header (closed)" }
+      ],
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0,
+      "notes": 1,
+      "compositionGate": "PASS",
+      "compositionGateDetails": "Logo fix resolved. The header now renders as a compact horizontal dark bar at both breakpoints, matching the Figma design proportions. The logo is properly constrained (max-h-[58px] desktop, max-h-[26px] mobile) and the nav bar no longer expands to accommodate oversized images.",
+      "reRunContext": "Re-run after DQA-001 fix (logo max-height constraint). Previous status: FAIL. Previous composition gate: FAIL."
+    },
+    "previousIssueResolution": [
+      {
+        "id": "DQA-001",
+        "previousSeverity": "critical",
+        "previousStatus": "FAIL",
+        "currentStatus": "RESOLVED",
+        "verification": "Logo is now constrained to max 58px tall on desktop and max 26px on mobile. Implementation screenshot confirms the header appears as a compact horizontal bar matching Figma proportions. The fix is present in both HeaderMain.php (line 60) and HeaderMain.tsx (lines 593, 604). Classes added: **:max-h-[58px] max-md:**:max-h-[26px] **:object-contain.",
+        "figmaValues": {
+          "desktopLogoHeight": "57.685px",
+          "mobileLogoHeight": "25.599px"
+        },
+        "implementationConstraints": {
+          "desktopMaxHeight": "58px",
+          "mobileMaxHeight": "26px",
+          "desktopDifference": "0.315px (within tolerance)",
+          "mobileDifference": "0.401px (within tolerance)"
+        }
+      }
+    ],
+    "issues": [],
+    "notes": [
+      {
+        "id": "DQA-N01",
+        "severity": "note",
+        "category": "content",
+        "element": "Logo image content",
+        "breakpoint": "all",
+        "observation": "The test page uses a square bee favicon as the logo image, while the Figma design shows the full IGNITE logo (bee icon + wordmark, ~215px wide x ~58px tall). This is a content/upload difference, not a code issue. The code correctly constrains whatever image is uploaded via max-height and object-contain. The full IGNITE logo should be uploaded for production use.",
+        "withinTolerance": true,
+        "actionRequired": false
+      }
+    ],
+    "passedChecks": [
+      {
+        "id": "PC-001",
+        "category": "layout",
+        "breakpoint": "desktop-1440",
+        "description": "Overall composition matches Figma. Compact horizontal dark bar with logo left, utility row top-right, nav row bottom-right.",
+        "verified": true
+      },
+      {
+        "id": "PC-002",
+        "category": "layout",
+        "breakpoint": "desktop-1440",
+        "description": "Logo properly constrained. max-h-[58px] matches Figma's 57.685px logo height (0.315px difference, within tolerance).",
+        "verified": true
+      },
+      {
+        "id": "PC-003",
+        "category": "color",
+        "breakpoint": "all",
+        "description": "Nav bar background: bg-charcoal (#1f1f1d) vs Figma #1e1e1c. 1-unit RGB difference, imperceptible and within tolerance.",
+        "verified": true
+      },
+      {
+        "id": "PC-004",
+        "category": "border",
+        "breakpoint": "all",
+        "description": "Nav bar rounded corners: rounded-[25px]. Matches Figma exactly.",
+        "verified": true
+      },
+      {
+        "id": "PC-005",
+        "category": "spacing",
+        "breakpoint": "desktop-1440",
+        "description": "Nav bar padding: px-8 (32px) py-4 (16px). Figma: px-32 py-16. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-006",
+        "category": "typography",
+        "breakpoint": "desktop-1440",
+        "description": "Nav items: General Sans Medium 16px uppercase white leading-[1.16]. Matches Figma exactly.",
+        "verified": true
+      },
+      {
+        "id": "PC-007",
+        "category": "layout",
+        "breakpoint": "desktop-1440",
+        "description": "Search form: 250px width, border-b border-white, search icon + text. Matches Figma.",
+        "verified": true
+      },
+      {
+        "id": "PC-008",
+        "category": "layout",
+        "breakpoint": "desktop-1440",
+        "description": "SEP link: 'STUDENT ENGAGEMENT PLATFORM' with external arrow icon, gap-8. Matches Figma.",
+        "verified": true
+      },
+      {
+        "id": "PC-009",
+        "category": "layout",
+        "breakpoint": "desktop-1440",
+        "description": "Vertical separator between search and SEP: w-px white line. Matches Figma.",
+        "verified": true
+      },
+      {
+        "id": "PC-010",
+        "category": "spacing",
+        "breakpoint": "desktop-1440",
+        "description": "Gap between utility row and nav row: gap-6 (24px). Figma: gap-24. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-011",
+        "category": "spacing",
+        "breakpoint": "desktop-1440",
+        "description": "Gap between nav items: gap-8 (32px). Figma: gap-32. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-012",
+        "category": "layout",
+        "breakpoint": "mobile-375",
+        "description": "Overall mobile composition matches Figma. SEP button above compact nav bar with logo and hamburger.",
+        "verified": true
+      },
+      {
+        "id": "PC-013",
+        "category": "layout",
+        "breakpoint": "mobile-375",
+        "description": "Logo properly constrained on mobile. max-h-[26px] matches Figma's 25.599px (0.401px difference, within tolerance).",
+        "verified": true
+      },
+      {
+        "id": "PC-014",
+        "category": "layout",
+        "breakpoint": "mobile-375",
+        "description": "SEP mobile button: bg-charcoal, rounded-full, p-4 (16px), gap-3, text-white uppercase + ExternalArrow.svg. Matches Figma's rounded-[119px] p-16.",
+        "verified": true
+      },
+      {
+        "id": "PC-015",
+        "category": "spacing",
+        "breakpoint": "mobile-375",
+        "description": "Gap between SEP button and nav bar: gap-2 (8px). Figma: gap-8. Exact match.",
+        "verified": true
+      },
+      {
+        "id": "PC-016",
+        "category": "layout",
+        "breakpoint": "mobile-375",
+        "description": "Mobile toggle (hamburger) button present with correct positioning. md:hidden, aria attributes present.",
+        "verified": true
+      },
+      {
+        "id": "PC-017",
+        "category": "layout",
+        "breakpoint": "mobile-375",
+        "description": "Nav bar padding on mobile: px-8 (32px) py-4 (16px). Matches Figma.",
+        "verified": true
+      }
+    ],
+    "contentResilienceVerification": {
+      "status": "PASS",
+      "details": "The logo now has proper CSS constraints (max-height + object-contain) ensuring the header maintains correct proportions regardless of the uploaded image's aspect ratio. Tested with a square favicon image -- the logo remains constrained and the nav bar stays compact."
+    },
+    "screenshots": {
+      "implementation": {
+        "desktop-1440": ".taktician-project/reports/blocks/header/screenshots/header-qa-r5-1440w.png",
+        "mobile-375": ".taktician-project/reports/blocks/header/screenshots/header-qa-r5-375w.png"
+      },
+      "figma": {
+        "desktop-header": "Figma node 785:34245",
+        "mobile-closed": "Figma node 801:58305"
+      }
+    },
+    "codeVerification": {
+      "filesReviewed": [
+        "blocks/Header/HeaderMain/HeaderMain.php",
+        "blocks/Header/HeaderMain/HeaderMain.tsx"
+      ],
+      "fixConfirmed": true,
+      "fixDetails": {
+        "php": {
+          "file": "blocks/Header/HeaderMain/HeaderMain.php",
+          "line": 60,
+          "classes": "block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:max-h-[58px] max-md:**:max-h-[26px] **:object-contain shrink-0"
+        },
+        "tsx": {
+          "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+          "lines": [593, 604],
+          "classes": "block self-stretch w-auto **:w-auto **:max-w-full **:h-full **:max-h-[58px] max-md:**:max-h-[26px] **:object-contain shrink-0"
+        },
+        "syncStatus": "PHP and TSX classes are identical"
+      }
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

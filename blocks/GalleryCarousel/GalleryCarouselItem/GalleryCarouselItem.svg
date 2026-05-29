@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Image frame -->
+	<path d="M2,4v16h20V4H2ZM21,19H3V5h18v14Z"/>
+	<!-- Mountain/landscape icon -->
+	<polygon points="6,16 10,10 14,16"/>
+	<polygon points="13,16 16,12 19,16"/>
+	<!-- Sun (filled square instead of circle) -->
+	<rect x="16" y="7" width="3" height="3"/>
+</svg>

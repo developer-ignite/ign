@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "mode": "edit",
+  "blockName": "CardsGrid",
+  "blockNameKebab": "cards-grid",
+  "blockPath": "blocks/CardsGrid",
+  "reportDir": ".taktician-project/reports/blocks/cards-grid",
+  "stateDir": ".taktician-project/reports/blocks/cards-grid/state",
+  "phase": "review",
+  "status": "complete",
+  "revisionCycle": 0,
+  "maxRevisionCycles": 3,
+  "testPage": {
+    "url": "https://ign.localhost/test-cards-grid/",
+    "pageId": 104,
+    "verifiedBlockCount": 0
+  },
+  "figma": {
+    "url": null,
+    "nodeId": {
+      "desktop": "811-58775",
+      "mobile": "811-59472"
+    },
+    "availability": {}
+  },
+  "guidance": {},
+  "editContext": ".taktician-project/reports/blocks/cards-grid/state/context-2026-02-12-211658.json",
+  "changeRequest": "Replace before:bg-charcoal with before:bg-dark-pattern in TSX and PHP dark mode classes",
+  "agentOutputs": [
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-18-150400",
+      "status": "PASS",
+      "summary": "bg-dark-pattern on 3 dark mode variations. Zero bg-charcoal on :before."
+    }
+  ],
+  "latestOutputs": {
+    "planning": null,
+    "developer": null,
+    "functionalQa": null,
+    "designQa": null
+  },
+  "screenshots": {
+    "qaScreenshots": null,
+    "finalScreenshots": null
+  },
+  "unresolvedIssues": [],
+  "timestamps": {
+    "started": "2026-02-12T21:16:58Z",
+    "lastUpdated": "2026-02-18T23:03:27.857Z"
+  },
+  "agentSessions": {}
+}

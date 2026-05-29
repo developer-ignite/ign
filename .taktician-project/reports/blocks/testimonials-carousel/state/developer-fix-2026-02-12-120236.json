@@ -1,0 +1,58 @@
+{
+  "envelope": {
+    "agent": "developer",
+    "blockName": "TestimonialsCarousel",
+    "timestamp": "2026-02-12T12:02:36Z",
+    "type": "fix"
+  },
+  "output": {
+    "mode": "fix",
+    "summary": "Fixed CSS regression caused by the initial refactor. When removing .modal-close-btn from swiper.css, I accidentally removed DynamicContentCarousel-specific CSS rules that were below it. These rules have been restored to blocks/DynamicContentCarousel/DynamicContentCarousel.css where they belong.",
+    "issue": {
+      "description": "During the initial CSS refactor, when removing .modal-close-btn styles from resources/css/screen/swiper.css (lines 96-144), I also inadvertently removed the DynamicContentCarousel hover zoom effect and its prefers-reduced-motion override that appeared after the modal-close-btn rules in the original swiper.css file.",
+      "impact": "DynamicContentCarousel card images would no longer have the hover zoom effect (scale 1.05 on hover) and the reduced-motion accessibility override was missing.",
+      "rootCause": "Edit operation removed too many lines - removed both .modal-close-btn AND the DynamicContentCarousel rules that followed it."
+    },
+    "fixesApplied": [
+      {
+        "file": "/var/www/ign/wp-content/themes/ign/blocks/DynamicContentCarousel/DynamicContentCarousel.css",
+        "change": "Added missing hover zoom effect and prefers-reduced-motion override",
+        "details": "Appended three CSS rules after the existing height chain rule: (1) transition: transform 0.3s ease for .card-post img and .card-team-member img, (2) transform: scale(1.05) on hover, (3) @media (prefers-reduced-motion: reduce) block to disable transitions"
+      }
+    ],
+    "filesModified": [
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/blocks/DynamicContentCarousel/DynamicContentCarousel.css",
+        "purpose": "Restored missing hover zoom effect and reduced-motion override that were accidentally removed from swiper.css during the initial refactor"
+      }
+    ],
+    "filesCreated": [],
+    "verification": {
+      "swiperCssClean": true,
+      "swiperCssDetails": "Confirmed resources/css/screen/swiper.css has no orphaned DynamicContentCarousel references. The @media (prefers-reduced-motion: reduce) block only contains swiper-wrapper, carousel-nav-btn::before, and swiper-pagination-progressbar rules - all appropriate for that file.",
+      "dynamicContentCarouselComplete": true,
+      "dynamicContentCarouselDetails": "DynamicContentCarousel.css now contains: (1) equal-height cards via height chain, (2) card image hover zoom effect with 0.3s transition, (3) scale(1.05) on hover, (4) prefers-reduced-motion override to disable transitions"
+    },
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Asset size warnings for js/editor.js (325 KiB) - pre-existing",
+        "Entrypoint size warnings - pre-existing",
+        "Webpack performance recommendations - pre-existing"
+      ]
+    },
+    "qaVerificationNeeded": [
+      "DynamicContentCarousel card images have hover zoom effect (scale 1.05)",
+      "Hover zoom transition is smooth (0.3s ease)",
+      "prefers-reduced-motion disables the zoom transition",
+      "No visual regressions on DynamicContentCarousel",
+      "TestimonialsCarousel modal close button still functions correctly (from previous refactor)"
+    ],
+    "lessonsLearned": [
+      "When removing a block of CSS from a shared file, carefully verify what comes after the target block to ensure no unrelated rules are accidentally removed",
+      "Always read sufficient context (more lines) when performing multi-line deletions to catch adjacent unrelated rules",
+      "Consider using more targeted edit operations or multiple smaller edits instead of one large removal when the boundaries are unclear"
+    ]
+  }
+}

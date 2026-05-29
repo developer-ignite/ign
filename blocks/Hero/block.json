@@ -1,0 +1,100 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/hero",
+  "title": "Hero",
+  "category": "takt-theme",
+  "description": "A hero section with gradient background and optional quick navigation",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "blockVariation": {
+      "type": "string",
+      "default": "primary",
+      "enum": ["primary", "secondary"]
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "buttons": {
+      "type": "array",
+      "default": [
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "primary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "secondary",
+          "title": "",
+          "label": ""
+        },
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "tertiary",
+          "title": "",
+          "label": ""
+        }
+      ]
+    },
+    "image": {
+      "type": "object",
+      "default": {
+        "id": null,
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    },
+    "enableQuickNav": {
+      "type": "boolean",
+      "default": true
+    },
+    "showBreadcrumbs": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "blockVariation": "primary",
+      "heading": "Your Student Union.\nReal Support, Real Results.",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.",
+      "enableQuickNav": true,
+      "image": {
+        "id": "https://picsum.photos/id/957/1440/800",
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    },
+    "innerBlocks": [
+      {
+        "name": "takt/quick-navigation",
+        "attributes": {
+          "title": "I Want Support With"
+        }
+      }
+    ]
+  }
+}

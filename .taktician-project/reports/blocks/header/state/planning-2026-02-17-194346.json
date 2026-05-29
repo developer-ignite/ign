@@ -1,0 +1,96 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-17-194346",
+  "status": "complete",
+  "severity": "none",
+  "output": {
+    "summary": "Five fixes to the Header block: (1) constrain fixed header to container width, (2) add proper z-index stacking for dropdowns, (3) add gap between dropdown panel and header bar, (4) close dropdowns on click-outside within header, (5) full keyboard/ARIA audit for WAI-ARIA navigation menubar pattern.",
+    "fileChanges": [
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "action": "modify",
+        "description": "Fix fixed-header width constraint and z-index on the header-main wrapper",
+        "details": "When position:fixed is applied via the .scrolling classes, the header currently uses left-0/right-0 which stretches it to full viewport. Instead, it needs to be constrained to the container width. Replace `left-0 right-0` with `left-1/2 -translate-x-1/2 w-(--max-container)` (using the existing --max-container CSS variable from spacing.css) so the fixed header matches the site container width. Also increase z-index from z-150 to z-200 on the header-main element to ensure it sits above all page content, and add a separate z-index (z-[210]) for the dropdown submenus so they render above even the fixed header bar.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "action": "modify",
+        "description": "Mirror the same fixed-header width and z-index changes in the editor TSX",
+        "details": "Update the cn() classes on the header-main div to match the PHP changes: replace left-0/right-0 with the container-constrained centering approach, and update z-index values. This keeps TSX/PHP in sync.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+        "action": "modify",
+        "description": "Add dropdown gap and increase submenu z-index",
+        "details": "On the .header-main-item-submenu div, change md:mt-4 to md:mt-6 (24px gap between header bar bottom and dropdown panel top, matching design). Also change md:z-50 to md:z-[210] so submenus render above the fixed header and other page content. Add a pseudo-element bridge or padding-top approach to maintain hover continuity across the gap (invisible hit-area so mouse doesn't lose hover when crossing the gap).",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+        "action": "modify",
+        "description": "Mirror dropdown gap and z-index changes in TSX",
+        "details": "Update the submenu container classes to match PHP: mt-6 gap, z-[210], and the gap-bridge approach.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.js",
+        "action": "modify",
+        "description": "Fix click-outside-dropdown behavior and keyboard navigation audit",
+        "details": "Five changes needed in the frontend JS:\n\n1. CLICK OUTSIDE DROPDOWN: The current document click handler (line 418) only closes submenus when clicking outside the entire header. Change it to close submenus when clicking outside the specific dropdown panel AND outside its trigger button. This means: if the click target is not inside a .header-main-item-submenu and not a .header-main-item-button (or descendant of one), close all open submenus.\n\n2. MENUBAR KEYBOARD NAVIGATION (Left/Right arrows): When focus is on a top-level menu button, Left/Right arrow keys should move focus to the adjacent top-level menu button. Currently only ArrowDown/ArrowUp open the submenu. Add Left/Right arrow handling on the menubar level.\n\n3. SUBMENU Left/Right ARROWS: When focus is inside a submenu, Left/Right arrow keys should close the current submenu and move to the adjacent top-level item (and optionally open that item's submenu). Currently not implemented.\n\n4. HOME/END ON MENUBAR: Home key should move focus to first top-level item, End to last. Currently only implemented inside submenus.\n\n5. TAB BEHAVIOR: Pressing Tab while a submenu is open should close the submenu and move focus naturally to the next focusable element. This is partially implemented but should be verified to work correctly with the new click-outside logic.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "layout",
+        "decision": "Use left-1/2 -translate-x-1/2 w-(--max-container) to constrain fixed header to container width",
+        "source": "existing-pattern",
+        "evidence": "The theme defines --max-container in spacing.css as min(calc(100% - 2*gutter), largest-width). The .container utility uses this variable. Reusing it for the fixed header ensures consistent width.",
+        "recommendation": "Use the existing --max-container CSS variable rather than duplicating the container width logic",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-002",
+        "category": "spacing",
+        "decision": "Dropdown gap set to md:mt-6 (24px) between header bar bottom and dropdown top",
+        "source": "user-request",
+        "evidence": "User reports design shows a gap between dropdown panel and header bar. The current md:mt-4 (16px) is close but the design intent is for a visible gap. 24px (mt-6) provides a clear visual separation while remaining proportional to the header's py-4 (16px) internal padding.",
+        "recommendation": "Use mt-6 (24px). If the design specifies a different exact value, this can be adjusted. A pseudo-element bridge (::before on the submenu with height equal to the gap) preserves hover continuity so the dropdown doesn't close when mousing from the button to the panel.",
+        "needsUserInput": true
+      },
+      {
+        "id": "DEC-003",
+        "category": "layout",
+        "decision": "Z-index stacking: header-main z-200, dropdown submenus z-[210]",
+        "source": "user-request",
+        "evidence": "User reports dropdown submenus render behind other page elements. Current z-150 is insufficient. Moving to z-200 for the header and z-[210] for dropdowns establishes clear stacking above typical page content (which usually sits at z-0 to z-50).",
+        "recommendation": "z-200 for header, z-[210] for submenus. This leaves room for modals/overlays at z-[300+].",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-004",
+        "category": "behavior",
+        "decision": "Close dropdown on any click outside the dropdown panel, including clicks within the header but outside the dropdown",
+        "source": "user-request",
+        "evidence": "User explicitly reports that clicking inside the header but outside an open dropdown doesn't close it. Current JS only closes on clicks outside the entire header element.",
+        "recommendation": "Change the click handler to check if the click is outside both the submenu panel and its trigger button, rather than outside the entire header.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-005",
+        "category": "behavior",
+        "decision": "Implement WAI-ARIA Navigation Menubar keyboard pattern",
+        "source": "user-request",
+        "evidence": "User requests full keyboard navigation audit. The current implementation has ArrowDown/ArrowUp for opening submenus and navigating within them, plus Escape to close. Missing: Left/Right arrows to move between top-level items, Home/End on the menubar level, and proper roving tabindex on menubar items.",
+        "recommendation": "Implement the WAI-ARIA menubar pattern: Left/Right arrows navigate between top-level items, ArrowDown opens submenu and focuses first item, ArrowUp opens submenu and focuses last item, Home/End move to first/last top-level item, Escape closes submenu and returns focus to trigger. Consider adding role=menubar to the top-level ul, role=menuitem to top-level buttons/links, and managing roving tabindex (tabindex=0 on active item, tabindex=-1 on others).",
+        "needsUserInput": false
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

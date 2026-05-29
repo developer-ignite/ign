@@ -1,0 +1,169 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-13-201639",
+  "status": "PASS",
+  "blockName": "Form",
+  "output": {
+    "summary": {
+      "checksRun": 9,
+      "checksPassed": 9,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "focusAreas": [
+      "Verify aria-labelledby still added correctly by theme_block_props",
+      "Verify heading element has matching id attribute with pattern {block-id}-heading",
+      "Verify ThemeHeading renders correctly without headingId prop",
+      "Verify both layout modes (beside/above) still work"
+    ],
+    "contentComparison": {
+      "rawContent": {
+        "changed": null,
+        "isNew": true,
+        "message": "No previous snapshot found",
+        "codeModified": null,
+        "canSkipTests": false
+      },
+      "html": {
+        "changed": null,
+        "isNew": true,
+        "message": "No previous snapshot found",
+        "codeModified": null,
+        "canSkipTests": false
+      }
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "Build completed successfully with no TypeScript errors. Only pre-existing asset size warnings present."
+      },
+      "lint": {
+        "status": "pass",
+        "details": "Only pre-existing warnings for experimental API usage (__experimentalToggleGroupControl, __experimentalToggleGroupControlOption). No new errors or warnings introduced by the changes to Form.tsx or parts/ThemeHeading.tsx."
+      },
+      "registration": {
+        "status": "pass",
+        "tool": "taktician_validate_registration",
+        "details": "All checks passed: schema valid, naming correct, file references exist, no child block issues, attribute types valid."
+      },
+      "ariaLabelledby": {
+        "status": "pass",
+        "details": "Verified that theme_block_props() automatically adds aria-labelledby to section wrapper. All 7 form block instances have correct aria-labelledby attributes pointing to heading IDs with pattern 'auto-{hash}-heading'.",
+        "verification": {
+          "method": "taktician_page_audit + node script",
+          "sampleCheck": {
+            "section_aria_labelledby": "auto-baebd3449b6387e538cb2a4e40cf2a79-heading",
+            "heading_id": "auto-baebd3449b6387e538cb2a4e40cf2a79-heading",
+            "match": true
+          },
+          "allInstancesVerified": true
+        }
+      },
+      "headingId": {
+        "status": "pass",
+        "details": "All heading elements have id attributes matching the pattern expected by theme_block_region_id(). ThemeHeading.php correctly generates IDs using theme_block_region_id() without requiring a headingId prop override.",
+        "verification": {
+          "allHeadingsHaveIds": true,
+          "idsMatchAriaLabelledby": true
+        }
+      },
+      "themeHeadingRendering": {
+        "status": "pass",
+        "details": "ThemeHeading component renders correctly in both TSX (editor) and PHP (frontend) without the headingId prop. No visual or functional regressions observed."
+      },
+      "layoutModes": {
+        "status": "pass",
+        "details": "Both layout modes (beside and above) render correctly across all breakpoints.",
+        "variations": {
+          "beside": {
+            "status": "pass",
+            "instances": 4,
+            "details": "Two-column layout with sticky heading on left, form on right. Grid classes and sticky positioning work correctly."
+          },
+          "above": {
+            "status": "pass",
+            "instances": 2,
+            "details": "Stacked centered layout with max-width constraint (max-w-175). Text alignment and centering work correctly."
+          }
+        }
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "tool": "taktician_validate_sync",
+        "details": "TSX and PHP templates produce identical HTML structure. No attribute extraction anti-patterns found.",
+        "warnings": [
+          "Pre-existing: Missing @var docblock for headingPosition, formId (minor - doesn't affect functionality)",
+          "Pre-existing: Structure mismatch warning (false positive - TSX includes InspectorControls which is editor-only)"
+        ]
+      },
+      "screenshots": {
+        "status": "pass",
+        "details": "Full-page screenshots captured at 375px, 768px, 1024px, 1440px across chromium, firefox, and webkit. Total 12 screenshots saved.",
+        "path": ".taktician-project/reports/blocks/form/screenshots/2026-02-13-201556"
+      }
+    },
+    "verificationResults": {
+      "codeChanges": {
+        "Form.php": [
+          "Removed redundant $heading_id variable",
+          "Removed manual aria-labelledby prop from theme_block_props()",
+          "Removed headingId prop from ThemeHeading args"
+        ],
+        "Form.tsx": [
+          "Removed manual aria-labelledby from useBlockProps",
+          "Removed headingId prop from ThemeHeading component"
+        ],
+        "ThemeHeading.php": [
+          "Removed headingId prop support",
+          "Simplified heading id generation to always use theme_block_region_id()"
+        ],
+        "ThemeHeading.tsx": [
+          "Removed headingId from type definition",
+          "Removed headingId from destructured props",
+          "Removed conditional id attribute from heading element"
+        ]
+      },
+      "functionalityIntact": {
+        "ariaLabelledbyAutomatic": "PASS - theme_block_props() adds aria-labelledby automatically",
+        "headingIdGeneration": "PASS - theme_block_region_id() generates correct IDs",
+        "idsMatch": "PASS - aria-labelledby values match heading id values",
+        "besideLayout": "PASS - Two-column layout with sticky heading works",
+        "aboveLayout": "PASS - Centered stacked layout works",
+        "themeHeadingWithoutProp": "PASS - ThemeHeading renders correctly without headingId prop"
+      }
+    },
+    "testPage": {
+      "url": "https://ign.localhost/test-form/",
+      "pageId": 188,
+      "blockCount": 7,
+      "variations": [
+        "Beside Layout - Full Content",
+        "Beside Layout - Minimal (Required Only)",
+        "Above Layout - Full Content",
+        "Above Layout - Minimal",
+        "Long Content - Beside Layout",
+        "No Form Selected",
+        "Empty Optional Fields"
+      ]
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build compiles without errors",
+      "No new lint warnings or errors",
+      "Block registration valid",
+      "aria-labelledby automatically added by theme_block_props()",
+      "Heading elements have correct id attributes",
+      "aria-labelledby values match heading id values",
+      "ThemeHeading renders without headingId prop",
+      "Beside layout mode works correctly",
+      "Above layout mode works correctly",
+      "TSX/PHP sync maintained",
+      "Screenshots captured successfully"
+    ]
+  },
+  "tokensUsed": 66700,
+  "questionsForUser": []
+}

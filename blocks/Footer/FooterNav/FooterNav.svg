@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="footer-nav" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<rect x="2" y="4" width="6" height="1"/>
+	<rect x="2" y="7" width="5" height="1"/>
+	<rect x="2" y="10" width="4" height="1"/>
+	<rect x="9" y="4" width="6" height="1"/>
+	<rect x="9" y="7" width="5" height="1"/>
+	<rect x="9" y="10" width="4" height="1"/>
+	<rect x="16" y="4" width="6" height="1"/>
+	<rect x="16" y="7" width="5" height="1"/>
+	<rect x="16" y="10" width="4" height="1"/>
+</svg>

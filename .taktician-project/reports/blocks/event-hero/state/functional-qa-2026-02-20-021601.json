@@ -1,0 +1,96 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-20-021700",
+  "status": "PASS",
+  "blockName": "EventHero",
+  "output": {
+    "mode": "post-fix-reverification",
+    "overallResult": "PASS",
+    "fixesVerified": [
+      "FQA-001",
+      "FQA-002"
+    ],
+    "testPageUrl": "https://ign.localhost/test-event-hero/",
+    "screenshot": ".taktician-project/reports/blocks/event-hero/screenshots/2026-02-20-021630/event-hero-1440w.png",
+    "buildVerification": {
+      "status": "PASS",
+      "errors": 0,
+      "warnings": 11,
+      "warningDetails": "All warnings are pre-existing across multiple blocks (react-hooks/exhaustive-deps). EventHero-specific warnings (lines 176) unchanged from prior run — same pattern as PostHero, not a regression."
+    },
+    "syncVerification": {
+      "status": "PASS",
+      "rootWrapperWarning": "Known false-positive (InspectorControls vs section) — same as PostHero, pre-existing.",
+      "allOtherChecks": "pass"
+    },
+    "fixVerification": {
+      "FQA-001": {
+        "issue": "PHP native date() used for date comparison — should use wp_date() for site-timezone consistency",
+        "status": "FIXED",
+        "evidence": [
+          "EventHero.php line 49: wp_date('Y-m-d', $start_ts) used for all-day same-day check",
+          "EventHero.php line 50: wp_date('Y-m-d', $end_ts) used in ISO interval suffix",
+          "EventHero.php line 63: wp_date('Y-m-d', $start_ts) === wp_date('Y-m-d', $end_ts) for same-day timed check",
+          "EventHero.php line 64/68: wp_date('Y-m-d\\TH:i', ...) used for ISO datetime attribute values",
+          "No remaining bare date() calls in the date logic block — confirmed by code review"
+        ]
+      },
+      "FQA-002": {
+        "issue": "Date/time rendered in plain <p> tags, no <time datetime='...'> element for machine readability",
+        "status": "FIXED",
+        "evidence": {
+          "php": {
+            "newVariable": "$date_time_iso built with wp_date() — ISO 8601 interval format for ranges (e.g. '2026-02-20T18:00/2026-02-20T21:00'), date-only for all-day events",
+            "element": "EventHero.php line 162: <time datetime=\"<?php echo esc_attr($date_time_iso); ?>\"> wraps display text — correctly escaped with esc_attr()",
+            "guardedBy": "if ($date_time_display) conditional at line 160 — <time> only renders when date is available"
+          },
+          "tsx": {
+            "newHelper": "buildIsoDatetime() function (lines 28–57) generates ISO datetime string covering all four cases: all-day single, all-day multi-day, timed single, timed range",
+            "element": "EventHero.tsx line 306: <time dateTime={dateTimeIso || undefined}> — undefined when no startDate avoids empty datetime=\"\" attribute",
+            "isoFormat": "Interval notation with '/' separator used for ranges — valid HTML datetime attribute format per spec"
+          }
+        }
+      }
+    },
+    "regressionCheck": {
+      "status": "PASS",
+      "notes": [
+        "No new issues introduced by the fixes",
+        "All existing passing checks still pass",
+        "FQA-003 (TSX always renders date-time line; PHP guards with if) remains a noted item — not a regression, not worsened by these fixes",
+        "FQA-004 (lower group div always renders) unchanged — note-level, no action needed"
+      ]
+    },
+    "visualVerification": {
+      "status": "PASS",
+      "screenshotReviewed": true,
+      "observations": [
+        "All 6 block instances render correctly at 1440px — gradient, hero layout, and title all intact",
+        "No visual regressions from the PHP/TSX changes",
+        "Rendering is identical to prior QA run — fixes were purely structural/semantic (wp_date, time element), not visual"
+      ]
+    },
+    "openIssues": [
+      {
+        "id": "FQA-003",
+        "severity": "note",
+        "status": "open — acknowledged, no fix required",
+        "description": "TSX always renders the date-time <time> element (with 'Event Date' placeholder when no startDate). PHP guards with if($date_time_display). Minor editor-vs-frontend discrepancy, harmless in practice since TEC always populates _EventStartDate."
+      },
+      {
+        "id": "FQA-004",
+        "severity": "note",
+        "status": "open — acknowledged, no fix required",
+        "description": "Lower group <div class='mt-12 flex flex-col gap-1'> always renders even when all children are absent. Not a real-world issue."
+      }
+    ],
+    "issuesSummary": {
+      "critical": 0,
+      "major": 0,
+      "minor": 0,
+      "notes": 2
+    }
+  },
+  "tokensUsed": 18000,
+  "questionsForUser": []
+}

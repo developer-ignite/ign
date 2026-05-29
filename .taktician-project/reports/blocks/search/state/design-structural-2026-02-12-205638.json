@@ -1,0 +1,279 @@
+{
+  "agent": "design",
+  "timestamp": "2026-02-12-205638",
+  "status": "complete",
+  "blockName": "Search",
+  "output": {
+    "mode": "structural-analysis",
+    "figma": {
+      "desktopNodeId": "678:33982",
+      "mobileNodeId": null
+    },
+    "diagram": "+=============================================================+  <- bg: light/cream (page bg), no block bg\n|  padding: 64px (all sides)                                  |\n|                                                             |\n|  +-------------------------------------------------------+  |\n|  |  px: 32px, rounded: 25px, gap: 32px (vertical)        |  |\n|  |                                                       |  |\n|  |  +---------------------------------------------------+|  |\n|  |  |  HEADER AREA  (gap: 64px from heading to filters)  ||  |\n|  |  |                                                   ||  |\n|  |  |  +-----------------------------------------------+||  |\n|  |  |  | HEADING: \"Search Results\"                      |||  |  <- Anton Regular, 64px, #1f1f1d, line-height: 1.1\n|  |  |  +-----------------------------------------------+||  |\n|  |  |  gap: 64px                                        ||  |\n|  |  |  +-----------------------------------------------+||  |\n|  |  |  | FILTERS ROW  (gap: 16px vertical between rows) |||  |\n|  |  |  |                                                |||  |\n|  |  |  |  ROW 1: Search + Filter controls               |||  |\n|  |  |  |  +----------------------------+ +------+ +---+ |||  |\n|  |  |  |  | [Q] Search               | | FILTER | |CLR| |||  |\n|  |  |  |  |                          | | BY  v  | |ALL| |||  |\n|  |  |  |  +----------------------------+ +------+ +---+ |||  |\n|  |  |  |  <- search: flex-1, h:51px, rounded-full       |||  |\n|  |  |  |     border: 1px solid #1f1f1d, bg: white       |||  |\n|  |  |  |     icon: 15px, search text: 16px, opacity:0.5 |||  |\n|  |  |  |  <- filter btn: border 1px #1f1f1d, rounded-full||  |\n|  |  |  |     p:16px, 16px uppercase medium              |||  |\n|  |  |  |  <- clear all: no border, 16px uppercase medium|||  |\n|  |  |  |                                                |||  |\n|  |  |  |  ROW 2: Results count                          |||  |\n|  |  |  |  +-------------------------------------------+ |||  |\n|  |  |  |  | 1-9 OF OVER 36 RESULTS (underlined)       | |||  |\n|  |  |  |  +-------------------------------------------+ |||  |\n|  |  |  |  <- h:51px, p:16px, 16px uppercase medium      |||  |\n|  |  |  |     text-decoration: underline                  |||  |\n|  |  |  +-----------------------------------------------+||  |\n|  |  +---------------------------------------------------+|  |\n|  |                                                       |  |\n|  |  +---------------------------------------------------+|  |\n|  |  |  RESULTS LIST  (gap: 32px between cards)           ||  |\n|  |  |                                                   ||  |\n|  |  |  +-----------------------------------------------+||  |\n|  |  |  | SEARCH RESULT CARD (x9, 1 column)              |||  |\n|  |  |  | border: 1px solid #1f1f1d, rounded: 25px       |||  |\n|  |  |  | p: 24px, gap: 24px (internal)                  |||  |\n|  |  |  |                                               |||  |\n|  |  |  |  BREADCRUMBS > BREADCRUMBS  (NO BREADCRUMB*)   |||  |  <- 14px uppercase medium, #1f1f1d\n|  |  |  |                                               |||  |\n|  |  |  |  +----------+                                 |||  |\n|  |  |  |  |TYPE OF   |  <- Post type pill               |||  |  <- bg: #b2eae7, border: 1px #00b8b0\n|  |  |  |  |RESULT    |     rounded-full, p:8px           |||  |     14px uppercase medium, #1f1f1d\n|  |  |  |  +----------+                                 |||  |\n|  |  |  |                                               |||  |\n|  |  |  |  TITLE (NOT IN DESIGN*)                        |||  |  <- spec override: display title below post type\n|  |  |  |                                               |||  |\n|  |  |  |  Lorem ipsum dolor sit finances consectetur.   |||  |  <- 16px medium, #1f1f1d, line-height: 1.5\n|  |  |  |     (excerpt - bold keyword highlighting)       |||  |     search match in bold (700)\n|  |  |  |                                               |||  |\n|  |  |  |  LEARN MORE ->                                 |||  |  <- 16px uppercase medium, #1f1f1d\n|  |  |  |     (tertiary button with arrow)                |||  |     arrow: ~20x16px rotated chevron\n|  |  |  +-----------------------------------------------+||  |\n|  |  |  (8 more cards, same structure)                    ||  |\n|  |  +---------------------------------------------------+|  |\n|  |                                                       |  |\n|  |  +---------------------------------------------------+|  |\n|  |  |  FOOTER: Pagination + Per Page  (justify-between)  ||  |\n|  |  |                                                   ||  |\n|  |  |  LEFT: Pagination                                  ||  |\n|  |  |  +---+---+---+---+---+---+                        ||  |\n|  |  |  | 1 | 2 | 3 | 4 |...| > |  <- page numbers       ||  |  <- 12px medium, #1f1f1d, h:61px, px:32px py:24px\n|  |  |  +---+---+---+---+---+---+                        ||  |\n|  |  |  [=======-----------]  <- progress bar              ||  |  <- h:4px, rounded:10px\n|  |  |     bg: rgba(31,31,29,0.5)                         ||  |     active: gradient #b8ff34 -> #47cbf2\n|  |  |     active width: ~63px / 399px total              ||  |\n|  |  |                                                   ||  |\n|  |  |  RIGHT: Show [9 v] Per Page                        ||  |\n|  |  |  <- gap: 8px, 16px uppercase medium                ||  |  <- dropdown: border 1px #1f1f1d, rounded-full\n|  |  |     same pill style as filter dropdown              ||  |     p:16px, with chevron\n|  |  +---------------------------------------------------+|  |\n|  +-------------------------------------------------------+  |\n+=============================================================+\n\n* Per spec overrides:\n  - No breadcrumb on card\n  - Title displayed below post type (not in Figma design)\n  - Pill follows page accent color\n  - Excerpt below title\n  - Learn more button below excerpt\n  - 1 post per line (single column)\n  - Learn more / pagination center aligned\n  - Show N per page at top, on same filter line\n  - Block title and search placeholder editable\n  - Option for load more button or pagination\n  - Option to display filters or not\n  - Option to display show N per page or not\n  - Filters show all searchable public post types\n  - Filter by button filters by post type\n  - Pagination style applied to default WP pagination",
+    "measurements": [
+      { "element": "Root container", "property": "padding", "value": "64px" },
+      { "element": "Inner wrapper", "property": "padding-x", "value": "32px" },
+      { "element": "Inner wrapper", "property": "border-radius", "value": "25px" },
+      { "element": "Inner wrapper", "property": "gap (vertical)", "value": "32px" },
+      { "element": "Header section", "property": "gap (heading to filters)", "value": "64px" },
+      { "element": "Heading", "property": "font-family", "value": "Anton Regular" },
+      { "element": "Heading", "property": "font-size", "value": "64px" },
+      { "element": "Heading", "property": "line-height", "value": "1.1" },
+      { "element": "Heading", "property": "font-weight", "value": "400" },
+      { "element": "Heading", "property": "color", "value": "#1f1f1d" },
+      { "element": "Filters area", "property": "gap (between rows)", "value": "16px" },
+      { "element": "Filter row 1", "property": "gap (between items)", "value": "16px" },
+      { "element": "Search field", "property": "height", "value": "51px" },
+      { "element": "Search field", "property": "border", "value": "1px solid #1f1f1d" },
+      { "element": "Search field", "property": "border-radius", "value": "119px (full pill)" },
+      { "element": "Search field", "property": "background", "value": "#ffffff (white)" },
+      { "element": "Search field", "property": "padding", "value": "8px 16px" },
+      { "element": "Search field", "property": "flex", "value": "1 0 0 (fills remaining space)" },
+      { "element": "Search icon", "property": "size", "value": "~15px" },
+      { "element": "Search placeholder", "property": "font", "value": "Roboto Medium, 16px, opacity: 0.5" },
+      { "element": "Filter by button", "property": "border", "value": "1px solid #1f1f1d" },
+      { "element": "Filter by button", "property": "border-radius", "value": "119px (full pill)" },
+      { "element": "Filter by button", "property": "padding", "value": "16px" },
+      { "element": "Filter by button", "property": "font", "value": "Roboto Medium, 16px, uppercase" },
+      { "element": "Filter by button", "property": "line-height", "value": "1.16" },
+      { "element": "Filter by chevron", "property": "size", "value": "12.6px x 7.1px" },
+      { "element": "Clear All button", "property": "padding", "value": "16px" },
+      { "element": "Clear All button", "property": "font", "value": "Roboto Medium, 16px, uppercase" },
+      { "element": "Clear All button", "property": "border", "value": "none" },
+      { "element": "Results count text", "property": "font", "value": "Roboto Medium, 16px, uppercase, underlined" },
+      { "element": "Results count text", "property": "height", "value": "51px" },
+      { "element": "Results count text", "property": "padding", "value": "16px" },
+      { "element": "Results list", "property": "gap", "value": "32px" },
+      { "element": "Result card", "property": "border", "value": "1px solid #1f1f1d" },
+      { "element": "Result card", "property": "border-radius", "value": "25px" },
+      { "element": "Result card", "property": "padding", "value": "24px" },
+      { "element": "Result card", "property": "internal gap", "value": "24px" },
+      { "element": "Card breadcrumbs", "property": "font", "value": "Roboto Medium, 14px, uppercase" },
+      { "element": "Card breadcrumbs", "property": "gap", "value": "8px (between items)" },
+      { "element": "Card breadcrumbs", "property": "color", "value": "#1f1f1d" },
+      { "element": "Card post type pill", "property": "background", "value": "#b2eae7 (accent-lighter)" },
+      { "element": "Card post type pill", "property": "border", "value": "1px solid #00b8b0 (accent-light)" },
+      { "element": "Card post type pill", "property": "border-radius", "value": "119px (full pill)" },
+      { "element": "Card post type pill", "property": "padding", "value": "8px" },
+      { "element": "Card post type pill", "property": "font", "value": "Roboto Medium, 14px, uppercase" },
+      { "element": "Card post type pill", "property": "color", "value": "#1f1f1d" },
+      { "element": "Card excerpt", "property": "font-family", "value": "Roboto Medium" },
+      { "element": "Card excerpt", "property": "font-size", "value": "16px" },
+      { "element": "Card excerpt", "property": "line-height", "value": "1.5" },
+      { "element": "Card excerpt", "property": "color", "value": "#1f1f1d" },
+      { "element": "Card excerpt bold match", "property": "font-weight", "value": "700 (bold)" },
+      { "element": "Learn More button", "property": "font", "value": "Roboto Medium, 16px, uppercase" },
+      { "element": "Learn More button", "property": "line-height", "value": "1.16" },
+      { "element": "Learn More button", "property": "color", "value": "#1f1f1d" },
+      { "element": "Learn More arrow", "property": "size", "value": "~20.5px x 15.9px" },
+      { "element": "Learn More button", "property": "gap (text to arrow)", "value": "8px" },
+      { "element": "Pagination numbers", "property": "font", "value": "Roboto Medium, 12px" },
+      { "element": "Pagination numbers", "property": "color", "value": "#1f1f1d" },
+      { "element": "Pagination numbers", "property": "cell size", "value": "71px wide x 61px tall" },
+      { "element": "Pagination numbers", "property": "cell padding", "value": "32px horizontal, 24px vertical" },
+      { "element": "Pagination next arrow", "property": "size", "value": "40px x 40px container" },
+      { "element": "Pagination progress bar", "property": "height", "value": "4px" },
+      { "element": "Pagination progress bar", "property": "border-radius", "value": "10px" },
+      { "element": "Pagination progress bar", "property": "background (track)", "value": "rgba(31,31,29,0.5)" },
+      { "element": "Pagination progress bar", "property": "background (fill)", "value": "linear-gradient(90deg, #b8ff34 0%, #47cbf2 100%)" },
+      { "element": "Pagination area", "property": "layout", "value": "justify-between (pagination left, per-page right)" },
+      { "element": "Show N per page", "property": "gap", "value": "8px" },
+      { "element": "Show N per page", "property": "font", "value": "Roboto Medium, 16px, uppercase" },
+      { "element": "Show N per page dropdown", "property": "border", "value": "1px solid #1f1f1d" },
+      { "element": "Show N per page dropdown", "property": "border-radius", "value": "119px (full pill)" },
+      { "element": "Show N per page dropdown", "property": "padding", "value": "16px" }
+    ],
+    "structure": [
+      {
+        "name": "Root",
+        "description": "<section> - full-width block container, light background",
+        "children": [
+          {
+            "name": "Container",
+            "description": "Max-width wrapper with horizontal padding (32px sides)",
+            "children": [
+              {
+                "name": "Header Area",
+                "description": "Contains heading + filter/search controls, gap 64px between heading and filters",
+                "children": [
+                  {
+                    "name": "Heading",
+                    "description": "Block title - Anton Regular 64px, editable. Text: 'Search Results' (default, editable per spec)"
+                  },
+                  {
+                    "name": "Filters Section",
+                    "description": "Contains search bar, filter button, clear all, and results count. Gap 16px between rows",
+                    "children": [
+                      {
+                        "name": "Search + Filter Row",
+                        "description": "Horizontal flex row, gap 16px. Search field fills available space.",
+                        "children": [
+                          {
+                            "name": "Search Input",
+                            "description": "Pill-shaped input (rounded-full) with search icon on left. Height 51px, white bg, 1px border #1f1f1d. Placeholder 'Search' (editable per spec). Per spec: search bar should be on its own row"
+                          },
+                          {
+                            "name": "Filter By Button",
+                            "description": "Pill button with chevron dropdown. 1px border #1f1f1d, rounded-full, 16px padding. Per spec: filters by post type, shows all searchable public post types. Per spec: displayed on new line below search"
+                          },
+                          {
+                            "name": "Clear All Button",
+                            "description": "Text-only button (no border), 16px padding. Uppercase medium. Per spec: shown when filters active"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Results Count Row",
+                        "description": "'1-9 OF OVER 36 RESULTS' - underlined text, 16px uppercase medium, height 51px. Shows pagination summary."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "Results List",
+                "description": "Single-column grid of search result cards, gap 32px",
+                "children": [
+                  {
+                    "name": "Search Result Card (repeated x9)",
+                    "description": "Full-width card with 1px border #1f1f1d, border-radius 25px, padding 24px, internal gap 24px. Per spec overrides: no breadcrumb, title below post type pill, excerpt below title.",
+                    "children": [
+                      {
+                        "name": "Post Type Pill",
+                        "description": "Tag/pill showing post type. Per spec: follows page accent color. In Figma: bg #b2eae7, border 1px #00b8b0. Rounded-full, 8px padding, 14px uppercase medium."
+                      },
+                      {
+                        "name": "Title",
+                        "description": "NOT in Figma design but required per spec override. Post title displayed below post type pill."
+                      },
+                      {
+                        "name": "Excerpt",
+                        "description": "Post excerpt text. 16px medium, line-height 1.5. Search keyword matches shown in bold (700 weight)."
+                      },
+                      {
+                        "name": "Learn More Button",
+                        "description": "Tertiary-style button with right arrow. 16px uppercase medium. Arrow ~20x16px rotated chevron. Gap 8px."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "Footer Area",
+                "description": "Contains pagination (left) and per-page selector (right), justify-between layout. Per spec: pagination/learn more should be center aligned. Per spec: Show N per page at top on same line as filter.",
+                "children": [
+                  {
+                    "name": "Pagination",
+                    "description": "Numbered page links (1, 2, 3, 4, ..., next arrow). Each cell 71x61px, px:32 py:24. 12px medium. Below: progress bar (4px tall, rounded 10px, gradient fill #b8ff34 -> #47cbf2 on rgba(31,31,29,0.5) track). Per spec: block should have option to choose between load more button or pagination. Per spec: pagination style should be applied to default WordPress pagination on the theme."
+                  },
+                  {
+                    "name": "Show N Per Page",
+                    "description": "'SHOW [9 v] PER PAGE' - text labels flanking a dropdown. Gap 8px. 16px uppercase medium. Dropdown: bordered pill with chevron. Per spec: should be at top, same line as filter. Per spec: block should have option to display or not."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "possiblyOptional": [
+      {
+        "element": "Breadcrumbs",
+        "reason": "Present in Figma design on each card, but spec override explicitly says 'no breadcrumb'",
+        "visualEvidence": "Visible in Figma as 'BREADCRUMBS > BREADCRUMBS' at top of each card"
+      },
+      {
+        "element": "Title on card",
+        "reason": "NOT present in Figma design, but spec override requires it: 'display title below post type'",
+        "visualEvidence": "Not visible in Figma screenshot"
+      },
+      {
+        "element": "Excerpt on card",
+        "reason": "Present in Figma as body text with bold keyword highlighting. Required per spec.",
+        "visualEvidence": "Visible in Figma as 'Lorem ipsum dolor sit finances consectetur.'"
+      },
+      {
+        "element": "Filters (display toggle)",
+        "reason": "Per spec: 'Block should have option to display filters or not'",
+        "visualEvidence": "Visible in Figma. Editor toggle required."
+      },
+      {
+        "element": "Show N per page (display toggle)",
+        "reason": "Per spec: 'Block should have option to display show N per page or not'",
+        "visualEvidence": "Visible in Figma at bottom right. Editor toggle required."
+      },
+      {
+        "element": "Results count text",
+        "reason": "Shows '1-9 OF OVER 36 RESULTS' with underline. Appears to be a summary of pagination state.",
+        "visualEvidence": "Visible in Figma on second row of filter area"
+      }
+    ],
+    "innerBlocks": [],
+    "layoutRecommendations": {
+      "approach": "Single-column layout (grid-cols-1) for all breakpoints. This is fundamentally different from the Archive block which uses multi-column grids. The Search block displays results as full-width list items stacked vertically with 32px gap.",
+      "responsive": [
+        "Desktop (1440px): Full layout as designed - heading, search bar on own row, filters below on new line, per-page selector on same line as filters (right-aligned), results in single column, pagination centered at bottom",
+        "Tablet (768px): Search bar stacks to full width, filter button and per-page selector stack or wrap. Cards remain single column. Pagination may need to simplify.",
+        "Mobile (375px): All elements stack vertically. Search bar full width. Filter button full width. Per-page selector full width or hidden. Pagination numbers reduce (mid_size: 0)."
+      ],
+      "specOverrideNotes": [
+        "CRITICAL: Search bar should be on its own row (separate from filter button)",
+        "CRITICAL: Filter by button filters by post type, shows all searchable public post types (not taxonomies like Archive block)",
+        "CRITICAL: Filters displayed on new line below search bar, like Archive block pattern",
+        "CRITICAL: On the card: no breadcrumb, pill with post type follows page accent color, display title below post type (not in design), display excerpt below title, display learn more button below excerpt",
+        "CRITICAL: 1 post per line with same card shape as design (border, rounded corners, padding)",
+        "CRITICAL: Learn more or pagination should be center aligned",
+        "CRITICAL: Show N per page at top, on same line as the filter",
+        "CRITICAL: Block should have option to choose between load more button or pagination",
+        "CRITICAL: Block should have option to display filters or not",
+        "CRITICAL: Block should have option to display show N per page or not",
+        "CRITICAL: Block title and search placeholder should be editable",
+        "CRITICAL: Pagination style should be applied to default WordPress pagination on the theme"
+      ],
+      "keyDifferencesFromArchive": [
+        "Search block searches ALL public post types, not a single configured post type",
+        "Filter is by post type (not taxonomy) - acts as a type selector rather than taxonomy facet",
+        "Single column card layout vs Archive's multi-column grid",
+        "Card content: post type pill + title (spec added) + excerpt + learn more (no image, no breadcrumb)",
+        "Search bar on its own dedicated row, filters on separate row below",
+        "Per-page selector moves to filter row (top), not pagination row (bottom)",
+        "Pagination component has a unique progress bar below numbers with gradient fill",
+        "Block heading is editable (Archive uses ThemeHeading with eyebrow/description/buttons)"
+      ],
+      "paginationDesign": {
+        "numbers": "Horizontal row of page number cells (71x61px each, px:32 py:24, 12px medium font)",
+        "ellipsis": "Shown as '...' in same cell style",
+        "nextArrow": "40x40px container with right-pointing arrow icon (gradient-filled circle in Figma)",
+        "progressBar": "4px tall bar below pagination numbers, full width of pagination area. Track: rgba(31,31,29,0.5) with 10px border-radius. Fill: gradient (#b8ff34 to #47cbf2), width proportional to current page / total pages. Left-rounded only on fill.",
+        "note": "This is a custom pagination pattern not seen in the Archive block. Should be built as a reusable pagination component or applied to WordPress default pagination via CSS."
+      }
+    },
+    "breakpointsAnalyzed": ["desktop (1440px)"],
+    "pendingQuestions": [
+      {
+        "id": "PQ-1",
+        "question": "No mobile Figma node was provided. How should the search bar, filters, and pagination reflow on mobile?",
+        "context": "Only desktop node 678:33982 was available. The spec says to 'infer from desktop'. The Archive block stacks filters vertically on mobile with max-sm:w-full.",
+        "visualEvidence": "Only desktop screenshot available.",
+        "impact": "Responsive behavior for search input, filter button, per-page selector, and pagination needs to be inferred from the Archive block reference patterns."
+      },
+      {
+        "id": "PQ-2",
+        "question": "The Figma design shows a gradient-filled circle for the pagination next arrow (green/teal gradient). Is this the same next-arrow icon used elsewhere in the theme, or a unique pagination-specific element?",
+        "context": "get_design_context shows a 40x40px frame (681:35117) containing the arrow. The gradient appears to be #b8ff34 -> #47cbf2, matching the progress bar gradient.",
+        "visualEvidence": "Visible in pagination screenshot as a gradient circle with right arrow.",
+        "impact": "Need to determine if this is a standard theme icon or needs a custom SVG/CSS treatment."
+      },
+      {
+        "id": "PQ-3",
+        "question": "The spec says 'pill with post type follows page accent color'. In Figma, the pill uses hardcoded #b2eae7 bg and #00b8b0 border (teal accent). Should the pill use the theme's accent-lighter/accent-light tokens which change per page accent, or the Figma teal colors?",
+        "context": "The Archive block's resource card uses accent-lighter bg with accent-light border on taxonomy pills. This would make the pill color dynamic based on page accent.",
+        "visualEvidence": "Figma shows teal (#b2eae7/#00b8b0) which matches the default accent colors in the theme.",
+        "impact": "Determines whether the pill color is dynamic (theme accent) or static (always teal)."
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

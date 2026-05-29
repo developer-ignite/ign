@@ -1,0 +1,192 @@
+{
+  "version": 1,
+  "mode": "edit",
+  "blockName": "WideSocialMedia",
+  "blockNameKebab": "wide-social-media",
+  "blockPath": "blocks/WideSocialMedia",
+  "reportDir": ".taktician-project/reports/blocks/wide-social-media",
+  "stateDir": ".taktician-project/reports/blocks/wide-social-media/state",
+  "phase": "review",
+  "status": "complete",
+  "revisionCycle": 0,
+  "maxRevisionCycles": 3,
+  "testPage": {
+    "url": "https://ign.localhost/test-wide-social-media/",
+    "pageId": 193,
+    "verifiedBlockCount": 9
+  },
+  "figma": {
+    "url": "https://www.figma.com/design/bpRK9A1l2nTbWfMg1pX5yK/IGN-%7C-WEBSITE--INTERNAL-?node-id=723-49698&m=dev",
+    "nodeId": "723:49698",
+    "availability": {
+      "desktop": "available",
+      "mobile": "none"
+    }
+  },
+  "guidance": {
+    "specContent": null,
+    "figmaAvailability": {
+      "mobile": "none"
+    },
+    "patternReferences": [],
+    "qualityExpectations": "default",
+    "skipPhases": [],
+    "conflictResolution": {}
+  },
+  "editContext": {
+    "blockMeta": {
+      "name": "takt/wide-social-media",
+      "title": "Wide Social Media",
+      "category": "takt-theme"
+    },
+    "attributes": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": null,
+        "description": "HTML anchor ID"
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "default": "",
+        "description": "Heading text on left side"
+      },
+      {
+        "name": "showLabel",
+        "type": "boolean",
+        "default": true,
+        "description": "Show/hide social media labels"
+      }
+    ],
+    "innerBlocks": [
+      "WideSocialMediaItem"
+    ],
+    "childAttributes": [
+      {
+        "name": "link",
+        "type": "object"
+      },
+      {
+        "name": "logoId",
+        "type": "number"
+      },
+      {
+        "name": "label",
+        "type": "string"
+      }
+    ],
+    "patterns": {
+      "usesShouldDisplay": true,
+      "usesRenameBlock": true,
+      "usesCn": true,
+      "usesThemeHeading": true,
+      "colorTokensUsed": [
+        "border-charcoal",
+        "text-charcoal"
+      ]
+    },
+    "testPageUrl": "https://ign.localhost/test-wide-social-media/"
+  },
+  "changeRequest": "Restore the horizontal gap between icons but keep zero vertical gap between wrapped rows. Use md:gap-x-4 md:gap-y-0 instead of md:gap-0.",
+  "agentOutputs": [
+    {
+      "agent": "planning",
+      "status": "complete",
+      "file": ".taktician-project/reports/blocks/wide-social-media/state/planning-2026-02-19-123627.json"
+    },
+    {
+      "agent": "developer",
+      "status": "complete",
+      "file": ".taktician-project/reports/blocks/wide-social-media/state/developer-2026-02-19-124134.json"
+    },
+    {
+      "agent": "functional-qa",
+      "status": "fail",
+      "file": ".taktician-project/reports/blocks/wide-social-media/state/functional-qa-2026-02-19-124237.json"
+    },
+    {
+      "agent": "developer-fix",
+      "status": "complete",
+      "file": ".taktician-project/reports/blocks/wide-social-media/state/developer-fix-2026-02-19-124545.json"
+    },
+    {
+      "agent": "functional-qa",
+      "status": "pass",
+      "file": ".taktician-project/reports/blocks/wide-social-media/state/functional-qa-2026-02-19-124654.json"
+    },
+    {
+      "agent": "report",
+      "status": "complete"
+    },
+    {
+      "agent": "planning",
+      "status": "complete",
+      "file": ".taktician-project/reports/blocks/wide-social-media/state/planning-2026-02-19-125159.json"
+    },
+    {
+      "agent": "developer",
+      "status": "complete",
+      "file": ".taktician-project/reports/blocks/wide-social-media/state/developer-2026-02-19-125304.json"
+    },
+    {
+      "agent": "functional-qa",
+      "status": "pass",
+      "file": ".taktician-project/reports/blocks/wide-social-media/state/functional-qa-2026-02-19-125356.json"
+    },
+    {
+      "agent": "report",
+      "status": "complete"
+    },
+    {
+      "agent": "planning",
+      "status": "complete",
+      "file": ".taktician-project/reports/blocks/wide-social-media/state/planning-2026-02-19-140051.json"
+    },
+    {
+      "agent": "developer",
+      "status": "complete",
+      "file": ".taktician-project/reports/blocks/wide-social-media/state/developer-2026-02-19-140215.json"
+    },
+    {
+      "agent": "functional-qa",
+      "status": "pass",
+      "file": ".taktician-project/reports/blocks/wide-social-media/state/functional-qa-2026-02-19-125356.json"
+    },
+    {
+      "agent": "report",
+      "status": "complete"
+    },
+    {
+      "agent": "developer-fix",
+      "status": "complete"
+    },
+    {
+      "agent": "functional-qa",
+      "status": "pass",
+      "file": ".taktician-project/reports/blocks/wide-social-media/state/functional-qa-2026-02-19-155244.json"
+    }
+  ],
+  "latestOutputs": {
+    "planning": ".taktician-project/reports/blocks/wide-social-media/state/planning-2026-02-19-140051.json",
+    "developer": ".taktician-project/reports/blocks/wide-social-media/state/developer-2026-02-19-140215.json",
+    "functionalQa": ".taktician-project/reports/blocks/wide-social-media/state/functional-qa-2026-02-19-155244.json",
+    "designQa": ".taktician-project/reports/blocks/wide-social-media/state/design-qa-2026-02-13-202833.json"
+  },
+  "screenshots": {
+    "qaScreenshots": null,
+    "finalScreenshots": ".taktician-project/reports/blocks/wide-social-media/screenshots/2026-02-13-210635"
+  },
+  "unresolvedIssues": [],
+  "timestamps": {
+    "started": "2026-02-13-202833",
+    "lastUpdated": "2026-02-19T23:54:25.463Z"
+  },
+  "agentSessions": {
+    "planning": "a5ce6a4",
+    "developer": "aeb58b2",
+    "functionalQa": "a5a58c4",
+    "designQa": "a5ec414",
+    "report": "a29da7a"
+  }
+}

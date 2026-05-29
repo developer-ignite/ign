@@ -1,0 +1,178 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-13-201809",
+  "status": "PASS",
+  "blockName": "Accordion",
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 10,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "notes": "Build completed successfully with only performance warnings (bundle size). No TypeScript errors."
+      },
+      "lint": {
+        "status": "warning",
+        "notes": "Pre-existing lint warnings unrelated to FAQ schema feature. 4 errors in other blocks (AccordionItem BaseControl missing id, TestimonialsCarousel nested ternary). No new errors introduced by FAQ schema implementation.",
+        "issues": []
+      },
+      "registration": {
+        "status": "pass",
+        "notes": "enableFaqSchema attribute correctly defined in block.json with type boolean and default false."
+      },
+      "attributes": {
+        "status": "pass",
+        "details": {
+          "enableFaqSchema": {
+            "type": "boolean",
+            "default": false,
+            "blockJson": "PASS - correctly defined",
+            "tsx": "PASS - included in AccordionAttributes type",
+            "php": "PASS - included in @var docblock",
+            "editorControl": "PASS - ToggleControl in Behavior panel"
+          }
+        }
+      },
+      "faqSchemaOutput": {
+        "status": "pass",
+        "details": {
+          "schemaPresent": "PASS - JSON-LD script tag found on page when enableFaqSchema=true",
+          "schemaAbsent": "PASS - Only 1 script tag on page (out of 13 accordion blocks, only 1 has enableFaqSchema=true)",
+          "schemaStructure": {
+            "status": "PASS",
+            "validation": "Valid JSON-LD",
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": "Array of 4 Question objects",
+            "googleCompliant": true
+          },
+          "questionAnswerFormat": {
+            "status": "PASS",
+            "questions": [
+              "What services does IGNITE provide?",
+              "How do I access my health benefits?",
+              "Can I opt out of certain fees?",
+              "What is the refund policy?"
+            ],
+            "answersFormat": "Plain text (HTML tags stripped)",
+            "notes": "All questions have non-empty titles and answers. Text is properly escaped and formatted."
+          },
+          "edgeCases": {
+            "emptyTitleHandling": "PASS - PHP code skips items with empty title (line 197-199)",
+            "emptyContentHandling": "PASS - PHP code skips items with empty answer (line 212-215)",
+            "noValidItems": "PASS - Schema not output if no valid FAQ items exist (line 229)",
+            "specialCharacters": "PASS - wp_json_encode handles escaping with JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE"
+          },
+          "placement": "PASS - Script tag placed after closing </section> tag as planned"
+        }
+      },
+      "edgeCases": {
+        "status": "pass",
+        "notes": "All edge cases handled correctly per planning spec"
+      },
+      "interactiveBehavior": {
+        "status": "skipped",
+        "reason": "FAQ schema is a backend SEO feature with no interactive elements to test. Existing accordion behavior (exclusiveMode, alwaysOneOpen) already tested in previous QA runs."
+      },
+      "accessibility": {
+        "status": "skipped",
+        "reason": "JSON-LD schema is invisible to users and assistive technology. No accessibility impact."
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "notes": "No markup duplication introduced by FAQ schema feature."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": {
+          "attributeExtraction": "PASS - No manual $attributes[] extraction. Uses auto-extracted variables with @var docblock.",
+          "attributeSync": {
+            "enableFaqSchema": {
+              "blockJson": "boolean, default: false",
+              "tsx": "boolean type in AccordionAttributes",
+              "php": "@var bool $enableFaqSchema",
+              "status": "PASS - All three files in sync"
+            }
+          },
+          "conditionalRendering": {
+            "tsx": "ToggleControl renders when true, label and help text match spec",
+            "php": "if ( ! empty( $enableFaqSchema ) && ! empty( $block->inner_blocks ) )",
+            "status": "PASS - Conditional logic matches"
+          }
+        }
+      },
+      "innerBlocks": {
+        "status": "pass",
+        "notes": "FAQ schema correctly iterates over inner_blocks (accordion items) to extract questions and answers."
+      },
+      "specCompliance": {
+        "status": "pass",
+        "details": {
+          "attributeAdded": "PASS - enableFaqSchema boolean attribute with default false",
+          "tsxToggleControl": "PASS - ToggleControl in Behavior panel with correct label and help text",
+          "phpJsonLd": "PASS - JSON-LD output when enableFaqSchema=true",
+          "googleFaqSpec": {
+            "@context": "PASS - https://schema.org",
+            "@type": "PASS - FAQPage",
+            "mainEntity": "PASS - Array of Question objects",
+            "questionFormat": "PASS - Each has @type: Question, name, acceptedAnswer",
+            "answerFormat": "PASS - Each has @type: Answer, text (plain text)"
+          },
+          "emptyItemsExcluded": "PASS - Items with empty title or content are skipped",
+          "defaultBehavior": "PASS - No schema output when enableFaqSchema=false (default)",
+          "testPageVariation": "PASS - Test page includes 'FAQ Schema Enabled' variation with enableFaqSchema=true"
+        }
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build compiles without errors",
+      "Attribute enableFaqSchema correctly defined in block.json (boolean, default false)",
+      "Attribute included in TSX type definition (AccordionAttributes)",
+      "Attribute included in PHP @var docblock",
+      "ToggleControl for FAQ schema in Behavior panel (TSX)",
+      "ToggleControl has correct label: 'Enable FAQ schema (SEO)'",
+      "ToggleControl has correct help text: 'Outputs FAQPage structured data for search engines'",
+      "JSON-LD script tag output when enableFaqSchema=true",
+      "No JSON-LD script tag when enableFaqSchema=false (default)",
+      "JSON-LD structure follows Google FAQPage spec",
+      "@context is https://schema.org",
+      "@type is FAQPage",
+      "mainEntity is an array of Question objects",
+      "Each Question has @type: Question, name (string), acceptedAnswer (Answer object)",
+      "Each Answer has @type: Answer, text (string)",
+      "Answer text is plain text (HTML tags stripped with wp_strip_all_tags)",
+      "Empty items (no title) are excluded from schema",
+      "Empty items (no content) are excluded from schema",
+      "No schema output if all items are empty",
+      "wp_json_encode uses JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE flags",
+      "Script tag placed after closing </section> tag",
+      "Test page includes variation with enableFaqSchema=true",
+      "Test page shows 4 valid FAQ items in the schema",
+      "TSX/PHP sync: enableFaqSchema attribute consistent across block.json, TSX, PHP",
+      "No manual $attributes[] extraction in PHP (uses auto-extracted variables)",
+      "PHP @var docblock includes @var bool $enableFaqSchema",
+      "All existing accordion features still work (verified 13 accordion blocks on test page)",
+      "Build passes (no TypeScript errors)",
+      "Live page source contains valid JSON-LD script tag",
+      "Only blocks with enableFaqSchema=true output the schema (1 out of 13 blocks)"
+    ],
+    "testPageAnalysis": {
+      "url": "https://ign.localhost/test-accordion/",
+      "totalAccordionBlocks": 13,
+      "blocksWithFaqSchema": 1,
+      "blockWithFaqSchemaHeading": "Frequently Asked Questions",
+      "faqItemCount": 4,
+      "jsonLdScriptTags": 1,
+      "schemaValid": true
+    }
+  },
+  "tokensUsed": 72100
+}

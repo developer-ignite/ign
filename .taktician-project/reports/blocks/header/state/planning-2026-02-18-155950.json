@@ -1,0 +1,206 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-18-155950",
+  "status": "complete",
+  "severity": "none",
+  "output": {
+    "meta": {
+      "blockName": "Header",
+      "mode": "edit",
+      "changeRequestSummary": "7 fixes: focus outline style, missing focus outlines on search/CTA, spacer gap issue, mobile hamburger visibility, mobile fixed+menu-open, mobile menu max-height overflow, mobile nav border transition",
+      "generatedAt": "2026-02-18T15:59:50Z"
+    },
+    "changes": [
+      {
+        "id": "CHG-001",
+        "title": "Change focus-visible outline from dashed to dotted",
+        "priority": "medium",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.php",
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+          "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.tsx"
+        ],
+        "description": "Replace all instances of `focus-visible:outline-dashed` with `focus-visible:outline-dotted` across HeaderMainItem and HeaderMainSubItem PHP and TSX files. Currently the outline-dashed class appears on:\n- HeaderMainItem.php line 29: ThemeLink className for simple links\n- HeaderMainItem.php line 39: button className for submenu triggers\n- HeaderMainSubItem.php line 21: ThemeLink className for sub-items\n- Corresponding TSX files for editor parity",
+        "search": "focus-visible:outline-dashed",
+        "replace": "focus-visible:outline-dotted",
+        "scope": "global find-and-replace within Header block tree"
+      },
+      {
+        "id": "CHG-002",
+        "title": "Add focus-visible outline to search submit buttons and CTA links",
+        "priority": "high",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.php",
+          "blocks/Header/HeaderMain/HeaderMain.tsx"
+        ],
+        "description": "Multiple interactive elements lack focus-visible outlines. Add `focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2` to each of the following elements:",
+        "elements": [
+          {
+            "id": "CHG-002a",
+            "element": "Desktop search submit button (PHP line 90, TSX line ~532)",
+            "currentClasses": "bg-transparent border-0 p-0 cursor-pointer shrink-0 text-white transition-colors hover:text-accent focus-visible:text-accent",
+            "addClasses": "focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+          },
+          {
+            "id": "CHG-002b",
+            "element": "Mobile search submit button (PHP line 163, TSX line ~635)",
+            "currentClasses": "bg-transparent border-0 p-0 cursor-pointer shrink-0 text-white transition-colors hover:text-accent focus-visible:text-accent",
+            "addClasses": "focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+          },
+          {
+            "id": "CHG-002c",
+            "element": "SEP mobile button/link (PHP line 45, TSX line ~456)",
+            "currentClasses": "...focus-visible:text-accent",
+            "addClasses": "focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+          },
+          {
+            "id": "CHG-002d",
+            "element": "SEP desktop link (PHP line 114, TSX line ~558)",
+            "currentClasses": "...focus-visible:text-accent",
+            "addClasses": "focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+          },
+          {
+            "id": "CHG-002e",
+            "element": "Mobile CTA link button (PHP line 187, TSX line ~676)",
+            "currentClasses": "inline-flex items-center justify-center bg-white text-charcoal border border-white rounded-full p-4 no-underline! font-sans font-medium text-base leading-[1.16] uppercase",
+            "addClasses": "focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+          },
+          {
+            "id": "CHG-002f",
+            "element": "Mobile hamburger toggle button (PHP line 127, TSX line ~573)",
+            "currentClasses": "md:hidden cursor-pointer w-7 **:w-full **:h-auto transition-colors (text-white in TSX only)",
+            "addClasses": "focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+          },
+          {
+            "id": "CHG-002g",
+            "element": "Logo link (PHP line 67)",
+            "currentClasses": "block self-stretch w-auto ...",
+            "addClasses": "focus-visible:outline-dotted focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+          }
+        ]
+      },
+      {
+        "id": "CHG-003",
+        "title": "Fix spacer div adding height via parent gap",
+        "priority": "high",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.php",
+          "blocks/Header/HeaderMain/HeaderMain.tsx"
+        ],
+        "description": "The outermost wrapper `<div>` on the block uses `flex flex-col gap-2` (PHP line 39, TSX line 444). The `.header-main-spacer` is the last child of this flex container, so even when it has `h-0`, the `gap-2` (8px) still adds vertical space between the nav bar div and the spacer div.\n\nFix approach: Change the spacer from being a flex child affected by gap to using negative margin or removing gap contribution. The cleanest fix is to make the spacer a non-participating flex item by adding `m-0 -mt-2` (to offset the gap) OR better: move the gap only between non-spacer children using `gap-0` on the wrapper and adding the gap explicitly to the SEP mobile button element as `mb-2` / margin-bottom.\n\nRecommended approach: Replace `gap-2` on the wrapper with `gap-0` and add explicit spacing. Specifically:\n1. On the outer wrapper: change `flex flex-col gap-2` to `flex flex-col`\n2. On the SEP mobile link (first child, PHP line 45): add `mb-2` to create the gap only when the SEP link is present\n3. The spacer (last child) already has `h-0` and will now not be affected by any gap\n\nAlternative simpler approach: Keep `gap-2` but add `-mt-2` to the spacer div so it cancels the gap when h-0. This is simpler but less clean.\n\nSimplest approach: Add `hidden` by default to the spacer and have JS toggle it to `block` when activating fixed mode. The JS already sets `spacer.style.height`, so it can also toggle visibility.",
+        "recommendation": "Use the simplest approach: add `empty:hidden` or just `hidden` to the spacer by default. In JS, when setting `spacer.style.height = header.offsetHeight + 'px'`, also call `spacer.classList.remove('hidden'); spacer.classList.add('block')`. When resetting, `spacer.classList.remove('block'); spacer.classList.add('hidden')`. This way the spacer is invisible and takes no space (including gap) when not needed."
+      },
+      {
+        "id": "CHG-004",
+        "title": "Fix mobile hamburger visibility (black icon on dark background)",
+        "priority": "critical",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.php"
+        ],
+        "description": "The mobile toggle button on PHP line 127 has class `md:hidden cursor-pointer w-7 **:w-full **:h-auto transition-colors text-white` in the TSX but the PHP version is missing `text-white`. The SVG icons inherit currentColor, so without text-white on a bg-charcoal parent, they render in black/default color.\n\nFix: Add `text-white` to the button's class attribute in HeaderMain.php line 127. The TSX already has it on the button element (line 573).",
+        "search": "md:hidden cursor-pointer w-7 **:w-full **:h-auto transition-colors text-white",
+        "note": "The TSX (line 573) currently has `md:hidden cursor-pointer w-7 **:w-full **:h-auto transition-colors` WITHOUT text-white on the button element itself, but the SVG children have `className=\"text-white\"`. The PHP version has text-white on the button class but NOT on the SVG spans. Verify both PHP and TSX have `text-white` on the button itself for consistency."
+      },
+      {
+        "id": "CHG-005",
+        "title": "Keep header fixed when mobile menu is open and fixedOnScrollMobile is true",
+        "priority": "high",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.js"
+        ],
+        "description": "When `fixedOnScrollMobile` is true, scrolling makes the header fixed via the `.scrolling` class. But when the mobile menu opens, the scroll position or class logic may cause the header to lose its fixed positioning.\n\nFix in HeaderMain.js: In the `openMenu()` function, when the menu opens on mobile, force the header to stay fixed. Add logic:\n1. In `openMenu()`: if `!isDesktop() && fixedScrollMobile`, add `scrolling` and `scrolling-up` classes to header, remove `scrolling-down`, and set spacer height.\n2. In `updateScrollStatus()`: if `menu-open` class is present and `!isDesktop()`, skip the translate-y hide logic (don't add `scrolling-down` class).\n\nThe key principle: when the mobile menu is expanded, the header must remain visible and fixed regardless of scroll direction."
+      },
+      {
+        "id": "CHG-006",
+        "title": "Constrain mobile menu max-height to viewport",
+        "priority": "high",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.php",
+          "blocks/Header/HeaderMain/HeaderMain.tsx"
+        ],
+        "description": "When the mobile menu expands, it can grow beyond the viewport height, making lower items unreachable without scrolling the entire page.\n\nFix: On the `<nav>` collapsable element (PHP line 142, TSX line 604), replace the current `menu-open:max-h-[2000px]` with a viewport-relative max-height and add overflow scrolling to the content area.\n\nSpecific changes:\n1. Change `menu-open:max-h-[2000px]` to `menu-open:max-h-[calc(100dvh-80px)]` (80px approximate header bar height, or use a CSS variable `--header-bar-height` if available)\n2. Add `menu-open:overflow-y-auto` to the nav element so the menu content scrolls within the constrained height\n3. The `max-h` transition still works because we're transitioning from `max-h-0` to a large-but-bounded value\n\nNote: The exact offset (80px) should account for the logo row height. The JS already calculates header height as `--header-main-height`. Consider using `menu-open:max-h-[calc(100dvh-var(--fixed-offset,80px))]` for dynamic accuracy."
+      },
+      {
+        "id": "CHG-007",
+        "title": "Smooth mobile nav border transition on menu close",
+        "priority": "low",
+        "files": [
+          "blocks/Header/HeaderMain/HeaderMain.php",
+          "blocks/Header/HeaderMain/HeaderMain.tsx"
+        ],
+        "description": "When the mobile menu closes, padding changes from `menu-open:pt-4 menu-open:pb-8` to none (via max-h-0/opacity-0), causing a visible jump in the nav border position.\n\nFix: Add padding to the transition property list on the nav element. Currently the transition is `max-md:transition-[max-height,opacity]`. Change to `max-md:transition-[max-height,opacity,padding]` so padding animates along with the height collapse.\n\nAdditionally, instead of only adding padding when menu-open (menu-open:pt-4 menu-open:pb-8), always keep the padding on the nav and use the max-h-0 + overflow-hidden to hide it. This way there's no abrupt padding change. The recommended approach:\n1. Move `pt-4 pb-8` to always be on the nav (in the base `max-md:` classes)\n2. Remove `menu-open:pt-4 menu-open:pb-8`\n3. The `max-h-0 overflow-hidden` already hides the content+padding when closed\n4. This eliminates the jump entirely since padding never changes"
+      }
+    ],
+    "decisions": [
+      {
+        "id": "DEC-001",
+        "category": "accessibility",
+        "decision": "Use outline-dotted instead of outline-dashed for focus-visible indicators",
+        "source": "user-request",
+        "evidence": "User explicitly requested: 'Change focus-visible outline from dashed to dotted'"
+      },
+      {
+        "id": "DEC-002",
+        "category": "accessibility",
+        "decision": "Apply full focus-visible set (outline-dotted, outline-2, outline-white, outline-offset-2) to all interactive elements",
+        "source": "user-request",
+        "evidence": "User specified exact classes needed for search/CTA elements"
+      },
+      {
+        "id": "DEC-003",
+        "category": "layout",
+        "decision": "Use hidden/block toggle on spacer to eliminate gap contribution",
+        "source": "planning-analysis",
+        "evidence": "Spacer with h-0 still affected by parent flex gap-2, simplest fix is visibility toggle"
+      },
+      {
+        "id": "DEC-004",
+        "category": "accessibility",
+        "decision": "Add text-white to hamburger button in PHP for icon visibility",
+        "source": "user-request",
+        "evidence": "Black icon on dark bg-charcoal background is invisible"
+      },
+      {
+        "id": "DEC-005",
+        "category": "behavior",
+        "decision": "Force header to remain fixed when mobile menu is open",
+        "source": "user-request",
+        "evidence": "Header loses fixed positioning when menu opens on mobile"
+      },
+      {
+        "id": "DEC-006",
+        "category": "layout",
+        "decision": "Use dvh-based max-height with overflow-y-auto for mobile menu",
+        "source": "user-request",
+        "evidence": "Mobile menu can overflow viewport, needs scroll constraint"
+      },
+      {
+        "id": "DEC-007",
+        "category": "visual",
+        "decision": "Keep padding constant on nav, rely on max-h-0 overflow-hidden to hide it",
+        "source": "planning-analysis",
+        "evidence": "Eliminates padding jump on menu close without needing transition on padding"
+      }
+    ],
+    "testPage": {
+      "url": "https://ign.localhost/test-header/",
+      "note": "Existing test page — no new variations needed for these CSS/JS fixes. QA should verify all 7 changes on the existing page."
+    },
+    "fileInventory": {
+      "php": [
+        "blocks/Header/HeaderMain/HeaderMain.php",
+        "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.php",
+        "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.php"
+      ],
+      "tsx": [
+        "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainItem.tsx",
+        "blocks/Header/HeaderMain/HeaderMainItem/HeaderMainSubItem/HeaderMainSubItem.tsx"
+      ],
+      "js": [
+        "blocks/Header/HeaderMain/HeaderMain.js"
+      ]
+    }
+  }
+}

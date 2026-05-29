@@ -1,0 +1,442 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-12-220902",
+  "status": "complete",
+  "blockName": "PostHero",
+  "output": {
+    "meta": {
+      "blockName": "PostHero",
+      "namespace": "takt",
+      "title": "Post Hero",
+      "description": "A full-width hero section for single post pages that automatically displays the post thumbnail, topic pill, title, optional excerpt, author, and publish date with gradient background.",
+      "category": "takt-theme",
+      "generatedAt": "2026-02-12T22:09:02Z",
+      "figmaNodeId": "669:33688",
+      "specFile": ".taktician-project/prompts/post-hero.md"
+    },
+    "files": {
+      "blockJson": "blocks/PostHero/block.json",
+      "indexTsx": "blocks/PostHero/index.tsx",
+      "componentTsx": "blocks/PostHero/PostHero.tsx",
+      "templatePhp": "blocks/PostHero/PostHero.php",
+      "iconSvg": "blocks/PostHero/PostHero.svg"
+    },
+    "blockTypePatterns": {
+      "source": ".taktician/instructions/block-types/hero.md",
+      "requiredImports": {
+        "tsx": [
+          "import { __ } from '@wordpress/i18n';",
+          "import { useBlockProps, InspectorControls } from '@wordpress/block-editor';",
+          "import { PanelBody, ToggleControl } from '@wordpress/components';",
+          "import { shouldDisplay, cn, renameBlock } from '@taktdev/utilities';",
+          "import { useSelect } from '@wordpress/data';",
+          "import { store as coreStore } from '@wordpress/core-data';"
+        ]
+      },
+      "requiredPatterns": [
+        { "pattern": "shouldDisplay", "usage": "Control visibility of optional fields (excerpt, topic pill) in editor" },
+        { "pattern": "renameBlock", "usage": "Rename block in list view based on post title" },
+        { "pattern": "cn", "usage": "Conditional class composition for all elements" },
+        { "pattern": "useBlockProps", "usage": "Block wrapper props for editor" },
+        { "pattern": "theme_block_props", "usage": "Block wrapper props for PHP frontend" }
+      ],
+      "componentStructure": {
+        "wrapper": "<section> with hero class + top-gradient",
+        "container": "hero-inner > background image layer + content layer > container > content wrapper"
+      },
+      "qualityChecklist": [
+        "Full-width section with relative positioning",
+        "Background layer with mask gradient for image fade",
+        "top-gradient div for accent color gradient system",
+        "pt-(--header-height) + offset for header compensation",
+        "ThemeHeading-like structure with h1 tag (but custom, not ThemeHeading component)",
+        "Uses post data (title, thumbnail, category, author, date) not manual fields",
+        "renameBlock() based on post title",
+        "TSX and PHP conditionals mirror each other"
+      ]
+    },
+    "attributes": [
+      {
+        "name": "anchor",
+        "type": "string",
+        "default": null,
+        "description": "HTML anchor for linking",
+        "optional": true,
+        "editorComponent": "native (supports.anchor)",
+        "validation": null
+      },
+      {
+        "name": "showExcerpt",
+        "type": "boolean",
+        "default": false,
+        "description": "Toggle to show the post excerpt below the title. Default hidden per Figma (not shown in design).",
+        "optional": false,
+        "editorComponent": "ToggleControl",
+        "validation": null
+      },
+      {
+        "name": "useTopicColor",
+        "type": "boolean",
+        "default": false,
+        "description": "When enabled, uses the first topic's accent color for the block's gradient system instead of the page accent color. Adds the topic's accent_color class to the section element.",
+        "optional": false,
+        "editorComponent": "ToggleControl",
+        "validation": null
+      }
+    ],
+    "styling": {
+      "section": {
+        "element": "section",
+        "classes": "post-hero hero relative overflow-visible",
+        "notes": "The 'hero' class triggers the hero gradient system in colors.css. When useTopicColor is true, add the topic's accent_color class (e.g., 'blue', 'green') to the section to override gradient CSS vars."
+      },
+      "topGradient": {
+        "element": "div",
+        "classes": "top-gradient",
+        "notes": "Reuses existing .top-gradient CSS from colors.css. Extends below the block with accent-colored gradient. Colors driven by --gradient-main, --gradient-circle-left, --gradient-circle-right CSS vars set by the accent color class on .hero."
+      },
+      "heroInner": {
+        "element": "div",
+        "classes": "hero-inner relative",
+        "notes": "Same pattern as existing Hero secondary variation. Contains background image layer and content layer."
+      },
+      "backgroundImageLayer": {
+        "element": "div",
+        "classes": "absolute inset-0 w-full h-full",
+        "style": "mask-image: linear-gradient(to bottom, black 40%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);",
+        "notes": "Contains the post thumbnail. Image fades progressively from fully visible at top to transparent at bottom. Uses post featured image (get_post_thumbnail_id() in PHP). In TSX editor, show placeholder if no post context."
+      },
+      "backgroundImage": {
+        "element": "img",
+        "classes": "w-full h-full object-cover",
+        "notes": "Post thumbnail rendered via wp_get_attachment_image() in PHP. In TSX, rendered via img tag from useSelect post data."
+      },
+      "contentLayer": {
+        "element": "div",
+        "classes": "relative z-10 pb-8 sm:pb-16 pt-[calc(var(--header-height)+180px)] sm:pt-[calc(var(--header-height)+280px)]",
+        "notes": "Same padding as Hero secondary variation. Top padding accounts for header + pushes content to lower portion. Bottom padding 32px mobile / 64px desktop."
+      },
+      "container": {
+        "element": "div",
+        "classes": "container",
+        "notes": "Standard container wrapper for max-width constraint."
+      },
+      "contentWrapper": {
+        "element": "div",
+        "classes": "max-w-[700px] mr-auto",
+        "notes": "Left-aligned content wrapper, max-width ~700px per Figma measurement (719px content area, 687px title). mr-auto keeps it left-aligned."
+      },
+      "upperGroup": {
+        "element": "div",
+        "classes": "flex flex-col gap-6",
+        "notes": "Contains topic pill and post title. Gap of 24px (gap-6) between pill and title per Figma measurement."
+      },
+      "topicPill": {
+        "element": "span",
+        "classes": "inline-flex items-center justify-center px-2 py-1 rounded-full bg-accent-lighter border border-accent text-sm font-medium uppercase leading-[1.1] whitespace-nowrap shrink-0 text-charcoal w-fit",
+        "notes": "The topic pill ALWAYS uses the topic's own accent color for its background (accent-lighter) and border (accent). The topic's accent_color class is applied to this span element, overriding --accent-color, --accent-color-light, --accent-color-lighter CSS custom properties within this element scope. This matches the FeaturedPost and card-post.php pattern. Font: Roboto Medium (font-sans font-medium), 14px (text-sm), uppercase, line-height 1.1, charcoal text."
+      },
+      "postTitle": {
+        "element": "h1",
+        "classes": "text-header-0 text-charcoal",
+        "notes": "Anton Regular, 64px desktop (text-header-0 = 4rem desktop, 4rem mobile base but scales via typography.css media query). Line-height 1.1 (already set by text-header-0 utility at 1.2 -- close enough, within tolerance). Max-width inherited from contentWrapper. NEVER add italic to Anton."
+      },
+      "excerpt": {
+        "element": "p",
+        "classes": "text-body-large text-charcoal mt-6",
+        "notes": "Only rendered when showExcerpt is true. Uses body large text (18px, Roboto Medium). Positioned between title and meta group. Gap spacing: mt-6 (24px) below title area."
+      },
+      "lowerGroup": {
+        "element": "div",
+        "classes": "mt-12 flex flex-col gap-1",
+        "notes": "Author and date metadata. Gap of 48px (mt-12) from upper group per Figma margin/margin-4 measurement. Small gap between author and date lines."
+      },
+      "authorLine": {
+        "element": "p",
+        "classes": "text-lg font-medium leading-[1.2] text-charcoal",
+        "notes": "Format: 'By: {Author Name}'. Roboto Medium, 18px (text-lg), line-height 1.2. The 'By: ' prefix is hardcoded translatable text."
+      },
+      "dateLine": {
+        "element": "p",
+        "classes": "text-lg font-medium leading-[1.2] text-charcoal",
+        "notes": "Format: 'Published on: {Date}'. Same typography as author line. Date format comes from WordPress settings via get_the_date(). The 'Published on: ' prefix is hardcoded translatable text."
+      }
+    },
+    "responsive": {
+      "mobile": {
+        "breakpoint": "< 640px",
+        "behavior": "Same left-aligned layout. Title scales down naturally via text-header-0 responsive sizing (4rem base). Content padding adjusts with container. Background image and gradient maintain same behavior. All text stays left-aligned. Pill, title, meta all stack vertically. pb-8 applies."
+      },
+      "tablet": {
+        "breakpoint": "640px - 1023px",
+        "behavior": "Same as desktop layout, content max-width still 700px. pb-16 and larger pt offset apply at sm+ breakpoint."
+      },
+      "desktop": {
+        "breakpoint": ">= 1024px",
+        "behavior": "Full Figma design: content left-aligned, max-width 700px, title at 64px (text-header-0), background image with mask gradient, top-gradient visible."
+      }
+    },
+    "behavior": {
+      "emptyState": {
+        "noFeaturedImage": "If the post has no featured image, the background image layer is not rendered. The gradient overlay still appears. The content layer renders normally over the gradient.",
+        "noCategories": "If the post has no categories, the topic pill is not rendered. The upper group shows only the title.",
+        "noExcerpt": "If showExcerpt is true but the post has no excerpt, the excerpt element is not rendered (shouldDisplay pattern).",
+        "editorPlaceholder": "In the editor (TSX), since this block is for templates, show placeholder text: title shows 'Post Title', author shows 'Post Author', date shows current date format, pill shows 'Topic'. The block should auto-populate when used on an actual post."
+      },
+      "optionalFields": {
+        "pattern": "shouldDisplay()",
+        "fields": ["excerpt (via showExcerpt toggle)", "topicPill (auto-hidden when no categories)"]
+      },
+      "editorBehavior": {
+        "blockNaming": "renameBlock() -- In TSX, use the post title from useSelect. Track previous title with useRef/useEffect pattern (same as FeaturedPost). In template editing context, use placeholder 'Post Title'.",
+        "templateMode": "This block is designed primarily for the single post template. In the editor, it uses useSelect to fetch the current post's data. When editing the template directly, show placeholder content. When editing an actual post, show the real post data."
+      },
+      "phpDataSourcing": {
+        "title": "get_the_title()",
+        "excerpt": "get_the_excerpt() -- only rendered when showExcerpt attribute is true and post has_excerpt()",
+        "backgroundImage": "get_post_thumbnail_id() -- used with wp_get_attachment_image()",
+        "topic": "get_the_category() -- first category [0]",
+        "topicName": "get_the_category()[0]->name",
+        "topicAccentColor": "get_term_meta($category->term_id, 'accent_color', true)",
+        "author": "get_the_author()",
+        "date": "get_the_date() -- uses WP date format setting",
+        "pageAccentColor": "Already applied to body via ign_accent_color_body_class filter (no action needed for default)"
+      }
+    },
+    "accessibility": {
+      "patterns": [
+        {
+          "name": "Landmarks",
+          "source": ".taktician/instructions/accessibility-patterns/landmarks.md",
+          "keyboardInteractions": ["No special keyboard interaction for landmarks"],
+          "ariaRequirements": [
+            "Hero section uses <section> element for semantic landmark",
+            "Uses <h1> heading for page context and heading hierarchy",
+            "Background image is decorative (role='presentation' or alt='') since the content is conveyed by the text overlay"
+          ]
+        }
+      ],
+      "elements": {
+        "section": { "role": "implicit (section)", "ariaLabel": "not needed -- heading provides label" },
+        "backgroundImage": { "role": "presentation", "ariaLabel": "alt='' (decorative, content conveyed by text)" },
+        "postTitle": { "role": "heading", "ariaLabel": "h1 element provides implicit heading role" },
+        "topicPill": { "role": "text", "ariaLabel": "not needed -- visible text is sufficient" },
+        "authorLine": { "role": "text", "ariaLabel": "not needed -- visible text is sufficient" },
+        "dateLine": { "role": "text", "ariaLabel": "not needed -- visible text is sufficient" }
+      }
+    },
+    "decisions": [
+      {
+        "id": "DEC-001",
+        "category": "layout",
+        "decision": "Follow Hero secondary variation structure exactly: section.hero > div.top-gradient + div.hero-inner > background image layer + content layer",
+        "source": "existing-pattern",
+        "evidence": "blocks/Hero/Hero.tsx and blocks/Hero/Hero.php secondary variation. Spec says 'based on the secondary variation of the existing Hero block'."
+      },
+      {
+        "id": "DEC-002",
+        "category": "layout",
+        "decision": "Content is left-aligned with max-width 700px, using mr-auto",
+        "source": "figma",
+        "evidence": "Figma node 669:33688 shows content left-aligned. Structural analysis measures content area max-width at 719px, contentWrapper at max-w-[700px] mr-auto. Hero secondary uses max-w-[700px] mr-auto."
+      },
+      {
+        "id": "DEC-003",
+        "category": "typography",
+        "decision": "Title uses text-header-0 (Anton Regular 64px desktop, responsive)",
+        "source": "figma",
+        "evidence": "Figma variable Headline/H2 shows Anton Regular at font/size/6xl (64px). The existing Hero secondary uses headingSize={0} which maps to text-header-0."
+      },
+      {
+        "id": "DEC-004",
+        "category": "typography",
+        "decision": "Topic pill uses text-sm (14px), font-medium, uppercase, font-sans (Roboto), leading-[1.1]",
+        "source": "figma",
+        "evidence": "Figma variable Others/Eyebrow shows Roboto Medium, font/size/sm (14px), weight 500, line-height 1.1, uppercase. Structural analysis confirms these measurements."
+      },
+      {
+        "id": "DEC-005",
+        "category": "typography",
+        "decision": "Author/date meta uses text-lg (18px), font-medium, leading-[1.2], font-sans",
+        "source": "figma",
+        "evidence": "Figma variable Body/Body - Large shows Roboto Medium, font/size/lg (18px), weight 500, line-height 1.2. Structural analysis confirms."
+      },
+      {
+        "id": "DEC-006",
+        "category": "color",
+        "decision": "Topic pill ALWAYS uses the topic's accent color for background (bg-accent-lighter) and border (border-accent), with topic accent_color class applied to the pill span element",
+        "source": "figma + existing-pattern",
+        "evidence": "Figma shows pill bg #eeffb5 (neon-green-20 = accent-lighter) and border #ddff6a (neon-green-40 = accent-light/accent). card-post.php and FeaturedPost.php both use get_term_meta accent_color class on the pill element."
+      },
+      {
+        "id": "DEC-007",
+        "category": "color",
+        "decision": "Block gradient uses page accent color by default, with useTopicColor toggle to switch to topic accent color",
+        "source": "spec",
+        "evidence": "Spec says: 'By default it should use the page accent color but it should have an option to use the topic accent color. In that case it will use the accent color of the first topic fetched on the post.'"
+      },
+      {
+        "id": "DEC-008",
+        "category": "color",
+        "decision": "All text is charcoal (text-charcoal) -- this is a light hero, not dark mode",
+        "source": "figma",
+        "evidence": "Figma shows all text in #1f1f1d (charcoal). The background image fades out to the gradient, which is a light accent color. No dark class needed."
+      },
+      {
+        "id": "DEC-009",
+        "category": "spacing",
+        "decision": "Gap between pill and title: gap-6 (24px). Gap between upper and lower groups: mt-12 (48px). Bottom padding: pb-8 sm:pb-16",
+        "source": "figma",
+        "evidence": "Structural analysis: upper group gap 24px (gap/gap-4), content area gap upper-to-lower 48px (margin/margin-4). Hero secondary PHP uses pb-8 sm:pb-16."
+      },
+      {
+        "id": "DEC-010",
+        "category": "layout",
+        "decision": "Background image uses mask-image gradient: linear-gradient(to bottom, black 40%, transparent 100%)",
+        "source": "figma + existing-pattern",
+        "evidence": "Figma structural analysis notes mask gradient. Existing Hero block uses identical mask-image pattern in both TSX and PHP."
+      },
+      {
+        "id": "DEC-011",
+        "category": "behavior",
+        "decision": "No manual content fields -- all content is dynamically sourced from the post (title, thumbnail, categories, author, date, excerpt)",
+        "source": "spec",
+        "evidence": "Spec says 'automatically get the post thumbnail for the background, the post topic for the pill, the post title, author and publish date'. Structural analysis keyDifferencesFromHeroSecondary confirms no manual fields."
+      },
+      {
+        "id": "DEC-012",
+        "category": "behavior",
+        "decision": "Excerpt is hidden by default, toggled via showExcerpt boolean attribute",
+        "source": "spec + figma",
+        "evidence": "Figma does not show an excerpt. Spec explicitly says 'make it an option to display the excerpt below the title or not'. Default: hidden (false)."
+      },
+      {
+        "id": "DEC-013",
+        "category": "behavior",
+        "decision": "Date format follows WordPress settings (get_the_date() with no custom format argument)",
+        "source": "spec",
+        "evidence": "Spec says 'publish date (following the format defined in wp settings)'. get_the_date() without arguments uses the date format from WP Settings > General."
+      },
+      {
+        "id": "DEC-014",
+        "category": "color",
+        "decision": "Pill border uses border-accent (not border-accent-light). The Figma shows #ddff6a which is neon-green-40 mapped to accent-light, but the FeaturedPost pattern uses border-accent. Using border-accent for consistency with existing patterns.",
+        "source": "existing-pattern",
+        "evidence": "FeaturedPost.php uses 'border border-accent' on the category pill. card-post.php uses bg-accent-light for the pill. The Figma neon-green-40 (#ddff6a) is between accent and accent-light. Following FeaturedPost pattern (border-accent) for consistency since this is the same type of element."
+      },
+      {
+        "id": "DEC-015",
+        "category": "layout",
+        "decision": "Top padding uses same formula as Hero secondary: pt-[calc(var(--header-height)+180px)] sm:pt-[calc(var(--header-height)+280px)]",
+        "source": "existing-pattern",
+        "evidence": "Hero secondary TSX line 149-152 uses these exact padding values. The PostHero should match since it has the same layout pattern."
+      },
+      {
+        "id": "DEC-016",
+        "category": "behavior",
+        "decision": "No ThemeHeading component used -- content is custom-built since all fields are dynamic from the post, not editable. Title is a plain h1, not RichText.",
+        "source": "spec + figma",
+        "evidence": "ThemeHeading provides editable fields (eyebrow, heading, description, buttons via RichText). PostHero has no editable text fields -- everything comes from the post. Custom rendering is more appropriate than ThemeHeading with empty onChange."
+      },
+      {
+        "id": "DEC-017",
+        "category": "behavior",
+        "decision": "Author line format: 'By: {name}' and date line format: 'Published on: {date}' -- both prefixes are translatable strings",
+        "source": "figma",
+        "evidence": "Figma screenshot clearly shows 'By: Lubna Patel' and 'Published on: October 2, 2025'. Both prefixes should use __() for translation."
+      }
+    ],
+    "unresolvedDecisions": [],
+    "testPage": {
+      "slug": "test-post-hero",
+      "title": "Test Post Hero",
+      "notes": "This block renders in a single post template context. The test page should be a REAL POST (not a page) with categories, featured image, author, and excerpt set up. Multiple demo containers are not practical here since the block auto-pulls from the current post. Instead, create a single test post with all fields populated, and place the block in it. A second test post with minimal content (no featured image, no categories, no excerpt) can test empty state handling.",
+      "variations": [
+        {
+          "demoTitle": "Default - Page Accent Color",
+          "demoDescription": "Post Hero with default settings: page accent color for gradient, excerpt hidden, all auto-populated fields visible.",
+          "attributes": {},
+          "innerBlocks": [],
+          "postRequirements": "Post must have: featured image, at least one category with accent_color meta, author, publish date, excerpt (even though hidden by default)"
+        },
+        {
+          "demoTitle": "With Excerpt Shown",
+          "demoDescription": "Post Hero with showExcerpt enabled to display the post excerpt between title and metadata.",
+          "attributes": {
+            "showExcerpt": true
+          },
+          "innerBlocks": []
+        },
+        {
+          "demoTitle": "Topic Accent Color Override",
+          "demoDescription": "Post Hero using the topic's accent color for the gradient system instead of the page accent color.",
+          "attributes": {
+            "useTopicColor": true
+          },
+          "innerBlocks": []
+        },
+        {
+          "demoTitle": "Full Options - Excerpt + Topic Color",
+          "demoDescription": "Post Hero with both showExcerpt and useTopicColor enabled.",
+          "attributes": {
+            "showExcerpt": true,
+            "useTopicColor": true
+          },
+          "innerBlocks": []
+        }
+      ],
+      "interactiveTests": [],
+      "testPostSetup": {
+        "description": "Since PostHero auto-pulls from the current post, create a test post with these characteristics:",
+        "post": {
+          "title": "A lifehack: Decoding your professors and peers",
+          "excerpt": "Navigating university relationships can be challenging. Learn practical strategies for building meaningful connections with both professors and fellow students that will enhance your academic experience.",
+          "status": "publish",
+          "featuredImage": "Required - upload or assign any landscape photo",
+          "categories": ["Assign a category that has accent_color term meta set (e.g., 'Social Opportunities' with neon-green)"],
+          "author": "Ensure post has an author assigned"
+        },
+        "minimalPost": {
+          "title": "Simple Post Without Extras",
+          "excerpt": "",
+          "featuredImage": "None",
+          "categories": [],
+          "notes": "Tests empty state: no pill, no image background, no excerpt"
+        }
+      }
+    },
+    "tokenMapping": {
+      "colors": [
+        { "element": "Topic pill bg", "figmaValue": "#eeffb5", "themeToken": "bg-accent-lighter", "difference": "0 (exact via accent color system)", "status": "EXACT" },
+        { "element": "Topic pill border", "figmaValue": "#ddff6a", "themeToken": "border-accent", "difference": "Uses accent instead of accent-light for FeaturedPost consistency", "status": "ACCEPTABLE" },
+        { "element": "Topic pill text", "figmaValue": "#1f1f1d", "themeToken": "text-charcoal", "difference": "0", "status": "EXACT" },
+        { "element": "Title text", "figmaValue": "#1f1f1d", "themeToken": "text-charcoal", "difference": "0", "status": "EXACT" },
+        { "element": "Meta text", "figmaValue": "#1f1f1d", "themeToken": "text-charcoal", "difference": "0", "status": "EXACT" }
+      ],
+      "typography": [
+        { "element": "Title", "figmaValue": "Anton Regular 64px/1.1", "themeToken": "text-header-0", "difference": "line-height 1.1 vs 1.2 (text-header-0 default) -- 0.1 difference", "status": "ACCEPTABLE" },
+        { "element": "Topic pill", "figmaValue": "Roboto Medium 14px/1.1 uppercase", "themeToken": "text-sm font-medium uppercase leading-[1.1]", "difference": "0", "status": "EXACT" },
+        { "element": "Author/date", "figmaValue": "Roboto Medium 18px/1.2", "themeToken": "text-lg font-medium leading-[1.2]", "difference": "0", "status": "EXACT" }
+      ],
+      "spacing": [
+        { "element": "Pill-to-title gap", "figmaValue": "24px", "themeToken": "gap-6", "difference": "0", "status": "EXACT" },
+        { "element": "Upper-to-lower gap", "figmaValue": "48px", "themeToken": "mt-12", "difference": "0", "status": "EXACT" },
+        { "element": "Bottom padding mobile", "figmaValue": "32px", "themeToken": "pb-8", "difference": "0", "status": "EXACT" },
+        { "element": "Bottom padding desktop", "figmaValue": "64px", "themeToken": "sm:pb-16", "difference": "0", "status": "EXACT" },
+        { "element": "Pill padding", "figmaValue": "8px", "themeToken": "px-2 py-1", "difference": "px-2=8px exact, py-1=4px vs 8px", "status": "NEEDS_ADJUSTMENT" }
+      ]
+    },
+    "implementationNotes": {
+      "tsxEditorApproach": "This block is designed for template/post editing. In the TSX editor, use useSelect to fetch the current post's data (title, featured image, categories, author, date). When editing a template, show placeholder content. When editing an actual post, show the real data. Follow FeaturedPost's useSelect pattern for fetching category accent_color via entity records.",
+      "phpDataPattern": "PHP renders entirely from WP functions: get_the_title(), get_post_thumbnail_id(), get_the_category(), get_the_author(), get_the_date(), get_the_excerpt(). The topic accent color is fetched via get_term_meta($cat->term_id, 'accent_color', true).",
+      "accentColorMechanism": "Default: page accent color is already on the body element via ign_accent_color_body_class. The .hero class picks up gradient vars from the parent accent class. When useTopicColor is true, add the topic's accent_color class directly to the <section> element, which overrides the gradient CSS vars for this block only.",
+      "pillColorMechanism": "The pill's accent color is ALWAYS from the topic (independent of useTopicColor). Add the topic accent_color class to the pill span element. This scopes --accent-color vars to the pill, so bg-accent-lighter and border-accent use the topic's color.",
+      "pillPaddingAdjustment": "Figma shows 8px all-around pill padding. Using px-2 py-2 (8px all) instead of px-2 py-1 to match Figma exactly. Note: FeaturedPost uses px-2 py-1. Adjusting to match Figma for this block.",
+      "noInnerBlocks": "This block has no inner blocks. It is a self-contained template block.",
+      "noBlockVariations": "Single variation only. No primary/secondary/tertiary needed.",
+      "heroSecondaryDifferences": "Key differences from Hero secondary: (1) no image upload UI, (2) no ThemeHeading, (3) no eyebrow/heading/description/buttons attributes, (4) topic pill replaces eyebrow, (5) author/date meta replaces buttons, (6) useTopicColor toggle is new, (7) showExcerpt toggle is new."
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

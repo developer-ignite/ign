@@ -1,0 +1,367 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-20-000237",
+  "status": "FAIL",
+  "blockName": "FeaturedEvents",
+  "output": {
+    "mode": "qa",
+    "revisionCycle": 2,
+    "tolerance": "semantic (2-4px)",
+    "contentComparison": {
+      "html": {
+        "changed": true,
+        "codeModified": true,
+        "canSkipTests": false
+      },
+      "visualQaAction": "full-visual-qa",
+      "reason": "Revision 2 re-run with code changes — full visual comparison required"
+    },
+    "screenshotPaths": {
+      "chromium-375": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235755/featured-events-chromium-375w.png",
+      "chromium-768": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235755/featured-events-chromium-768w.png",
+      "chromium-1024": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235755/featured-events-chromium-1024w.png",
+      "chromium-1440": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235755/featured-events-chromium-1440w.png",
+      "firefox-375": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235755/featured-events-firefox-375w.png",
+      "firefox-768": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235755/featured-events-firefox-768w.png",
+      "firefox-1024": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235755/featured-events-firefox-1024w.png",
+      "firefox-1440": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235755/featured-events-firefox-1440w.png",
+      "webkit-375": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235755/featured-events-webkit-375w.png",
+      "webkit-768": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235755/featured-events-webkit-768w.png",
+      "webkit-1024": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235755/featured-events-webkit-1024w.png",
+      "webkit-1440": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235755/featured-events-webkit-1440w.png",
+      "hover-detail": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-19-235952/featured-events-hover-close-1440w.png",
+      "card-detail-desktop": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-20-000124/featured-events-card-detail-1440w.png",
+      "card-detail-mobile": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-20-000201/featured-events-mobile-card-375w.png"
+    },
+    "compositionGate": "PASS — overall layout structure matches Figma: section heading at top with eyebrow and 2-column heading/description layout, followed by vertically stacked event cards with image-left and content-right halves. Cards use rounded dark backgrounds. Cross-browser rendering is consistent across Chromium, Firefox, and WebKit.",
+    "revisionFixVerification": [
+      {
+        "id": "REV2-001",
+        "description": "ThemeHeading is now headingSize:2 (48px mobile / 60px desktop) — closer to Figma's 56px",
+        "verdict": "PASS (note)",
+        "evidence": "ThemeHeading uses headingSize:2 in both TSX (line 145) and PHP (line 97). On desktop, text-header-2 resolves to var(--text-6xl) = 3.75rem = 60px. Figma section heading is font/size/5xl = 56px. The 4px difference (60px vs 56px) is at the edge of semantic tolerance but acceptable given headingSize:2 is the nearest theme heading level. On mobile, text-header-2 = 48px (3rem), which is 8px smaller than Figma's 56px but appropriate for mobile scaling.",
+        "figmaValue": "56px (font/size/5xl)",
+        "implementationValue": "60px desktop / 48px mobile (text-header-2)",
+        "difference": "4px desktop"
+      },
+      {
+        "id": "REV2-002",
+        "description": "Card title is NOT uppercase — just Anton font, natural case",
+        "verdict": "PASS",
+        "evidence": "Card title <h3> has class 'text-header-2' with no uppercase class. In the screenshots, card titles render in natural case (e.g. 'Indie Game Developers Summit', 'Virtual Reality Expo 2026'). The btn-tertiary button text ('VIEW EVENT') is uppercase via the shared button component CSS, which is correct per Figma. The card TITLE itself is not uppercase — verified visually in all breakpoints."
+      },
+      {
+        "id": "REV2-003",
+        "description": "Date badge uses flex positioning with visible margin from inner frame edges",
+        "verdict": "FAIL",
+        "evidence": "The date badge is now using flex positioning (not absolute), which was the requested fix. However, the inner frame container uses 'flex items-end' (row direction, bottom-aligned) combined with 'ml-auto' on the badge. This places the badge at the BOTTOM-RIGHT of the image area. In the Figma design, the inner frame uses flex-col with items-end, which positions the badge at the TOP-RIGHT. Visually, the badge appears at the lower-right in both desktop and mobile screenshots, while Figma clearly shows it at the upper-right corner of the image. The margin from frame edges (p-2 = 8px on inner frame) is correct per Figma.",
+        "figmaValue": "top-right position (flex-col items-end on inner frame)",
+        "implementationValue": "bottom-right position (flex items-end + ml-auto)"
+      },
+      {
+        "id": "REV2-004",
+        "description": "Tertiary button shows accent color on hover",
+        "verdict": "PASS",
+        "evidence": "The button span uses 'group-hover:text-[var(--accent-color)]!' which applies the accent color (rgba(212, 255, 69, 1) — bright yellow-green) on hover of the parent <a> group element. The !important modifier ensures it overrides the base btn-tertiary hover:text-charcoal style. The button text 'VIEW EVENT' is white at rest and should turn accent-colored on hover. The hover screenshot was captured but the color change is difficult to confirm at screenshot resolution. Code verification confirms the fix is correctly implemented."
+      },
+      {
+        "id": "REV2-005",
+        "description": "No fixed 349px height — cards size to content",
+        "verdict": "PASS",
+        "evidence": "No h-[349px] or fixed height class found in card-tribe_events.php. The card article uses 'flex flex-col md:flex-row' without any height constraint. Cards in the screenshots visually size to their content — cards with longer titles take up more vertical space, and cards with shorter titles are more compact. Verified across all breakpoints."
+      },
+      {
+        "id": "REV2-006",
+        "description": "Image has aspect ratio on mobile, fills height on desktop",
+        "verdict": "PASS",
+        "evidence": "The inner image frame uses 'aspect-[4/3] md:aspect-auto md:h-full'. On mobile (375px screenshot), the image area has a consistent 4:3 aspect ratio across all cards. On desktop (1440px screenshot), the image area fills the full height of the card via md:h-full. The image itself uses 'absolute inset-0 w-full h-full object-cover' for proper filling. Verified visually at both mobile and desktop breakpoints."
+      }
+    ],
+    "detailedComparison": {
+      "desktop-1440": {
+        "breakpoint": "1440px",
+        "measurements": [
+          {
+            "element": "Section heading (ThemeHeading)",
+            "property": "font-size",
+            "figmaValue": "56px (font/size/5xl)",
+            "implementationValue": "60px (text-header-2 → text-6xl)",
+            "difference": "4px",
+            "status": "PASS (note — nearest heading level)"
+          },
+          {
+            "element": "Section heading",
+            "property": "font-family",
+            "figmaValue": "Anton Regular",
+            "implementationValue": "Anton (font-heading)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Section heading",
+            "property": "line-height",
+            "figmaValue": "1.1",
+            "implementationValue": "1.2 (text-header-2--line-height)",
+            "difference": "0.1",
+            "status": "PASS (note — 0.1 difference in heading line-height is minor)"
+          },
+          {
+            "element": "Eyebrow",
+            "property": "font-size",
+            "figmaValue": "14px (font/size/sm)",
+            "implementationValue": "14px (text-sm via ThemeHeading)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Eyebrow",
+            "property": "text-transform",
+            "figmaValue": "uppercase",
+            "implementationValue": "uppercase",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Description",
+            "property": "font-size",
+            "figmaValue": "16px (font/size/base)",
+            "implementationValue": "16px (text-base)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Header-to-cards gap",
+            "property": "gap",
+            "figmaValue": "64px",
+            "implementationValue": "64px (mb-16 = 4rem = 64px)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Card-to-card gap",
+            "property": "gap",
+            "figmaValue": "N/A (single card in Figma)",
+            "implementationValue": "24px (gap-6)",
+            "difference": "N/A",
+            "status": "PASS"
+          },
+          {
+            "element": "Card background",
+            "property": "background",
+            "figmaValue": "#1f1f1d",
+            "implementationValue": "bg-dark-pattern (charcoal)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Card border-radius",
+            "property": "border-radius",
+            "figmaValue": "25px",
+            "implementationValue": "24px (rounded-3xl)",
+            "difference": "1px",
+            "status": "PASS (Tailwind)"
+          },
+          {
+            "element": "Card image half padding",
+            "property": "padding",
+            "figmaValue": "16px",
+            "implementationValue": "16px (p-4)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Inner image frame border-radius",
+            "property": "border-radius",
+            "figmaValue": "12px",
+            "implementationValue": "12px (rounded-xl)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Inner image frame padding",
+            "property": "padding",
+            "figmaValue": "8px",
+            "implementationValue": "8px (p-2)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Card title",
+            "property": "font-size",
+            "figmaValue": "48px (font/size/4xl)",
+            "implementationValue": "60px (text-header-2 → text-6xl on desktop)",
+            "difference": "12px",
+            "status": "FAIL"
+          },
+          {
+            "element": "Card title",
+            "property": "line-height",
+            "figmaValue": "1.1",
+            "implementationValue": "1.2 (text-header-2--line-height)",
+            "difference": "0.1",
+            "status": "PASS (note)"
+          },
+          {
+            "element": "Card title",
+            "property": "text-transform",
+            "figmaValue": "none (natural case)",
+            "implementationValue": "none",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Card content padding",
+            "property": "padding",
+            "figmaValue": "24px",
+            "implementationValue": "24px (p-6)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Content text gap",
+            "property": "gap",
+            "figmaValue": "8px",
+            "implementationValue": "8px (gap-2)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Date badge width",
+            "property": "width",
+            "figmaValue": "104px",
+            "implementationValue": "104px (w-[104px])",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Date badge border-radius",
+            "property": "border-radius",
+            "figmaValue": "8px",
+            "implementationValue": "8px (rounded-lg)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Date badge padding",
+            "property": "padding",
+            "figmaValue": "12px vertical, 4px horizontal",
+            "implementationValue": "12px vertical (py-3), 4px horizontal (px-1)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Date badge day number",
+            "property": "font-size",
+            "figmaValue": "40px (font/size/3xl)",
+            "implementationValue": "40px (text-[2.5rem])",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Date badge position",
+            "property": "position within image frame",
+            "figmaValue": "top-right (flex-col items-end)",
+            "implementationValue": "bottom-right (flex items-end + ml-auto)",
+            "difference": "position mismatch",
+            "status": "FAIL"
+          },
+          {
+            "element": "Button text",
+            "property": "text-transform",
+            "figmaValue": "uppercase",
+            "implementationValue": "uppercase (via btn-tertiary)",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Button",
+            "property": "hover color",
+            "figmaValue": "accent color (interactive state, not in static Figma)",
+            "implementationValue": "var(--accent-color) via group-hover",
+            "difference": "0",
+            "status": "PASS"
+          },
+          {
+            "element": "Section padding",
+            "property": "padding",
+            "figmaValue": "64px",
+            "implementationValue": "64px (py-16 = 4rem = 64px)",
+            "difference": "0",
+            "status": "PASS"
+          }
+        ]
+      }
+    },
+    "issues": [
+      {
+        "id": "DQA-001",
+        "severity": "major",
+        "category": "typography",
+        "element": "Card title (h3)",
+        "breakpoint": "desktop (768px+)",
+        "figmaValue": "48px (font/size/4xl, Anton Regular)",
+        "implementationValue": "60px (text-header-2 → var(--text-6xl) = 3.75rem on desktop)",
+        "difference": "12px (25% larger)",
+        "withinTolerance": false,
+        "observation": "The card title text is visually much larger than in Figma. In the implementation, titles like 'Indie Game Developers Summit' wrap to 2 lines and dominate the content half, whereas in Figma the title 'Event title heading' fits on a single line with ample space for description and button below. The card title should be 48px, not 60px.",
+        "recommendation": "Replace text-header-2 with a class that resolves to 48px on desktop. text-header-2 is correct on mobile (48px) but too large on desktop (60px). Options: (1) Use text-header-3 (32px) — too small. (2) Use a custom class like text-[3rem] for the card title — this would be 48px on all breakpoints. (3) Better: use text-header-2 but override the desktop size with md:text-5xl (3rem = 48px in Tailwind 4) — but this equals the mobile default. The cleanest fix is to use md:text-[3rem] or the exact Figma value.",
+        "files": [
+          {
+            "path": "parts/card-tribe_events.php",
+            "line": 60,
+            "change": {
+              "from": "<h3 class=\"text-header-2\">",
+              "to": "<h3 class=\"font-heading text-header-2 md:text-[3rem] md:leading-[1.1]\">"
+            }
+          }
+        ]
+      },
+      {
+        "id": "DQA-002",
+        "severity": "major",
+        "category": "layout",
+        "element": "Date badge position within image frame",
+        "breakpoint": "all",
+        "figmaValue": "top-right (inner frame uses flex-col items-end, badge flows to top naturally)",
+        "implementationValue": "bottom-right (inner frame uses flex items-end + ml-auto on badge)",
+        "difference": "badge at wrong vertical position — bottom instead of top",
+        "withinTolerance": false,
+        "observation": "In the Figma design, the date badge sits at the top-right corner of the image area. In the implementation, the inner frame div uses 'flex items-end' which is row direction with bottom cross-axis alignment, placing the badge at the bottom-right. The Figma uses flex-col with items-end (column direction, right-aligned), so the badge naturally flows to the top-right since it's the only non-absolute child.",
+        "recommendation": "Change the inner frame from 'flex items-end' to 'flex flex-col items-end' to match Figma's layout direction. This will position the badge at the top-right.",
+        "files": [
+          {
+            "path": "parts/card-tribe_events.php",
+            "line": 37,
+            "change": {
+              "from": "<div class=\"relative flex items-end w-full overflow-hidden rounded-xl p-2 aspect-[4/3] md:aspect-auto md:h-full\">",
+              "to": "<div class=\"relative flex flex-col items-end w-full overflow-hidden rounded-xl p-2 aspect-[4/3] md:aspect-auto md:h-full\">"
+            }
+          }
+        ]
+      }
+    ],
+    "passedChecks": [
+      "Section heading uses headingSize:2 (60px desktop) — closest theme level to Figma's 56px",
+      "Card title is NOT uppercase — natural case with Anton font, matching Figma",
+      "No fixed 349px height — cards size to content naturally",
+      "Image uses aspect-[4/3] on mobile and md:h-full on desktop",
+      "Tertiary button has group-hover:text-[var(--accent-color)]! for accent color on hover",
+      "Card background, border-radius, padding all match Figma",
+      "Date badge dimensions, border-radius, padding, and typography all match Figma",
+      "Section padding (64px) and header-to-cards spacing (64px) match Figma",
+      "Content gap (8px) matches Figma",
+      "Cross-browser consistency: Chromium, Firefox, and WebKit render identically",
+      "Eyebrow typography (14px, uppercase, Roboto Medium) matches Figma",
+      "Description typography (16px, Roboto Medium) matches Figma",
+      "Button text uppercase via shared btn-tertiary component — correct per Figma"
+    ],
+    "crossBrowserResults": {
+      "chromium": "PASS — renders correctly at all widths",
+      "firefox": "PASS — consistent with Chromium output",
+      "webkit": "PASS — consistent with Chromium output"
+    },
+    "summary": "2 major issues found. (1) Card title font-size on desktop is 60px vs Figma's 48px — a 12px/25% difference that causes titles to dominate the content area and wrap excessively. (2) Date badge is positioned at bottom-right instead of top-right due to flex direction mismatch. All 4 other revision fixes verified: headingSize:2 is correct, card title is not uppercase, no fixed height, image has proper aspect ratio, and button hover uses accent color."
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

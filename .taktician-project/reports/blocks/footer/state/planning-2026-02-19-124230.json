@@ -1,0 +1,43 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-19-124350",
+  "status": "complete",
+  "output": {
+    "summary": "Fix FQA-001: Prevent empty anchor element from rendering in FooterInfo when no logo image is set. The PHP template already conditionally checks `! empty( $logoId )` before rendering the logo area, but the fix needs to also verify the image attachment actually produces output (handles stale/deleted attachment IDs). Additionally, the TSX editor does not render an anchor link, so no TSX change is needed for the anchor itself.",
+    "fileChanges": [
+      {
+        "file": "blocks/Footer/FooterInfo/FooterInfo.php",
+        "action": "modify",
+        "description": "Strengthen logo rendering guard to verify attachment exists and produces output, not just that logoId is non-empty",
+        "details": "Replace the simple `! empty( $logoId )` check with a two-step guard: (1) check `! empty( $logoId )`, then (2) call `theme_output_svg_or_img( $logoId, false )` to get the rendered output into a variable, and only render the anchor + image markup if the output is non-empty. This handles edge cases where logoId has a stale value (attachment deleted from media library) or the attachment file is missing. The anchor `<a href=\"/\">` with its `aria-label` should only render when there is actual image content to display inside it.\n\nCurrent code (lines 31-39):\n```php\n<?php if ( ! empty( $logoId ) ) : ?>\n\t<div class=\"mb-8\">\n\t\t<div class=\"flex items-end gap-2.5\">\n\t\t\t<a href=\"...\" class=\"...\" aria-label=\"...\">\n\t\t\t\t<?php theme_output_svg_or_img( $logoId ); ?>\n\t\t\t</a>\n\t\t</div>\n\t</div>\n<?php endif; ?>\n```\n\nNew code:\n```php\n<?php\n$logo_output = ! empty( $logoId ) ? theme_output_svg_or_img( $logoId, false ) : '';\n?>\n<?php if ( ! empty( $logo_output ) ) : ?>\n\t<div class=\"mb-8\">\n\t\t<div class=\"flex items-end gap-2.5\">\n\t\t\t<a href=\"...\" class=\"...\" aria-label=\"...\">\n\t\t\t\t<?php echo $logo_output; ?>\n\t\t\t</a>\n\t\t</div>\n\t</div>\n<?php endif; ?>\n```",
+        "affectsPhp": true
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "accessibility",
+        "decision": "Do not render the anchor element when no logo image content is available, to avoid an empty link announced by screen readers",
+        "source": "user-request",
+        "evidence": "FQA-001 bug report: empty anchor is bad for accessibility"
+      },
+      {
+        "id": "DEC-002",
+        "category": "implementation",
+        "decision": "Use theme_output_svg_or_img with echo=false to pre-check output rather than just checking logoId attribute value",
+        "source": "existing-pattern",
+        "evidence": "theme_output_svg_or_img (inc/helpers/image-svg.php) supports a second parameter `$echo=false` that returns content instead of echoing, allowing pre-validation that actual image markup exists before rendering the wrapper anchor"
+      },
+      {
+        "id": "DEC-003",
+        "category": "scope",
+        "decision": "No TSX changes required for this fix",
+        "source": "code-analysis",
+        "evidence": "The TSX editor component (FooterInfo.tsx) uses ImageDropUploader which is a media upload component, not an anchor link. The anchor `<a href='/'>` only exists in the PHP frontend template. The editor correctly shows the upload UI regardless of whether an image is set."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

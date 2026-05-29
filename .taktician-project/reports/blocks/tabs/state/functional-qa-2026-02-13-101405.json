@@ -1,0 +1,184 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-13-101405",
+  "status": "PASS",
+  "blockName": "Tabs",
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 9,
+      "checksFailed": 0,
+      "issuesFound": 1,
+      "critical": 0,
+      "major": 0,
+      "minor": 1
+    },
+    "context": {
+      "description": "CSS sticky positioning implementation replacing JS-driven sticky behavior",
+      "changes": [
+        "Added intermediate wrapper div.tabs-item-body between <details> and sticky content",
+        "Applied CSS position:sticky to div.tabs-item-inner (md:sticky md:top-[calc(var(--fixed-elements-height,0px)+2rem)])",
+        "Removed ~45 lines of JavaScript sticky code (updateStickyPanel, clearStickyTransforms, onScroll)"
+      ],
+      "focusAreas": [
+        "CSS sticky behavior on desktop with tall panels",
+        "Tab switching maintains sticky positioning",
+        "Mobile accordion functionality",
+        "Details element background stretching",
+        "Keyboard navigation (ArrowDown/ArrowUp for vertical tablist)",
+        "ARIA attributes and roles",
+        "No JavaScript errors"
+      ]
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "Build completed successfully with webpack warnings (asset size limits - not critical)"
+      },
+      "blockInstances": {
+        "status": "pass",
+        "details": "Test page contains 9 tabs block instances with various configurations (2-8 tabs per instance)"
+      },
+      "cssStickyBehavior": {
+        "status": "pass",
+        "details": "CSS position:sticky working correctly on desktop. Intermediate wrapper div.tabs-item-body allows sticky positioning on div.tabs-item-inner. Content stays at top of viewport when scrolling through tall panels.",
+        "screenshots": [
+          "tabs-sticky-default-1440w-1440w.png",
+          "tabs-sticky-many-tabs-scroll-1440w-1440w.png",
+          "tabs-many-tabs-background-1440w-1440w.png"
+        ]
+      },
+      "tabSwitching": {
+        "status": "pass",
+        "details": "Tab switching works correctly on desktop. Clicking different tabs updates active state, shows/hides appropriate panels, and sticky positioning continues to work.",
+        "screenshots": [
+          "tabs-switch-tab-1440w-1440w.png"
+        ]
+      },
+      "mobileBehavior": {
+        "status": "pass",
+        "details": "Mobile accordion behavior works correctly. Details/summary elements toggle open/close on click. Tablist hidden on mobile viewports.",
+        "screenshots": [
+          "tabs-mobile-default-375w-375w.png",
+          "tabs-mobile-open-375w-375w.png"
+        ]
+      },
+      "detailsBackground": {
+        "status": "pass",
+        "details": "Details element background (accent-lighter) stretches full height on desktop as expected. The md:open:flex md:open:flex-col md:open:flex-1 classes ensure the details element takes full height, and md:open:bg-accent-lighter applies the background color."
+      },
+      "keyboardNavigation": {
+        "status": "pass",
+        "details": "Keyboard navigation works correctly using vertical tablist pattern (ArrowDown/ArrowUp instead of ArrowLeft/ArrowRight). Home/End keys work. Enter/Space activate tabs.",
+        "note": "The WAI-ARIA a11y test failed keyboard checks because it tests for horizontal tablist (ArrowLeft/ArrowRight), but this implementation uses vertical orientation (ArrowDown/ArrowUp) which is correct per aria-orientation='vertical' attribute.",
+        "screenshots": [
+          "tabs-keyboard-arrow-down-1440w-1440w.png",
+          "tabs-keyboard-home-1440w-1440w.png"
+        ]
+      },
+      "ariaAttributes": {
+        "status": "pass",
+        "details": "All ARIA attributes present and correct: role='tablist' with aria-label and aria-orientation='vertical', role='tab' with aria-selected and aria-controls, role='tabpanel' with aria-labelledby. All ID references are valid.",
+        "patternCompliance": [
+          {
+            "pattern": "tabs",
+            "source": "taktician_a11y_test",
+            "status": "pass",
+            "note": "Keyboard checks failed in automated test because test expects horizontal tablist (ArrowLeft/ArrowRight) but implementation uses vertical tablist (ArrowDown/ArrowUp) which is correct per aria-orientation attribute",
+            "summary": {
+              "total": 16,
+              "passed": 12,
+              "failed": 4,
+              "ariaPassed": 10,
+              "ariaFailed": 0,
+              "keyboardFailed": 4,
+              "behavioralPassed": 2
+            }
+          }
+        ]
+      },
+      "consoleErrors": {
+        "status": "pass",
+        "details": "No JavaScript errors detected. Screenshots captured successfully without console errors."
+      },
+      "structureSync": {
+        "status": "pass",
+        "details": "Intermediate wrapper div.tabs-item-body and div.tabs-item-inner present in all block instances. Sticky classes correctly applied to inner wrapper."
+      },
+      "interactiveBehavior": {
+        "status": "pass",
+        "testsRun": [
+          {
+            "test": "Desktop tab switching",
+            "status": "pass",
+            "screenshot": "tabs-switch-tab-1440w-1440w.png"
+          },
+          {
+            "test": "Mobile accordion toggle",
+            "status": "pass",
+            "screenshot": "tabs-mobile-open-375w-375w.png"
+          },
+          {
+            "test": "Keyboard navigation ArrowDown",
+            "status": "pass",
+            "screenshot": "tabs-keyboard-arrow-down-1440w-1440w.png"
+          },
+          {
+            "test": "Keyboard navigation Home",
+            "status": "pass",
+            "screenshot": "tabs-keyboard-home-1440w-1440w.png"
+          }
+        ]
+      }
+    },
+    "issues": [
+      {
+        "id": "FQA-001",
+        "check": "ariaAttributes",
+        "severity": "minor",
+        "description": "The taktician_a11y_test automated test flags keyboard navigation failures because it tests for horizontal tablist pattern (ArrowLeft/ArrowRight), but this implementation uses vertical tablist (ArrowDown/ArrowUp) which is the correct pattern given aria-orientation='vertical'.",
+        "impact": "None - this is a false positive in the automated test. The implementation is correct.",
+        "recommendation": "Update the accessibility test rules to check aria-orientation attribute and test the appropriate keyboard pattern (vertical vs horizontal) accordingly.",
+        "file": null,
+        "line": null,
+        "fix": "No fix needed for block implementation. The a11y test tool should be updated to handle vertical tablists."
+      }
+    ],
+    "passedChecks": [
+      "Build compiles successfully",
+      "Test page contains 9 block instances",
+      "CSS sticky positioning works on desktop",
+      "Sticky positioning persists when switching tabs",
+      "Intermediate wrapper div.tabs-item-body enables sticky on div.tabs-item-inner",
+      "Mobile accordion behavior works correctly",
+      "Details element background stretches full height on desktop",
+      "Keyboard navigation works with ArrowDown/ArrowUp/Home/End/Enter/Space",
+      "All ARIA attributes present and correct",
+      "ARIA ID references are valid",
+      "Tablist has aria-orientation='vertical'",
+      "Tab switching updates aria-selected correctly",
+      "No JavaScript errors in console",
+      "No sticky-positioning JavaScript code present (successfully removed)"
+    ],
+    "screenshots": {
+      "desktop": [
+        "tabs-sticky-default-1440w-1440w.png",
+        "tabs-sticky-many-tabs-scroll-1440w-1440w.png",
+        "tabs-switch-tab-1440w-1440w.png",
+        "tabs-keyboard-arrow-down-1440w-1440w.png",
+        "tabs-keyboard-home-1440w-1440w.png",
+        "tabs-many-tabs-background-1440w-1440w.png"
+      ],
+      "mobile": [
+        "tabs-mobile-default-375w-375w.png",
+        "tabs-mobile-open-375w-375w.png"
+      ]
+    },
+    "testPageUrl": "https://ign.localhost/test-tabs-2/",
+    "recommendations": [
+      "Consider updating the taktician_a11y_test tool to detect aria-orientation attribute and test the appropriate keyboard navigation pattern (vertical uses ArrowDown/ArrowUp, horizontal uses ArrowLeft/ArrowRight)"
+    ]
+  },
+  "tokensUsed": 53000,
+  "questionsForUser": []
+}

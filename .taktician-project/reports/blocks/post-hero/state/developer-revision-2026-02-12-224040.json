@@ -1,0 +1,54 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12-224040",
+  "status": "complete",
+  "blockName": "PostHero",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Asset size limit warnings (editor.js 337 KiB) - expected for theme bundles"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "TSX and PHP structure fully verified after all three changes. Both files now use: (1) sprintf pattern for author/date, (2) loop over all categories for pills, (3) first category accent color for section gradient override. Conditional classes and element structure match exactly."
+    },
+    "testPage": {
+      "created": true,
+      "url": "https://ign.localhost/blog/test-post-hero/",
+      "pageId": 181,
+      "verifiedBlockCount": 4
+    },
+    "blockers": [],
+    "fixesApplied": [
+      {
+        "id": "USER-001",
+        "severity": "major",
+        "description": "Use sprintf for author and date strings instead of inline concatenation",
+        "files": ["blocks/PostHero/PostHero.php", "blocks/PostHero/PostHero.tsx"],
+        "action": "PHP: Changed author line from `esc_html__('By:', 'takt') . ' ' . esc_html($postAuthor)` to `esc_html(sprintf(__('By: %s', 'takt'), $postAuthor))`. Same pattern for date line with `sprintf(__('Published on: %s', 'takt'), $postDate)`. Both have translators comments. TSX: Imported `sprintf` from `@wordpress/i18n` and changed both lines to use `sprintf(__('By: %s', 'takt'), postAuthor)` and `sprintf(__('Published on: %s', 'takt'), postDate)`. This makes the full string translatable as a single unit."
+      },
+      {
+        "id": "USER-002",
+        "severity": "major",
+        "description": "Pills should list ALL topics, not just the first one",
+        "files": ["blocks/PostHero/PostHero.php", "blocks/PostHero/PostHero.tsx"],
+        "action": "PHP: Replaced single `$firstCategory` pill with a `foreach ($categories as $category)` loop inside a `<div class='flex flex-wrap gap-2'>` container. Each pill gets its own accent color via `get_term_meta($category->term_id, 'accent_color', true)`. TSX: Replaced single `firstCategory` pill with `allCategories.map()` inside a `<div className='flex flex-wrap gap-2'>`. Each pill gets its accent color from the `categoryAccentColors` record keyed by category ID. The `useSelect` hook now fetches accent colors for ALL categories in a single selector. The section gradient still uses the first category's accent color (via `$firstAccentColor` / `firstAccentColor`) when useTopicColor is true."
+      },
+      {
+        "id": "USER-003",
+        "severity": "major",
+        "description": "Investigate and fix repeating $showExcerpt and $useTopicColor variables in PHP",
+        "files": ["blocks/PostHero/PostHero.php"],
+        "action": "Investigation: The previous FQA-001 fix changed `$attributes['showExcerpt'] ?? false` to `$showExcerpt ?? false`, which is still a redundant re-declaration. The theme's `inc/helpers/blocks.php` runs `extract($attributes, EXTR_SKIP)` before including PHP templates, which automatically creates `$showExcerpt` and `$useTopicColor` from the block.json attribute definitions (with their defaults). The `?? false` lines were therefore declaring the same variables that already existed. Fix: Removed both lines entirely (`$showExcerpt = $showExcerpt ?? false;` and `$useTopicColor = $useTopicColor ?? false;`). The auto-extracted variables from block.json attributes are used directly throughout the template. The @var docblock already documents these variables for PHP_CodeSniffer."
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

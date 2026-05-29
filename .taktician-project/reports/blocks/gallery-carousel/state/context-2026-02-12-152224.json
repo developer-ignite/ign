@@ -1,0 +1,55 @@
+{
+  "blockMeta": {
+    "name": "takt/gallery-carousel",
+    "title": "Gallery Carousel",
+    "category": "takt-theme",
+    "description": "A full-width gallery section with a dark card, content header, and image carousel"
+  },
+  "attributes": [
+    {"name": "anchor", "type": "string", "default": null, "description": "HTML anchor/ID attribute"},
+    {"name": "eyebrow", "type": "string", "default": "", "description": "Uppercase label above heading"},
+    {"name": "heading", "type": "string", "default": "", "description": "Main heading text"},
+    {"name": "description", "type": "string", "default": "", "description": "Description text"},
+    {"name": "buttons", "type": "array", "default": null, "description": "CTA buttons"},
+    {"name": "showPagination", "type": "boolean", "default": true, "description": "Show progress bar"},
+    {"name": "showNavigation", "type": "boolean", "default": true, "description": "Show prev/next arrows"},
+    {"name": "loopCarousel", "type": "boolean", "default": false, "description": "Loop slides infinitely"},
+    {"name": "autoplayCarousel", "type": "boolean", "default": false, "description": "Auto-advance slides"},
+    {"name": "autoplayDelay", "type": "number", "default": 3, "description": "Autoplay interval in seconds"}
+  ],
+  "patterns": {
+    "usesConditionalDisplay": true,
+    "usesShouldDisplay": true,
+    "usesRenameBlock": true,
+    "usesCn": true,
+    "usesThemeHeading": true,
+    "colorTokensUsed": ["--color-neon-green", "--color-blue", "--color-charcoal", "--color-white"],
+    "otherPatterns": [
+      "Swiper carousel with Navigation, Pagination, Autoplay, A11y modules",
+      "WAI-ARIA carousel pattern",
+      "Autoplay toggle with pause/play",
+      "prefers-reduced-motion support",
+      "Focus-based pause/resume"
+    ]
+  },
+  "themeTokens": {
+    "colors": ["--color-neon-green", "--color-blue", "--color-charcoal", "--color-white", "--color-off-white"],
+    "fonts": ["--font-sans", "--font-heading", "--text-header-2"]
+  },
+  "existingDecisions": [
+    "Controls position: Between header and carousel on ALL breakpoints",
+    "Button variation: Secondary",
+    "Noise texture: CSS SVG filter",
+    "Image aspect ratio: Responsive aspect-[1.08] mobile, aspect-[2.45] sm+",
+    "Dark mode: Always dark card with bg-charcoal",
+    "Color lock: Neon-green to blue gradient always",
+    "Padding: Container uses py-18 md:py-23",
+    "Navigation gap: gap-2 md:gap-4",
+    "Controls gap: gap-4"
+  ],
+  "projectRules": {
+    "darkModePattern": "Use transparent section with pseudo-element charcoal cards"
+  },
+  "reportExists": true,
+  "testPageUrl": "https://ign.localhost/test-gallery-carousel/"
+}

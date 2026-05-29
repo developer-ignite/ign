@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/footer-nav-column-item",
+  "title": "Navigation Link",
+  "category": "takt-theme",
+  "description": "Individual footer navigation link",
+  "parent": ["takt/footer-nav-column"],
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "reusable": false
+  },
+  "attributes": {
+    "anchor": { "type": "string" },
+    "link": {
+      "type": "object",
+      "default": {
+        "url": "",
+        "postId": null,
+        "postType": null,
+        "opensInNewTab": false,
+        "title": "",
+        "label": ""
+      }
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 300,
+    "attributes": {
+      "link": { "title": "Our Mission", "url": "#" }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "blockName": "PostHero",
+  "blockNameKebab": "post-hero",
+  "blockPath": "blocks/PostHero",
+  "reportDir": ".taktician-project/reports/blocks/post-hero",
+  "stateDir": ".taktician-project/reports/blocks/post-hero/state",
+  "testPage": { "url": "https://ign.localhost/test-post-hero/", "pageId": 181 },
+  "latestOutputs": { "planning": ".taktician-project/reports/blocks/post-hero/state/planning-2026-02-12-220224.json", "developer": ".taktician-project/reports/blocks/post-hero/state/developer-revision-2026-02-12-224040.json", "functionalQa": ".taktician-project/reports/blocks/post-hero/state/functional-qa-2026-02-12-223545.json", "designQa": ".taktician-project/reports/blocks/post-hero/state/design-qa-2026-02-12-224040.json" }
+}

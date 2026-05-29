@@ -1,0 +1,137 @@
+{
+  "agent": "planning",
+  "status": "complete",
+  "timestamp": "2026-02-19-140128",
+  "mode": "edit",
+  "output": {
+    "analysis": {
+      "summary": "The console error 'Cannot read properties of undefined (reading meta)' fires when adding a new FooterInfoSocialItem because Footer.tsx has a useEffect that subscribes to the FULL nested block tree via getBlocks(clientId) and reruns on every deeply-nested block change. When a new social item is inserted, this useEffect fires during the insertion process and can trigger replaceInnerBlocks in a race condition with the block creation lifecycle. The replaceInnerBlocks call propagates through WordPress core's block synchronization, which calls editEntityRecord on entity records that are not yet initialized.",
+      "rootCause": "Footer.tsx useEffect at line 40-67 watches innerBlocks (full nested tree from getBlocks(clientId)). Any block change anywhere inside the Footer (including adding a deeply-nested FooterInfoSocialItem) triggers this effect. The effect calls replaceInnerBlocks during the insertion transaction, creating a race condition where editEntityRecord is dispatched before the new block's entity record is fully registered in the store.",
+      "errorChain": [
+        "1. User clicks Appender button in FooterInfoSocial to add a new FooterInfoSocialItem",
+        "2. WordPress block-editor begins the block insertion transaction",
+        "3. getBlocks(footerClientId) returns a new reference because the deep tree changed",
+        "4. Footer.tsx useEffect fires because innerBlocks dependency changed",
+        "5. The useEffect iterates TEMPLATE, finds existing blocks, compares order",
+        "6. During insertion, the transitional block state may cause isSameOrder check to fail OR needsUpdate to be true (if innerBlocks is momentarily empty or has a different structure)",
+        "7. replaceInnerBlocks fires, replacing the entire inner block tree mid-insertion",
+        "8. WordPress core's block synchronization dispatches editEntityRecord for the blocks being replaced",
+        "9. The entity record for the just-inserted social item is not yet in the core-data store",
+        "10. core-data.js reducer tries to access record.meta on undefined, throws TypeError",
+        "11. Second click works because the blocks are now fully registered in the store"
+      ],
+      "affectedFiles": [
+        "blocks/Footer/Footer.tsx"
+      ],
+      "secondaryIssues": [
+        {
+          "description": "The useEffect runs on EVERY nested block change (text edits, attribute changes, etc.) even though it only cares about direct children. This is a performance issue that also increases the surface area for race conditions.",
+          "file": "blocks/Footer/Footer.tsx",
+          "severity": "medium"
+        }
+      ]
+    },
+    "changePlan": {
+      "files": [
+        {
+          "file": "blocks/Footer/Footer.tsx",
+          "action": "edit",
+          "changes": [
+            {
+              "description": "Replace the innerBlocks useSelect that watches the full nested tree with a selector that only returns direct children block names and clientIds. This prevents the useEffect from firing on deeply-nested changes.",
+              "location": "lines 35-38",
+              "before": "const innerBlocks = useSelect(\n\t(select) => select(blockEditorStore).getBlocks(clientId),\n\t[clientId]\n);",
+              "after": "Use a custom selector that returns only the direct children's names and clientIds as a stable array. Use a shallowEqual comparison or serialize the children identifiers to prevent unnecessary reruns."
+            },
+            {
+              "description": "Add an initialization guard to the useEffect so it only runs when the Footer block is first mounted or when direct children actually change (add/remove/reorder), not on every nested block modification.",
+              "location": "lines 40-67",
+              "before": "useEffect with innerBlocks dependency that fires on every nested change",
+              "after": "useEffect with stable dependency (direct children names/clientIds string) that only fires when structural changes occur to the Footer's immediate children"
+            }
+          ],
+          "implementation": {
+            "approach": "Replace the broad getBlocks() subscription with a narrow selector that only tracks direct children structure",
+            "code": {
+              "description": "Refactored Footer.tsx edit function",
+              "selector": "Replace lines 35-67 with a two-part approach: (1) a useSelect that returns a serialized key of direct children names+clientIds, and (2) a useEffect that only fires when this key changes",
+              "pattern": [
+                "// Only track direct children's names and clientIds to avoid rerunning on nested changes",
+                "const { directChildren, directChildrenKey } = useSelect((select) => {",
+                "\tconst blocks = select(blockEditorStore).getBlocks(clientId);",
+                "\tconst key = blocks.map((b) => `${b.name}:${b.clientId}`).join(',');",
+                "\treturn { directChildren: blocks, directChildrenKey: key };",
+                "}, [clientId]);",
+                "",
+                "useEffect(() => {",
+                "\tconst reordered: any[] = [];",
+                "\tlet needsUpdate = false;",
+                "",
+                "\tfor (const [name, attributes = {}] of TEMPLATE) {",
+                "\t\tconst existing = directChildren.find((block) => block.name === name);",
+                "\t\tif (existing) {",
+                "\t\t\treordered.push(existing);",
+                "\t\t} else if (REQUIRED.some(([n]) => n === name) || directChildren.length === 0) {",
+                "\t\t\tconst newBlock = createBlock(name, attributes);",
+                "\t\t\treordered.push(newBlock);",
+                "\t\t\tneedsUpdate = true;",
+                "\t\t}",
+                "\t}",
+                "",
+                "\tconst templateBlockNames = TEMPLATE.map(([name]) => name);",
+                "\tconst filtered = directChildren.filter((block) => templateBlockNames.includes(block.name));",
+                "",
+                "\tconst isSameOrder =",
+                "\t\treordered.length === filtered.length &&",
+                "\t\treordered.every((block, i) => block.clientId === filtered[i]?.clientId);",
+                "",
+                "\tif (!isSameOrder || needsUpdate) {",
+                "\t\treplaceInnerBlocks(clientId, reordered, false);",
+                "\t}",
+                "// Use directChildrenKey as the dependency instead of directChildren (object reference)",
+                "// This ensures the effect only runs when children are added, removed, or reordered",
+                "}, [directChildrenKey, clientId, replaceInnerBlocks]);"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "testPlan": {
+      "steps": [
+        "1. Open the site editor and navigate to the Footer template part",
+        "2. Find the FooterInfoSocial section with existing social items",
+        "3. Click the Appender (+) button to add a new FooterInfoSocialItem",
+        "4. Verify NO console error appears on first click",
+        "5. Verify the new social item is added successfully",
+        "6. Select a social icon (e.g., Facebook) for the new item",
+        "7. Add a second social item and verify no errors",
+        "8. Verify existing social items still function correctly (link editing, icon changing)",
+        "9. Save the template part and reload -- verify all items persist",
+        "10. Open a regular page in the post editor that uses the footer template part -- verify no errors on page load"
+      ],
+      "regressionChecks": [
+        "Footer direct children (footer-info, footer-nav, footer-credits) are still enforced on initial load",
+        "Removing a direct child block still triggers re-creation",
+        "Reordering direct children still triggers correction",
+        "Editing text/attributes in nested blocks does NOT trigger the Footer useEffect"
+      ]
+    },
+    "decisions": [
+      {
+        "id": "DEC-001",
+        "category": "bugfix",
+        "decision": "Narrow the useSelect dependency from full nested tree to direct children structure key",
+        "source": "bug-analysis",
+        "evidence": "The useEffect only operates on direct children (footer-info, footer-nav, footer-credits) but subscribes to the entire nested block tree. This causes unnecessary reruns and race conditions during deeply-nested block insertion."
+      },
+      {
+        "id": "DEC-002",
+        "category": "bugfix",
+        "decision": "Use a serialized string key as useEffect dependency instead of the blocks array reference",
+        "source": "react-best-practice",
+        "evidence": "getBlocks() returns a new array reference on every store update even when the direct children haven't changed. A serialized key (name:clientId pairs) provides stable dependency tracking."
+      }
+    ]
+  }
+}

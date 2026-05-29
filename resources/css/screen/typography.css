@@ -1,0 +1,129 @@
+@theme {
+	--font-sans:
+		"General Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, sans-serif;
+	--font-heading: "Anton", sans-serif;
+
+	--text-body-small: var(--text-sm);
+	--text-body: var(--text-base);
+	--text-body-large: var(--text-lg);
+	--text-header-6: var(--text-xl);
+	--text-header-5: 1.5rem; /* 24px */
+	--text-header-4: 1.5rem; /* 24px */
+	--text-header-3: 2rem; /* 32px */
+	--text-header-2: 3rem; /* 48px */
+	--text-header-1: 4rem; /* 64px */
+	--text-header-0: 4rem; /* 64px */
+
+	--text-header-6--line-height: 1.2;
+	--text-header-6--font-weight: 400;
+	--text-header-5--line-height: 1.2;
+	--text-header-5--font-weight: 400;
+	--text-header-4--line-height: 1.2;
+	--text-header-4--font-weight: 400;
+	--text-header-3--line-height: 1.2;
+	--text-header-3--font-weight: 400;
+	--text-header-2--line-height: 1.2;
+	--text-header-2--font-weight: 400;
+	--text-header-1--line-height: 1.2;
+	--text-header-1--font-weight: 400;
+	--text-header-0--line-height: 1.2;
+	--text-header-0--font-weight: 400;
+}
+
+@media (min-width: 48rem) {
+	:root {
+		--text-header-5: var(--text-2xl);
+		--text-header-4: var(--text-2xl);
+		--text-header-3: var(--text-3xl);
+		--text-header-2: var(--text-6xl);
+		--text-header-1: var(--text-7xl);
+		--text-header-0: min(var(--text-8xl), 5.25rem);
+	}
+}
+
+@layer base {
+	body {
+		@apply font-sans
+	font-medium
+	  text-body;
+	}
+
+	a {
+		@apply transition-colors;
+	}
+
+	a:where(:not(.wp-element-button)) {
+		@apply underline;
+	}
+
+	a:where(:not(.wp-element-button)):is(:hover, :focus, :active) {
+		@apply no-underline;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		@apply font-normal;
+	}
+
+	/* Anton (and similar condensed display fonts) ship with an unusually
+	   narrow space glyph. On iOS Safari adjacent short words can visually
+	   merge ("in Their" → "inTheir"). A small word-spacing on display-font
+	   headings keeps the gap legible without affecting the layout. */
+	:is(h1, h2, h3, h4, h5, h6, [class*="text-header-"]) {
+		word-spacing: 0.05em;
+	}
+}
+
+@utility text-header-0 {
+	font-family: var(--font-heading);
+	font-size: var(--text-header-0);
+	line-height: var(--text-header-0--line-height);
+	font-weight: var(--text-header-0--font-weight);
+}
+
+@utility text-header-1 {
+	font-family: var(--font-heading);
+	font-size: var(--text-header-1);
+	line-height: var(--text-header-1--line-height);
+	font-weight: var(--text-header-1--font-weight);
+}
+
+@utility text-header-2 {
+	font-family: var(--font-heading);
+	font-size: var(--text-header-2);
+	line-height: var(--text-header-2--line-height);
+	font-weight: var(--text-header-2--font-weight);
+}
+
+@utility text-header-3 {
+	font-family: var(--font-heading);
+	font-size: var(--text-header-3);
+	line-height: var(--text-header-3--line-height);
+	font-weight: var(--text-header-3--font-weight);
+}
+
+@utility text-header-4 {
+	font-family: var(--font-heading);
+	font-size: var(--text-header-4);
+	line-height: var(--text-header-4--line-height);
+	font-weight: var(--text-header-4--font-weight);
+}
+
+@utility text-header-5 {
+	font-family: var(--font-heading);
+	font-size: var(--text-header-5);
+	line-height: var(--text-header-5--line-height);
+	font-weight: var(--text-header-5--font-weight);
+}
+
+@utility text-header-6 {
+	font-family: var(--font-heading);
+	font-size: var(--text-header-6);
+	line-height: var(--text-header-6--line-height);
+	font-weight: var(--text-header-6--font-weight);
+}

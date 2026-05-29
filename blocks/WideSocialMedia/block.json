@@ -1,0 +1,53 @@
+{
+  "apiVersion": 3,
+  "name": "takt/wide-social-media",
+  "title": "Wide Social Media",
+  "category": "takt-theme",
+  "description": "Full-width social media section with heading on the left and icon+label links on the right, separated by a top border.",
+  "keywords": ["social", "media", "links", "follow"],
+  "textdomain": "takt",
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "showLabel": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "supports": {
+    "anchor": true,
+    "align": false,
+    "html": false,
+    "reusable": true
+  },
+  "providesContext": {
+    "takt/wide-social-media/showLabel": "showLabel"
+  },
+  "usesContext": [],
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "heading": "Follow Us on Social Media",
+      "showLabel": true
+    },
+    "innerBlocks": [
+      {
+        "name": "takt/wide-social-media-item",
+        "attributes": { "label": "Instagram", "iconSlug": "instagram", "link": { "title": "Instagram", "url": "#" } }
+      },
+      {
+        "name": "takt/wide-social-media-item",
+        "attributes": { "label": "Facebook", "iconSlug": "facebook", "link": { "title": "Facebook", "url": "#" } }
+      },
+      {
+        "name": "takt/wide-social-media-item",
+        "attributes": { "label": "YouTube", "iconSlug": "youtube", "link": { "title": "YouTube", "url": "#" } }
+      }
+    ]
+  }
+}

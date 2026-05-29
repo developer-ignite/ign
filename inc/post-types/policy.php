@@ -1,0 +1,63 @@
+<?php
+
+function theme_register_policy_post_type() {
+  register_post_type('policy', [
+    'label' => __('Policy', 'takt'),
+    'labels' => [
+      'name'                  => __('Policies', 'takt'),
+      'singular_name'         => __('Policy', 'takt'),
+      'add_new'               => __('Add New', 'takt'),
+      'add_new_item'          => __('Add New Policy', 'takt'),
+      'edit_item'             => __('Edit Policy', 'takt'),
+      'new_item'              => __('New Policy', 'takt'),
+      'view_item'             => __('View Policy', 'takt'),
+      'view_items'            => __('View Policies', 'takt'),
+      'search_items'          => __('Search Policies', 'takt'),
+      'not_found'             => __('No Policies found', 'takt'),
+      'not_found_in_trash'    => __('No Policies found in Trash', 'takt'),
+      'parent_item_colon'     => __('Parent Policy:', 'takt'),
+      'all_items'             => __('All Policies', 'takt'),
+      'archives'              => __('Policy Archives', 'takt'),
+      'attributes'            => __('Policy Attributes', 'takt'),
+      'insert_into_item'      => __('Insert into Policy', 'takt'),
+      'uploaded_to_this_item' => __('Uploaded to this Policy', 'takt'),
+      'featured_image'        => __('Featured Image', 'takt'),
+      'set_featured_image'    => __('Set featured image', 'takt'),
+      'remove_featured_image' => __('Remove featured image', 'takt'),
+      'use_featured_image'    => __('Use as featured image', 'takt'),
+      'menu_name'             => __('Policies', 'takt'),
+      'filter_items_list'     => __('Filter Policies list', 'takt'),
+      'items_list_navigation' => __('Policies list navigation', 'takt'),
+      'items_list'            => __('Policies list', 'takt'),
+      'name_admin_bar'        => __('Policy', 'takt'),
+    ],
+    'description'         => __('Policies and documents.', 'takt'),
+    'public'              => true,
+    'exclude_from_search' => false,
+    'publicly_queryable'  => true,
+    'show_ui'             => true,
+    'show_in_nav_menus'   => false,
+    'show_in_menu'        => true,
+    'show_in_admin_bar'   => true,
+    'menu_position'       => 6,
+    'menu_icon'           => 'dashicons-clipboard',
+    'capability_type'     => 'post',
+    'hierarchical'        => false,
+    'supports'            => ['title', 'editor', 'excerpt', 'revisions', 'custom-fields'],
+    'taxonomies'          => [],
+    'has_archive'         => true,
+    'rewrite'             => [
+      'slug'       => 'policies',
+      'with_front' => false,
+      'pages'      => true,
+      'feeds'      => true,
+    ],
+    'query_var'       => true,
+    'can_export'      => true,
+    'delete_with_user' => null,
+    'show_in_rest'    => true,
+  ]);
+}
+add_action('init', 'theme_register_policy_post_type');
+
+require_once get_template_directory() . '/inc/post-types/policy-order.php';

@@ -1,0 +1,113 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-20-002118",
+  "status": "PASS",
+  "blockName": "FeaturedEvents",
+  "output": {
+    "summary": {
+      "checksRun": 7,
+      "checksPassed": 7,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "postFixVerification": {
+      "fix1_imageAspectRatio": {
+        "description": "Image inner frame: aspect-[4/3] md:aspect-auto md:h-full → aspect-[4/3] (consistent ratio all breakpoints)",
+        "verified": true,
+        "method": "Code review (card-tribe_events.php line 37) + DOM selectors + visual screenshots at 1440px and 375px",
+        "codeConfirmed": "Line 37: 'relative flex flex-col items-end w-full overflow-hidden rounded-xl p-2 aspect-[4/3]' — md:aspect-auto and md:h-full removed",
+        "domConfirmed": {
+          "aspect-43-only": "found: true in all 6 event-bearing sections, count matches article count",
+          "no-aspect-auto": "found: false across all 7 sections (0 matches site-wide)",
+          "no-h-full": "found: false across all 7 sections (0 matches site-wide)"
+        },
+        "visualConfirmed": {
+          "1440px": "Image panels are substantial 4:3 proportion panels — not thin strips. Left image half occupies a wide, clearly rectangular 4:3 box alongside the content half at desktop width.",
+          "375px": "Image panels maintain 4:3 aspect ratio on mobile — wide constrained boxes stacked above content panels. Consistent behavior across breakpoints as intended."
+        }
+      },
+      "fix2_contentSpacing": {
+        "description": "Content half: removed justify-between, added mb-6 to text group for spacing before CTA",
+        "verified": true,
+        "method": "Code review (card-tribe_events.php lines 58-59) + DOM selectors + visual screenshots",
+        "codeConfirmed": "Line 58: content half div is 'md:w-1/2 bg-dark-pattern rounded-3xl p-6 flex flex-col text-white' (justify-between removed). Line 59: text group is 'flex flex-col gap-2 mb-6' (mb-6 added).",
+        "domConfirmed": {
+          "content-flex-col": "found: true in all 6 event-bearing sections — confirms flex-col without justify-between",
+          "text-group-mb6": "found: true in all 6 event-bearing sections, count matches article count",
+          "no-justify-between": "found: false across all 7 sections (0 matches site-wide)"
+        },
+        "visualConfirmed": {
+          "1440px": "Clear visible gap between excerpt text and VIEW EVENT arrow button. The mb-6 (24px) spacing creates proper visual separation between the text group and CTA.",
+          "375px": "Button spacing from text group visible on mobile as well."
+        }
+      }
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "detail": "taktician_validate_all passed. 0 build errors, 0 lint errors in FeaturedEvents files. 8 pre-existing react-hooks/exhaustive-deps warnings in unrelated blocks — unchanged."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "detail": "All sync checks pass. Root wrapper mismatch warning is the known false positive. No regressions."
+      },
+      "imageAspectConsistency": {
+        "status": "pass",
+        "detail": "aspect-[4/3] applied uniformly at all breakpoints. md:aspect-auto and md:h-full both absent from the DOM (0 matches site-wide). Image panel presents as a substantial 4:3 box at both 375px and 1440px viewport widths."
+      },
+      "ctaSpacing": {
+        "status": "pass",
+        "detail": "justify-between removed from content half (flex-col only). mb-6 present on text group, creating 24px bottom margin that separates excerpt text from the btn-tertiary CTA. Visually confirmed at both breakpoints."
+      },
+      "additionalObservation": {
+        "type": "note",
+        "description": "h3 now carries additional classes 'md:text-[3rem] md:leading-[1.1]' alongside text-header-2 (line 60). This pins desktop title to exactly 3rem/48px with tighter line-height, overriding any breakpoint scaling in text-header-2. Not in the fix description but is a non-breaking additive refinement. No issues raised."
+      },
+      "noRegressions": {
+        "status": "pass",
+        "detail": "All checks from prior PASS runs remain green: HTTP 200, no JS errors, no overflow, 7 block instances in demo-containers, 3 future events (ASC) and 2 past events (DESC), postsLimit honored, buttonLabel passthrough, hideIfEmpty, correct permalinks, venue names (Rogers Arena, BC Place Stadium, Vancouver Convention Centre), bg-dark-pattern on card halves, date badges (flex ml-auto bottom-right), btn-tertiary-arrow present, images srcset/lazy/dimensions, h3 not uppercase, headingSize=2 on ThemeHeading."
+      },
+      "visualReview": {
+        "status": "pass",
+        "screenshotsMandatory": true,
+        "1440px": {
+          "path": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-20-002139/featured-events-1440w.png",
+          "reviewed": true,
+          "findings": [
+            "Image panels are substantial 4:3 proportion — clearly not a thin strip at desktop",
+            "CTA button has clear visible gap from excerpt text above (mb-6 spacing evident)",
+            "Side-by-side card layout renders cleanly, cards size to content height",
+            "Date badges visible bottom-right of image frames",
+            "Mixed-case titles at text-header-2 scale",
+            "Venue names and excerpts visible in content halves"
+          ]
+        },
+        "375px": {
+          "path": ".taktician-project/reports/blocks/featured-events/screenshots/2026-02-20-002143/featured-events-375w.png",
+          "reviewed": true,
+          "findings": [
+            "Image panels maintain 4:3 aspect ratio on mobile — consistent with desktop",
+            "Cards stack vertically: image panel above content panel",
+            "CTA button spacing from text group visible on mobile",
+            "No overflow or layout breakage at 375px"
+          ]
+        }
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build passes — 0 errors, 0 lint issues in FeaturedEvents",
+      "TSX/PHP sync validated — all checks pass",
+      "Image inner frame: aspect-[4/3] only — md:aspect-auto and md:h-full absent (0 DOM matches)",
+      "4:3 image panels substantial and consistent at both 1440px and 375px — visually confirmed",
+      "justify-between removed from content half — 0 DOM matches site-wide",
+      "mb-6 on text group present in all event-bearing sections — visually confirmed CTA spacing",
+      "No regressions from prior passes"
+    ]
+  },
+  "tokensUsed": 18000,
+  "questionsForUser": []
+}

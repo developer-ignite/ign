@@ -1,0 +1,42 @@
+{
+  "blockTypes": [
+    "static"
+  ],
+  "a11yPatterns": [],
+  "excluded": [
+    {
+      "rule": "common.DARK_THEME",
+      "reason": "Block has no dark mode variant — it is used in a 404 template with a single light layout"
+    },
+    {
+      "rule": "static.BACKGROUND_IMAGE",
+      "reason": "Block has no background image or media elements"
+    },
+    {
+      "rule": "image.ALL",
+      "reason": "Block contains no images"
+    }
+  ],
+  "extra": [
+    {
+      "id": "CUSTOM-001",
+      "description": "Verify mt-(--header-height) correctly offsets the block below the site header without overlap",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-002",
+      "description": "Verify buttons with empty url and null postId do NOT render on frontend",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-003",
+      "description": "Verify text-accent color is applied to heading and responds to page color scheme",
+      "severity": "minor"
+    },
+    {
+      "id": "CUSTOM-004",
+      "description": "Verify only one instance of the block can be inserted per template (multiple: false)",
+      "severity": "major"
+    }
+  ]
+}

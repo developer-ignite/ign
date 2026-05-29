@@ -1,0 +1,76 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-20-141427",
+  "status": "complete",
+  "output": {
+    "summary": "Make EventHero fully independent from Hero by removing the 'hero' class from its wrapper in both PHP and TSX, and creating EventHero.css with its own .top-gradient styles (previously inherited from Hero.css). The hero-inner class has no CSS definition anywhere, so it can be safely renamed to event-hero-inner for semantic clarity, though this is optional. EventHero.js already scopes to .event-hero .top-gradient so no JS changes are needed.",
+    "fileChanges": [
+      {
+        "file": "blocks/EventHero/EventHero.css",
+        "action": "create",
+        "description": "Create EventHero's own CSS file with the .top-gradient rule, copied from Hero.css. This makes EventHero fully independent — it will work even if the Hero block is removed entirely.",
+        "details": "Copy the exact .top-gradient rule from blocks/Hero/Hero.css:\n\n.top-gradient {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 150vh;\n  z-index: -10;\n  background:\n    linear-gradient(\n      180deg,\n      color-mix(in srgb, var(--accent-color) 60%, transparent) 25%,\n      color-mix(in srgb, var(--color-off-white) 60%, transparent) 80%,\n      transparent\n    ),\n    radial-gradient(ellipse 30% 44% at 20% 45%, var(--gradient-left), transparent),\n    radial-gradient(ellipse 44% 33% at 80% 30%, var(--gradient-right), transparent);\n}\n\nIMPORTANT: Scope the selector to .event-hero .top-gradient to avoid conflict with Hero.css's unscoped .top-gradient rule. This ensures EventHero uses its own gradient styles even when Hero.css is also loaded on the same page (which it will be since both blocks exist in the theme).",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/EventHero/EventHero.php",
+        "action": "modify",
+        "description": "Remove 'hero' from the wrapper class list in theme_block_props(). The hero class was the bridge to Hero.css's .top-gradient — no longer needed since EventHero.css provides its own.",
+        "details": "Line 77: Change\n  theme_block_props( 'event-hero hero relative overflow-visible' )\nto\n  theme_block_props( 'event-hero relative overflow-visible' )\n\nThe 'hero-inner' class on line 83 has NO CSS definition anywhere — it is purely a semantic class name in the HTML. It can optionally be renamed to 'event-hero-inner' for clarity, but this is cosmetic only. No functional change.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/EventHero/EventHero.tsx",
+        "action": "modify",
+        "description": "Remove 'hero' from the editor wrapper className to match the PHP change. This keeps editor and frontend rendering consistent.",
+        "details": "Line 209: Change\n  className: \"event-hero hero relative overflow-visible\"\nto\n  className: \"event-hero relative overflow-visible\"\n\nThe 'hero-inner' class on line 216 can optionally be renamed to 'event-hero-inner' for consistency, but this is cosmetic — no CSS targets it.",
+        "affectsPhp": false
+      }
+    ],
+    "noChangeFiles": [
+      {
+        "file": "blocks/EventHero/EventHero.js",
+        "reason": "Already scoped to '.event-hero .top-gradient' — no dependency on the 'hero' class. No changes needed."
+      },
+      {
+        "file": "blocks/EventHero/block.json",
+        "reason": "No CSS file references in block.json for this theme (CSS is bundled by build tooling). No changes needed."
+      },
+      {
+        "file": "blocks/EventHero/index.tsx",
+        "reason": "No Hero.css import or hero class reference. No changes needed."
+      },
+      {
+        "file": "resources/css/screen.css",
+        "reason": "No import needed — block CSS files are auto-discovered by the build system (Tailwind v4 @source directive or webpack). No changes needed."
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "css-architecture",
+        "decision": "Scope EventHero's .top-gradient selector to .event-hero .top-gradient instead of using an unscoped .top-gradient",
+        "source": "existing-pattern",
+        "evidence": "Hero.css uses an unscoped .top-gradient selector. If EventHero.css also uses an unscoped .top-gradient, there would be CSS specificity conflicts when both blocks are on the same page or both CSS files are bundled together. Scoping to .event-hero .top-gradient ensures EventHero's gradient styles only apply within EventHero blocks."
+      },
+      {
+        "id": "DEC-002",
+        "category": "css-architecture",
+        "decision": "Copy the exact same gradient styles from Hero.css rather than modifying them",
+        "source": "user-request",
+        "evidence": "The user's change request is about independence, not redesign. EventHero should look identical after the change — the only difference is where the CSS comes from."
+      },
+      {
+        "id": "DEC-003",
+        "category": "html-structure",
+        "decision": "Keep 'hero-inner' class name unchanged (optional rename to 'event-hero-inner' is cosmetic only)",
+        "source": "existing-pattern",
+        "evidence": "Grep confirms no CSS rule targets .hero-inner anywhere in the codebase. It is purely a semantic HTML class. Renaming is optional and cosmetic."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional",
+    "qaNotes": "Verify: (1) EventHero.css is created and bundled into the built CSS output, (2) the 'hero' class is removed from both PHP and TSX wrappers, (3) the gradient renders identically on the test page (visual comparison), (4) EventHero.js still correctly targets .event-hero .top-gradient with ResizeObserver, (5) no Hero.css styles leak into EventHero (inspect element should show .event-hero .top-gradient rule, not .top-gradient from Hero.css)."
+  }
+}

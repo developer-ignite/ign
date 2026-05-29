@@ -1,0 +1,69 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-19-155244",
+  "status": "PASS",
+  "blockName": "WideSocialMedia",
+  "output": {
+    "mode": "re-verification",
+    "change": "Replaced md:gap-0 with md:gap-x-4 md:gap-y-0 on <ul> in TSX and PHP — restores 16px horizontal gap between icons while keeping zero vertical gap between wrapped rows",
+    "summary": {
+      "checksRun": 4,
+      "checksPassed": 4,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "checks": {
+      "tsxUlClasses": {
+        "status": "pass",
+        "details": "TSX <ul> at WideSocialMedia.tsx line 77 has exactly: \"flex flex-col gap-4 md:flex-row md:flex-wrap md:items-center md:justify-end md:gap-x-4 md:gap-y-0\". md:gap-x-4 and md:gap-y-0 are present. md:gap-0 is absent. Change confirmed."
+      },
+      "phpUlClasses": {
+        "status": "pass",
+        "details": "PHP <ul> at WideSocialMedia.php line 31 has exactly: \"flex flex-col gap-4 md:flex-row md:flex-wrap md:items-center md:justify-end md:gap-x-4 md:gap-y-0\". md:gap-x-4 and md:gap-y-0 are present. md:gap-0 is absent. Change confirmed.",
+        "tsxPhpSync": "TSX and PHP class strings are character-for-character identical."
+      },
+      "validateAll": {
+        "status": "pass",
+        "errors": 0,
+        "warnings": 10,
+        "details": "0 errors. 10 warnings — all pre-existing and unchanged: 8 react-hooks/exhaustive-deps in unrelated blocks (Accordion, Archive x2, ContentWithMedia, FullWidthMedia, PostHero x2, Tabs), 2 htmlStructureSync root-wrapper-element warnings for WideSocialMedia and WideSocialMediaItem (editor-only BlockControls/InspectorControls as TSX root — expected). Build: pass. Lint: pass. Sync: pass. Registration: pass."
+      },
+      "pageAudit": {
+        "status": "pass",
+        "details": "All 11 sections audited. ul.md:gap-x-4 found in all 11 sections. ul.md:gap-y-0 found in all 11 sections. ul.md:gap-0 (old class) found in 0 of 11 sections — correctly absent. All links and icons render correctly across all variations. Section 4 (Many Items - Wrap Test, 8 links) confirmed with new gap classes present.",
+        "ulGapX4AllSections": true,
+        "ulGapY0AllSections": true,
+        "ulGap0OldAbsentAllSections": true,
+        "sectionsFound": 11,
+        "linksPerSection": [
+          12,
+          4,
+          2,
+          4,
+          8,
+          3,
+          3,
+          1,
+          4,
+          3,
+          3
+        ]
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "TSX <ul> class is exactly \"flex flex-col gap-4 md:flex-row md:flex-wrap md:items-center md:justify-end md:gap-x-4 md:gap-y-0\"",
+      "PHP <ul> class is exactly \"flex flex-col gap-4 md:flex-row md:flex-wrap md:items-center md:justify-end md:gap-x-4 md:gap-y-0\"",
+      "TSX and PHP <ul> class strings are identical",
+      "md:gap-0 (old class) is absent from rendered HTML in all 11 sections",
+      "md:gap-x-4 present in rendered HTML in all 11 sections",
+      "md:gap-y-0 present in rendered HTML in all 11 sections",
+      "taktician_validate_all: 0 errors, all warnings pre-existing and unchanged"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

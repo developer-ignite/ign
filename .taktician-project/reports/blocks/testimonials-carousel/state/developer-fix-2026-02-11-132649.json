@@ -1,0 +1,49 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-11-132649",
+  "status": "complete",
+  "blockName": "TestimonialsCarousel",
+  "output": {
+    "mode": "fix",
+    "filesModified": [
+      {
+        "path": "blocks/TestimonialsCarousel/TestimonialsCarousel.php",
+        "purpose": "Restructured fade masks into .swiper-slides-wrapper and added container padding"
+      },
+      {
+        "path": "blocks/TestimonialsCarousel/TestimonialsCarousel.tsx",
+        "purpose": "Added container padding to match PHP"
+      }
+    ],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "fixesApplied": [
+      {
+        "id": "REV1-DEC-001",
+        "description": "Created new .swiper-slides-wrapper div inside .swiper-parent that wraps only the .swiper element and fade mask divs. Removed 'relative' from .swiper-parent. The new wrapper has classes 'relative overflow-hidden grid grid-cols-1 grid-rows-1'. This isolates fade masks to only cover the slides area, not the pagination/navigation controls above.",
+        "files": ["blocks/TestimonialsCarousel/TestimonialsCarousel.php"]
+      },
+      {
+        "id": "REV1-DEC-002",
+        "description": "Added 'py-16 md:py-24' to the container div in both PHP and TSX to achieve 96px inner padding within the charcoal background area at desktop (64px on mobile).",
+        "files": ["blocks/TestimonialsCarousel/TestimonialsCarousel.php", "blocks/TestimonialsCarousel/TestimonialsCarousel.tsx"]
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": ["Asset size warnings (pre-existing)"]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "Fade mask restructure only applies to PHP since TSX renders the swiper area via FilteredServerSideRender (SSR from PHP). Container padding (py-16 md:py-24) is synced in both TSX and PHP."
+    },
+    "jsChanges": {
+      "required": false,
+      "reason": "No JS changes needed. querySelector calls are descendant queries that find fade masks regardless of nesting depth within .swiper-parent. MutationObserver on .swiper-parent still works correctly."
+    },
+    "blockers": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

@@ -1,0 +1,79 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-11-153200",
+  "status": "PASS",
+  "blockName": "DynamicContentCarousel",
+  "output": {
+    "summary": {
+      "checksRun": 7,
+      "checksPassed": 7,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "checks": {
+      "dynamicContentCarouselPhp": {
+        "status": "pass",
+        "detail": "DynamicContentCarousel.php line 95: container div has 'py-10 md:py-15' AND 'before:-inset-x-(--side-gutter) before:-inset-y-8 md:before:-inset-x-8'. Correct."
+      },
+      "dynamicContentCarouselTsx": {
+        "status": "pass",
+        "detail": "DynamicContentCarousel.tsx line 369: container div class string matches PHP exactly."
+      },
+      "testimonialsCarouselPhp": {
+        "status": "pass",
+        "detail": "TestimonialsCarousel.php line 46: container div has 'py-10 md:py-15' AND 'before:-inset-x-(--side-gutter) before:-inset-y-8 md:before:-inset-x-8'. Correct."
+      },
+      "testimonialsCarouselTsx": {
+        "status": "pass",
+        "detail": "TestimonialsCarousel.tsx line 269: container div class string matches PHP exactly."
+      },
+      "cardsCarouselPhp": {
+        "status": "pass",
+        "detail": "CardsCarousel.php line 17: dark-mode conditional branch has 'py-10 md:py-15' AND 'before:-inset-x-(--side-gutter) before:-inset-y-8 md:before:-inset-x-8'. Correct."
+      },
+      "cardsCarouselTsx": {
+        "status": "pass",
+        "detail": "CardsCarousel.tsx lines 254-256: dark-mode conditional branch class string matches PHP exactly."
+      },
+      "noOldShorthand": {
+        "status": "pass",
+        "detail": "Searched all 6 files for old pattern 'before:-inset-(--side-gutter) md:before:-inset-8'. Zero matches in DynamicContentCarousel, TestimonialsCarousel, and CardsCarousel directories. Old shorthand completely removed."
+      },
+      "build": {
+        "status": "pass",
+        "detail": "bun run build compiled successfully. Only asset size warnings (no errors). webpack compiled with 3 warnings (all size-related)."
+      },
+      "renderedOutputDynamicContentCarousel": {
+        "status": "pass",
+        "detail": "Page audit of test-dynamic-content-carousel: all 10 sections have .container.relative.py-10.md:py-15 selector found (count: 1 each)."
+      },
+      "renderedOutputTestimonialsCarousel": {
+        "status": "pass",
+        "detail": "Page audit of test-testimonials-carousel: all 6 sections have .container.relative.py-10.md:py-15 selector found (count: 1 each)."
+      },
+      "renderedOutputCardsCarousel": {
+        "status": "pass",
+        "detail": "Page audit of test-cards-carousel: 8 of 9 dark-mode sections have .container.relative.py-10.md:py-15 selector. Section index 1 ('Our Services', darkMode:false) correctly does NOT have the dark-mode container classes."
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "DynamicContentCarousel.php has correct new classes (py-10 md:py-15, before:-inset-x-/before:-inset-y- split)",
+      "DynamicContentCarousel.tsx matches PHP exactly",
+      "TestimonialsCarousel.php has correct new classes",
+      "TestimonialsCarousel.tsx matches PHP exactly",
+      "CardsCarousel.php has correct new classes in dark-mode conditional branch",
+      "CardsCarousel.tsx matches PHP exactly in dark-mode conditional branch",
+      "No old combined shorthand (before:-inset-(--side-gutter) md:before:-inset-8) remains in any of the 6 files",
+      "Build passes with no errors (only asset size warnings)",
+      "Rendered output on test-dynamic-content-carousel confirms correct container classes (10/10 sections)",
+      "Rendered output on test-testimonials-carousel confirms correct container classes (6/6 sections)",
+      "Rendered output on test-cards-carousel confirms correct container classes (8/8 dark-mode sections, 1 light-mode section correctly excluded)"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

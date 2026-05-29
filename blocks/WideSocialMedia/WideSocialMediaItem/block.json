@@ -1,0 +1,51 @@
+{
+  "apiVersion": 3,
+  "name": "takt/wide-social-media-item",
+  "title": "Wide Social Media Item",
+  "category": "takt-theme",
+  "description": "A single social media link item with icon and label.",
+  "parent": ["takt/wide-social-media"],
+  "keywords": ["social", "link", "icon"],
+  "textdomain": "takt",
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "link": {
+      "type": "object",
+      "default": {
+        "title": "",
+        "url": "",
+        "opensInNewTab": true,
+        "label": ""
+      }
+    },
+    "logoId": {
+      "type": "number",
+      "default": null
+    },
+    "iconSlug": {
+      "type": "string",
+      "default": null
+    },
+    "label": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "anchor": true,
+    "align": false,
+    "html": false,
+    "reusable": false
+  },
+  "usesContext": ["takt/wide-social-media/showLabel"],
+  "example": {
+    "viewportWidth": 200,
+    "attributes": {
+      "label": "Instagram",
+      "iconSlug": "instagram",
+      "link": { "title": "Instagram", "url": "#" }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "blockTypes": [
+    "static",
+    "interactive"
+  ],
+  "a11yPatterns": [
+    "link"
+  ],
+  "excluded": [
+    {
+      "rule": "common.DARK_THEME",
+      "reason": "No dark mode specified in the spec. Block inherits parent context but has no dark-specific styling."
+    },
+    {
+      "rule": "static.BACKGROUND_IMAGE",
+      "reason": "Block has no background image."
+    },
+    {
+      "rule": "image.ALL",
+      "reason": "Block contains no images."
+    },
+    {
+      "rule": "interactive.HOVER_CARDS",
+      "reason": "Block is not a card. Only the tertiary button has interactive hover/focus states."
+    },
+    {
+      "rule": "static.PARALLAX",
+      "reason": "No parallax behavior specified."
+    }
+  ],
+  "extra": [
+    {
+      "id": "CUSTOM-001",
+      "description": "Consecutive block styling: when two or more LinkWithDetails blocks are siblings, all blocks after the first must show border-top (1px charcoal), margin-top (32px), and padding-top (32px)",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-002",
+      "description": "Button must always render as tertiary style with arrow icon. No variation selector should be available in the editor.",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-003",
+      "description": "Only the tertiary button link is clickable, not the entire block wrapper",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-004",
+      "description": "Headline renders as h3 with text-header-5 (Anton font, 24px)",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-005",
+      "description": "Gap between headline, description, and button is 24px (gap-6)",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-006",
+      "description": "Empty description should not render any wrapper element in the frontend",
+      "severity": "minor"
+    }
+  ]
+}

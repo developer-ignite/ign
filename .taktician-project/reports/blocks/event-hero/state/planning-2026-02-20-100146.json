@@ -1,0 +1,62 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-20-100146",
+  "status": "complete",
+  "output": {
+    "summary": "Two changes: (1) Change showExcerpt attribute default from false to true in block.json and example. (2) Add event cost display using _EventCost and _EventCurrencySymbol meta fields in both TSX and PHP, rendered in the Lower Group section after venue and before the external link button.",
+    "fileChanges": [
+      {
+        "file": "blocks/EventHero/block.json",
+        "action": "modify",
+        "description": "Change showExcerpt default from false to true; update example attributes",
+        "details": "In attributes.showExcerpt, change \"default\": false to \"default\": true. In example.attributes, change \"showExcerpt\": false to \"showExcerpt\": true.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/EventHero/EventHero.tsx",
+        "action": "modify",
+        "description": "Add cost/price display from event meta fields",
+        "details": "1. Read _EventCost and _EventCurrencySymbol from eventMeta (same pattern as other meta fields already read on lines 141-146). 2. Add a new cost line in the Lower Group div (after venue, before external link button) that renders when cost is available. Format: '{currencySymbol}{cost}' or just '{cost}' if no symbol. Use same styling as venue/date lines: 'text-lg font-medium leading-[1.2] text-charcoal'. 3. In editor placeholder mode (displayContent), show 'Event Cost' placeholder text.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/EventHero/EventHero.php",
+        "action": "modify",
+        "description": "Add cost/price display from event meta fields",
+        "details": "1. Add two new get_post_meta calls after the existing meta reads (around line 27): $event_cost = get_post_meta($event_id, '_EventCost', true); $currency_symbol = get_post_meta($event_id, '_EventCurrencySymbol', true); 2. Build a display string: if cost is non-empty, prepend currency symbol if available. 3. Add a new paragraph element in the Lower Group section (after venue, before external link) with the same classes as the venue line: 'text-lg font-medium leading-[1.2] text-charcoal'. Wrap in conditional: if ($event_cost).",
+        "affectsPhp": true
+      }
+    ],
+    "attributeChanges": [
+      {
+        "action": "modify",
+        "name": "showExcerpt",
+        "type": "boolean",
+        "default": true,
+        "description": "Change default from false to true so excerpt shows by default"
+      }
+    ],
+    "designDecisions": [
+      {
+        "category": "layout",
+        "question": "Where should the cost/price line appear in the Lower Group?",
+        "recommendation": "Place it after the venue line and before the external link button, using the same text styling as the date and venue lines (text-lg font-medium leading-[1.2] text-charcoal). This keeps all event metadata visually grouped.",
+        "needsUserInput": false
+      },
+      {
+        "category": "behavior",
+        "question": "How should cost be formatted when currency symbol is available vs not?",
+        "recommendation": "If _EventCurrencySymbol is set, prepend it directly to the cost value (e.g., '$25'). If only _EventCost is available with no symbol, display the cost value as-is (The Events Calendar often stores cost as a pre-formatted string like '25' or 'Free').",
+        "needsUserInput": false
+      },
+      {
+        "category": "behavior",
+        "question": "Should cost display when value is 0 or 'Free'?",
+        "recommendation": "Yes, display the cost line whenever _EventCost is non-empty. TEC stores 'Free' as a string, and '0' is also a valid cost. Only hide the line when _EventCost is empty/null.",
+        "needsUserInput": false
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

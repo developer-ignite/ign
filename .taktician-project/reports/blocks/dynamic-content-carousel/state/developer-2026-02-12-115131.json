@@ -1,0 +1,92 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-12T12:00:40Z",
+  "status": "complete",
+  "severity": "info",
+  "blockName": "DynamicContentCarousel",
+  "output": {
+    "mode": "edit",
+    "summary": "Successfully refactored CSS architecture: moved DynamicContentCarousel-specific styles into block CSS file, consolidated card hover zoom into generic theme-wide styles, added comprehensive prefers-reduced-motion support globally, and simplified swiper.css to retain only shared infrastructure.",
+    "filesModified": [
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/resources/css/screen/swiper.css",
+        "changes": "Removed .dynamic-content-carousel-scoped styles (equal-height card chain, card image hover zoom). Simplified prefers-reduced-motion block to keep ONLY .swiper-wrapper and .swiper-pagination-progressbar-fill overrides (fighting inline styles). Removed .carousel-nav-btn::before and .modal-close-btn::before reduced-motion rules (now handled by theme-wide rule)."
+      },
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/resources/css/screen/body.css",
+        "changes": "Added theme-wide @media (prefers-reduced-motion: reduce) rule that sets html { scroll-behavior: auto; } and blanket-disables all animations/transitions via *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }. Added generic .card-post img and .card-team-member img hover zoom styles (transition: transform 0.3s ease; scale(1.05) on hover)."
+      },
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/blocks/Archive/Archive.css",
+        "changes": "Removed duplicated .archive .card-team-member img and .archive .card-post img transition and hover scale rules (lines 133-142). Now uses generic card styles from body.css."
+      }
+    ],
+    "filesCreated": [
+      {
+        "path": "/var/www/ign/wp-content/themes/ign/blocks/DynamicContentCarousel/DynamicContentCarousel.css",
+        "purpose": "Block-specific CSS containing only the equal-height card chain rule (.dynamic-content-carousel .swiper-slide > * { height: 100%; }). Auto-bundled by webpack via glob.sync('./blocks/**/*.css')."
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "webpack performance warnings (bundle size) - pre-existing, not related to CSS changes"
+      ]
+    },
+    "lintStatus": {
+      "passed": false,
+      "errors": 9,
+      "warnings": 31,
+      "note": "All lint errors/warnings are pre-existing in other blocks (Accordion, ButtonRow, CallToAction, ContentWithMedia, DynamicContentCarousel, FullWidthMedia, Hero, MasonryCards, Tabs, TestimonialsCarousel). None are related to the CSS refactoring changes made in this session."
+    },
+    "architecturalChanges": [
+      {
+        "change": "Card hover zoom is now generic",
+        "before": "Duplicated in swiper.css (.dynamic-content-carousel scope) and Archive.css (.archive scope)",
+        "after": "Single definition in body.css applies to .card-post and .card-team-member globally",
+        "impact": "Any future block using card-post or card-team-member templates automatically inherits hover zoom effect"
+      },
+      {
+        "change": "Prefers-reduced-motion is now theme-wide",
+        "before": "Only swiper.css had reduced-motion handling, leaving gaps in body.css smooth scrolling and Archive.css transitions",
+        "after": "Blanket rule in body.css disables all animations/transitions theme-wide when user preference is set",
+        "impact": "All future CSS additions automatically respect reduced-motion preference. Swiper-specific overrides remain for inline-style fighting."
+      },
+      {
+        "change": "Block-specific CSS pattern established",
+        "before": "DynamicContentCarousel styles lived in swiper.css",
+        "after": "DynamicContentCarousel.css follows Archive.css precedent",
+        "impact": "Webpack auto-bundles block CSS via glob pattern. Clearer separation of concerns."
+      }
+    ],
+    "verificationSteps": [
+      {
+        "test": "Card hover zoom works in DynamicContentCarousel",
+        "expected": "card-post and card-team-member images scale 1.05 on hover"
+      },
+      {
+        "test": "Card hover zoom works in Archive",
+        "expected": "card-post and card-team-member images scale 1.05 on hover (no regression)"
+      },
+      {
+        "test": "Equal-height carousel layout preserved",
+        "expected": "Cards in DynamicContentCarousel still stretch to fill swiper slides"
+      },
+      {
+        "test": "Prefers-reduced-motion disables all animations",
+        "expected": "With OS-level reduced-motion enabled: no transitions on body bg, no smooth scroll, no card hover zoom, no carousel animations"
+      },
+      {
+        "test": "Swiper controls still animate normally",
+        "expected": "With reduced-motion OFF: carousel nav buttons gradient sweep, progress bar animates"
+      }
+    ],
+    "affectsPhp": false,
+    "blockers": [],
+    "fixesApplied": [
+      "Pre-existing issue: TestimonialsCarousel.css duplicated modal-close-btn styles without @keyframes definition, causing Tailwind 4 build error. Linter auto-restored file with @reference directive."
+    ]
+  },
+  "tokensUsed": 55000
+}

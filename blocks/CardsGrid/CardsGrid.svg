@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Container -->
+	<path d="M0,1v22h24V1H0ZM23,22H1V2h22v20Z"/>
+	<!-- Header: eyebrow + heading (left) -->
+	<rect x="2" y="3" width="4" height="1"/>
+	<rect x="2" y="5" width="8" height="2"/>
+	<!-- Header: description (right) -->
+	<rect x="13" y="5" width="8" height="1"/>
+	<rect x="13" y="7" width="6" height="1"/>
+	<!-- Card grid (2x2) -->
+	<rect x="2" y="10" width="10" height="5"/>
+	<rect x="13" y="10" width="9" height="5"/>
+	<rect x="2" y="16" width="10" height="5"/>
+	<rect x="13" y="16" width="9" height="5"/>
+</svg>

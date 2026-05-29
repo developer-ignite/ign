@@ -1,0 +1,180 @@
+@theme {
+	--color-white: rgba(255, 255, 255, 1);
+	--color-off-white: rgba(251, 246, 226, 1);
+	--color-charcoal: rgba(31, 31, 29, 1);
+	--color-black: var(--color-charcoal);
+
+	--color-neon-green: rgba(212, 255, 69, 1);
+	--color-neon-green-light: rgba(221, 255, 106, 1);
+	--color-neon-green-lighter: rgba(238, 255, 181, 1);
+
+	--color-blue: rgba(71, 203, 242, 1);
+	--color-blue-light: rgba(145, 224, 247, 1);
+	--color-blue-lighter: rgba(181, 234, 250, 1);
+
+	--color-green: rgba(120, 219, 107, 1);
+	--color-green-light: rgba(160, 230, 151, 1);
+	--color-green-lighter: rgba(201, 241, 196, 1);
+
+	--color-yellow: rgba(255, 210, 76, 1);
+	--color-yellow-light: rgba(255, 228, 148, 1);
+	--color-yellow-lighter: rgba(255, 237, 183, 1);
+
+	--color-orange: rgba(255, 118, 20, 1);
+	--color-orange-light: rgba(255, 173, 114, 1);
+	--color-orange-lighter: rgba(255, 200, 161, 1);
+
+	--color-purple: rgba(180, 151, 216, 1);
+	--color-purple-light: rgba(203, 182, 228, 1);
+	--color-purple-lighter: rgba(225, 213, 239, 1);
+}
+
+:root {
+	--accent-color: rgba(212, 255, 69, 1);
+	--accent-color-light: rgba(221, 255, 106, 1);
+	--accent-color-lighter: rgba(238, 255, 181, 1);
+}
+
+/* Accent color utilities - defined outside @theme for runtime evaluation */
+@utility bg-accent {
+	background-color: var(--accent-color);
+}
+@utility bg-accent-light {
+	background-color: var(--accent-color-light);
+}
+@utility bg-accent-lighter {
+	background-color: var(--accent-color-lighter);
+}
+@utility border-accent {
+	border-color: var(--accent-color);
+}
+@utility border-accent-light {
+	border-color: var(--accent-color-light);
+}
+@utility border-accent-lighter {
+	border-color: var(--accent-color-lighter);
+}
+@utility text-accent {
+	color: var(--accent-color);
+}
+@utility text-accent-light {
+	color: var(--accent-color-light);
+}
+@utility text-accent-lighter {
+	color: var(--accent-color-lighter);
+}
+
+@custom-variant dark (&:where(.dark, .dark &));
+.dark {
+	color: var(--color-white);
+}
+
+@custom-variant neon-green (&:where(.neon-green, .neon-green &));
+.neon-green {
+	--accent-color: var(--color-neon-green);
+	--accent-color-light: var(--color-neon-green-light);
+	--accent-color-lighter: var(--color-neon-green-lighter);
+	color: var(--color-charcoal);
+}
+
+@custom-variant blue (&:where(.blue, .blue &));
+.blue {
+	--accent-color: var(--color-blue);
+	--accent-color-light: var(--color-blue-light);
+	--accent-color-lighter: var(--color-blue-lighter);
+	color: var(--color-charcoal);
+}
+
+@custom-variant green (&:where(.green, .green &));
+.green {
+	--accent-color: var(--color-green);
+	--accent-color-light: var(--color-green-light);
+	--accent-color-lighter: var(--color-green-lighter);
+	color: var(--color-charcoal);
+}
+
+@custom-variant yellow (&:where(.yellow, .yellow &));
+.yellow {
+	--accent-color: var(--color-yellow);
+	--accent-color-light: var(--color-yellow-light);
+	--accent-color-lighter: var(--color-yellow-lighter);
+	color: var(--color-charcoal);
+}
+
+@custom-variant orange (&:where(.orange, .orange &));
+.orange {
+	--accent-color: var(--color-orange);
+	--accent-color-light: var(--color-orange-light);
+	--accent-color-lighter: var(--color-orange-lighter);
+	color: var(--color-charcoal);
+}
+
+@custom-variant purple (&:where(.purple, .purple &));
+.purple {
+	--accent-color: var(--color-purple);
+	--accent-color-light: var(--color-purple-light);
+	--accent-color-lighter: var(--color-purple-lighter);
+	color: var(--color-charcoal);
+}
+
+body {
+	@apply bg-off-white
+	text-black;
+}
+
+.dark {
+	@apply text-white
+	bg-black;
+}
+
+@utility bg-dark-pattern {
+	background-color: var(--color-charcoal);
+	background-image: url("../images/dark-bg.png");
+	background-size: 500px auto;
+	background-position: center;
+	background-repeat: repeat;
+}
+
+.dark-bg {
+	@apply bg-dark-pattern;
+}
+.block-editor-iframe__body.dark {
+	@apply text-white!
+	bg-black!;
+}
+
+/* Generic gradient system - reusable by any block */
+:root {
+	--gradient-left: var(--color-blue);
+	--gradient-right: var(--color-blue);
+}
+
+.neon-green {
+	--gradient-left: var(--color-blue);
+	--gradient-right: var(--color-blue);
+}
+
+.blue {
+	--gradient-left: var(--color-neon-green);
+	--gradient-right: var(--color-neon-green);
+}
+
+.yellow {
+	--gradient-left: var(--color-neon-green);
+	--gradient-right: var(--color-neon-green);
+}
+
+.orange {
+	--gradient-left: var(--color-neon-green);
+	--gradient-right: var(--color-neon-green);
+}
+
+.purple {
+	--gradient-left: var(--color-blue);
+	--gradient-right: var(--color-blue);
+}
+
+.green {
+	--gradient-left: var(--color-neon-green);
+	--gradient-right: var(--color-neon-green);
+}

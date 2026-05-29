@@ -1,0 +1,346 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-12-131007",
+  "status": "complete",
+  "blockName": "CardsCarousel",
+  "output": {
+    "summary": "Three-part change: (1) Padding structure refactor to absorb section padding into container padding and zero-out pseudo inset-y, matching DynamicContentCarousel/TestimonialsCarousel pattern. (2) WAI-ARIA carousel accessibility overhaul adding role=region, aria-roledescription=carousel on container, role=group with aria-roledescription=slide and positional aria-label on each slide, aria-hidden on pagination, autoplay toggle button with pause/play and aria-live management, prefers-reduced-motion support. (3) Test page rebuild with DemoContainer wrappers for all variations, plus new Loop Mode and Loop+Autoplay variations.",
+    "fileChanges": [
+      {
+        "file": "blocks/CardsCarousel/CardsCarousel.php",
+        "action": "modify",
+        "description": "Padding refactor + WAI-ARIA carousel pattern attributes",
+        "details": "1. PADDING: Remove 'py-10 sm:py-16' from section class. Change container 'py-10 md:py-15' to 'py-18 md:py-23'. Change 'before:-inset-y-8' to 'before:inset-y-0'. 2. ARIA: Add aria-roledescription='carousel' on .swiper-parent. Add role='group', aria-roledescription='slide', aria-label='Slide X of Y' on each swiper-slide (CardsCarouselItem). Add aria-hidden='true' on .swiper-pagination. Add autoplay toggle button with Pause.svg when autoplayCarousel is enabled (same pattern as DynamicContentCarousel). Add aria-label fallback on section when heading is empty. 3. Extend controls row condition to include $autoplayCarousel.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/CardsCarousel/CardsCarousel.tsx",
+        "action": "modify",
+        "description": "Padding refactor + editor-side ARIA attributes (cosmetic parity)",
+        "details": "1. PADDING: Remove 'py-10 sm:py-16' from section className. Change 'py-10 md:py-15' to 'py-18 md:py-23' in container. Change 'before:-inset-y-8' to 'before:inset-y-0'. 2. ARIA: Add aria-roledescription='carousel' on .swiper-parent div. Add aria-hidden='true' on .swiper-pagination div. Add aria-label fallback on section when heading is empty. Note: Slide-level ARIA (role=group, aria-roledescription=slide) is managed in CardsCarouselItem.php since slides are inner blocks rendered server-side on frontend.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/CardsCarousel/CardsCarouselItem/CardsCarouselItem.php",
+        "action": "modify",
+        "description": "Add WAI-ARIA slide role attributes to each carousel item",
+        "details": "The slide wrapper div needs: role='group', aria-roledescription='slide', aria-label='Slide X of Y'. However, since CardsCarouselItem is an inner block and doesn't have access to total slide count or its own index from block context, we need to either: (a) add providesContext for slide count and use $block->context, or (b) add these attributes via the parent PHP template by wrapping $children output. RECOMMENDED approach (b): In CardsCarousel.php, since $children is a pre-rendered HTML string of all child blocks, we cannot easily inject per-slide ARIA attributes from the parent. RECOMMENDED approach (a): Add 'takt/cards-carousel/totalSlides' to providesContext from CardsCarousel, and use a counter in CardsCarouselItem.php. But we don't have slide index in context either. BEST approach: Use JavaScript to add role/aria-roledescription/aria-label to .swiper-slide elements in CardsCarousel.js after DOM is ready, matching how Swiper handles slides. This avoids complex context passing and works correctly even with loop mode (which duplicates slides).",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/CardsCarousel/CardsCarousel.js",
+        "action": "modify",
+        "description": "Add WAI-ARIA slide attributes via JS, autoplay toggle handler, aria-live management, prefers-reduced-motion",
+        "details": "1. Add role='group', aria-roledescription='slide', aria-label='Slide X of Y' to each .swiper-slide after Swiper init (recalculate on slideChange for loop mode). 2. Add autoplay toggle click handler (same pattern as DynamicContentCarousel.js): toggle pause/play icon, update aria-label, manage aria-live on .swiper-wrapper. 3. Add focusin/focusout handlers to pause autoplay on focus. 4. Add prefers-reduced-motion check to disable autoplay. 5. Query .carousel-autoplay-toggle button from parent.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/CardsCarousel/resources/Pause.svg",
+        "action": "create",
+        "description": "Add Pause icon SVG for autoplay toggle button",
+        "details": "Copy the same Pause.svg used by DynamicContentCarousel: 16x16 viewBox with two vertical bars (pause icon). Content: <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M5 3H7V13H5V3Z' fill='currentColor'/><path d='M9 3H11V13H9V3Z' fill='currentColor'/></svg>",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/CardsCarousel/block.json",
+        "action": "no-change",
+        "description": "No attribute changes needed - autoplayCarousel and autoplayDelay attributes already exist",
+        "details": "All necessary attributes (autoplayCarousel, autoplayDelay, loopCarousel, showPagination, showNavigation, darkMode) already defined.",
+        "affectsPhp": false
+      }
+    ],
+    "paddingCalculation": {
+      "current": {
+        "section": "py-10 sm:py-16 (40px mobile / 64px sm+)",
+        "container": "py-10 md:py-15 (40px mobile / 60px md+) [dark mode only]",
+        "pseudoInsetY": "before:-inset-y-8 (-32px each side) [dark mode only]",
+        "totalMobile": "40px (section) + 0px (container only in dark) = 40px light / 40px + 40px - 32px = 48px dark... RECALC: In dark mode: section py-10=40px + container py-10=40px + pseudo extends 32px beyond = effectively 40+40+32 top+bottom? No. The pseudo uses -inset-y-8 meaning it extends 32px BEYOND the container. Visual padding in dark mode = container py (40px) + pseudo extension (32px) = 72px mobile. In light mode = section py only = 40px mobile.",
+        "totalMobileLight": "40px (section py-10 only, container has no padding in light mode)",
+        "totalMobileDark": "section py-10 (40px) + container py-10 (40px) = 80px content padding, but pseudo extends -inset-y-8 (-32px) beyond container = charcoal bg total = 40+32=72px from container edge. Visible spacing = 40px (section) from page edge to charcoal bg edge + 0 additional.",
+        "totalDesktopLight": "64px (section py-16 only)",
+        "totalDesktopDark": "section py-16 (64px) + container py-15 (60px) = 124px total, pseudo extends 32px = charcoal height = 60+32=92px from container edge",
+        "note": "The padding refactor goal is to move section padding INTO the container, keeping the same visual result. For dark mode: charcoal bg height stays the same. For light mode: we need equivalent spacing."
+      },
+      "target": {
+        "section": "[none] - remove py-10 sm:py-16",
+        "container": "py-18 md:py-23 (72px mobile / 92px md+) [applied always, both light and dark]",
+        "pseudoInsetY": "before:inset-y-0 (flush with container padding box)",
+        "totalMobileLight": "72px (container py-18)",
+        "totalMobileDark": "72px (container py-18, charcoal bg fills from inset-y-0)",
+        "totalDesktopLight": "92px (container py-23)",
+        "totalDesktopDark": "92px (container py-23, charcoal bg fills from inset-y-0)",
+        "note": "Key insight: In the refactored pattern, container padding is ALWAYS applied (not just in dark mode). The container div classes change from conditional 'py-10 md:py-15 ... => $darkMode' to ALWAYS having 'py-18 md:py-23'. The before: pseudo classes are still conditional on $darkMode. This matches DynamicContentCarousel which always has 'py-18 md:py-23' on container."
+      },
+      "importantNote": "CardsCarousel has a unique complication: it supports BOTH light and dark mode via the $darkMode toggle. DynamicContentCarousel and TestimonialsCarousel are ALWAYS dark. In the current CardsCarousel implementation, the container padding and pseudo are only applied when $darkMode is true. In the refactored version, the container padding (py-18 md:py-23) should ALWAYS be applied regardless of dark mode, and only the before: pseudo background classes remain conditional on $darkMode. This ensures consistent spacing in both modes."
+    },
+    "accessibilityChanges": {
+      "currentImplementation": "CardsCarousel currently has: (1) Swiper A11y module loaded in JS, (2) aria-label on navigation buttons ('Previous Item', 'Next Item'), (3) title attributes on navigation buttons. Missing all WAI-ARIA carousel pattern attributes.",
+      "gaps": [
+        "MISSING: aria-roledescription='carousel' on .swiper-parent container",
+        "MISSING: role='group' on each .swiper-slide",
+        "MISSING: aria-roledescription='slide' on each .swiper-slide",
+        "MISSING: aria-label='Slide X of Y' on each .swiper-slide",
+        "MISSING: aria-hidden='true' on .swiper-pagination (decorative progress bar)",
+        "MISSING: Autoplay toggle button when autoplayCarousel is enabled",
+        "MISSING: aria-live region management (off when autoplaying, polite when paused)",
+        "MISSING: prefers-reduced-motion check to disable autoplay",
+        "MISSING: Focus-based autoplay pause (focusin/focusout handlers)",
+        "MISSING: aria-label fallback on <section> when heading is empty"
+      ],
+      "changes": [
+        {
+          "file": "blocks/CardsCarousel/CardsCarousel.php",
+          "description": "Add aria-roledescription='carousel' to .swiper-parent div",
+          "details": "Add attribute: aria-roledescription=\"<?php esc_attr_e( 'carousel', 'takt' ); ?>\""
+        },
+        {
+          "file": "blocks/CardsCarousel/CardsCarousel.php",
+          "description": "Add aria-hidden='true' to .swiper-pagination div",
+          "details": "The pagination progress bar is decorative/visual-only. Add aria-hidden=\"true\" to prevent screen readers from announcing it."
+        },
+        {
+          "file": "blocks/CardsCarousel/CardsCarousel.php",
+          "description": "Add autoplay toggle button before pagination when $autoplayCarousel is true",
+          "details": "Add carousel-autoplay-toggle button with Pause.svg icon, aria-label='Stop slide rotation', data-label-pause and data-label-play attributes. Extend the controls row condition from ($showPagination || $showNavigation) to ($showPagination || $showNavigation || $autoplayCarousel)."
+        },
+        {
+          "file": "blocks/CardsCarousel/CardsCarousel.php",
+          "description": "Add aria-label fallback on <section> when heading is empty",
+          "details": "When $heading is empty, add aria-label='Cards Carousel' to the section element for screen reader identification. Match DynamicContentCarousel pattern: theme_block_props('cards-carousel...', empty($heading) ? 'aria-label=\"...\"' : '')"
+        },
+        {
+          "file": "blocks/CardsCarousel/CardsCarousel.js",
+          "description": "Add slide ARIA attributes via JavaScript after Swiper init",
+          "details": "After Swiper initialization, iterate visible .swiper-slide elements and add role='group', aria-roledescription='slide', aria-label='Slide X of Y'. Must handle loop mode where Swiper duplicates slides."
+        },
+        {
+          "file": "blocks/CardsCarousel/CardsCarousel.js",
+          "description": "Add autoplay toggle handler with aria-live management",
+          "details": "Same pattern as DynamicContentCarousel.js: (1) Check prefers-reduced-motion, (2) autoplay toggle click handler toggles pause/play, swaps icon, updates aria-label, toggles aria-live on .swiper-wrapper between 'off' (playing) and 'polite' (paused), (3) focusin/focusout handlers to pause on focus."
+        },
+        {
+          "file": "blocks/CardsCarousel/CardsCarousel.tsx",
+          "description": "Add editor-side ARIA attributes for parity",
+          "details": "Add aria-roledescription='carousel' on .swiper-parent, aria-hidden='true' on .swiper-pagination, aria-label fallback on section."
+        }
+      ]
+    },
+    "testPageChanges": {
+      "needed": true,
+      "description": "Current test page (page ID 98, slug 'test-cards-carousel') uses old format with h3 headings and paragraphs instead of DemoContainer wrappers. Must be rebuilt with takt/demo-container blocks wrapping each variation. Also missing Loop Mode and Loop+Autoplay dedicated variations (currently combined in variation 9). Need separate variations to match DynamicContentCarousel test page standard.",
+      "currentFormat": "Old format: h3 + paragraph + block, separated by hr elements. No DemoContainer wrappers.",
+      "targetFormat": "New format: Each variation wrapped in takt/demo-container with title and description attributes.",
+      "variations": [
+        {
+          "demoTitle": "Default - Dark Mode (3 Columns, Full Content)",
+          "demoDescription": "Default configuration with dark mode, 3 columns, all header fields populated (eyebrow, heading, description). Navigation and pagination enabled. 3 cards with titles, descriptions, and buttons.",
+          "attributes": {
+            "darkMode": true,
+            "eyebrow": "Partners",
+            "heading": "Fostering Partnerships that Meet Your Needs",
+            "description": "Diam sed vestibulum et aliquam dignissim velit nulla.",
+            "columns": 3,
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": "3 cards with title, description, button"
+        },
+        {
+          "demoTitle": "Light Mode",
+          "demoDescription": "Dark mode disabled. Tests that no charcoal background renders and content displays on white background.",
+          "attributes": {
+            "darkMode": false,
+            "heading": "Our Services",
+            "columns": 3,
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": "2 cards with title, description, button"
+        },
+        {
+          "demoTitle": "2 Columns Layout",
+          "demoDescription": "Tests 2-column configuration with dark mode.",
+          "attributes": {
+            "darkMode": true,
+            "heading": "Two Column Layout",
+            "columns": 2,
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": "3 cards (1 overflows to scroll)"
+        },
+        {
+          "demoTitle": "1 Column Layout",
+          "demoDescription": "Single column mode - one card visible at a time on all breakpoints.",
+          "attributes": {
+            "darkMode": true,
+            "heading": "Single Column Layout",
+            "columns": 1,
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": "2 cards"
+        },
+        {
+          "demoTitle": "Many Items (6 Cards, 3 Columns)",
+          "demoDescription": "Tests scrolling behavior with more cards than visible columns. 6 cards in 3-column mode requires navigation.",
+          "attributes": {
+            "darkMode": true,
+            "heading": "Scrollable Carousel",
+            "columns": 3,
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": "6 cards"
+        },
+        {
+          "demoTitle": "No Controls",
+          "demoDescription": "Pagination and navigation both disabled. Tests that controls row is completely hidden.",
+          "attributes": {
+            "darkMode": true,
+            "heading": "Minimal Carousel",
+            "columns": 3,
+            "showPagination": false,
+            "showNavigation": false
+          },
+          "innerBlocks": "3 cards"
+        },
+        {
+          "demoTitle": "Pagination Only (No Navigation)",
+          "demoDescription": "Tests pagination progress bar without navigation arrows.",
+          "attributes": {
+            "darkMode": true,
+            "heading": "Pagination Only",
+            "columns": 3,
+            "showPagination": true,
+            "showNavigation": false
+          },
+          "innerBlocks": "4 cards"
+        },
+        {
+          "demoTitle": "Navigation Only (No Pagination)",
+          "demoDescription": "Tests navigation arrows without pagination progress bar.",
+          "attributes": {
+            "darkMode": true,
+            "heading": "Navigation Only",
+            "columns": 3,
+            "showPagination": false,
+            "showNavigation": true
+          },
+          "innerBlocks": "4 cards"
+        },
+        {
+          "demoTitle": "Cards Without Buttons",
+          "demoDescription": "Tests cards with only title and description, no button. Layout should remain consistent.",
+          "attributes": {
+            "darkMode": true,
+            "heading": "Info Cards",
+            "columns": 3,
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": "3 cards without button attribute"
+        },
+        {
+          "demoTitle": "Long Content Edge Case",
+          "demoDescription": "Edge case with very long heading (100+ chars), long description (300+ chars), and long card content. Tests overflow and wrapping behavior.",
+          "attributes": {
+            "darkMode": true,
+            "eyebrow": "This Is A Very Long Eyebrow Text That Should Test Wrapping",
+            "heading": "This Is An Extremely Long Heading That Tests How The Block Handles Very Long Content In The Heading Area Of The Cards Carousel",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
+            "columns": 3,
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": "1 card with very long title and description"
+        },
+        {
+          "demoTitle": "Minimal Content",
+          "demoDescription": "Only required fields populated. Tests empty state handling for optional fields (shouldDisplay behavior).",
+          "attributes": {
+            "darkMode": true,
+            "columns": 3
+          },
+          "innerBlocks": "1 card with title only"
+        },
+        {
+          "demoTitle": "Empty Optional Fields",
+          "demoDescription": "No heading, eyebrow, or description. Tests aria-label fallback on section element.",
+          "attributes": {
+            "darkMode": true,
+            "columns": 3,
+            "showPagination": true,
+            "showNavigation": true
+          },
+          "innerBlocks": "3 cards with full content"
+        },
+        {
+          "demoTitle": "Loop Mode",
+          "demoDescription": "Tests carousel with loop enabled for infinite scroll behavior. Verifies slide ARIA attributes are correctly maintained with Swiper's duplicate slides.",
+          "attributes": {
+            "darkMode": true,
+            "heading": "Continuous Card Loop",
+            "description": "This carousel loops infinitely, creating a seamless scrolling experience.",
+            "columns": 3,
+            "showPagination": true,
+            "showNavigation": true,
+            "loopCarousel": true
+          },
+          "innerBlocks": "6 cards"
+        },
+        {
+          "demoTitle": "Loop + Autoplay",
+          "demoDescription": "Tests combined loop and autoplay behavior with rotation control button, aria-live management, and focus-based pause in infinite loop mode.",
+          "attributes": {
+            "darkMode": true,
+            "heading": "Auto-Rotating Infinite Loop",
+            "description": "This carousel combines infinite looping with automatic rotation.",
+            "columns": 3,
+            "showPagination": true,
+            "showNavigation": true,
+            "loopCarousel": true,
+            "autoplayCarousel": true,
+            "autoplayDelay": 5
+          },
+          "innerBlocks": "6 cards"
+        }
+      ]
+    },
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "spacing",
+        "decision": "Container padding always applied (not just dark mode) after refactor",
+        "source": "existing-pattern",
+        "evidence": "DynamicContentCarousel and TestimonialsCarousel always apply container py-18 md:py-23 regardless of color mode. CardsCarousel currently conditionally applies container padding only in dark mode. The refactor makes container padding unconditional for consistent spacing in both light and dark modes."
+      },
+      {
+        "id": "DEC-002",
+        "category": "accessibility",
+        "decision": "Slide ARIA attributes applied via JavaScript rather than PHP context",
+        "source": "existing-pattern",
+        "evidence": "DynamicContentCarousel applies slide ARIA in PHP because it controls the loop directly. CardsCarousel uses inner blocks where the parent cannot inject attributes into child block output. JavaScript approach handles loop mode's duplicate slides correctly and avoids complex context passing."
+      },
+      {
+        "id": "DEC-003",
+        "category": "accessibility",
+        "decision": "Add Pause.svg asset to CardsCarousel resources for autoplay toggle",
+        "source": "existing-pattern",
+        "evidence": "DynamicContentCarousel and TestimonialsCarousel both use theme_block_asset('Pause.svg') for their autoplay toggle buttons. CardsCarousel needs the same asset in its resources/ folder."
+      },
+      {
+        "id": "DEC-004",
+        "category": "layout",
+        "decision": "Container padding unconditional, pseudo background conditional on darkMode",
+        "source": "existing-pattern",
+        "evidence": "In the refactored pattern, the container div always has 'py-18 md:py-23' but only gets the before: pseudo background classes when darkMode is true. This differs from DynamicContentCarousel which is always dark, but follows the same structural principle."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "design (padding equivalence in both light/dark modes) and accessibility (WAI-ARIA carousel pattern compliance)"
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

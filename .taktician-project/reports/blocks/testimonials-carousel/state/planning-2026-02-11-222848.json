@@ -1,0 +1,151 @@
+{
+  "summary": "Accessibility audit of the TestimonialsCarousel block against the WAI-ARIA Carousel pattern and the dynamic-content-carousel block type specification. The audit identified 10 gaps across carousel container ARIA, slide ARIA, rotation control, auto-rotate focus behavior, aria-live region, navigation focus indicators, prefers-reduced-motion for autoplay, video modal dialog improvements, pagination accessibility, and inert attribute for off-screen slides. The DynamicContentCarousel block has already been patched for most of these patterns and serves as the reference implementation.",
+  "gapAnalysis": [
+    {
+      "id": "GAP-1",
+      "area": "Carousel container ARIA roles/properties",
+      "specRequirement": "Carousel container must have aria-roledescription='carousel'. The spec states: role='region' or role='group' with aria-roledescription='carousel' and aria-labelledby (if visible label) or aria-label (if no visible label).",
+      "currentState": "The <section> element has an implicit role='region' via semantic HTML and conditionally applies aria-label='Testimonials Carousel' when no heading is present (heading provides aria-labelledby via ThemeHeading). However, aria-roledescription='carousel' is completely MISSING from the carousel container. The DynamicContentCarousel block fixed this by adding aria-roledescription='carousel' to the .swiper-parent div.",
+      "severity": "critical",
+      "recommendation": "Add aria-roledescription='carousel' (translatable) to the .swiper-parent div in TestimonialsCarousel.php (line 62). This matches the DynamicContentCarousel pattern at line 111. Also add it to the editor TSX's FilteredServerSideRender className or a wrapper."
+    },
+    {
+      "id": "GAP-2",
+      "area": "Slide ARIA roles/properties",
+      "specRequirement": "Each slide must have role='group' with aria-roledescription='slide' and aria-label with position info (e.g., 'Slide 3 of 10').",
+      "currentState": "The .swiper-slide divs (line 101) have NO role, NO aria-roledescription, and NO aria-label. They are plain <div class='swiper-slide h-auto!'>. While Swiper's A11y module may add some default slide messaging, explicit WAI-ARIA attributes are required. The DynamicContentCarousel fixed this with a counter variable and explicit attributes on each slide.",
+      "severity": "critical",
+      "recommendation": "Add a slide counter ($slide_index) and $total_slides = $query->post_count before the loop. On each .swiper-slide div, add role='group', aria-roledescription (translatable 'slide'), and aria-label with position info (e.g., sprintf('Slide %d of %d', $slide_index, $total_slides)). Follow the DynamicContentCarousel pattern at lines 160-173."
+    },
+    {
+      "id": "GAP-3",
+      "area": "Rotation control",
+      "specRequirement": "When autoplay is enabled, a rotation control button must be the FIRST tab-stop inside the carousel. It must have a dynamic accessible name that changes between 'Stop slide rotation' and 'Start slide rotation'. No aria-pressed attribute. It must use a native <button> element.",
+      "currentState": "There is NO rotation control (pause/play toggle) button in the TestimonialsCarousel. Autoplay is configured via Swiper but there is no user-facing control to stop or start rotation. The DynamicContentCarousel has this implemented as .carousel-autoplay-toggle with data-label-pause and data-label-play attributes.",
+      "severity": "critical",
+      "recommendation": "Add a conditional rotation control button in the controls bar (before navigation/pagination) when $autoplayCarousel is true. Place it as the FIRST interactive element in the carousel region. Use class 'carousel-autoplay-toggle carousel-nav-btn'. Include data-label-pause and data-label-play attributes for JS label swapping. Include a Pause.svg icon (copy from DynamicContentCarousel/resources/). Implement the toggle logic in TestimonialsCarousel.js following the DynamicContentCarousel.js pattern (lines 52-101)."
+    },
+    {
+      "id": "GAP-4",
+      "area": "Auto-rotate stopping on focus",
+      "specRequirement": "Automatic rotation must stop when any carousel element receives keyboard focus. It should only resume when the user explicitly activates the rotation control (not on blur).",
+      "currentState": "TestimonialsCarousel.js has NO focusin/focusout event handlers on the carousel. Swiper's autoplay runs without any focus-based pause behavior. The DynamicContentCarousel.js implements this with focusin (pause) and focusout (resume only if still 'playing') handlers on the .swiper-parent element (lines 88-101).",
+      "severity": "critical",
+      "recommendation": "In TestimonialsCarousel.js, when autoplay is enabled: (1) add focusin handler on .swiper-parent that pauses autoplay via swiper.autoplay.pause(), (2) add focusout handler that resumes only if focus leaves the carousel entirely and the user has not explicitly stopped rotation. Also configure Swiper with pauseOnMouseEnter: true and disableOnInteraction: false (matching DynamicContentCarousel)."
+    },
+    {
+      "id": "GAP-5",
+      "area": "aria-live region",
+      "specRequirement": "Slide wrapper should use aria-live='polite' when carousel is not auto-rotating (manual navigation) and aria-live='off' when auto-rotating, with aria-atomic='false'.",
+      "currentState": "There is NO aria-live attribute on the .swiper-wrapper or any other element. Swiper's A11y module creates a .swiper-notification element with aria-live='assertive' (hidden), but the explicit aria-live management on the wrapper is missing. The DynamicContentCarousel.js manages this dynamically: sets aria-live='off' initially when autoplay runs, switches to 'polite' when paused.",
+      "severity": "major",
+      "recommendation": "In TestimonialsCarousel.js, when autoplay is enabled: set aria-live='off' on .swiper-wrapper initially, switch to 'polite' when autoplay is paused/stopped, and back to 'off' when resumed. When autoplay is not enabled, the default (no attribute) is acceptable since Swiper's A11y module handles announcements. Optionally add aria-atomic='false'."
+    },
+    {
+      "id": "GAP-6",
+      "area": "Navigation button focus indicators",
+      "specRequirement": "All interactive elements must have visible focus indicators (WCAG 2.4.7). Focus indicators must meet 3:1 contrast ratio for UI components.",
+      "currentState": "The .carousel-nav-btn class in swiper.css has NO :focus-visible styles. The .modal-close-btn has :focus-visible with ring-2 ring-white (line 138-140), but .carousel-nav-btn does not. Browsers provide a default outline, but on the dark charcoal background with the circular button design, the default outline may not be sufficiently visible or consistent.",
+      "severity": "major",
+      "recommendation": "Add :focus-visible styles to .carousel-nav-btn in swiper.css matching the .modal-close-btn pattern. Since carousel nav buttons appear on a dark background in the testimonials carousel, use: .carousel-nav-btn:focus-visible { @apply ring-2 ring-white ring-offset-2 ring-offset-charcoal; } or a similar visible ring. Also add focus-visible for the .carousel-autoplay-toggle (same class, so it will inherit)."
+    },
+    {
+      "id": "GAP-7",
+      "area": "prefers-reduced-motion support for autoplay",
+      "specRequirement": "Disable carousel auto-rotation/autoplay when user prefers reduced motion. The accessibility pattern says to respect prefers-reduced-motion.",
+      "currentState": "swiper.css has @media (prefers-reduced-motion: reduce) rules that disable .swiper-wrapper transition-duration and button animations, which is good. However, TestimonialsCarousel.js does NOT check prefers-reduced-motion before enabling autoplay. It initializes autoplay unconditionally when data-autoplay='1'. The DynamicContentCarousel.js checks window.matchMedia('(prefers-reduced-motion: reduce)').matches and disables autoplay entirely when true (line 5, 13).",
+      "severity": "major",
+      "recommendation": "In TestimonialsCarousel.js, add const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches at the top of DOMContentLoaded. Set autoplayEnabled = element.dataset.autoplay === '1' && !prefersReducedMotion. Use autoplayEnabled instead of the raw data attribute check when configuring Swiper autoplay. This prevents the carousel from auto-rotating for users who have indicated they prefer reduced motion."
+    },
+    {
+      "id": "GAP-8",
+      "area": "Video modal dialog accessibility",
+      "specRequirement": "Dialog must have role='dialog', aria-modal='true', aria-labelledby pointing to a heading inside the dialog. Focus must be trapped inside modal, Escape to close, focus returns to trigger element.",
+      "currentState": "The modal has role='dialog', aria-modal='true', and aria-label (dynamically set via JS). It has focus trap (lines 172-193), Escape to close (lines 165-168), focus returns to trigger element (lines 129-133), and focus moves to close button on open (lines 98-101). However: (1) It uses aria-label instead of aria-labelledby - there is no visible heading inside the dialog to reference. (2) aria-hidden='true' is used when closed, which is correct, but the modal is still in the DOM and theoretically focusable even when hidden (pointer-events-none prevents clicks but not programmatic focus). (3) The dialog does not use the native <dialog> element which would provide better built-in accessibility.",
+      "severity": "minor",
+      "recommendation": "The current implementation is functionally solid. Minor improvements: (1) Add a visually hidden heading (sr-only) inside the modal with an id, and switch from aria-label to aria-labelledby for better screen reader support across all AT. The JS already sets a dynamic label, so add an id'd element that JS updates instead. (2) Add inert attribute to the modal when hidden (alongside aria-hidden='true') to completely prevent focus from entering. (3) Consider adding tabindex='-1' on the modal container for programmatic focus management if needed. These are refinements, not critical gaps."
+    },
+    {
+      "id": "GAP-9",
+      "area": "Pagination accessibility",
+      "specRequirement": "For progress bar pagination: the progress bar is decorative/supplemental. The spec mentions that for slide picker controls (buttons), the current slide should have aria-disabled='true'. For basic carousels using a progress bar (not clickable buttons), the bar should be hidden from assistive technology since it provides no actionable information.",
+      "currentState": "The pagination is rendered as a Swiper progressbar type (not clickable bullets). It has no aria-hidden attribute, meaning assistive technology may try to interpret the progress bar div and its auto-generated inner elements. The DynamicContentCarousel adds aria-hidden='true' to the .swiper-pagination element (line 126) since the progress bar is purely visual.",
+      "severity": "minor",
+      "recommendation": "Add aria-hidden='true' to the .swiper-pagination div in TestimonialsCarousel.php (line 66). Since the pagination is a visual progress bar (not interactive buttons), it provides no actionable information to screen reader users and should be hidden from the accessibility tree."
+    },
+    {
+      "id": "GAP-10",
+      "area": "inert attribute on hidden/inactive slides",
+      "specRequirement": "Hidden/inactive slides should use the inert attribute to prevent focus from entering off-screen content. The general accessibility pattern states: 'Always use inert on hidden tab panels, off-screen menu panels, and inactive carousel slides.'",
+      "currentState": "No inert attribute is applied to any slides. In a multi-slide carousel (slidesPerView > 1), off-screen slides are visually hidden by Swiper's overflow but remain in the tab order, meaning keyboard users can tab into content they cannot see. This is particularly problematic for the testimonials carousel because cards may contain focusable elements (the 'Watch the Video' button). Swiper's A11y module partially addresses this by setting aria-hidden on non-visible slides and tabindex='-1' on some elements, but the inert attribute provides a more complete solution.",
+      "severity": "major",
+      "recommendation": "In TestimonialsCarousel.js, after Swiper initialization and on every slideChange event, set the inert attribute on non-visible slides and remove it from visible ones. Use swiper.slides, swiper.activeIndex, and swiper.params.slidesPerView to determine which slides are visible. This is best handled in JS since the visible slide set changes dynamically. Note: When loop mode is enabled, Swiper creates duplicate slides which complicates this. Consider only applying inert when loop is disabled, or apply it to duplicates as well. This is an enhancement that matches the DCC pattern and prevents keyboard users from tabbing into off-screen video buttons."
+    }
+  ],
+  "fileChanges": [
+    {
+      "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.php",
+      "action": "modify",
+      "description": "Add carousel ARIA attributes, slide ARIA attributes, rotation control button, and pagination aria-hidden",
+      "details": "1. On .swiper-parent div (line 62): add aria-roledescription='carousel' (translatable). 2. Add conditional rendering of .carousel-autoplay-toggle button as first element in the controls bar when $autoplayCarousel is true. Requires Pause.svg asset. Change the condition on line 63 from ($showPagination || $showNavigation) to ($showPagination || $showNavigation || $autoplayCarousel). 3. Add aria-hidden='true' to .swiper-pagination div (line 66). 4. Before the while loop (after line 98), initialize $slide_index = 0 and $total_slides = $query->post_count. 5. On each .swiper-slide div (line 101): add role='group', aria-roledescription='slide' (translatable), and aria-label with position info. 6. Add inert attribute and sr-only heading inside the modal for aria-labelledby. 7. Optionally add inert to the modal when aria-hidden='true'.",
+      "affectsPhp": true
+    },
+    {
+      "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.js",
+      "action": "modify",
+      "description": "Add prefers-reduced-motion check, autoplay toggle handler, focus-based pause, aria-live management, and inert slide management",
+      "details": "1. Add prefersReducedMotion check at top of DOMContentLoaded (before forEach). 2. Use autoplayEnabled flag (data-autoplay === '1' && !prefersReducedMotion) for Swiper config. 3. Add pauseOnMouseEnter: true and disableOnInteraction: false to autoplay config. 4. After Swiper init: implement carousel-autoplay-toggle click handler with play/pause icon swapping, aria-label updates, and aria-live management on .swiper-wrapper. 5. Add focusin/focusout handlers on .swiper-parent for focus-based autoplay pause. 6. Add slideChange event handler to manage inert attribute on non-visible slides. 7. Set initial aria-live='off' on .swiper-wrapper when autoplay is active. Follow DynamicContentCarousel.js as reference (lines 5-101).",
+      "affectsPhp": false
+    },
+    {
+      "file": "blocks/TestimonialsCarousel/TestimonialsCarousel.tsx",
+      "action": "modify",
+      "description": "Add aria-roledescription to editor carousel container for parity with PHP",
+      "details": "On the FilteredServerSideRender component (line 294-298), the className already includes 'swiper-parent'. The SSR-rendered content from PHP will include the updated ARIA attributes. For editor parity, the wrapper div's rendered PHP content will already have the correct attributes. No major TSX changes needed since the carousel portion is SSR-rendered. However, verify that the editor preview reflects the PHP changes.",
+      "affectsPhp": false
+    },
+    {
+      "file": "resources/css/screen/swiper.css",
+      "action": "modify",
+      "description": "Add :focus-visible styles for .carousel-nav-btn and .carousel-autoplay-toggle",
+      "details": "Add a .carousel-nav-btn:focus-visible rule with ring-2 ring-white ring-offset-2 ring-offset-charcoal (or similar visible ring). This ensures carousel navigation buttons and the autoplay toggle have visible focus indicators on dark backgrounds. This fills the gap where .modal-close-btn has focus-visible styles but .carousel-nav-btn does not. Since the testimonials carousel always appears on a charcoal background, use white ring colors. For carousels on light backgrounds, consider using dark ring colors with a dark: variant override.",
+      "affectsPhp": false
+    },
+    {
+      "file": "blocks/TestimonialsCarousel/resources/Pause.svg",
+      "action": "add",
+      "description": "Copy Pause.svg icon from DynamicContentCarousel/resources/ for the rotation control button",
+      "details": "Copy the existing Pause.svg asset from blocks/DynamicContentCarousel/resources/Pause.svg to blocks/TestimonialsCarousel/resources/Pause.svg. This icon is needed for the autoplay toggle button rendered in PHP.",
+      "affectsPhp": false
+    }
+  ],
+  "attributeChanges": [],
+  "designDecisions": [
+    {
+      "category": "behavior",
+      "question": "Should the autoplay toggle button use the same carousel-nav-btn styling as nav arrows, or have a distinct style?",
+      "recommendation": "Use the same carousel-nav-btn class for visual consistency, matching the DynamicContentCarousel implementation. The button appears in the controls bar alongside pagination and navigation.",
+      "needsUserInput": false
+    },
+    {
+      "category": "behavior",
+      "question": "For the inert attribute on inactive slides: should this be applied in loop mode where Swiper creates duplicate slides?",
+      "recommendation": "Apply inert only to original non-visible slides. In loop mode, Swiper creates clones that need to remain interactive during transitions. Start with non-loop behavior and extend to loop mode if needed after testing.",
+      "needsUserInput": false
+    },
+    {
+      "category": "behavior",
+      "question": "Should the autoplay stop permanently on any keyboard focus (WAI-ARIA strict interpretation), or pause and resume when focus leaves?",
+      "recommendation": "Follow the DynamicContentCarousel pattern: pause on focusin, resume on focusout only if focus leaves the carousel entirely AND the user has NOT explicitly clicked the stop button. The explicit toggle button is the only way to permanently stop/start. This matches the WAI-ARIA recommendation that 'automatic rotation stops when any element receives focus' while being pragmatic about resume behavior.",
+      "needsUserInput": false
+    },
+    {
+      "category": "color",
+      "question": "What color should the focus-visible ring use for carousel-nav-btn on dark backgrounds?",
+      "recommendation": "Use ring-2 ring-white ring-offset-2 ring-offset-charcoal to match the modal-close-btn pattern. Both share the same button style (.carousel-nav-btn) and appear on dark backgrounds. For blocks using carousel-nav-btn on light backgrounds, add a .dark .carousel-nav-btn:focus-visible override or use ring-current which adapts to text color.",
+      "needsUserInput": false
+    }
+  ],
+  "requiresQA": true,
+  "qaScope": "full"
+}

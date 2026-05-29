@@ -1,0 +1,74 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-10-223050",
+  "status": "complete",
+  "blockName": "DynamicContentCarousel",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Pre-existing asset size warnings for editor.js and screen bundles"
+      ]
+    },
+    "syncStatus": {
+      "verified": true
+    },
+    "testPage": {
+      "created": false,
+      "url": "https://ign.localhost/test-dynamic-content-carousel/",
+      "pageId": 136,
+      "note": "Existing test page retained; manual-selection variation with empty selectedPosts will now correctly show no carousel instead of falling back to automatic query"
+    },
+    "blockers": [],
+    "fixesApplied": [
+      {
+        "issueId": "FQA-001",
+        "severity": "major",
+        "description": "Fixed manual selection with empty selectedPosts falling through to automatic query. Restructured the WP_Query conditional so that: (1) manual mode with selectedPosts runs a post__in query, (2) manual mode without selectedPosts skips the query entirely (sets $has_posts=false), (3) automatic mode runs the normal query with taxonomy filters. Initialized $query=null and $has_posts=false at the top, moved WP_Query construction inside each branch.",
+        "filesChanged": [
+          "blocks/DynamicContentCarousel/DynamicContentCarousel.php"
+        ]
+      },
+      {
+        "issueId": "FQA-002",
+        "severity": "major",
+        "description": "Added fallback aria-label='Content Carousel' on the section element when no heading is provided. In PHP, passed the aria-label string via the second argument of theme_block_props() when $heading is empty. In TSX, spread a conditional aria-label into useBlockProps() when attributes.heading is falsy. This ensures assistive technology users always have a section label.",
+        "filesChanged": [
+          "blocks/DynamicContentCarousel/DynamicContentCarousel.php",
+          "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx"
+        ]
+      },
+      {
+        "issueId": "FQA-003",
+        "severity": "minor",
+        "description": "Fixed CRLF line endings in DynamicContentCarousel.tsx and index.tsx via bun run lint:fix.",
+        "filesChanged": [
+          "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx",
+          "blocks/DynamicContentCarousel/index.tsx"
+        ]
+      },
+      {
+        "issueId": "FQA-004",
+        "severity": "minor",
+        "description": "Fixed Prettier formatting (multiline function signature) in DynamicContentCarousel.tsx via bun run lint:fix.",
+        "filesChanged": [
+          "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx"
+        ]
+      },
+      {
+        "issueId": "LINT-001",
+        "severity": "minor",
+        "description": "Removed unused 'cn' import from DynamicContentCarousel.tsx (caught by eslint after lint:fix).",
+        "filesChanged": [
+          "blocks/DynamicContentCarousel/DynamicContentCarousel.tsx"
+        ]
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

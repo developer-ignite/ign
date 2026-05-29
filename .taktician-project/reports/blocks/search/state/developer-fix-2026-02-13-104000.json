@@ -1,0 +1,142 @@
+{
+  "agent": "developer",
+  "mode": "fix",
+  "timestamp": "2026-02-13T10:40:00Z",
+  "blockName": "Search",
+  "blockPath": "blocks/Search",
+  "status": "complete",
+  "summary": "Fixed 3 pagination issues: changed ::after positioning to top: 100%, fixed circular shape size change on hover using transparent border technique, and fixed arrow visibility by swapping background-image layer order",
+  "userRevisions": [
+    "Change ::after positioning from bottom: 0 to top: 100% for proper placement below elements",
+    "Fix circular shape size change on hover by using transparent border instead of outline",
+    "Fix arrow icons not showing by swapping background-image layer order (SVG on top, gradient behind)"
+  ],
+  "changes": [
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ".page-numbers ::after",
+      "change": "bottom: 0 → top: 100%",
+      "description": "Bottom bar now positioned immediately below element instead of at bottom edge inside it"
+    },
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ".page-numbers",
+      "change": "Added border: 1px solid transparent",
+      "description": "Transparent border always present to prevent layout shift on hover"
+    },
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ".page-numbers hover",
+      "change": "outline → border-color: var(--color-charcoal)",
+      "description": "Changed from outline with -1px offset to border color change, maintaining circle size"
+    },
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ".prev/.next ::after",
+      "change": "bottom: 0 → top: 100%",
+      "description": "Bottom bar positioned immediately below prev/next buttons"
+    },
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ".prev background-image",
+      "changes": [
+        "Swapped layer order: SVG first, gradient second",
+        "Increased arrow size from 8px to 12px",
+        "Updated viewBox from '0 0 8 8' to '0 0 12 12'",
+        "Adjusted arrow path coordinates for larger viewBox",
+        "Changed background-size from 'cover, 8px 8px' to '12px 12px, cover'"
+      ]
+    },
+    {
+      "file": "resources/css/screen/navigation.css",
+      "section": ".next background-image",
+      "changes": [
+        "Swapped layer order: SVG first, gradient second",
+        "Increased arrow size from 8px to 12px",
+        "Updated viewBox from '0 0 8 8' to '0 0 12 12'",
+        "Adjusted arrow path coordinates for larger viewBox",
+        "Changed background-size from 'cover, 8px 8px' to '12px 12px, cover'"
+      ]
+    }
+  ],
+  "filesModified": [
+    "resources/css/screen/navigation.css"
+  ],
+  "buildStatus": "passed",
+  "issuesFixed": {
+    "issue1_afterPositioning": {
+      "problem": "::after using bottom: 0 positioned bar at bottom edge inside element",
+      "solution": "Changed to top: 100% to position bar immediately below element (outside bounds)",
+      "affected": [".page-numbers::after", ".prev::after", ".next::after"]
+    },
+    "issue2_circularShapeSizeChange": {
+      "problem": "Outline with -1px offset drew circle inward, making it visually shrink on hover",
+      "solution": "Use border: 1px solid transparent by default, then border-color: charcoal on hover. Since border is always present, no layout shift occurs and circle size stays constant",
+      "technicalDetails": "Transparent border reserves space in box model without being visible. On hover, only color changes, not dimensions."
+    },
+    "issue3_arrowsNotShowing": {
+      "problem": "Gradient with background-size: cover was first layer (on top), completely hiding SVG arrow underneath",
+      "solution": "Swapped layer order: SVG url() first (top layer), gradient second (bottom layer). Also increased arrow from 8px to 12px for better visibility",
+      "layerOrder": "In CSS background-image, first layer paints on top. Need SVG on top to be visible.",
+      "affected": [".prev", ".next"]
+    }
+  },
+  "technicalDetails": {
+    "afterPositioning": {
+      "before": "bottom: 0 (positions at bottom edge inside element bounds)",
+      "after": "top: 100% (positions at top edge of space below element, immediately after element)",
+      "effect": "Bar is now truly below the element rather than at its bottom edge"
+    },
+    "transparentBorderTechnique": {
+      "default": "border: 1px solid transparent",
+      "hover": "border-color: var(--color-charcoal)",
+      "benefit": "No layout shift because border space is always reserved in box model",
+      "comparison": "Outline with -1px offset drew inside, shrinking visible circle by 2px total (1px each side)"
+    },
+    "backgroundImageLayering": {
+      "previousOrder": "gradient (on top) → SVG (hidden below)",
+      "fixedOrder": "SVG (on top) → gradient (background)",
+      "previousSize": "cover, 8px 8px (gradient covers all, SVG 8px but hidden)",
+      "fixedSize": "12px 12px, cover (SVG 12px visible on top, gradient fills behind)",
+      "arrowSVG": {
+        "size": "12x12px (increased from 8x8)",
+        "viewBox": "0 0 12 12 (scaled from 0 0 8 8)",
+        "stroke": "white, 2px",
+        "prevPath": "M7.5 2L3.5 6L7.5 10 (left-pointing chevron)",
+        "nextPath": "M4.5 2L8.5 6L4.5 10 (right-pointing chevron)"
+      }
+    }
+  },
+  "designSpecs": {
+    "bottomBars": {
+      "position": "top: 100% (immediately below element)",
+      "height": "4px",
+      "width": "100%",
+      "borderRadius": "none",
+      "defaultColor": "rgba(31, 31, 29, 0.5)",
+      "currentColor": "linear-gradient(90deg, neon-green, blue)"
+    },
+    "hoverCircle": {
+      "technique": "transparent border that changes color",
+      "default": "border: 1px solid transparent",
+      "hover": "border-color: charcoal",
+      "size": "constant (no shrink/grow)",
+      "background": "gradient (neon-green → blue)",
+      "textColor": "charcoal"
+    },
+    "arrows": {
+      "size": "12x12px",
+      "layering": "SVG on top, gradient behind",
+      "color": "white stroke",
+      "strokeWidth": "2px",
+      "position": "center"
+    }
+  },
+  "verification": {
+    "build": "passed",
+    "warnings": "only expected performance warnings (bundle size)",
+    "tsxPhpSync": "verified",
+    "accessibility": "maintained (ARIA attributes, keyboard support, screen reader announcements)",
+    "visualIntegrity": "bottom bars positioned correctly below elements, circles maintain constant size on hover, arrows visible"
+  }
+}

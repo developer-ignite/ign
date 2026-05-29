@@ -1,0 +1,64 @@
+{
+  "agent": "planning",
+  "status": "complete",
+  "timestamp": "2026-02-20-003945",
+  "output": {
+    "summary": "Fix mobile menu layout after the revision 2 restructure. The <nav> is now inside the right column div, which on mobile is a narrow flex child squeezed between the logo and hamburger button. When the mobile menu opens, the nav content is confined to this narrow column instead of spanning the full header width. The fix uses flex-wrap on mobile so the right column wraps to a new full-width row below the logo/hamburger row, letting the nav expand to full width.",
+    "rootCause": "The right column div (containing utility row + nav) is a flex child inside 'flex items-stretch justify-between'. On mobile, it shares the row with the logo and hamburger, getting only the remaining width. When the mobile menu opens, the nav is constrained to this narrow width instead of spanning the full header bar.",
+    "screenshotEvidence": {
+      "mobileClosed": "Header looks correct when closed - logo + hamburger visible",
+      "mobileOpen": "Nav items are squished into the narrow right column area, close button overlaps, content is clipped by rounded corners",
+      "desktop": "Desktop layout is correct - logo spans both rows, utility row + nav items visible"
+    },
+    "fileChanges": [
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "action": "modify",
+        "description": "Add flex-wrap on mobile to the nav bar inner div, and full-width on mobile to the right column so the nav spans the entire header width when the menu opens",
+        "details": "Two class changes needed:\n\n1. Nav bar inner div (line 63):\n   BEFORE: class=\"flex items-stretch justify-between\"\n   AFTER:  class=\"flex items-stretch justify-between max-md:flex-wrap\"\n\n2. Right column div (line 77):\n   BEFORE: class=\"flex flex-col md:gap-6 items-end shrink min-w-0\"\n   AFTER:  class=\"flex flex-col md:gap-6 items-end shrink min-w-0 max-md:w-full max-md:order-last\"\n\nHow this works:\n- On DESKTOP (md+): flex-wrap has no effect (no items need to wrap). The right column is a flex child with shrink, sitting beside the logo. items-stretch makes the logo span both rows. No change to desktop behavior.\n- On MOBILE (max-md): flex-wrap allows wrapping. The right column gets w-full and order-last, so it wraps to a new row below the logo and hamburger, spanning the full width. Inside it, the utility row is hidden (hidden md:flex), and the nav has max-h-0/opacity-0 when closed (zero visual space). When the menu opens (menu-open class), the nav transitions to full height at full width.\n- The hamburger button stays in the first row next to the logo because it does NOT have order-last.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "action": "modify",
+        "description": "Mirror the same class changes in the editor TSX component",
+        "details": "Two class changes:\n\n1. Nav bar inner div (line 490):\n   BEFORE: className=\"flex items-stretch justify-between\"\n   AFTER:  className=\"flex items-stretch justify-between max-md:flex-wrap\"\n\n2. Right column div (line 518):\n   BEFORE: className=\"flex flex-col md:gap-6 items-end shrink min-w-0\"\n   AFTER:  className=\"flex flex-col md:gap-6 items-end shrink min-w-0 max-md:w-full max-md:order-last\"",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "layout",
+        "question": "How to make the mobile nav span full width while keeping it inside the right column for desktop layout?",
+        "recommendation": "Use max-md:flex-wrap on the parent flex row and max-md:w-full max-md:order-last on the right column. This makes the right column wrap to a new full-width row on mobile, while on desktop it stays inline next to the logo. The order-last ensures the right column renders after the hamburger button in the DOM order on mobile, but since the hamburger does not have order-last it stays on the first row.",
+        "source": "implementation",
+        "evidence": "Screenshot shows mobile nav items squished into narrow right column. The flex-wrap approach is a standard CSS pattern for responsive layouts where an element needs to be inline on desktop but full-width on mobile.",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-002",
+        "category": "layout",
+        "question": "Does the flex-wrap approach affect the JS menu height calculation?",
+        "recommendation": "No change needed to JS. The JS in HeaderMain.js calculates logoRow height via header.querySelector(':scope > .flex'), which still selects the nav bar inner div. The logoRow.offsetHeight on mobile will be the height of just the logo + hamburger row (first flex line). The --menu-max-height calculation remains correct because it subtracts rect.top + headerPadding + logoRowHeight + bottomSpacing from viewport height.",
+        "source": "implementation",
+        "evidence": "HeaderMain.js line 61-62: const logoRow = header.querySelector(':scope > .flex'); This finds the nav bar inner div. Its offsetHeight includes all wrapped lines, but since the menu content (second flex line) only appears when menu-open is active, the height calc adjusts dynamically via updateMenuMaxHeight() called in openMenu().",
+        "needsUserInput": false
+      },
+      {
+        "id": "DEC-003",
+        "category": "layout",
+        "question": "Will the right column with max-md:w-full cause visible space when the menu is closed on mobile?",
+        "recommendation": "No. When the menu is closed, the right column contains: (1) utility row with 'hidden md:flex' = hidden on mobile, and (2) nav with 'max-md:max-h-0 max-md:opacity-0 max-md:overflow-hidden' = zero height. The right column with w-full wraps below the logo row but has zero content height, contributing nothing to the layout. When the menu opens, the nav transitions to full height.",
+        "source": "implementation",
+        "evidence": "The nav's closed-state classes (max-md:max-h-0, max-md:opacity-0, max-md:overflow-hidden) ensure it takes zero visual space.",
+        "needsUserInput": false
+      }
+    ],
+    "noJsChanges": true,
+    "requiresQA": true,
+    "qaScope": "full",
+    "testingNotes": "Must verify: (1) Mobile menu opens and spans full header width, (2) Mobile menu close button works, (3) Desktop layout unchanged - logo still spans both rows, (4) Fixed-on-scroll behavior still works on both mobile and desktop, (5) Mobile menu max-height calculation still correct"
+  }
+}

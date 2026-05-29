@@ -1,0 +1,38 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-20-135253",
+  "status": "complete",
+  "severity": "none",
+  "output": {
+    "summary": "Change address field PHP output from esc_html() to wp_kses_post() so that <br> tags from RichText are rendered as actual line breaks instead of escaped HTML entities. The TSX editor already uses RichText which saves <br> on Enter — only the PHP frontend escaping needs to change. This matches the existing pattern used for hoursContent and contactContent in the same file.",
+    "fileChanges": [
+      {
+        "file": "blocks/Footer/FooterInfo/FooterInfo.php",
+        "action": "modify",
+        "description": "Change address output escaping from esc_html() to wp_kses_post()",
+        "details": "Line 59: Change `<?php echo esc_html( $addr['address'] ); ?>` to `<?php echo wp_kses_post( $addr['address'] ); ?>`. This is the same escaping function already used for hoursContent (line 76) and contactContent (line 86) in this file. wp_kses_post() allows safe HTML tags like <br>, <strong>, <em>, <a> while still stripping dangerous tags/attributes.",
+        "affectsPhp": true
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "security",
+        "decision": "Use wp_kses_post() instead of esc_html() for address field output",
+        "source": "existing pattern",
+        "evidence": "hoursContent and contactContent in the same file (FooterInfo.php lines 76, 86) already use wp_kses_post() for the same reason — they are RichText fields that may contain basic HTML. wp_kses_post() is the WordPress-standard function for safely outputting user content that may contain allowed HTML tags."
+      },
+      {
+        "id": "DEC-002",
+        "category": "editor",
+        "decision": "No TSX changes needed — RichText with allowedFormats=[] already handles <br> on Enter key",
+        "source": "existing pattern",
+        "evidence": "The RichText component (FooterInfo.tsx lines 128-142) already converts Enter keypresses into <br> tags in the saved content. The allowedFormats=[] only hides the formatting toolbar (bold/italic/etc) but does not prevent line breaks. The saved HTML already contains <br> — only the PHP output was escaping it."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional",
+    "notes": "Single-line fix. The address name field (line 56, esc_html) does NOT need changing — campus/location names should not contain HTML. Only the address text field needs this fix since it commonly contains multi-line addresses."
+  }
+}

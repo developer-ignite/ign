@@ -1,0 +1,86 @@
+{
+  "blockTypes": [
+    "navigation",
+    "interactive"
+  ],
+  "a11yPatterns": [
+    "navigation-menubar"
+  ],
+  "excluded": [
+    {
+      "rule": "common.DARK_THEME",
+      "reason": "Header is always on bg-charcoal, no light variant"
+    },
+    {
+      "rule": "navigation.BREADCRUMBS",
+      "reason": "This is a site header nav, not breadcrumbs"
+    }
+  ],
+  "extra": [
+    {
+      "id": "CUSTOM-001",
+      "description": "All focus-visible outlines use outline-dotted (not outline-dashed) across HeaderMainItem links, buttons, and HeaderMainSubItem links",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-002",
+      "description": "Desktop search submit button shows focus-visible outline (dotted, 2px, white, offset-2) when focused via keyboard",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-003",
+      "description": "Mobile search submit button shows focus-visible outline when focused via keyboard",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-004",
+      "description": "SEP mobile button (above nav bar) shows focus-visible outline",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-005",
+      "description": "SEP desktop CTA link shows focus-visible outline",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-006",
+      "description": "Mobile CTA link at bottom of mobile menu shows focus-visible outline",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-007",
+      "description": "Mobile hamburger toggle button shows focus-visible outline",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-008",
+      "description": "Logo link shows focus-visible outline",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-009",
+      "description": "Header-main-spacer does not add any visible height or gap when the header is in its default (non-scrolling) state",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-010",
+      "description": "Mobile hamburger icon is visible (white) against bg-charcoal background on both PHP frontend and TSX editor",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-011",
+      "description": "When fixedOnScrollMobile=true and mobile menu is open, header stays fixed at top even when scrolling down",
+      "severity": "critical"
+    },
+    {
+      "id": "CUSTOM-012",
+      "description": "Mobile menu content scrolls within viewport bounds — max-height constrained to viewport height minus header bar",
+      "severity": "major"
+    },
+    {
+      "id": "CUSTOM-013",
+      "description": "Mobile menu close animation is smooth — no visible border/padding jump when menu closes",
+      "severity": "minor"
+    }
+  ]
+}

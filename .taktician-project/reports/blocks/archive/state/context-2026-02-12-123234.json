@@ -1,0 +1,53 @@
+{
+  "blockMeta": {
+    "name": "takt/archive",
+    "title": "Archive",
+    "category": "takt-theme",
+    "description": "Displays a filterable archive of posts from a custom post type with taxonomy filtering, search, pagination, and per-page controls."
+  },
+  "attributes": [
+    { "name": "anchor", "type": "string", "default": null, "description": "HTML anchor/ID for the section element" },
+    { "name": "blockVariation", "type": "string", "default": "post", "description": "Post type to display: post, team_member, resource, policy, or testimonial" },
+    { "name": "eyebrow", "type": "string", "default": null, "description": "Optional eyebrow text above the heading" },
+    { "name": "heading", "type": "string", "default": null, "description": "Main section heading; used for block renaming" },
+    { "name": "description", "type": "string", "default": null, "description": "Description text displayed in right column with buttons" },
+    { "name": "buttons", "type": "array", "default": [], "description": "Array of CTA buttons with title, url, postId, opensInNewTab, label properties" },
+    { "name": "displayFilters", "type": "boolean", "default": true, "description": "Show/hide taxonomy filter dropdowns" },
+    { "name": "displaySearch", "type": "boolean", "default": false, "description": "Show/hide search field (blog variation only)" },
+    { "name": "displayPerPage", "type": "boolean", "default": true, "description": "Show/hide per-page selector" },
+    { "name": "postsPerPage", "type": "number", "default": 9, "description": "Number of posts to display per page (3-24, step 3)" },
+    { "name": "maxColumns", "type": "number", "default": 3, "description": "Maximum grid columns (1-4)" },
+    { "name": "paginationMode", "type": "string", "default": "load-more", "description": "Pagination style: 'load-more' or 'pagination'" }
+  ],
+  "patterns": {
+    "usesConditionalDisplay": false,
+    "usesShouldDisplay": false,
+    "usesRenameBlock": true,
+    "usesCn": false,
+    "usesThemeHeading": true,
+    "colorTokensUsed": ["bg-charcoal", "bg-transparent", "bg-accent", "bg-accent-light", "bg-accent-lighter", "border-accent", "border-accent-light", "border-off-white", "text-white", "text-charcoal"],
+    "otherPatterns": ["Dark mode section with charcoal pseudo-element background", "FilteredServerSideRender for editor preview", "Five block variations", "AJAX filtering with URL state management", "Active filter pills with remove functionality"]
+  },
+  "themeTokens": {
+    "colors": ["--color-white", "--color-off-white", "--color-charcoal", "--color-neon-green", "--color-neon-green-light", "--color-neon-green-lighter", "--color-blue", "--color-green", "--color-yellow", "--color-orange", "--color-purple"],
+    "fonts": ["--font-sans", "--font-heading", "--text-body-small", "--text-body", "--text-header-2", "--text-header-3", "--text-header-5"]
+  },
+  "existingDecisions": [
+    "All archive variations use dark mode with charcoal background (DEC-001)",
+    "Blog cards alternate image-top/text-top layouts (DEC-004)",
+    "Blog card accent colors from category term meta (DEC-005)",
+    "Team member photos use 'photo' meta field (DEC-014)",
+    "Team member names from 'first_name' + 'last_name' meta (DEC-015)",
+    "Testimonial cards have no links (DEC-016)",
+    "All CTAs use btn-tertiary style (DEC-020)",
+    "Default pagination mode is 'load-more' (DEC-008)",
+    "ThemeHeading buttons use 'secondary' variation (DEC-017)",
+    "Per-page query vars namespaced by post type (DEC-xxx)"
+  ],
+  "projectRules": {
+    "darkModePattern": "Use transparent section background with pseudo-element charcoal cards",
+    "verticalInsetCritical": "Vertical inset must match section vertical padding"
+  },
+  "reportExists": true,
+  "testPageUrl": "https://ign.localhost/test-archive/"
+}

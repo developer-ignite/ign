@@ -1,0 +1,48 @@
+{
+  "summary": "Two CSS-only changes: (1) Remove self-start from swiper-slide to enable equal-height cards via Swiper's default stretch behavior, (2) Add image zoom-on-hover effect to card images inside the dynamic-content-carousel using the existing Archive block pattern (overflow:hidden + scale transform on img).",
+  "fileChanges": [
+    {
+      "file": "blocks/DynamicContentCarousel/DynamicContentCarousel.php",
+      "action": "modify",
+      "description": "Remove 'self-start' from swiper-slide class to allow equal-height cards",
+      "details": "Line 150: Change class from 'swiper-slide self-start h-auto!' to 'swiper-slide h-auto!' — removing 'self-start' allows the Swiper flexbox layout to stretch all slides to the tallest slide's height. The 'h-auto!' ensures the slide wrapper takes the natural height. The card templates already use 'h-full' on their inner elements (article and anchor), so they will fill the stretched slide height automatically.",
+      "affectsPhp": true
+    },
+    {
+      "file": "resources/css/screen/swiper.css",
+      "action": "modify",
+      "description": "Add image hover zoom effect scoped to dynamic-content-carousel cards",
+      "details": "Add CSS rules following the existing Archive block pattern (Archive.css lines 133-142). Scope to '.dynamic-content-carousel' to avoid affecting other carousels. Rules needed:\n\n1. `.dynamic-content-carousel .card-post img, .dynamic-content-carousel .card-team-member img { transition: transform 0.3s ease; }` — smooth transition for scale\n2. `.dynamic-content-carousel .card-post:hover img, .dynamic-content-carousel .card-team-member:hover img { transform: scale(1.05); }` — 5% zoom on hover\n\nNote: The card-post and card-team-member templates already have `overflow-hidden` on their image containers (the `div.overflow-hidden.rounded-xl` wrappers), so the scaled image will be clipped to its original bounds. The card-resource and card-policy cards do not have images, so no rules needed for them.",
+      "affectsPhp": false
+    }
+  ],
+  "attributeChanges": [],
+  "designDecisions": [
+    {
+      "id": "DEC-014",
+      "category": "layout",
+      "decision": "Equal-height cards via flexbox stretch",
+      "recommendation": "Remove self-start from swiper-slide to let Swiper's default align-items:stretch behavior make all cards equal height. Cards already use h-full and flex-col with mt-auto on CTA, so content alignment is preserved.",
+      "source": "user-request",
+      "evidence": "User explicitly requested equal-height cards. TestimonialsCarousel already uses this pattern (h-auto! without self-start on line 101).",
+      "needsUserInput": false
+    },
+    {
+      "id": "DEC-015",
+      "category": "behavior",
+      "decision": "Image zoom-in hover effect at scale(1.05) with 0.3s ease transition",
+      "recommendation": "Follow the existing Archive block pattern (Archive.css lines 133-142) which uses the same scale(1.05) with 0.3s ease. Apply only to card-post and card-team-member cards since those are the only card types with images. The overflow:hidden container already exists on both card templates.",
+      "source": "existing-pattern",
+      "evidence": "Archive block already implements identical hover zoom on card-team-member and card-post images (Archive.css lines 133-142). User confirmed images should have zoom-in effect with overflow hidden.",
+      "needsUserInput": false
+    }
+  ],
+  "requiresQA": true,
+  "qaScope": "design",
+  "notes": {
+    "noAttributeChanges": "Both changes are pure CSS/class modifications. No new attributes needed in block.json.",
+    "noTsxSync": "The TSX file uses FilteredServerSideRender for the carousel section, so PHP output is what renders. The swiper-slide class is only in the PHP template. No TSX changes needed.",
+    "existingOverflowHidden": "card-post has 'div.overflow-hidden.rounded-xl' wrapping its image (line 23). card-team-member has 'div.overflow-hidden.rounded-xl' wrapping its image (line 22-23). Both already clip overflow, so scale transform on the img will produce the desired zoom-without-resize effect.",
+    "cardHeightChain": "The height chain for equal-height cards is: swiper-slide (h-auto! + stretch) -> card wrapper div (h-full on anchor) -> article (h-full + flex-col) -> mt-auto on CTA pushes it to bottom. All four card types already have this chain in place."
+  }
+}

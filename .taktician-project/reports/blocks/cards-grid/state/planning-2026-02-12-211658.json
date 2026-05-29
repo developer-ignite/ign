@@ -1,0 +1,294 @@
+{
+  "envelope": {
+    "agent": "planning",
+    "blockName": "CardsGrid",
+    "timestamp": "2026-02-12T21:19:25-05:00",
+    "mode": "edit",
+    "status": "complete",
+    "severity": "medium"
+  },
+  "output": {
+    "summary": "CardsGrid block requires several fixes: (1) PHP template uses redundant manual attribute extraction instead of auto-extracted variables, (2) dark mode pattern does not match the project standard documented in taktician.md -- missing vertical padding on container and vertical inset on pseudo-element, (3) the section lacks an aria-label fallback when no heading exists, (4) card images in PHP are missing alt text handling, (5) test page uses old format (headings/paragraphs) instead of DemoContainer wrapper pattern, and test page title needs updating. No block-type-specific doc exists for cards-grid, so the generic block type doc and cards-carousel doc were used as reference.",
+
+    "accessibilityGaps": [
+      {
+        "requirement": "Section must have an accessible name when no heading is present",
+        "currentState": "theme_block_props() auto-adds aria-labelledby when heading attribute exists, but when heading is empty, the section has no accessible name",
+        "needed": "Add aria-label fallback (e.g., 'Cards Grid') when no heading is provided, similar to CardsCarousel which passes aria-label when heading is empty",
+        "severity": "medium"
+      },
+      {
+        "requirement": "Images should have appropriate alt text",
+        "currentState": "CardsGridItem.php uses wp_get_attachment_image() which defaults to the media library alt text. This is acceptable if media library alt text is populated. However, images are decorative in card context (title and description provide the content), so empty alt='' would also be valid.",
+        "needed": "No code change needed -- wp_get_attachment_image uses media library alt text by default. This is acceptable behavior.",
+        "severity": "low"
+      },
+      {
+        "requirement": "Decorative SVG icons must have aria-hidden=true",
+        "currentState": "Tertiary button arrow SVG is rendered via ThemeButton part which handles this internally. No gap.",
+        "needed": "No change needed -- handled by ThemeButton",
+        "severity": "low"
+      },
+      {
+        "requirement": "Links must be keyboard accessible and have visible focus indicators",
+        "currentState": "ThemeButton renders <a> elements which are natively keyboard accessible. Focus indicators are handled by global CSS.",
+        "needed": "No change needed",
+        "severity": "low"
+      },
+      {
+        "requirement": "Heading hierarchy must be sequential",
+        "currentState": "Section heading is h2 (via ThemeHeading headingSize=2), card titles are h3. Hierarchy is correct.",
+        "needed": "No change needed",
+        "severity": "low"
+      }
+    ],
+
+    "blockTypeGaps": [
+      {
+        "requirement": "PHP template should use auto-extracted variables (per generic.md section 4.1)",
+        "currentState": "CardsGrid.php manually extracts all attributes with $anchor = $attributes['anchor'] ?? '' pattern. CardsGridItem.php does the same.",
+        "needed": "Remove redundant manual extraction. Use auto-extracted variables directly with ?? for defaults. Keep only derived variables ($hasInnerBlocks, $hasHeader, $gridClasses, $hasImage, $hasButton).",
+        "severity": "medium"
+      },
+      {
+        "requirement": "Dark mode pattern must match project standard (taktician.md)",
+        "currentState": "CardsGrid uses 'md:py-24' on section and 'before:-inset-(--side-gutter) md:before:-inset-8' on container. Missing: container py-* padding and vertical pseudo-element inset (before:-inset-y-*). The project pattern specifies container needs 'relative py-10 md:py-15 before:absolute before:bg-charcoal before:rounded-3xl before:-z-1 before:-inset-x-(--side-gutter) before:-inset-y-8 md:before:-inset-x-8'",
+        "needed": "Update dark mode to follow project standard: section gets 'dark bg-transparent!' only (remove md:py-24 from section dark mode classes). Container gets the full dark mode pattern with py and before:-inset-y. Both TSX and PHP must be updated to match.",
+        "severity": "high"
+      },
+      {
+        "requirement": "Image wrapper gap between image and content areas",
+        "currentState": "Image wrapper and content wrapper are separate divs with no gap between them. The flex column layout stacks them but there is no visual gap.",
+        "needed": "Review Figma design to confirm if there should be a gap between image and content areas. Current implementation has two separate rounded-[25px] areas that stack directly. If this matches the design, no change needed.",
+        "severity": "low"
+      },
+      {
+        "requirement": "ThemeHeading conditional rendering in PHP matches TSX",
+        "currentState": "PHP checks $hasHeader = !empty($eyebrow) || !empty($heading) || !empty($description). TSX checks displayContent || hasHeader. In PHP, ThemeHeading is not rendered if no header fields are set. This matches the pattern -- TSX shows placeholders in editor, PHP only shows if content exists.",
+        "needed": "No change needed -- conditional logic is correct for each context",
+        "severity": "low"
+      }
+    ],
+
+    "testPageUpdates": {
+      "titlePattern": "Current: 'TEST: Cards Grid' -> New: 'TEST: Cards Grid' (title is already correct)",
+      "currentFormat": "Uses old format with wp:heading + wp:paragraph for variation labels. No DemoContainer wrappers.",
+      "newFormat": "Must use takt/demo-container wrappers with title and description for each variation. Remove all wp:heading, wp:paragraph, and wp:separator blocks.",
+      "scenariosToAdd": [
+        "Dark Mode - 2 Columns (test dark mode with non-default column count)",
+        "Dark Mode - 1 Column (test dark mode with single column)",
+        "Mixed cards - some with images, some without (test equal height with mixed content)",
+        "Cards with only buttons, no titles or descriptions",
+        "Eyebrow only, no heading or description (edge case for ThemeHeading)"
+      ],
+      "scenariosToModify": [
+        "All existing scenarios need to be wrapped in DemoContainer blocks instead of using h3/paragraph labels",
+        "Each DemoContainer needs a descriptive title and description explaining what is being tested"
+      ],
+      "comprehensiveCoverage": [
+        "Default/Minimal - Light Mode (1 card, heading only, no images)",
+        "Full Content - 3 Columns Light (all fields: eyebrow, heading, description, 3 cards with images, titles, descriptions, buttons)",
+        "Full Content - 2 Columns Light (same content, 2-column layout)",
+        "Full Content - 1 Column Light (same content, 1-column layout)",
+        "Dark Mode - 3 Columns (full content with dark mode)",
+        "Dark Mode - 2 Columns (full content with dark mode, 2 columns)",
+        "Dark Mode - No Header (dark mode without any header fields)",
+        "Cards Without Images (text-only cards, 3 columns)",
+        "Mixed Content Cards (some with images, some without in same grid)",
+        "Long Content Edge Case (long heading, description, card titles/descriptions)",
+        "Empty Optional Fields (cards with minimal content, testing shouldDisplay)",
+        "Many Cards - 6 Items (test multi-row grid behavior)",
+        "Eyebrow Only Header (only eyebrow, no heading/description)"
+      ]
+    },
+
+    "fileChanges": [
+      {
+        "file": "blocks/CardsGrid/CardsGrid.php",
+        "action": "modify",
+        "description": "Remove redundant manual attribute extraction, update dark mode pattern to match project standard, add aria-label fallback",
+        "details": "1. Remove all manual $var = $attributes['key'] ?? default lines. Use auto-extracted variables directly. 2. Update dark mode: section gets only 'dark bg-transparent!', container gets full dark mode pattern with py and before:-inset-y. 3. Add aria-label fallback in theme_block_props() when heading is empty.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/CardsGrid/CardsGrid.tsx",
+        "action": "modify",
+        "description": "Update dark mode pattern to match project standard, keep in sync with PHP",
+        "details": "1. Section dark mode classes: remove 'md:py-24', keep 'dark bg-transparent!'. 2. Container dark mode classes: add py-10 md:py-15 and update before pseudo to include before:-inset-y-8. Must match PHP exactly.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/CardsGrid/CardsGridItem/CardsGridItem.php",
+        "action": "modify",
+        "description": "Remove redundant manual attribute extraction",
+        "details": "Remove all manual $var = $attributes['key'] ?? default lines. Use auto-extracted variables directly. Keep only derived variables ($hasImage, $hasButton, $columns from context).",
+        "affectsPhp": true
+      },
+      {
+        "file": "WordPress test page (page ID 104, slug: test-cards-grid)",
+        "action": "modify",
+        "description": "Rewrite test page to use DemoContainer wrappers with comprehensive scenario coverage",
+        "details": "Replace all wp:heading, wp:paragraph, wp:separator blocks with takt/demo-container wrappers. Each variation gets a DemoContainer with descriptive title and description. Add missing scenarios for dark mode variants, mixed content, and edge cases.",
+        "affectsPhp": false
+      }
+    ],
+
+    "attributeChanges": [],
+
+    "designDecisions": [
+      {
+        "category": "layout",
+        "question": "Dark mode padding: Should CardsGrid follow the project standard dark mode pattern exactly (py-10 md:py-15 on container, before:-inset-y-8 on pseudo)?",
+        "recommendation": "Yes, follow the project standard exactly. The current implementation uses md:py-24 on the section which is non-standard. The project pattern (py-10 md:py-15 + before:-inset-y-8) provides consistent spacing across all dark mode blocks.",
+        "needsUserInput": false
+      },
+      {
+        "category": "accessibility",
+        "question": "Should the section have an aria-label when no heading is provided?",
+        "recommendation": "Yes, add aria-label='Cards Grid' as a fallback when heading is empty. This follows the CardsCarousel pattern which provides an aria-label fallback.",
+        "needsUserInput": false
+      },
+      {
+        "category": "layout",
+        "question": "Should there be a gap between the image wrapper and content wrapper in each card?",
+        "recommendation": "Keep current implementation (no gap) unless Figma shows otherwise. The two rounded-[25px] areas stacking creates a visual card effect.",
+        "needsUserInput": false
+      }
+    ],
+
+    "testPage": {
+      "variations": [
+        {
+          "demoTitle": "Default/Minimal - Light Mode",
+          "demoDescription": "Block with only required fields (heading and 1 card with title). No images, no eyebrow, no description. Tests empty state handling and minimal rendering.",
+          "attributes": { "darkMode": false, "heading": "Featured Services", "columns": 3 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Service One" } }
+          ]
+        },
+        {
+          "demoTitle": "Full Content - 3 Columns (Light)",
+          "demoDescription": "All fields populated: eyebrow, heading, description, 3 cards with images, titles, descriptions, and tertiary buttons. Tests complete rendering.",
+          "attributes": { "darkMode": false, "eyebrow": "What We Offer", "heading": "Comprehensive Student Services", "description": "Discover the range of support services designed to help you succeed in your academic journey.", "columns": 3 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Academic Support", "description": "Get help with tutoring, writing assistance, and study skills workshops.", "button": { "title": "Learn More", "url": "#" } } },
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 18, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Career Services", "description": "Connect with employers, get resume help, and prepare for interviews.", "button": { "title": "Explore", "url": "#" } } },
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 17, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Health & Wellness", "description": "Access counseling, health services, and wellness programs.", "button": { "title": "Get Help", "url": "#" } } }
+          ]
+        },
+        {
+          "demoTitle": "Full Content - 2 Columns (Light)",
+          "demoDescription": "All fields populated with 2-column layout. Tests md:grid-cols-2 responsive behavior.",
+          "attributes": { "darkMode": false, "heading": "Two Column Grid", "columns": 2 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "First Card", "description": "Content for the first card in a two-column layout.", "button": { "title": "Read More", "url": "#" } } },
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 18, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Second Card", "description": "Content for the second card in a two-column layout.", "button": { "title": "Explore", "url": "#" } } }
+          ]
+        },
+        {
+          "demoTitle": "Full Content - 1 Column (Light)",
+          "demoDescription": "Single column layout with full content. Tests grid-cols-1 behavior.",
+          "attributes": { "darkMode": false, "heading": "Single Column", "columns": 1 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 17, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Full Width Card", "description": "This card takes up the full width in single column mode.", "button": { "title": "Read More", "url": "#" } } }
+          ]
+        },
+        {
+          "demoTitle": "Dark Mode - 3 Columns",
+          "demoDescription": "Full content with dark mode enabled and 3 columns. Tests charcoal pseudo-element background, white text, and dark mode styling.",
+          "attributes": { "darkMode": true, "eyebrow": "Partners", "heading": "Fostering Partnerships", "description": "Working together to create opportunities for student success.", "columns": 3 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "LGBTQ Resource Centre", "description": "The centre advocates and works towards building safer, braver and positive spaces.", "button": { "title": "Visit Centre", "url": "#" } } },
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 18, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Black Students Support", "description": "A thriving hub of cultures, connections and empowerment for Black students.", "button": { "title": "Connect", "url": "#" } } },
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 17, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Indigenous Education", "description": "The centre honours a wide variety of faiths and traditions.", "button": { "title": "Learn More", "url": "#" } } }
+          ]
+        },
+        {
+          "demoTitle": "Dark Mode - 2 Columns",
+          "demoDescription": "Dark mode with 2-column layout. Tests dark mode styling with non-default column count.",
+          "attributes": { "darkMode": true, "heading": "Dark Two Columns", "columns": 2 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "First Dark Card", "description": "Testing dark mode in 2-column layout." } },
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 18, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Second Dark Card", "description": "Second card in dark mode 2-column grid." } }
+          ]
+        },
+        {
+          "demoTitle": "Dark Mode - No Header",
+          "demoDescription": "Dark mode without any header content (no eyebrow, heading, or description). Tests dark mode pseudo-element rendering without ThemeHeading.",
+          "attributes": { "darkMode": true, "columns": 3 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Dark Card 1", "description": "Card content in dark mode without section header." } },
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Dark Card 2", "description": "Second card in dark mode." } }
+          ]
+        },
+        {
+          "demoTitle": "Cards Without Images",
+          "demoDescription": "Text-only cards with no images. Tests that image containers are hidden when no image is set. Cards should render with content area only.",
+          "attributes": { "darkMode": false, "heading": "Text-Only Cards", "columns": 3 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Card Without Image", "description": "This card has no image, so the image area should be completely hidden.", "button": { "title": "Learn More", "url": "#" } } },
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Another No-Image Card", "description": "Another card without an image to verify consistent behavior." } },
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Third No-Image Card", "description": "Third card for comparison." } }
+          ]
+        },
+        {
+          "demoTitle": "Mixed Content Cards",
+          "demoDescription": "Grid with a mix of cards that have images and cards without images. Tests equal height behavior when card content varies significantly.",
+          "attributes": { "darkMode": false, "heading": "Mixed Content", "columns": 3 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Card With Image", "description": "This card has an image.", "button": { "title": "Learn More", "url": "#" } } },
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Card Without Image", "description": "This card has no image. Check that equal height works correctly.", "button": { "title": "Read More", "url": "#" } } },
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 17, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Another With Image", "description": "Third card with an image." } }
+          ]
+        },
+        {
+          "demoTitle": "Long Content Edge Case",
+          "demoDescription": "Tests overflow handling with very long heading (100+ chars), long description, and long card content. Verifies text wrapping and layout integrity.",
+          "attributes": { "darkMode": false, "eyebrow": "Extended Services Overview", "heading": "This is a very long heading that should test how the block handles text that extends beyond the expected length and might wrap to multiple lines in various viewport widths", "description": "This is an extremely long description to test how the header area handles large amounts of text content. It should wrap properly and maintain good visual hierarchy without breaking the two-column ThemeHeading layout.", "columns": 3 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Card with extremely long title that tests text wrapping and overflow behavior in the card layout", "description": "This description is intentionally very long to test how the card handles large amounts of text content. It should either truncate gracefully or expand to accommodate the content without breaking the layout. The equal height mechanism should still work correctly.", "button": { "title": "Very Long Button Text Here", "url": "#" } } },
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Short", "description": "Short content for height comparison." } },
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Medium Length Title", "description": "Medium length description to test equal height behavior across cards with varying content." } }
+          ]
+        },
+        {
+          "demoTitle": "Empty Optional Fields",
+          "demoDescription": "Tests shouldDisplay() behavior with minimal card content. One card has only a title, one has only a description, one has only a button. No header fields.",
+          "attributes": { "darkMode": false, "columns": 3 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Title Only Card" } },
+            { "name": "takt/cards-grid-item", "attributes": { "description": "Description only, no title" } },
+            { "name": "takt/cards-grid-item", "attributes": { "button": { "title": "Button Only", "url": "#" } } }
+          ]
+        },
+        {
+          "demoTitle": "Many Cards - 6 Items",
+          "demoDescription": "Tests grid behavior with 6 cards in a 3-column layout, creating 2 rows. Verifies row spacing and consistent card heights across rows.",
+          "attributes": { "darkMode": false, "heading": "Multiple Rows", "columns": 3 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Card 1", "description": "Row 1" } },
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 18, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Card 2", "description": "Row 1" } },
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 17, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Card 3", "description": "Row 1" } },
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 19, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Card 4", "description": "Row 2" } },
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 18, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Card 5", "description": "Row 2" } },
+            { "name": "takt/cards-grid-item", "attributes": { "image": { "id": 17, "focalPoint": { "x": 0.5, "y": 0.5 } }, "title": "Card 6", "description": "Row 2" } }
+          ]
+        },
+        {
+          "demoTitle": "Eyebrow Only Header",
+          "demoDescription": "Tests ThemeHeading rendering when only eyebrow is provided, no heading or description. Edge case for header conditional logic.",
+          "attributes": { "darkMode": false, "eyebrow": "Category Label", "columns": 3 },
+          "innerBlocks": [
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Card A", "description": "Content under an eyebrow-only header." } },
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Card B", "description": "Second card under eyebrow-only header." } },
+            { "name": "takt/cards-grid-item", "attributes": { "title": "Card C", "description": "Third card under eyebrow-only header." } }
+          ]
+        }
+      ],
+      "interactiveTests": []
+    },
+
+    "requiresQA": true,
+    "qaScope": "full"
+  }
+}

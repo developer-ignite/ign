@@ -1,0 +1,167 @@
+.btn-primary,
+.btn-secondary,
+.btn-tertiary {
+	@apply no-underline! relative tracking-wider font-sans font-medium max-sm:text-body-small uppercase leading-tight cursor-pointer **:cursor-pointer! text-center;
+}
+
+.btn-primary,
+.btn-secondary {
+	@apply inline-block border px-5.75 py-4 rounded-full overflow-hidden;
+	transition:
+		--btn-gradient-color 0.3s ease,
+		background-position 0.3s ease,
+		border-color 0.3s ease,
+		color 0.3s ease;
+}
+
+/* Primary Button - Filled (dark: white filled) */
+.btn-primary {
+	@apply border-charcoal text-white!
+	dark:border-white dark:text-charcoal!;
+	--btn-gradient-color: var(--color-charcoal);
+	background:
+		linear-gradient(90deg, var(--btn-gradient-color), var(--btn-gradient-color)),
+		linear-gradient(90deg, var(--color-neon-green) 0%, var(--color-blue) 70%);
+	background-size:
+		100% 100%,
+		200% 100%;
+	background-position:
+		0 0,
+		100% 0;
+}
+
+.dark .btn-primary {
+	--btn-gradient-color: var(--color-white);
+}
+
+/* Secondary Button - Outline (dark: white outline) */
+.btn-secondary {
+	@apply border-charcoal text-charcoal!
+	dark:border-white dark:text-white!;
+	--btn-gradient-opacity: 0;
+	background: linear-gradient(
+		90deg,
+		rgba(212, 255, 69, var(--btn-gradient-opacity)) 0%,
+		rgba(71, 203, 242, var(--btn-gradient-opacity)) 70%
+	);
+	background-size: 200% 100%;
+	background-position: 100% 0;
+	transition:
+		--btn-gradient-opacity 0.3s ease,
+		background-position 0.3s ease,
+		border-color 0.3s ease,
+		color 0.3s ease;
+}
+
+/* Tertiary Button - Text link style */
+.btn-tertiary {
+	@apply inline-flex items-center gap-2 no-underline!
+	hover:text-charcoal focus:text-charcoal
+	dark:hover:text-off-white dark:focus:text-off-white;
+}
+
+/* Tertiary button inside ThemeHeading/ButtonRow: match primary/secondary touch area */
+.theme-heading .btn-tertiary,
+.button-row .btn-tertiary {
+	padding-top: calc(1rem + 1px);
+	padding-bottom: calc(1rem + 1px);
+}
+
+/* Arrow animation for tertiary buttons */
+.btn-tertiary-arrow {
+	margin-right: 0.75rem;
+	transition: margin 0.3s ease;
+}
+
+.btn-tertiary:is(:hover, :focus-visible) .btn-tertiary-arrow,
+a.group:not(.theme-heading *):is(:hover, :focus-visible) .btn-tertiary-arrow {
+	margin-right: 0;
+	margin-left: 0.75rem;
+}
+
+/* Hover and focus animations */
+.btn-primary:is(:hover, :focus-visible) {
+	animation: btn-gradient-sweep-primary 1s ease forwards;
+}
+
+.dark .btn-primary:is(:hover, :focus-visible) {
+	animation: btn-gradient-sweep-primary-dark 1s ease forwards;
+}
+
+.btn-secondary:is(:hover, :focus-visible) {
+	animation: btn-gradient-sweep-secondary 1s ease forwards;
+}
+
+/* On hover/focus, gradient shows through - text stays charcoal for contrast on both modes */
+:is(.btn-primary, .btn-secondary):is(:hover, :focus-visible) {
+	@apply border-charcoal text-charcoal!;
+}
+
+@property --btn-gradient-color {
+	syntax: "<color>";
+	initial-value: #1f1f1d;
+	inherits: false;
+}
+
+@property --btn-gradient-opacity {
+	syntax: "<number>";
+	initial-value: 0;
+	inherits: false;
+}
+
+@keyframes btn-gradient-sweep-primary {
+	0% {
+		--btn-gradient-color: var(--color-charcoal);
+		background-position:
+			0 0,
+			100% 0;
+	}
+	50% {
+		--btn-gradient-color: transparent;
+		background-position:
+			0 0,
+			100% 0;
+	}
+	100% {
+		--btn-gradient-color: transparent;
+		background-position:
+			0 0,
+			0% 0;
+	}
+}
+
+@keyframes btn-gradient-sweep-primary-dark {
+	0% {
+		--btn-gradient-color: var(--color-white);
+		background-position:
+			0 0,
+			100% 0;
+	}
+	50% {
+		--btn-gradient-color: transparent;
+		background-position:
+			0 0,
+			100% 0;
+	}
+	100% {
+		--btn-gradient-color: transparent;
+		background-position:
+			0 0,
+			0% 0;
+	}
+}
+
+@keyframes btn-gradient-sweep-secondary {
+	0% {
+		--btn-gradient-opacity: 0;
+		background-position: 100% 0;
+	}
+	50% {
+		--btn-gradient-opacity: 1;
+		background-position: 100% 0;
+	}
+	100% {
+		--btn-gradient-opacity: 1;
+		background-position: 0% 0;
+	}
+}

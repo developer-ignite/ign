@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Header area -->
+	<rect x="2" y="3" width="4" height="1"/>
+	<rect x="2" y="5" width="9" height="2"/>
+
+	<!-- Cards (3 columns) -->
+	<rect x="2" y="10" width="6" height="6"/>
+	<rect x="9" y="10" width="6" height="6"/>
+	<rect x="16" y="10" width="6" height="6"/>
+
+	<!-- Card text -->
+	<rect x="2" y="17" width="5" height="1"/>
+	<rect x="9" y="17" width="5" height="1"/>
+	<rect x="16" y="17" width="5" height="1"/>
+
+	<!-- Container -->
+	<path d="M0,1v21h24V1H0ZM23,21H1V2h22v19Z"/>
+</svg>

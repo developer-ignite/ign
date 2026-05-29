@@ -1,0 +1,112 @@
+{
+  "agent": "planning",
+  "mode": "edit",
+  "revision": 4,
+  "timestamp": "2026-02-20T15:31:01Z",
+  "output": {
+    "summary": "Two changes to HeaderMain: (1) Add persistent 32px top margin to the outer block wrapper so the header always has the same top offset it gets when fixed (matching the 32px base gap in calculateFixedOffset). (2) Add a new 'displayAboveContent' boolean attribute that switches the header's initial position from relative to absolute, allowing it to overlay the content below (transparent header over hero). The fixed-on-scroll behavior still works on top of this (absolute -> fixed on scroll).",
+    "fileChanges": [
+      {
+        "file": "blocks/Header/HeaderMain/block.json",
+        "action": "modify",
+        "description": "Add displayAboveContent boolean attribute with default false",
+        "details": "Add to attributes: \"displayAboveContent\": { \"type\": \"boolean\", \"default\": false }",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "action": "modify",
+        "description": "Add pt-8 to outer wrapper for persistent top margin; add displayAboveContent support with absolute positioning classes on .header-main div and negative margin on outer wrapper",
+        "details": "1. OUTER WRAPPER (line 39, theme_block_props): Change 'flex flex-col gap-2' to 'flex flex-col gap-2 pt-8' to add 32px top padding always.\n2. Extract $displayAboveContent from attributes: $displayAboveContent = !empty($displayAboveContent);\n3. Add @var bool $displayAboveContent to the docblock.\n4. On the .header-main div (line 53-61): When $displayAboveContent is true, add 'absolute left-0 right-0 z-200' to the class_name array. This makes the nav bar overlay the content below instead of pushing it down.\n5. On the outer wrapper: When $displayAboveContent is true, add '-mb-[var(--header-main-height,0px)]' so the next sibling content slides up underneath the absolutely-positioned header. This is cleaner than position:absolute on the outer wrapper because it preserves the block in document flow for the editor while pulling subsequent content up.\n\nSpecific class changes on .header-main div:\n  'absolute left-0 right-0 z-200' => $displayAboveContent\n\nSpecific class changes on outer wrapper:\n  'pt-8' => true (always)\n  '-mb-[var(--header-main-height,0px)]' => $displayAboveContent",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.tsx",
+        "action": "modify",
+        "description": "Add displayAboveContent to type, editor toggle, and matching classes",
+        "details": "1. Add displayAboveContent: boolean to HeaderMainAttributes type.\n2. Add 'pt-8' to the useBlockProps className (outer wrapper).\n3. On the .header-main div className cn(): add 'absolute left-0 right-0 z-200': !!attributes.displayAboveContent.\n4. Add '-mb-[var(--header-main-height,0px)]' to useBlockProps className when displayAboveContent is true.\n5. Add a ToggleControl in the 'Behaviour' PanelBody: label='Display above content (overlay mode)', checked=attributes.displayAboveContent, onChange toggles displayAboveContent.\n6. NOTE: The existing z-200 classes are conditional on fixedOnScroll* — when displayAboveContent is true, z-200 must be set unconditionally (not only when scrolling). The absolute positioning classes should NOT conflict with the scrolling fixed classes because: when not scrolling, the header is absolute+z-200; when scrolling, the .scrolling class adds fixed+z-200 which overrides absolute.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.js",
+        "action": "modify",
+        "description": "Update JS to handle absolute->fixed transition and set --header-main-height on init for negative margin calculation",
+        "details": "1. The existing calculateStartHeight() walks previousElementSiblings to determine when to switch to fixed. When displayAboveContent is true, the header starts as absolute, so startHeight should be 0 (or the height of preceding siblings like the SEP button). The current logic already handles this correctly because it checks header.previousElementSibling which would be the SEP button (inside the same outer wrapper). No change needed for startHeight.\n2. Add a data attribute read: const displayAboveContent = !!parseInt(header.dataset.displayAboveContent, 10);\n3. Ensure --header-main-height is set on page load (updateHeaderHeight already does this at init on line 329). This CSS variable is used by the negative margin '-mb-[var(--header-main-height,0px)]' on the outer wrapper.\n4. When displayAboveContent is true AND header enters .scrolling state: the CSS classes already switch from absolute to fixed (since .scrolling adds fixed). However, the spacer needs special handling — when displayAboveContent is true, the spacer should NOT be shown because the header was already overlaying content (no layout shift to compensate). Wrap showSpacer() calls in a condition: if (!displayAboveContent) { showSpacer(height); }\n5. Similarly, when exiting .scrolling state, hideSpacer() is fine (it's already hidden).\n6. Add data-display-above-content attribute to the .header-main div in PHP.",
+        "affectsPhp": true
+      }
+    ],
+    "attributeChanges": [
+      {
+        "action": "add",
+        "name": "displayAboveContent",
+        "type": "boolean",
+        "default": false,
+        "description": "When enabled, the header uses position:absolute initially, overlaying the content below it (transparent header over hero). When disabled, the header uses normal document flow (relative positioning). The fixed-on-scroll behavior still works on top of this setting."
+      }
+    ],
+    "designDecisions": [
+      {
+        "category": "layout",
+        "question": "Should the 32px top margin be applied as padding (pt-8) on the outer wrapper, or as a margin (mt-8)?",
+        "recommendation": "Use pt-8 (padding-top) on the outer wrapper. Padding is preferred because: (1) it stays inside the block's box model, (2) it won't collapse with adjacent margins, (3) when displayAboveContent is true, the padding keeps the header visually offset from the viewport top, matching the fixed-offset behavior. The 32px matches the hardcoded +32 in calculateFixedOffset() (line 146 of HeaderMain.js).",
+        "needsUserInput": false
+      },
+      {
+        "category": "layout",
+        "question": "How should the overlay mode prevent the header from taking up vertical space in the document flow?",
+        "recommendation": "Use a negative bottom margin on the outer wrapper: -mb-[var(--header-main-height,0px)]. This pulls the next block up by the header's height, effectively making the header overlay content without changing its own position context. This approach is better than making the outer wrapper position:absolute because: (1) The block remains in the editor's flow, (2) WordPress block rendering expects blocks to be in normal flow, (3) It's a well-known CSS pattern for overlapping elements. The --header-main-height CSS variable is already computed by the JS (updateHeaderHeight function).",
+        "needsUserInput": false
+      },
+      {
+        "category": "behavior",
+        "question": "When displayAboveContent is true, should the spacer element be activated when the header becomes fixed?",
+        "recommendation": "No. The spacer exists to prevent layout shift when the header transitions from relative to fixed. When displayAboveContent is true, the header is already overlaying content (via absolute + negative margin), so there is no layout shift to compensate. The JS should skip showSpacer() when displayAboveContent is true.",
+        "needsUserInput": false
+      },
+      {
+        "category": "behavior",
+        "question": "Should displayAboveContent require fixedOnScroll to be enabled?",
+        "recommendation": "No, they should be independent. displayAboveContent controls the initial positioning (absolute vs relative). fixedOnScroll controls the scroll behavior (fixed on scroll vs not). A user may want an absolute header that does NOT become fixed on scroll (just stays at the top and scrolls away with the page). However, the most common use case is displayAboveContent=true + fixedOnScroll=true (transparent hero header that sticks on scroll).",
+        "needsUserInput": false
+      },
+      {
+        "category": "layout",
+        "question": "When displayAboveContent is true, the .header-main div needs absolute positioning — should this also include top-0?",
+        "recommendation": "No, do not add top-0. The header-main div is inside the outer wrapper which has pt-8. The absolute element will be positioned relative to its nearest positioned ancestor. Since the outer wrapper is the block container (with position:relative from WordPress block props), the absolute header will sit at the top of that container — which already has pt-8, so the header naturally sits 32px from the container's top. This matches the fixed-offset calculation.",
+        "needsUserInput": false
+      }
+    ],
+    "implementationNotes": {
+      "phpChanges": {
+        "outerWrapper": "Change line 39 from: theme_block_props('flex flex-col gap-2') to: theme_block_props(class_name(['flex flex-col gap-2 pt-8' => true, '-mb-[var(--header-main-height,0px)]' => $displayAboveContent]))",
+        "headerMainDiv": "Add to the class_name array: 'absolute left-0 right-0 z-200' => $displayAboveContent",
+        "dataAttribute": "Add data-display-above-content=\"<?php echo (int) $displayAboveContent; ?>\" to the .header-main div",
+        "variableExtraction": "Add $displayAboveContent = !empty($displayAboveContent); after the existing boolean defaults (line 27)"
+      },
+      "jsChanges": {
+        "readAttribute": "Add: const displayAboveContent = !!parseInt(header.dataset.displayAboveContent, 10);",
+        "spacerLogic": "Wrap all showSpacer() calls with: if (!displayAboveContent) { showSpacer(height); }",
+        "noOtherChanges": "The scroll detection (calculateStartHeight, updateScrollStatus) works correctly as-is. When the header is absolute inside the outer wrapper, previousElementSibling correctly finds the SEP button (if present). The scrolling class adds position:fixed which overrides position:absolute."
+      },
+      "tsxChanges": {
+        "type": "Add displayAboveContent: boolean to HeaderMainAttributes",
+        "outerWrapper": "Add 'pt-8' and conditional '-mb-[var(--header-main-height,0px)]' to useBlockProps className",
+        "headerMainDiv": "Add 'absolute left-0 right-0 z-200': !!attributes.displayAboveContent to the cn() call",
+        "toggle": "Add ToggleControl in Behaviour PanelBody above the Desktop section"
+      }
+    },
+    "requiresQA": true,
+    "qaScope": "full",
+    "qaFocus": [
+      "Verify 32px top padding is visible on all pages with the header",
+      "Verify overlay mode: header overlaps first block content when displayAboveContent=true",
+      "Verify fixed-on-scroll still works correctly with displayAboveContent=true",
+      "Verify fixed-on-scroll still works correctly with displayAboveContent=false (no regression)",
+      "Verify no layout shift when scrolling with displayAboveContent=true",
+      "Verify spacer is NOT shown when displayAboveContent=true and header becomes fixed",
+      "Verify hide-on-scroll-down still works with displayAboveContent=true",
+      "Verify mobile menu open still works with displayAboveContent=true",
+      "Verify the negative margin correctly pulls content up under the header"
+    ]
+  }
+}

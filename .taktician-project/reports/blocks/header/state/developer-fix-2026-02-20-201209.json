@@ -1,0 +1,29 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-20-201317",
+  "status": "complete",
+  "blockName": "Header",
+  "output": {
+    "mode": "fix",
+    "issue": "HEADER-QA5-01",
+    "severity": "minor",
+    "summary": "Removed redundant class_name() wrapper from theme_block_props() call at HeaderMain.php:41. The array is now passed directly to theme_block_props(), which calls class_name() internally.",
+    "filesChanged": [
+      {
+        "file": "blocks/Header/HeaderMain/HeaderMain.php",
+        "line": 41,
+        "action": "modify",
+        "before": "theme_block_props( class_name( [ ... ] ) )",
+        "after": "theme_block_props( [ ... ] )"
+      }
+    ],
+    "validation": {
+      "status": "pass",
+      "errors": 0,
+      "warnings": 11,
+      "warningNotes": "classNameInsideBlockProps check now passes. Remaining 11 warnings are pre-existing react-hooks/exhaustive-deps in unrelated blocks, plus one structural difference warning (TSX InnerBlocks vs PHP direct render — pre-existing, not a real sync issue)."
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

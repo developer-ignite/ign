@@ -1,0 +1,64 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/cards-grid-item",
+  "version": "1.0.0",
+  "title": "Cards Grid Item",
+  "category": "takt-theme",
+  "description": "A card within the Cards Grid block",
+  "textdomain": "takt",
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "image": {
+      "type": "object",
+      "default": {
+        "id": null,
+        "focalPoint": {
+          "x": 0.5,
+          "y": 0.5
+        }
+      }
+    },
+    "title": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "button": {
+      "type": "object",
+      "default": {
+        "title": "",
+        "url": "",
+        "postId": null,
+        "opensInNewTab": false,
+        "label": ""
+      }
+    },
+    "accentColor": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "usesContext": ["takt/cards-grid/columns"],
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "parent": ["takt/cards-grid"],
+  "example": {
+    "viewportWidth": 400,
+    "attributes": {
+      "title": "Academic Support",
+      "description": "Get help with tutoring, writing assistance, and study skills workshops.",
+      "image": {
+        "id": "https://picsum.photos/id/667/600/400",
+        "focalPoint": { "x": 0.5, "y": 0.5 }
+      }
+    }
+  }
+}

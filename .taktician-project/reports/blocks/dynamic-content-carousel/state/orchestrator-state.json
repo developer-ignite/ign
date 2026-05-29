@@ -1,0 +1,89 @@
+{
+  "mode": "edit",
+  "phase": "review",
+  "blockName": "DynamicContentCarousel",
+  "blockNameKebab": "dynamic-content-carousel",
+  "blockPath": "blocks/DynamicContentCarousel/",
+  "reportPath": ".taktician-project/reports/blocks/dynamic-content-carousel/dynamic-content-carousel-report.md",
+  "stateDir": ".taktician-project/reports/blocks/dynamic-content-carousel/state",
+  "reportDir": ".taktician-project/reports/blocks/dynamic-content-carousel",
+  "startTime": "2026-02-12T21:00:00Z",
+  "changeRequest": "Create block variations for this block, so it shows up as post type carousel in the block list, like it's done with the Archive block.",
+  "editContext": {
+    "blockMeta": {
+      "name": "takt/dynamic-content-carousel",
+      "title": "Dynamic Content Carousel",
+      "category": "takt-theme"
+    },
+    "attributes": "21 attributes - see context agent output",
+    "patterns": {
+      "usesShouldDisplay": true,
+      "usesRenameBlock": true,
+      "usesThemeHeading": true,
+      "usesFilteredServerSideRender": true
+    },
+    "reportExists": true,
+    "testPageUrl": "https://ign.localhost/test-dynamic-content-carousel/"
+  },
+  "agentOutputs": [
+    {
+      "agent": "planning",
+      "timestamp": "2026-02-20-201631",
+      "status": "complete",
+      "file": ".taktician-project/reports/blocks/dynamic-content-carousel/state/planning-2026-02-20-201631.json"
+    },
+    {
+      "agent": "developer",
+      "timestamp": "2026-02-20-201631",
+      "status": "complete",
+      "file": ".taktician-project/reports/blocks/dynamic-content-carousel/state/developer-2026-02-20-201631.json"
+    },
+    {
+      "agent": "functional-qa",
+      "timestamp": "2026-02-20-201631",
+      "status": "complete",
+      "file": ".taktician-project/reports/blocks/dynamic-content-carousel/state/functional-qa-2026-02-20-201631.json"
+    },
+    {
+      "agent": "report",
+      "timestamp": "2026-02-20-201631",
+      "status": "complete"
+    }
+  ],
+  "latestOutputs": {
+    "planning": ".taktician-project/reports/blocks/dynamic-content-carousel/state/planning-2026-02-20-201631.json",
+    "developer": ".taktician-project/reports/blocks/dynamic-content-carousel/state/developer-2026-02-20-201631.json",
+    "functionalQa": ".taktician-project/reports/blocks/dynamic-content-carousel/state/functional-qa-2026-02-20-201631.json",
+    "designQa": null
+  },
+  "unresolvedIssues": [],
+  "testPage": {
+    "url": "https://ign.localhost/test-dynamic-content-carousel/"
+  },
+  "figma": {
+    "url": "https://www.figma.com/design/bpRK9A1l2nTbWfMg1pX5yK/IGN-%7C-WEBSITE--INTERNAL-?node-id=785-33970&m=dev",
+    "nodeId": "785:33970",
+    "availability": {
+      "desktop": "available"
+    }
+  },
+  "relatedBlocks": [
+    "TestimonialsCarousel"
+  ],
+  "agentSessions": {
+    "developer": "a49ced8",
+    "functionalQa": "a850926",
+    "report": "a8549db"
+  },
+  "revisionCycle": 0,
+  "timestamps": {
+    "started": "2026-02-20-201631",
+    "lastUpdated": "2026-02-21T04:28:48.492Z",
+    "contextComplete": "2026-02-20-201631",
+    "completed": "2026-02-20-202500"
+  },
+  "guidance": {
+    "DEC-010": "On non-singular pages, add a configurable option for behavior: 'hide' (show nothing/respect hideIfEmpty) or 'latest' (fall back to latest posts). Add a new attribute for this choice."
+  },
+  "status": "complete"
+}

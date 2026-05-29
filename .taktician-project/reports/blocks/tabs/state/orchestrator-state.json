@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "mode": "edit",
+  "blockName": "Tabs",
+  "blockNameKebab": "tabs",
+  "blockPath": "blocks/Tabs",
+  "reportDir": ".taktician-project/reports/blocks/tabs",
+  "stateDir": ".taktician-project/reports/blocks/tabs/state",
+  "phase": "review",
+  "status": "complete",
+  "revisionCycle": 4,
+  "maxRevisionCycles": 5,
+  "testPage": {
+    "url": "https://ign.localhost/test-tabs-2/",
+    "pageId": 169,
+    "verifiedBlockCount": 9
+  },
+  "figma": {
+    "url": "https://www.figma.com/design/bpRK9A1l2nTbWfMg1pX5yK/IGN-%7C-WEBSITE--INTERNAL-?node-id=785-34910&m=dev",
+    "nodeId": "785-34910",
+    "availability": {
+      "desktop": "available",
+      "mobile": "available"
+    }
+  },
+  "guidance": {},
+  "editContext": null,
+  "changeRequest": "Fix per-tab color on desktop and mobile border persistence on open.",
+  "agentOutputs": [
+    {
+      "agent": "planning",
+      "file": ".taktician-project/reports/blocks/tabs/state/planning-2026-02-13-030000.json",
+      "timestamp": "2026-02-13-030000"
+    },
+    {
+      "agent": "developer",
+      "file": ".taktician-project/reports/blocks/tabs/state/developer-2026-02-13-030000.json",
+      "timestamp": "2026-02-13-030000"
+    },
+    {
+      "agent": "functionalQa",
+      "file": ".taktician-project/reports/blocks/tabs/state/functional-qa-2026-02-13-111721.json",
+      "timestamp": "2026-02-13-030000"
+    },
+    {
+      "agent": "report",
+      "file": ".taktician-project/reports/blocks/tabs/tabs-report.md",
+      "timestamp": "2026-02-13-030000"
+    }
+  ],
+  "latestOutputs": {
+    "planning": ".taktician-project/reports/blocks/tabs/state/planning-2026-02-13-030000.json",
+    "developer": ".taktician-project/reports/blocks/tabs/state/developer-2026-02-13-030000.json",
+    "functionalQa": ".taktician-project/reports/blocks/tabs/state/functional-qa-2026-02-13-111721.json",
+    "designQa": ".taktician-project/reports/blocks/tabs/state/design-qa-2026-02-12-205834.json"
+  },
+  "screenshots": {
+    "qaScreenshots": null,
+    "finalScreenshots": null
+  },
+  "unresolvedIssues": [],
+  "timestamps": {
+    "started": "2026-02-12-205834",
+    "lastUpdated": "2026-02-13-030000"
+  },
+  "agentSessions": {
+    "planning": "a87464a",
+    "developer": "ad3222e",
+    "functionalQa": "a16ea83",
+    "designQa": "aed189f",
+    "report": "a657b00"
+  }
+}

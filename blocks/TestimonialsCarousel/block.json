@@ -1,0 +1,87 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/testimonials-carousel",
+  "title": "Testimonials Carousel",
+  "category": "takt-theme",
+  "description": "A carousel displaying testimonial posts with accent-colored cards, video modal support, and dynamic content from the testimonial post type.",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "eyebrow": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "buttons": {
+      "type": "array"
+    },
+    "postsSource": {
+      "type": "string",
+      "default": "automatic",
+      "enum": ["automatic", "manual"]
+    },
+    "selectedPosts": {
+      "type": "array",
+      "default": []
+    },
+    "postsLimit": {
+      "type": "number",
+      "default": 9
+    },
+    "hideIfEmpty": {
+      "type": "boolean",
+      "default": false
+    },
+    "selectedPrograms": {
+      "type": "array",
+      "default": []
+    },
+    "showPagination": {
+      "type": "boolean",
+      "default": true
+    },
+    "showNavigation": {
+      "type": "boolean",
+      "default": true
+    },
+    "loopCarousel": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayCarousel": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayDelay": {
+      "type": "number",
+      "default": 3
+    },
+    "colorSource": {
+      "type": "string",
+      "default": "page",
+      "enum": ["page", "testimonial"]
+    }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 1440,
+    "attributes": {
+      "heading": "Not Convinced? Hear What Unpaid Interns Have to Say",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "postsSource": "automatic"
+    }
+  }
+}

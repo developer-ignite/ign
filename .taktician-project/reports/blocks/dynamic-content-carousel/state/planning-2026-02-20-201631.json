@@ -1,0 +1,68 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-20-201631",
+  "status": "complete",
+  "output": {
+    "summary": "Add block variations to DynamicContentCarousel so each post type (Blog, Team, Resource, Policy) appears as a separate block in the inserter, following the same pattern used by the Archive block. The existing postsType attribute already serves the role of blockVariation — variations simply pre-set postsType to the appropriate value. Four per-variation SVG icons need to be created, and index.tsx needs the variations array added to registerBlockType().",
+    "fileChanges": [
+      {
+        "file": "blocks/DynamicContentCarousel/index.tsx",
+        "action": "modify",
+        "description": "Add variations array to registerBlockType() and import per-variation SVG icons",
+        "details": "Follow the Archive block pattern exactly. Import four new SVG icons (one per post type). Add a `variations` array to the registerBlockType() call with four entries: post (default, 'Blog Carousel'), team_member ('Team Members Carousel'), resource ('Resources Carousel'), policy ('Policies Carousel'). Each variation sets `attributes: { postsType: '<value>' }`, uses `isActive: ['postsType']`, and has `scope: ['inserter', 'transform']`. The 'post' variation should have `isDefault: true`. Import `{ __ }` from `@wordpress/i18n` for translatable strings.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarouselPost.svg",
+        "action": "create",
+        "description": "Create SVG icon for the Blog Carousel variation",
+        "details": "Create a 24x24 SVG icon that visually represents a blog post carousel. Base it on the existing DynamicContentCarousel.svg but differentiate it to suggest blog posts (cards with image placeholders and text lines). Use currentColor fill for theme compatibility.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarouselTeamMember.svg",
+        "action": "create",
+        "description": "Create SVG icon for the Team Members Carousel variation",
+        "details": "Create a 24x24 SVG icon suggesting a team member carousel. Could show person silhouettes or avatar placeholders in a carousel layout. Use currentColor fill.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarouselResource.svg",
+        "action": "create",
+        "description": "Create SVG icon for the Resources Carousel variation",
+        "details": "Create a 24x24 SVG icon suggesting a resource carousel. Could show document/file icons in a carousel layout. Use currentColor fill.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/DynamicContentCarousel/DynamicContentCarouselPolicy.svg",
+        "action": "create",
+        "description": "Create SVG icon for the Policies Carousel variation",
+        "details": "Create a 24x24 SVG icon suggesting a policy carousel. Could show document icons with a shield or checkmark in a carousel layout. Use currentColor fill.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "category": "behavior",
+        "question": "Should the base 'Dynamic Content Carousel' block still appear in the inserter, or only the post-type-specific variations?",
+        "recommendation": "Only show variations in the inserter (the base block is hidden when all variations have scope: ['inserter']). The 'post' variation with isDefault: true becomes the canonical inserter entry, exactly matching the Archive pattern. Users see 'Blog Carousel', 'Team Members Carousel', etc. in the block list instead of a single generic block.",
+        "needsUserInput": false
+      },
+      {
+        "category": "behavior",
+        "question": "Should the postsType attribute be kept as-is, or should a separate blockVariation attribute be added like Archive?",
+        "recommendation": "Reuse the existing postsType attribute. It already serves the exact same purpose as Archive's blockVariation — it determines which post type the block queries. Adding a redundant blockVariation attribute would create unnecessary complexity. The variations simply pre-set postsType and isActive matches on postsType.",
+        "needsUserInput": false
+      },
+      {
+        "category": "behavior",
+        "question": "Should the postsType ToggleGroupControl in the sidebar still be visible after variations are added?",
+        "recommendation": "Keep the postsType ToggleGroupControl in the sidebar. This allows users to switch post type after inserting a specific variation, which is the same UX pattern Archive uses (Archive keeps its blockVariation selector in the sidebar). The block variation title in the list view updates automatically via isActive matching.",
+        "needsUserInput": false
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

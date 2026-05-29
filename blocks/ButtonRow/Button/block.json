@@ -1,0 +1,40 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/button",
+  "title": "Button",
+  "category": "takt-theme",
+  "description": "Displays a button",
+  "supports": {
+    "html": false,
+    "anchor": true
+  },
+  "attributes": {
+    "anchor": {
+      "type": "string"
+    },
+    "button": {
+      "type": "object",
+      "default": {
+        "url": "",
+        "postId": null,
+        "postType": null,
+        "opensInNewTab": false,
+        "variation": "primary",
+        "title": "",
+        "label": ""
+      }
+    }
+  },
+  "textdomain": "takt",
+  "parent": ["takt/button-row"],
+  "example": {
+    "attributes": {
+      "button": {
+        "url": "#",
+        "variation": "primary",
+        "title": "Button"
+      }
+    }
+  }
+}

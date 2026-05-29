@@ -1,0 +1,47 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-10-142331",
+  "status": "complete",
+  "blockName": "FeaturedPost",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "filesModified": [
+      {
+        "path": "blocks/FeaturedPost/FeaturedPost.tsx",
+        "purpose": "Added useSelect to fetch category accent_color term meta via getEntityRecord('taxonomy', 'category', id), applied the color class to the pill <span> using cn() with computed property key"
+      },
+      {
+        "path": "blocks/FeaturedPost/FeaturedPost.php",
+        "purpose": "Added get_term_meta() call to fetch category accent_color, applied the color class to the pill <span> using class_name() with dynamic key"
+      }
+    ],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Asset size warnings for editor.js and screen bundles (pre-existing)"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "details": "Both TSX and PHP apply the category accent color class conditionally on the pill span. TSX uses cn({ [categoryAccentColor]: !!categoryAccentColor }), PHP uses class_name([ $categoryAccentColor => !empty($categoryAccentColor) ]). Same base classes, same conditional logic."
+    },
+    "fixesApplied": [
+      {
+        "id": "pill-accent-color",
+        "description": "Changed topic tag pill to use the category's accent_color term meta instead of inheriting the page/section accent color. The color class (e.g., 'blue', 'green', 'purple') is applied directly on the pill <span> element, which scopes the --accent-color CSS custom properties so that bg-accent-lighter and border-accent resolve to the category-specific color.",
+        "filesChanged": [
+          "blocks/FeaturedPost/FeaturedPost.tsx",
+          "blocks/FeaturedPost/FeaturedPost.php"
+        ],
+        "approach": "Applied the same pattern used by card-post.php in the Archive block: get the category's accent_color term meta and apply it as a CSS class on the element. In TSX, added a separate useSelect hook to fetch the category entity record and extract meta.accent_color. In PHP, used get_term_meta($firstCategory->term_id, 'accent_color', true). The color class overrides --accent-color, --accent-color-light, --accent-color-lighter CSS custom properties within the element scope."
+      }
+    ],
+    "blockers": [],
+    "questionsForUser": []
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

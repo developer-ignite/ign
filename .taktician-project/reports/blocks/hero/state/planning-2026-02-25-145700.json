@@ -1,0 +1,52 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-25-145700",
+  "status": "complete",
+  "mode": "edit",
+  "output": {
+    "summary": "Set hero minimum height to min(700px, 100vh) and align content to the bottom using flexbox. Pure CSS/layout change — no attribute or block.json changes needed.",
+    "fileChanges": [
+      {
+        "file": "blocks/Hero/Hero.tsx",
+        "action": "modify",
+        "description": "Add min-height and flex bottom-alignment to hero-inner and content layer",
+        "details": "1. On the `.hero-inner` div: add `min-h-[min(700px,100vh)]`, `flex`, `flex-col`, and `items-end` (or use a child wrapper with `mt-auto`). 2. On the content layer div: replace the large top-padding approach (`pt-[calc(var(--header-height)+180px)]` etc.) with `mt-auto` so content sits at the bottom. Keep `pb-8 sm:pb-16` for bottom spacing. 3. Add a top padding of `pt-[var(--header-height)]` as a minimum safeguard so content never overlaps the header on very short viewports.",
+        "affectsPhp": true
+      },
+      {
+        "file": "blocks/Hero/Hero.php",
+        "action": "modify",
+        "description": "Mirror the same min-height and flex bottom-alignment changes from TSX",
+        "details": "1. On the `.hero-inner` div: add `min-h-[min(700px,100vh)] flex flex-col`. 2. On the content layer div: replace `pt-[calc(var(--header-height)+180px)] sm:pt-[calc(var(--header-height)+250px)]` (primary) and `pt-[calc(var(--header-height)+180px)] sm:pt-[calc(var(--header-height)+280px)]` (secondary) with `mt-auto pt-[var(--header-height)]`. Keep `pb-8 sm:pb-16`.",
+        "affectsPhp": true
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "layout",
+        "decision": "Use min-h-[min(700px,100vh)] on .hero-inner as the minimum height",
+        "source": "user",
+        "evidence": "User explicitly requested min(700px, 100vh) as the hero minimum height"
+      },
+      {
+        "id": "DEC-002",
+        "category": "layout",
+        "decision": "Use flexbox with mt-auto on the content layer to bottom-align content",
+        "source": "user",
+        "evidence": "User requested content aligned to the bottom. Flexbox column with mt-auto is the standard Tailwind pattern for bottom alignment within a min-height container."
+      },
+      {
+        "id": "DEC-003",
+        "category": "layout",
+        "decision": "Replace large fixed top-padding with mt-auto and a minimal pt-[var(--header-height)] safeguard",
+        "source": "existing pattern",
+        "evidence": "The current large pt-[calc(var(--header-height)+180px)] values were used to push content down. With flex bottom-alignment, content naturally sits at the bottom, so the large padding is no longer needed. A minimal header-height padding prevents overlap on short viewports."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "design",
+    "notes": "Both variations (primary and secondary) share the same hero-inner wrapper, so the min-height and flex changes apply to both. The primary variation has the QuickNavigation inner block below the ThemeHeading — ensure mt-auto is on the content layer (not QuickNav) so QuickNav still flows below the heading naturally. The background image mask and gradient overlay are unaffected since they use absolute positioning."
+  }
+}

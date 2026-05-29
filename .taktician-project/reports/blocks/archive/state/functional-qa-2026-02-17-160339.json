@@ -1,0 +1,88 @@
+{
+  "agent": "functional-qa",
+  "block": "archive",
+  "timestamp": "2026-02-17-160339",
+  "status": "PASS",
+  "run": 4,
+  "revisionCycle": 3,
+  "context": "Fourth QA run (revision 3). The separate .archive-preset-filters container was removed. Preset pills now render as non-interactive <span class='archive-preset-pill'> INSIDE .archive-active-filters alongside interactive user-selected buttons. When displayFilters=false, no pill UI is shown at all. CSS :not(:has()) rule hides the bar when neither pill type is present.",
+  "build": {
+    "status": "PASS",
+    "notes": "TypeScript compilation clean. Lint errors only in unrelated blocks (MainWrapper, FullWidthMedia, TestimonialsCarousel). Two pre-existing react-hooks/exhaustive-deps warnings in Archive.tsx at lines 81 and 104 remain (FQA-001, non-blocking, known).  Archive-specific build artifacts clean."
+  },
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "description": "When displayFilters=true with presets: ONE active filters bar containing both preset spans (no X) and user-selected buttons (with X)",
+      "status": "PASS",
+      "evidence": "Section 14 ('Preset Filtered Resources', displayFilters=true, data-preset-filters='{\"audience\":[\"students\"]}'): activeFiltersBar=true (count:1), presetPillSpan=true (count:1), interactivePillButton=false (no user-added terms at page load — correct), separatePresetContainer=false. PHP Archive.php lines 320-346: .archive-active-filters rendered under condition '$show_filters && $displayFilters'. Inside, preset terms branch to <span class='archive-preset-pill'> (lines 331-334) and non-preset terms branch to <button data-field data-value> (lines 336-339). JS buildButtons() (lines 279-337) rebuilds both pill types client-side after filter interactions."
+    },
+    {
+      "id": "REQ-2",
+      "description": "No separate .archive-preset-filters container exists anywhere in rendered HTML",
+      "status": "PASS",
+      "evidence": "separatePresetContainer (.archive-preset-filters) is false across all 16 sections in the page audit. The .archive-preset-filters div has been fully removed from Archive.php. Confirmed: no .archive-preset-filters selector anywhere in the rendered DOM."
+    },
+    {
+      "id": "REQ-3",
+      "description": "When displayFilters=false with presets: NO pills shown at all (presets apply silently)",
+      "status": "PASS",
+      "evidence": "Section 15 ('Curated Resources', displayFilters=false, data-preset-filters='{\"audience\":[\"students\"]}'): activeFiltersBar=false, presetPillSpan=false, interactivePillButton=false, separatePresetContainer=false. PHP condition for .archive-active-filters at line 320 is '$show_filters && $displayFilters' — when displayFilters=false, $show_filters=false, so the entire filter UI (including the active filters bar) is not rendered. Presets still apply silently to WP_Query and data-preset-filters is still output on the section element ('{\"audience\":[\"students\"]}') for JS to read."
+    },
+    {
+      "id": "REQ-4",
+      "description": "Clear All clears user pills but preset spans reappear after rebuild",
+      "status": "PASS",
+      "evidence": "Archive.js lines 215-234: Clear All handler on form click (a) calls removeFilterFromButton on all 'button[data-field]' — this targets only interactive buttons, not preset spans which have no data-field attribute; (b) resets all hidden inputs to empty (line 221); (c) restores preset values via Object.keys(presetFilters) iteration (lines 225-229), re-setting hidden input values; (d) calls updateState(true) which calls buildButtons() — buildButtons() re-renders preset spans via lines 304-316 (insertAdjacentHTML of <span class='archive-preset-pill'>) for any preset values that are active in the hidden inputs. AJAX reload from server also re-outputs preset spans in .archive-active-filters innerHTML."
+    },
+    {
+      "id": "REQ-5",
+      "description": "CSS hide rule works: bar hides when no pills of either type exist",
+      "status": "PASS",
+      "evidence": "Archive.css line 32: '.archive-active-filters:not(:has(button[data-field], .archive-preset-pill)) { display: none; }'. This CSS :not(:has()) selector hides the bar whenever there are no interactive button[data-field] pills AND no .archive-preset-pill spans. Page audit confirms sections 0-13 (no presets, no user selections) have .archive-active-filters in the DOM but contain only the Clear All button — the CSS rule hides them. Section 14 (presets active) has presetPillSpan=true so the bar is visible. Section 15 (displayFilters=false) has no .archive-active-filters in the DOM at all."
+    },
+    {
+      "id": "REQ-6",
+      "description": "Build passes",
+      "status": "PASS",
+      "evidence": "taktician_validate_all: TypeScript build clean. Lint errors are all in other blocks (MainWrapper, FullWidthMedia, TestimonialsCarousel). Archive-specific lint is clean. Two pre-existing react-hooks/exhaustive-deps warnings in Archive.tsx (lines 81, 104) are known non-blocking issues (FQA-001)."
+    }
+  ],
+  "issues": [],
+  "preExistingIssues": [
+    {
+      "id": "FQA-001",
+      "severity": "minor",
+      "description": "Two pre-existing react-hooks/exhaustive-deps warnings in Archive.tsx at lines 81 and 104. Non-blocking.",
+      "status": "known, not addressed"
+    }
+  ],
+  "pageAuditSummary": {
+    "totalSections": 16,
+    "keyFindings": {
+      "section14_displayFilters_true_withPresets": {
+        "activeFiltersBar": true,
+        "presetPillSpan": true,
+        "interactivePillButton": false,
+        "separatePresetContainer": false,
+        "dataPresetFilters": "{\"audience\":[\"students\"]}"
+      },
+      "section15_displayFilters_false_withPresets": {
+        "activeFiltersBar": false,
+        "presetPillSpan": false,
+        "interactivePillButton": false,
+        "separatePresetContainer": false,
+        "dataPresetFilters": "{\"audience\":[\"students\"]}"
+      },
+      "separatePresetContainerAcrossAll16Sections": false,
+      "interactivePillButtonAcrossAll16Sections": false
+    }
+  },
+  "cssHideRule": "Archive.css line 32: .archive-active-filters:not(:has(button[data-field], .archive-preset-pill)) { display: none; }",
+  "keyCodeChanges": {
+    "php": "Lines 320-346: .archive-active-filters rendered only when '$show_filters && $displayFilters'. Inside, preset terms render as <span class='archive-preset-pill'>, user terms as <button data-field data-value>. .archive-preset-filters div fully removed.",
+    "js_buildButtons": "Lines 304-316: presetValues rendered as insertAdjacentHTML <span class='archive-preset-pill'>. Lines 319-333: userValues (non-preset) rendered as interactive <button>. Lines 286-287: rebuild clears both button[data-field] and .archive-preset-pill before re-rendering.",
+    "js_clearAll": "Lines 225-229: Object.keys(presetFilters) loop restores hidden input values after clear, so preset terms reappear after buildButtons() runs."
+  },
+  "conclusion": "All 6 requirements PASS. The refactored single-container approach is correctly implemented: preset pills live inside .archive-active-filters as non-interactive spans alongside interactive user pills, displayFilters=false shows no pill UI at all (presets apply silently), Clear All correctly preserves presets, and the CSS :not(:has()) rule correctly gates bar visibility on pill presence."
+}

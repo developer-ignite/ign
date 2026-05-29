@@ -1,0 +1,17 @@
+{
+  "blockName": "DemoContainer",
+  "blockNameKebab": "demo-container",
+  "blockPath": "blocks/DemoContainer",
+  "reportDir": ".taktician-project/reports/blocks/demo-container",
+  "stateDir": ".taktician-project/reports/blocks/demo-container/state",
+  "testPage": {
+    "url": "https://ign.localhost/test-demo-container/",
+    "pageId": 147
+  },
+  "latestOutputs": {
+    "planning": ".taktician-project/reports/blocks/demo-container/state/planning-2026-02-11-202944.json",
+    "developer": ".taktician-project/reports/blocks/demo-container/state/developer-2026-02-11-203141.json",
+    "functionalQa": null,
+    "designQa": null
+  }
+}

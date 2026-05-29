@@ -1,0 +1,47 @@
+{
+  "agent": "planning",
+  "timestamp": "2026-02-20-133303",
+  "status": "complete",
+  "output": {
+    "summary": "Change .top-gradient height from 150vw to 150vh and add JavaScript to cap gradient max-height to the parent <main> element height, with a ResizeObserver to update dynamically.",
+    "fileChanges": [
+      {
+        "file": "blocks/Hero/Hero.css",
+        "action": "modify",
+        "description": "Change gradient height from 150vw to 150vh",
+        "details": "Update the .top-gradient rule: change `height: 150vw` to `height: 150vh`. This changes the gradient from viewport-width-relative to viewport-height-relative sizing.",
+        "affectsPhp": false
+      },
+      {
+        "file": "blocks/Hero/Hero.php",
+        "action": "modify",
+        "description": "Add inline JavaScript to cap gradient max-height to <main> element height",
+        "details": "Add a <script> block after the .top-gradient div. The script should: (1) Find the closest <main> ancestor of the hero block, or fall back to document.querySelector('main'). (2) If a <main> element exists, set the .top-gradient element's max-height CSS property to the <main> element's offsetHeight in pixels. (3) Attach a ResizeObserver to the <main> element to update the max-height whenever <main> changes size. (4) Clean up gracefully — use an IIFE scoped to the current block instance so multiple hero blocks on a page don't conflict. The script should be minimal and run immediately (no DOMContentLoaded needed since it's inline after the element).",
+        "affectsPhp": true
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "category": "behavior",
+        "question": "Should the JS use ResizeObserver or a simpler approach like window resize listener?",
+        "recommendation": "Use ResizeObserver on the <main> element. ResizeObserver is more accurate than window resize because <main> height can change due to content changes (e.g., accordions expanding, dynamic content loading) without the window resizing. ResizeObserver has excellent browser support (97%+).",
+        "needsUserInput": false
+      },
+      {
+        "category": "behavior",
+        "question": "How should the script be scoped to avoid conflicts with multiple hero blocks on the same page?",
+        "recommendation": "Use an IIFE that receives the current script's previousElementSibling (the .top-gradient div) as context. Each hero block gets its own script tag and its own observer instance.",
+        "needsUserInput": false
+      },
+      {
+        "category": "layout",
+        "question": "Should the TSX editor component also reflect the 150vh change?",
+        "recommendation": "Yes, the CSS file is shared between editor and frontend. The height change from 150vw to 150vh applies automatically in both. The JS max-height capping is frontend-only (PHP) and does not need a TSX equivalent since the editor doesn't have a <main> ancestor context.",
+        "needsUserInput": false
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional"
+  }
+}

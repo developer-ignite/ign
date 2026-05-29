@@ -1,0 +1,47 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-17-202657",
+  "status": "complete",
+  "blockName": "TestimonialCPT",
+  "output": {
+    "mode": "fix",
+    "filesCreated": [],
+    "filesModified": [
+      {
+        "path": "blocks/TestimonialCPT/TestimonialCPT.tsx",
+        "purpose": "Fix 1: Replaced custom VideoFileControl (MediaUpload + Flex + Icon + fetchMedia) with MediaUploadPanel from @taktdev/components. Fix 2: Replaced inline SVG markup with imported TertiaryArrow SVG component via ReactComponent named export using resources alias. Also fixed two curly lint errors (braceless if-returns inside useSelect callback)."
+      },
+      {
+        "path": "resources/js/editor/testimonial-cpt-panel.tsx",
+        "purpose": "Fix 1: Replaced custom VideoFileControl (MediaUpload + MediaUploadCheck + Flex + Icon + fetchMedia) with MediaUploadPanel from @taktdev/components. Removed now-unused imports: MediaUpload, MediaUploadCheck, Flex, FlexItem, FlexBlock, Icon, fetchMedia, videoIcon, Button."
+      }
+    ],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": []
+    },
+    "syncStatus": {
+      "verified": true,
+      "note": "CPT block — no PHP render file. N/A."
+    },
+    "blockers": [],
+    "fixesApplied": [
+      {
+        "id": "Fix-1",
+        "description": "Replaced VideoFileControl with MediaUploadPanel in both TestimonialCPT.tsx and testimonial-cpt-panel.tsx. MediaUploadPanel is called with: media={meta.videoFile}, label, allowedTypes={['video']}, onSelect={(media) => updateMeta('videoFile', media.id)}, enableFocalPoint={false}. All previously custom imports (Flex, FlexItem, FlexBlock, Icon, fetchMedia, videoIcon, MediaUpload, MediaUploadCheck, Button where video-only) removed."
+      },
+      {
+        "id": "Fix-2",
+        "description": "Replaced 289-char inline <svg> path for arrow with: import { ReactComponent as TertiaryArrow } from 'resources/images/tertiary-arrow.svg' and <TertiaryArrow /> in JSX. The resources alias in webpack.config.js resolve.alias resolves this to /var/www/ign/wp-content/themes/ign/resources. The wrapper <span className=\"w-5 h-4 *:w-full *:h-full\"> unchanged, matching parts/card-testimonial.php structure."
+      },
+      {
+        "id": "Fix-side-effect",
+        "description": "Fixed two curly rule violations in the useSelect programTerms callback: 'if (!postId) return []' and 'if (!termIds.length) return []' converted to block-form with braces to satisfy the eslint curly rule."
+      }
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

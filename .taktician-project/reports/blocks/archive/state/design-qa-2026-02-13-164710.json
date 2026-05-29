@@ -1,0 +1,141 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-13-170641",
+  "status": "FAIL",
+  "blockName": "Archive",
+  "output": {
+    "mode": "qa",
+    "testPageUrl": "https://ign.localhost/test-archive/",
+    "figmaNodeId": "811:59920",
+    "tolerance": "semantic (2-4px)",
+    "screenshotsCaptured": {
+      "chromium": ["375", "768", "1024", "1440"],
+      "firefox": ["768", "1024", "1440"],
+      "webkit": ["768", "1024", "1440"],
+      "note": "Firefox and Webkit timed out at 375px due to extremely long page height (~46000px). Chromium 375px captured successfully."
+    },
+    "compositionGate": {
+      "status": "PASS",
+      "notes": "Overall dark mode composition matches Figma. Layout structure, card grid, filter row, heading + description, and pseudo-element background are all correct. Light mode is a new addition without a Figma reference, evaluated for consistency and readability."
+    },
+    "darkModeRegressionCheck": {
+      "status": "PASS",
+      "details": [
+        "Dark charcoal pseudo-element background renders correctly with rounded corners",
+        "White heading text (Anton font) is legible and matches Figma proportions",
+        "Description text is off-white/light gray and readable",
+        "Filter dropdowns have white text and white arrow SVG - correct",
+        "SHOW / PER PAGE text and select are visible in white",
+        "Resource cards: charcoal background with off-white border, accent-colored tag pills - matches Figma",
+        "Policy cards: charcoal background with off-white border, accent tag pills - matches Figma",
+        "Blog cards: transparent background, white text, image thumbnails visible - matches Figma",
+        "Team member cards: accent (neon-green) background with charcoal text - correct",
+        "Testimonial cards: accent background with charcoal text - correct",
+        "Card grid: 3-column layout on desktop, correct gap spacing",
+        "Load More button visible and styled"
+      ]
+    },
+    "lightModeCheck": {
+      "status": "PASS",
+      "details": [
+        "No dark pseudo-element background - section sits on the page's off-white/cream background",
+        "Heading text is charcoal/black - readable against off-white",
+        "Description text is charcoal/dark gray - readable",
+        "Resource cards: white background with subtle charcoal/10 border - clean and distinct from page bg",
+        "Policy cards: white background with subtle charcoal/10 border - consistent with resource cards",
+        "Blog cards: transparent, text is dark charcoal - readable on off-white page",
+        "Filter dropdowns have charcoal text and charcoal arrow SVG - correct for light mode",
+        "Tag pills remain accent-lighter bg with accent-light border - still readable in both modes",
+        "VIEW RESOURCE btn-tertiary text is charcoal in non-hover state - correct",
+        "Card corners are rounded-3xl consistently in both modes"
+      ]
+    },
+    "btnTertiaryHoverCheck": {
+      "status": "FAIL",
+      "details": {
+        "darkModeGroupHover": {
+          "status": "FAIL",
+          "observation": "When hovering a resource or policy card in dark mode (card bg transitions from charcoal toward accent), the btn-tertiary 'VIEW RESOURCE' text and arrow become very low-contrast. The text appears to turn a faded cream/off-white color against the transitioning dark card background. This is observed when hovering both the card generally (group:hover) and the btn-tertiary directly (btn-tertiary:hover within the hovered card).",
+          "evidence": "Screenshots: archive-hover-resource-dark (group hover) and archive-hover-btn-dark-detail (direct btn hover) both show first card with faded VIEW RESOURCE text. The text contrast against the partially-transitioned card background is very poor.",
+          "rootCause": "The dark:hover:text-off-white rule from button.css (line 63) on .btn-tertiary appears to still be winning despite the Archive.css !important overrides. The Tailwind-generated dark:hover:text-off-white may use a CSS layer that has higher priority than the Archive.css rules, or the specificity chain may not be matching correctly in the actual compiled output."
+        },
+        "lightModeGroupHover": {
+          "status": "PASS",
+          "observation": "When hovering a resource or policy card in light mode, the btn-tertiary text stays charcoal. On card hover, background transitions to accent and text remains dark/readable. No white-on-white or contrast issues observed."
+        },
+        "lightModeBtnDirectHover": {
+          "status": "PASS",
+          "observation": "When directly hovering the btn-tertiary in light mode, text stays charcoal. The Archive.css :not(.dark) overrides work correctly."
+        }
+      }
+    },
+    "findings": [
+      {
+        "id": "DQA-001",
+        "severity": "major",
+        "category": "color",
+        "element": "btn-tertiary (VIEW RESOURCE) on resource/policy cards - dark mode hover",
+        "breakpoint": "all",
+        "figmaValue": "Charcoal text when card is in accent hover state",
+        "implementationValue": "Text fades to off-white/cream on card hover, very low contrast against transitioning card background",
+        "difference": "Significant contrast failure",
+        "withinTolerance": false,
+        "recommendation": "The dark:hover:text-off-white from button.css is overriding the Archive.css !important rules. The fix should either: (1) Add a more specific override that also covers the btn-tertiary without group:hover being needed (e.g., .archive.dark .card-resource .btn-tertiary:hover, .archive.dark .card-policy .btn-tertiary:hover { color: var(--color-charcoal) !important; }), or (2) Neutralize the dark:hover effect entirely on btn-tertiary within archive card context by adding standalone hover overrides that don't depend on .group:hover.",
+        "files": [
+          {
+            "path": "blocks/Archive/Archive.css",
+            "line": 184,
+            "change": {
+              "from": "/* Dark mode: override btn-tertiary component hover to prevent contrast issues */\n.archive.dark .card-resource .group:hover .btn-tertiary,\n.archive.dark .card-resource .group:hover .btn-tertiary:hover,\n.archive.dark .card-resource .group:hover .btn-tertiary:focus,\n.archive.dark .card-resource .group:focus-within .btn-tertiary,\n.archive.dark .card-policy .group:hover .btn-tertiary,\n.archive.dark .card-policy .group:hover .btn-tertiary:hover,\n.archive.dark .card-policy .group:hover .btn-tertiary:focus,\n.archive.dark .card-policy .group:focus-within .btn-tertiary {\n\tcolor: var(--color-charcoal) !important;\n}",
+              "to": "/* Dark mode: override btn-tertiary component hover to prevent contrast issues */\n/* Cover both group:hover AND standalone btn-tertiary:hover states */\n.archive.dark .card-resource .btn-tertiary,\n.archive.dark .card-resource .btn-tertiary:hover,\n.archive.dark .card-resource .btn-tertiary:focus,\n.archive.dark .card-resource .group:hover .btn-tertiary,\n.archive.dark .card-resource .group:hover .btn-tertiary:hover,\n.archive.dark .card-resource .group:hover .btn-tertiary:focus,\n.archive.dark .card-resource .group:focus-within .btn-tertiary,\n.archive.dark .card-policy .btn-tertiary,\n.archive.dark .card-policy .btn-tertiary:hover,\n.archive.dark .card-policy .btn-tertiary:focus,\n.archive.dark .card-policy .group:hover .btn-tertiary,\n.archive.dark .card-policy .group:hover .btn-tertiary:hover,\n.archive.dark .card-policy .group:hover .btn-tertiary:focus,\n.archive.dark .card-policy .group:focus-within .btn-tertiary {\n\tcolor: var(--color-charcoal) !important;\n}"
+            }
+          }
+        ],
+        "verification": "After fix, hover any resource or policy card in dark mode. The VIEW RESOURCE text and arrow should remain charcoal-colored (dark) at all times - both on group hover and direct btn-tertiary hover."
+      }
+    ],
+    "passedChecks": [
+      "Dark mode overall composition matches Figma (no regression)",
+      "Dark mode charcoal pseudo-element background with rounded corners",
+      "Dark mode heading typography (Anton font, white, large display size)",
+      "Dark mode description text (off-white, body size)",
+      "Dark mode filter dropdowns (white text, white arrow SVG)",
+      "Dark mode resource cards (charcoal bg, off-white border, accent tag pills)",
+      "Dark mode policy cards (charcoal bg, off-white border, accent tag pills)",
+      "Dark mode blog cards (transparent bg, white text, image scale on hover)",
+      "Dark mode team member cards (accent bg, charcoal text)",
+      "Dark mode testimonial cards (accent bg, charcoal text)",
+      "Dark mode blog vertical dividers (white 20% opacity, xl breakpoint)",
+      "Dark mode Load More button (white filled for blog)",
+      "Light mode: no pseudo-element background, section on page off-white",
+      "Light mode heading/description (charcoal text, readable)",
+      "Light mode resource cards (white bg, charcoal/10 border)",
+      "Light mode policy cards (white bg, charcoal/10 border)",
+      "Light mode blog cards (transparent bg, dark text, readable)",
+      "Light mode filter dropdowns (charcoal text, charcoal arrow SVG)",
+      "Light mode blog vertical dividers (charcoal 20% opacity, xl breakpoint)",
+      "Light mode btn-tertiary base state (charcoal text on white cards)",
+      "Light mode btn-tertiary hover state (charcoal text maintained)",
+      "Light mode card group hover (accent bg, charcoal text maintained)",
+      "Card grid spacing consistent between modes",
+      "Card border-radius (rounded-3xl) consistent between modes",
+      "Tag pill styling works in both modes",
+      "Card transition animations work in both modes",
+      "data-dark-mode attribute present on section element",
+      "Three light mode variations added to test page (blog, resources, policies)"
+    ],
+    "crossBrowserComparison": {
+      "chromiumVsFirefox": "At 768, 1024, and 1440px, Firefox renders identically to Chromium. No browser-specific visual issues observed.",
+      "chromiumVsWebkit": "At 768, 1024, and 1440px, Webkit renders identically to Chromium. No browser-specific visual issues observed.",
+      "missingWidths": "Firefox and Webkit 375px screenshots could not be captured due to timeout on this very long test page (~46000px at mobile width). Chromium 375px was captured and shows correct mobile rendering."
+    },
+    "issueCount": {
+      "critical": 0,
+      "major": 1,
+      "minor": 0,
+      "note": 0
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

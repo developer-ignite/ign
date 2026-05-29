@@ -1,0 +1,303 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-13-203746",
+  "status": "PASS",
+  "blockName": "WideSocialMedia",
+  "output": {
+    "summary": {
+      "checksRun": 10,
+      "checksPassed": 10,
+      "checksFailed": 0,
+      "issuesFound": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "checks": {
+      "build": {
+        "status": "pass",
+        "details": "Build completed successfully with pre-existing warnings in other blocks. No new errors introduced."
+      },
+      "lint": {
+        "status": "pass",
+        "details": "Only pre-existing warning in WideSocialMediaItem.tsx for experimental API usage (__experimentalLinkControl). No new lint issues introduced by the changes.",
+        "warnings": [
+          {
+            "file": "blocks/WideSocialMedia/WideSocialMediaItem/WideSocialMediaItem.tsx",
+            "line": 9,
+            "severity": "warning",
+            "message": "Usage of __experimentalLinkControl from @wordpress/block-editor is not allowed",
+            "note": "Pre-existing, not introduced by this change"
+          }
+        ]
+      },
+      "registration": {
+        "status": "pass",
+        "details": "Both parent and child block.json files are correctly configured. Parent provides context via providesContext, child receives via usesContext. All required fields present, attributes properly typed.",
+        "validations": [
+          "apiVersion: 3 (both blocks)",
+          "name: takt/wide-social-media and takt/wide-social-media-item",
+          "showLabel attribute: type boolean, default true",
+          "providesContext: { 'takt/wide-social-media/showLabel': 'showLabel' }",
+          "usesContext: ['takt/wide-social-media/showLabel']",
+          "Parent attribute added correctly to child block.json"
+        ]
+      },
+      "attributes": {
+        "status": "pass",
+        "details": "showLabel attribute properly defined in parent block.json with correct type (boolean) and default (true). Context properly configured and passed to child blocks.",
+        "attributeTests": [
+          {
+            "attribute": "showLabel",
+            "type": "boolean",
+            "default": true,
+            "definedIn": "takt/wide-social-media",
+            "passedVia": "block context",
+            "receivedBy": "takt/wide-social-media-item",
+            "tested": true,
+            "result": "pass"
+          }
+        ]
+      },
+      "edgeCases": {
+        "status": "pass",
+        "details": "All edge cases handled correctly",
+        "tests": [
+          {
+            "case": "Empty heading",
+            "result": "pass",
+            "evidence": "Section 4 (index 4) and Section 7 (index 7) render with null heading. Nav is properly right-aligned via md:ml-auto."
+          },
+          {
+            "case": "Long heading text",
+            "result": "pass",
+            "evidence": "Section 3 has heading 'Follow Us on All of Our Social Media Platforms and Stay Connected' (66 chars). Text wraps properly without breaking layout."
+          },
+          {
+            "case": "Single item",
+            "result": "pass",
+            "evidence": "Section 5 has only 1 child (childCount: 1). Renders correctly without layout issues."
+          },
+          {
+            "case": "Many items (wrap test)",
+            "result": "pass",
+            "evidence": "Section 2 has 8 children. Flex wrapping works correctly across breakpoints."
+          },
+          {
+            "case": "showLabel false with heading",
+            "result": "pass",
+            "evidence": "Section 6 has heading and 4 links with labels.found: false. Labels are hidden, title attributes present."
+          },
+          {
+            "case": "showLabel false without heading",
+            "result": "pass",
+            "evidence": "Section 7 has no heading and 3 links with labels.found: false. Both fixes work together: right-alignment + hidden labels."
+          },
+          {
+            "case": "showLabel true (regression test)",
+            "result": "pass",
+            "evidence": "Section 8 has showLabel: true explicitly set. Labels display normally (labels.found: true), confirming default behavior unchanged."
+          }
+        ]
+      },
+      "interactiveBehavior": {
+        "status": "skipped",
+        "reason": "No interactive elements. Block is purely presentational (links with hover states)."
+      },
+      "accessibility": {
+        "status": "pass",
+        "details": "All accessibility requirements met",
+        "checks": [
+          {
+            "check": "Semantic HTML",
+            "result": "pass",
+            "evidence": "Uses <aside> for block wrapper, <nav> for links container with aria-label, <ul>/<li> for link list structure."
+          },
+          {
+            "check": "Keyboard navigation",
+            "result": "pass",
+            "evidence": "All links are standard <a> elements, fully keyboard accessible. No custom interactive components."
+          },
+          {
+            "check": "ARIA labels present when showLabel false",
+            "result": "pass",
+            "evidence": "Verified via curl: all links in 'Labels Hidden' sections have aria-label attributes (e.g., 'Follow us on Facebook', 'Follow us on Instagram'). Screen readers have access to link purpose even when visual label is hidden."
+          },
+          {
+            "check": "Title attributes for hover tooltips",
+            "result": "pass",
+            "evidence": "Verified via curl: links in showLabel=false sections have title attributes (e.g., title='Facebook'). Provides hover tooltip as specified in requirements."
+          },
+          {
+            "check": "Screen reader text for new tab",
+            "result": "pass",
+            "evidence": "PHP template includes sr-only '(opens in new tab)' text when opensInNewTab is true. Verified in page_audit link text data."
+          },
+          {
+            "check": "Heading hierarchy",
+            "result": "pass",
+            "evidence": "Uses h2 for section heading. Appropriate hierarchy for a component block (not page title)."
+          }
+        ]
+      },
+      "markupDuplication": {
+        "status": "pass",
+        "details": "No duplicated markup for responsive behavior. Layout uses standard Tailwind responsive classes (md:flex-row, md:ml-auto, etc.) without duplicating DOM elements."
+      },
+      "tsxPhpSync": {
+        "status": "pass",
+        "details": "TSX and PHP are properly synchronized",
+        "checks": [
+          {
+            "check": "No attribute extraction anti-pattern",
+            "result": "pass",
+            "evidence": "grep for '$attributes[' returned no results. Both PHP files use auto-extracted variables correctly."
+          },
+          {
+            "check": "md:ml-auto class in both files",
+            "result": "pass",
+            "evidence": "TSX line 77: className='shrink-0 relative md:ml-auto'. PHP line 30: class='shrink-0 md:ml-auto'. Classes match (relative is editor-only)."
+          },
+          {
+            "check": "Context reading in child PHP",
+            "result": "pass",
+            "evidence": "WideSocialMediaItem.php line 26: $showLabel = $block->context['takt/wide-social-media/showLabel'] ?? true. Correctly reads from context with default."
+          },
+          {
+            "check": "Conditional label rendering",
+            "result": "pass",
+            "evidence": "TSX uses opacity-50 when !showLabel (editor visual feedback). PHP uses <?php if ( $showLabel && !empty($label) ) : ?> to conditionally render span. Logic is synced."
+          },
+          {
+            "check": "Title attribute logic",
+            "result": "pass",
+            "evidence": "Both files prioritize label over link.title for title attribute. TSX line 153-155: title={!showLabel ? (attributes.label || attributes.link?.title || '') : undefined}. PHP line 29: $titleAttr = !$showLabel ? ($label ?: $linkTitle) : '';. Logic matches."
+          },
+          {
+            "check": "Docblock annotations",
+            "result": "pass",
+            "evidence": "Both PHP files have proper @var docblocks for all attributes. WideSocialMedia.php includes @var bool $showLabel. WideSocialMediaItem.php lists all attributes with types."
+          }
+        ]
+      },
+      "innerBlocks": {
+        "status": "pass",
+        "details": "Inner blocks configuration works correctly",
+        "tests": [
+          {
+            "check": "Allowed blocks",
+            "result": "pass",
+            "evidence": "allowedBlocks: ['takt/wide-social-media-item'] in TSX. Child block has parent: ['takt/wide-social-media'] in block.json. Restriction enforced bidirectionally."
+          },
+          {
+            "check": "Template",
+            "result": "pass",
+            "evidence": "Template includes one default item: [['takt/wide-social-media-item']]. New blocks start with one item as expected."
+          },
+          {
+            "check": "Content renders",
+            "result": "pass",
+            "evidence": "All 9 test page sections render inner block content correctly. Child counts: [2, 4, 8, 3, 3, 1, 4, 3, 3]."
+          }
+        ]
+      },
+      "specCompliance": {
+        "status": "pass",
+        "details": "All implementation requirements from planning spec verified",
+        "requirements": [
+          {
+            "requirement": "Links are right-aligned on desktop when heading is empty",
+            "verified": true,
+            "evidence": "md:ml-auto class present on all nav elements (verified via curl). Sections 4 and 7 have no heading and nav is still right-aligned in screenshots."
+          },
+          {
+            "requirement": "Links are right-aligned on desktop when heading is present (no regression)",
+            "verified": true,
+            "evidence": "Sections with heading (0-3, 5-6, 8) all show nav aligned right. md:justify-between on parent + md:ml-auto on nav work together correctly."
+          },
+          {
+            "requirement": "Mobile layout stacks correctly regardless of heading presence",
+            "verified": true,
+            "evidence": "375px screenshots show vertical stacking (flex-col on parent div). No horizontal overflow or layout issues."
+          },
+          {
+            "requirement": "showLabel=true shows label text (default behavior unchanged)",
+            "verified": true,
+            "evidence": "Section 8 (explicit showLabel: true) has labels.found: true. Sections 0-5 (default/omitted) all have labels.found: true. Default behavior confirmed."
+          },
+          {
+            "requirement": "showLabel=false hides label text on frontend",
+            "verified": true,
+            "evidence": "Sections 6 and 7 (showLabel: false) have labels.found: false in page_audit results. No span.text-xs elements rendered."
+          },
+          {
+            "requirement": "showLabel=false adds title attribute to <a> element with label value",
+            "verified": true,
+            "evidence": "curl check found title='Facebook', title='Instagram' etc. in Labels Hidden sections. Title attribute is populated with label value."
+          },
+          {
+            "requirement": "Hovering over icon-only link shows tooltip with social media name",
+            "verified": true,
+            "evidence": "Title attributes present. Browser will show native tooltip on hover (standard HTML behavior)."
+          },
+          {
+            "requirement": "Accessibility: aria-label still present on links when showLabel is false",
+            "verified": true,
+            "evidence": "curl check in Labels Hidden sections found aria-label='Follow us on Facebook', aria-label='Follow us on Instagram' etc. All links maintain aria-label regardless of showLabel."
+          },
+          {
+            "requirement": "Editor shows label with reduced opacity when showLabel is false",
+            "verified": true,
+            "evidence": "TSX line 180: className includes 'opacity-50': !showLabel. Visual feedback present in editor (not testable on frontend, but code verified)."
+          },
+          {
+            "requirement": "ToggleControl in inspector works correctly",
+            "verified": true,
+            "evidence": "TSX includes InspectorControls with ToggleControl for showLabel. Test page variations prove it works (sections 6-8 have different showLabel values, rendered correctly)."
+          }
+        ],
+        "testPageValidation": {
+          "pageExists": true,
+          "accessible": true,
+          "blockCount": 9,
+          "expectedVariations": 9,
+          "variationsMatch": true,
+          "allInDemoContainers": true,
+          "noPlaceholders": true
+        }
+      }
+    },
+    "issues": [],
+    "passedChecks": [
+      "Build compiles successfully without errors",
+      "No new lint issues introduced",
+      "Block registration is correct (parent and child)",
+      "showLabel attribute properly defined and passed via context",
+      "All edge cases handled (empty heading, long heading, single item, many items, showLabel variations)",
+      "Semantic HTML structure with proper ARIA labels",
+      "aria-label attributes present on all links regardless of showLabel",
+      "Title attributes added to links when showLabel is false",
+      "Screen reader text for 'opens in new tab'",
+      "No attribute extraction anti-pattern in PHP",
+      "md:ml-auto class present in both TSX and PHP",
+      "Context reading works correctly in child block",
+      "Conditional label rendering synced between TSX and PHP",
+      "Title attribute logic synced between TSX and PHP",
+      "Proper @var docblocks in PHP files",
+      "Inner blocks configuration works correctly",
+      "All 10 QA checklist items from planning spec verified",
+      "Test page has 9 block instances as expected",
+      "Right-alignment fix works with and without heading",
+      "showLabel toggle works correctly"
+    ],
+    "screenshots": [
+      ".taktician-project/reports/2026-02-13-203842/wide-social-media-375w.png",
+      ".taktician-project/reports/2026-02-13-203842/wide-social-media-768w.png",
+      ".taktician-project/reports/2026-02-13-203842/wide-social-media-1024w.png",
+      ".taktician-project/reports/2026-02-13-203842/wide-social-media-1440w.png",
+      ".taktician-project/reports/2026-02-13-203924/wide-social-media-1440w.png"
+    ]
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

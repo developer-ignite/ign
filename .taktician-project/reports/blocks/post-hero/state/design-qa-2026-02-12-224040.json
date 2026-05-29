@@ -1,0 +1,216 @@
+{
+  "agent": "design-qa",
+  "timestamp": "2026-02-12-224040",
+  "status": "PASS",
+  "blockName": "PostHero",
+  "output": {
+    "summary": {
+      "result": "PASS",
+      "checksRun": 12,
+      "checksPassed": 12,
+      "checksFailed": 0,
+      "issuesFound": 2,
+      "critical": 0,
+      "major": 0,
+      "minor": 0,
+      "note": 2
+    },
+    "testPage": {
+      "url": "https://ign.localhost/test-post-hero/",
+      "urlNote": "The URL in latest.json was /blog/test-post-hero/ which returns 404. The correct working URL is /test-post-hero/ (without /blog/ prefix). Permalink structure may need flushing.",
+      "verified": true,
+      "variationsVisible": 4,
+      "variationDescriptions": [
+        "Default - Page Accent Color (neon-green gradient, no excerpt)",
+        "With Excerpt Shown (neon-green gradient, excerpt visible below title)",
+        "Topic Accent Color Override (blue gradient from topic accent, no excerpt)",
+        "Full Options - Excerpt + Topic Color (blue gradient, excerpt visible)"
+      ]
+    },
+    "compositionGate": {
+      "status": "PASS",
+      "observations": [
+        "Overall shape and proportions match Figma design",
+        "Full-width hero section with background image fading via mask gradient matches Figma pattern",
+        "Content is left-aligned in the left portion of the viewport, consistent with Figma",
+        "Topic pill, title, author/date meta stack vertically in correct order",
+        "Gradient overlay transitions from image at top to accent-colored gradient at bottom",
+        "Visual weight and density match the Figma reference"
+      ]
+    },
+    "detailedComparison": {
+      "layout": {
+        "status": "PASS",
+        "observations": [
+          "Full-width section with relative positioning -- matches Figma",
+          "hero-inner container with background image layer + content layer structure -- matches Hero secondary pattern",
+          "Content constrained to max-w-[700px] mr-auto (left-aligned, max 700px) -- matches Figma content width of 719px outer / 687px inner",
+          "Container utility provides correct horizontal centering: at 1440px viewport, container side margin = 64px, matching Figma content start at x=64",
+          "Top padding uses calc(var(--header-height)+280px) at sm+ which accounts for header overlap plus content offset"
+        ]
+      },
+      "backgroundImage": {
+        "status": "PASS",
+        "observations": [
+          "Background image fills full section with w-full h-full object-cover",
+          "Mask gradient (black 40% to transparent 100%) fades image progressively from top to bottom -- matches Figma",
+          "Both -webkit-mask-image and mask-image are applied for cross-browser support",
+          "Image renders correctly in Chromium, Firefox, and WebKit -- mask gradient works in all browsers"
+        ]
+      },
+      "topGradient": {
+        "status": "PASS",
+        "observations": [
+          "top-gradient div present and renders the accent-colored gradient overlay",
+          "Default variation uses page accent color (neon-green) -- gradient appears as yellow-green blend matching Figma",
+          "useTopicColor variations correctly switch to blue gradient from topic accent color",
+          "Gradient extends below the hero section appropriately via h-[150vw] and -z-10"
+        ]
+      },
+      "topicPill": {
+        "status": "PASS",
+        "observations": [
+          "Pill renders with rounded-full shape, visible border, light background -- matches Figma pill proportions",
+          "Figma: p-[8px] (8px all around). Implementation: px-2 py-2 (8px all around) -- EXACT MATCH",
+          "Figma: 14px Roboto Medium uppercase, leading 1.1. Implementation: text-sm font-medium uppercase leading-[1.1] -- EXACT MATCH",
+          "Figma: bg #eeffb5 (accent-lighter), border #ddff6a (accent). Implementation: bg-accent-lighter border-accent -- tokens map correctly",
+          "Pill text is charcoal (#1f1f1d) via text-charcoal -- EXACT MATCH",
+          "Topic accent color class scoped to pill element correctly colors the pill independently of the section gradient"
+        ]
+      },
+      "title": {
+        "status": "PASS",
+        "observations": [
+          "Figma: Anton Regular 64px, line-height 1.1, charcoal",
+          "Implementation: text-header-0 (Anton Regular 64px at desktop), text-charcoal",
+          "Title renders in large bold-looking Anton font (NOT italic -- correct, Anton appears slanted by design)",
+          "Line-height: implementation uses 1.2 (text-header-0 default) vs Figma 1.1. Difference is 0.1 at 64px = ~6.4px total on multi-line text. Accepted as within tolerance per planning spec decision DEC-003"
+        ]
+      },
+      "excerpt": {
+        "status": "PASS",
+        "observations": [
+          "Correctly hidden in variations 1 and 3 (showExcerpt=false)",
+          "Correctly visible in variations 2 and 4 (showExcerpt=true)",
+          "Uses text-body-large (18px Roboto) text-charcoal mt-6 (24px gap from title area)",
+          "Text renders at appropriate size and weight, readable against the gradient background"
+        ]
+      },
+      "authorDateMeta": {
+        "status": "PASS",
+        "observations": [
+          "Figma: Roboto Medium 18px, line-height 1.2, charcoal. Implementation: text-lg font-medium leading-[1.2] text-charcoal -- EXACT MATCH",
+          "Format 'By: {name}' and 'Published on: {date}' matches Figma text",
+          "Meta group positioned with mt-12 (48px) below upper group -- matches Figma gap of 48px (243 - 195 = 48)"
+        ]
+      },
+      "spacing": {
+        "status": "PASS",
+        "observations": [
+          "Pill-to-title gap: Figma 24px, implementation gap-6 (24px) -- EXACT MATCH",
+          "Upper-to-lower group gap: Figma 48px, implementation mt-12 (48px) -- EXACT MATCH",
+          "Bottom padding desktop: Figma 64px, implementation sm:pb-16 (64px) -- EXACT MATCH",
+          "Bottom padding mobile: implementation pb-8 (32px) -- appropriate for mobile"
+        ]
+      },
+      "colors": {
+        "status": "PASS",
+        "observations": [
+          "All text uses text-charcoal (#1f1f1d) -- matches Figma charcoal color",
+          "Topic pill uses accent color system (bg-accent-lighter, border-accent) scoped via category accent class",
+          "Gradient uses accent color system via .hero class and .top-gradient CSS",
+          "No hardcoded hex values found in implementation -- all use theme tokens"
+        ]
+      },
+      "responsive": {
+        "status": "PASS",
+        "observations": [
+          "375px (mobile): Content stacks vertically, title wraps naturally, all elements visible and readable. Pill, title, meta all left-aligned. Background image and mask gradient work correctly. Smaller bottom padding (pb-8 = 32px).",
+          "768px (tablet): Layout scales smoothly between mobile and desktop. Content constrained to max-width, gradient and image render correctly. Larger bottom padding (sm:pb-16 = 64px) applies.",
+          "1024px (desktop): Full desktop layout, content left-aligned with max-width constraint. All elements proportionally correct.",
+          "1440px (desktop): Matches Figma reference. Full-width hero with correct proportions."
+        ]
+      },
+      "crossBrowser": {
+        "status": "PASS",
+        "observations": [
+          "Chromium: Renders correctly at all breakpoints",
+          "Firefox: Renders identically to Chromium -- mask-image gradient works correctly",
+          "WebKit: Renders identically -- -webkit-mask-image fallback works correctly",
+          "No cross-browser inconsistencies detected"
+        ]
+      },
+      "variations": {
+        "status": "PASS",
+        "observations": [
+          "Variation 1 (Default): Page accent color gradient (neon-green), no excerpt -- renders correctly",
+          "Variation 2 (With Excerpt): Same gradient, excerpt visible between title and meta -- renders correctly",
+          "Variation 3 (Topic Color): Gradient switches to blue (topic accent color) -- demonstrates useTopicColor toggle working correctly",
+          "Variation 4 (Full Options): Blue gradient + excerpt visible -- both options work together correctly"
+        ]
+      }
+    },
+    "issues": [
+      {
+        "id": "DQA-001",
+        "severity": "note",
+        "category": "typography",
+        "element": "Post title (h1)",
+        "breakpoint": "all",
+        "figmaValue": "line-height: 1.1",
+        "implementationValue": "line-height: 1.2 (text-header-0 default)",
+        "difference": "0.1 line-height (~6.4px on 64px font at desktop)",
+        "withinTolerance": true,
+        "recommendation": "Accepted per planning decision DEC-003. The text-header-0 utility uses 1.2 line-height by default. Adding a custom leading-[1.1] would override this but diverge from the design system. Difference is within acceptable tolerance."
+      },
+      {
+        "id": "DQA-002",
+        "severity": "note",
+        "category": "spacing",
+        "element": "Author/date meta line gap",
+        "breakpoint": "all",
+        "figmaValue": "Single text block with inherent line-height spacing (~3.6px between lines)",
+        "implementationValue": "Separate p elements with gap-1 (4px)",
+        "difference": "~0.4px",
+        "withinTolerance": true,
+        "recommendation": "Implementation uses separate paragraph elements for semantic clarity (allows independent translatable prefixes). The visual gap (4px vs ~3.6px) is imperceptible. No change needed."
+      }
+    ],
+    "checklist": {
+      "typographyMatchesFigma": true,
+      "colorsUseThemeTokens": true,
+      "spacingMatchesFigma": true,
+      "layoutMatchesAtAllBreakpoints": true,
+      "aspectRatiosPreserved": true,
+      "contentAlignmentMatchesDesign": true,
+      "imagesHaveProperObjectFit": true,
+      "hoverStates": "N/A - no interactive elements",
+      "focusStates": "N/A - no focusable elements",
+      "smoothTransitions": "N/A - no animated elements",
+      "gradientsBackgroundsImplemented": true,
+      "allBlockVariationsWorking": true
+    },
+    "screenshots": {
+      "implementation": {
+        "chromium-375w": ".taktician-project/reports/blocks/post-hero/screenshots/post-hero-chromium-375w.png",
+        "chromium-768w": ".taktician-project/reports/blocks/post-hero/screenshots/post-hero-chromium-768w.png",
+        "chromium-1024w": ".taktician-project/reports/blocks/post-hero/screenshots/post-hero-chromium-1024w.png",
+        "chromium-1440w": ".taktician-project/reports/blocks/post-hero/screenshots/post-hero-chromium-1440w.png",
+        "firefox-375w": ".taktician-project/reports/blocks/post-hero/screenshots/post-hero-firefox-375w.png",
+        "firefox-768w": ".taktician-project/reports/blocks/post-hero/screenshots/post-hero-firefox-768w.png",
+        "firefox-1024w": ".taktician-project/reports/blocks/post-hero/screenshots/post-hero-firefox-1024w.png",
+        "firefox-1440w": ".taktician-project/reports/blocks/post-hero/screenshots/post-hero-firefox-1440w.png",
+        "webkit-375w": ".taktician-project/reports/blocks/post-hero/screenshots/post-hero-webkit-375w.png",
+        "webkit-768w": ".taktician-project/reports/blocks/post-hero/screenshots/post-hero-webkit-768w.png",
+        "webkit-1024w": ".taktician-project/reports/blocks/post-hero/screenshots/post-hero-webkit-1024w.png",
+        "webkit-1440w": ".taktician-project/reports/blocks/post-hero/screenshots/post-hero-webkit-1440w.png"
+      },
+      "figma": {
+        "nodeId": "669:33688",
+        "comparedAt": "desktop-1440"
+      }
+    }
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

@@ -1,0 +1,158 @@
+/* Customizable <select> using the base-select spec.
+   Fallback: appearance: none keeps the trigger styled on non-supporting browsers
+   (they get the native dropdown but a styled trigger). */
+
+/* ── Opt-in ─────────────────────────────────────────────── */
+.quick-navigation select,
+.quick-navigation ::picker(select) {
+	appearance: base-select;
+}
+
+/* ── Trigger button ─────────────────────────────────────── */
+.quick-navigation select {
+	appearance: none;
+	appearance: base-select;
+	background: transparent;
+	border: 0;
+	border-bottom: 1px solid var(--color-white);
+	border-radius: 0 !important;
+	padding: 0.5rem 0;
+	min-height: 0;
+	cursor: pointer;
+	outline: none;
+	color: var(--color-white);
+}
+
+.quick-navigation select:focus {
+	border-color: var(--color-white);
+	outline: none;
+}
+
+/* Button inside the select (custom trigger) */
+.quick-navigation select button {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: 0.5rem;
+	background: transparent;
+	border: 0;
+	color: inherit;
+	font: inherit;
+	padding: 0;
+	cursor: pointer;
+}
+
+/* Push chevron to the right */
+.quick-navigation select selectedcontent + .quick-navigation-chevron {
+	margin-left: auto;
+}
+
+/* Selected content mirror */
+.quick-navigation select selectedcontent {
+	flex: 1;
+	text-align: left;
+}
+
+/* Custom chevron icon */
+.quick-navigation .quick-navigation-chevron {
+	display: flex;
+	align-items: center;
+	color: var(--color-white);
+	transition: transform 200ms ease;
+}
+
+.quick-navigation .quick-navigation-chevron svg {
+	width: 24px;
+	height: 24px;
+}
+
+/* Rotate chevron when picker is open */
+.quick-navigation select:open .quick-navigation-chevron {
+	transform: rotate(180deg);
+}
+
+/* Hide the default picker arrow */
+.quick-navigation select::picker-icon {
+	display: none;
+}
+
+/* ── Dropdown picker (matches header submenu style) ───── */
+.quick-navigation ::picker(select) {
+	background: var(--color-charcoal);
+	border: 0;
+	border-radius: 0.75rem;
+	padding: 1.5rem;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+	/* Size to content, at least as wide as the trigger + padding.
+	   Negative margin aligns option text with trigger text (mirrors header's -ml-6 + p-6). */
+	width: max-content;
+	min-width: calc(anchor-size(width) + 3rem);
+	margin-left: -1.5rem;
+
+	/* Animate open/close */
+	opacity: 0;
+	transform: translateY(-8px);
+	transition:
+		opacity 200ms ease,
+		transform 200ms ease,
+		display 200ms allow-discrete,
+		overlay 200ms allow-discrete;
+}
+
+.quick-navigation :open::picker(select) {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+@starting-style {
+	.quick-navigation :open::picker(select) {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+}
+
+/* ── Option items (matches header submenu links) ────────── */
+/* Override global forms.css option { p-3! } and .dark select option bg */
+.quick-navigation select option {
+	display: block;
+	background: transparent !important;
+	color: var(--color-white);
+	padding: 0.5rem 0 !important;
+	border-radius: 0;
+	font-weight: 500;
+	font-size: 1rem;
+	line-height: 1.16;
+	text-transform: none;
+	cursor: pointer;
+	transition: color 200ms ease;
+}
+
+.quick-navigation select option + option {
+	margin-top: 1rem;
+}
+
+.quick-navigation select option:hover {
+	background: transparent !important;
+	color: var(--color-neon-green);
+}
+
+.quick-navigation select option:focus {
+	background: transparent !important;
+	color: var(--color-neon-green);
+}
+
+.quick-navigation select option:checked {
+	background: transparent !important;
+	font-weight: 500;
+}
+
+/* Disabled placeholder option */
+.quick-navigation select option:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
+/* Hide the default checkmark */
+.quick-navigation option::checkmark {
+	display: none;
+}

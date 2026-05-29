@@ -1,0 +1,32 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "takt/footer-info-social",
+  "title": "Social Media Links",
+  "category": "takt-theme",
+  "description": "Container for social media icon links",
+  "parent": ["takt/footer-info"],
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "reusable": false
+  },
+  "attributes": {
+    "anchor": { "type": "string" }
+  },
+  "textdomain": "takt",
+  "example": {
+    "viewportWidth": 400,
+    "attributes": {},
+    "innerBlocks": [
+      {
+        "name": "takt/footer-info-social-item",
+        "attributes": { "link": { "title": "Instagram", "url": "#" }, "iconSlug": "instagram" }
+      },
+      {
+        "name": "takt/footer-info-social-item",
+        "attributes": { "link": { "title": "Facebook", "url": "#" }, "iconSlug": "facebook" }
+      }
+    ]
+  }
+}

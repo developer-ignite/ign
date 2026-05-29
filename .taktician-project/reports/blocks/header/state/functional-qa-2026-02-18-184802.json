@@ -1,0 +1,81 @@
+{
+  "agent": "functional-qa",
+  "timestamp": "2026-02-18-184802",
+  "blockName": "header",
+  "revisionCycle": 14,
+  "status": "PASS",
+  "summary": "All 3 revision 14 fixes verified. validate_all PASS (0 errors, 9 pre-existing warnings). All regressions from previous cycles confirmed passing. One informational note raised about parseFloat of CSS unit string in the max-height formula.",
+  "fixes": [
+    {
+      "id": "FIX-14-1",
+      "description": "Mobile menu max-height improved: JS now computes window.innerHeight - rect.top - 32 (py padding) - logoRowHeight - bottomSpacing (--side-gutter). CSS uses menu-open:max-h-(--menu-max-height).",
+      "status": "PASS",
+      "evidence": "At 375px, scrollY=600, header fixed (position=fixed, top=32): logoRowHeight=26, headerPadding=32, bottomSpacing=1 (see note), computedFormula=809, cssVar=809px, navMaxHeight=809px. navBottom=650, viewportHeight=900, fitsInViewport=true, overflow=-250px. navOverflowY=auto. Formula resolves correctly without circular dependency (no stale state from prior open).",
+      "note": "INFORMATIONAL — bottomSpacing parses as 1 instead of 16: getComputedStyle returns '--side-gutter' as '1rem' and parseFloat('1rem') strips the unit, yielding 1 instead of 16. This produces a ~15px smaller bottom gap than intended. Not a blocker — menu still fits viewport comfortably — but worth addressing (e.g. use getPropertyValue on a pixel-resolved custom property, or compute rem manually via parseFloat(getComputedStyle(root).fontSize)).",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.js"
+      ]
+    },
+    {
+      "id": "FIX-14-2",
+      "description": "multiple:false removed from block.json: blocks/Header/block.json and blocks/Header/HeaderMain/block.json no longer have 'multiple': false in their supports.",
+      "status": "PASS",
+      "evidence": "blocks/Header/block.json supports: { html: false, anchor: true, inserter: true } — no 'multiple' key. blocks/Header/HeaderMain/block.json supports: { html: false, anchor: true } — no 'multiple' key. Confirmed by direct file read.",
+      "files": [
+        "blocks/Header/block.json",
+        "blocks/Header/HeaderMain/block.json"
+      ]
+    },
+    {
+      "id": "FIX-14-3",
+      "description": "Logo-to-line spacing: menu-open:pt-4 changed to menu-open:pt-8. Space above hr should equal space below hr (~32px each).",
+      "status": "PASS",
+      "evidence": "OPEN state at 375px: navPaddingTop=32px (pt-8=2rem=32px), navPaddingBottom=32px. spaceLogoToHr=32px (logo row bottom 74 to hr top 106). spaceHrToItem=32px (hr bottom 107 to first item top 139). navGap=32px (gap-8). Both spacings are exactly equal at 32px. CLOSED state: navPaddingTop=0px, navPaddingBottom=0px, navMaxHeight=0px — no padding or space when collapsed.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.php"
+      ]
+    }
+  ],
+  "regressions": [
+    {
+      "id": "REG-OUTLINE-DOTTED",
+      "description": "Tab to nav items shows white dotted outline",
+      "status": "PASS",
+      "evidence": "6 Tab presses to .header-main-item-button: outlineStyle=dotted, outlineColor=rgb(255,255,255), outlineWidth=2px, isNavBtn=true."
+    },
+    {
+      "id": "REG-ARROWDOWN",
+      "description": "ArrowDown opens submenu and focuses first sub-item with correct outline",
+      "status": "PASS",
+      "evidence": "ArrowDown from About button: tag=A, text=Who We Are, outlineStyle=dotted, outlineColor=rgb(255,255,255), submenuOpen=true."
+    },
+    {
+      "id": "REG-ESCAPE",
+      "description": "Escape closes submenu and returns focus to parent button",
+      "status": "PASS",
+      "evidence": "Escape from sub-item: focused=BUTTON:About, btnAriaExpanded=false, submenuHidden=true."
+    },
+    {
+      "id": "REG-HAMBURGER-VISIBLE",
+      "description": "Hamburger icon visible as white on dark background at 375px",
+      "status": "PASS",
+      "evidence": "toggleDisplay=block, toggleColor=rgb(255,255,255), spanOpenDisplay=block, spanOpenWidth=28px. Visually confirmed in closed-state screenshot."
+    },
+    {
+      "id": "REG-FOCUS-VISIBLE-CASCADE",
+      "description": "body.css *:focus-visible in @layer base allows Tailwind utilities to override (FQA-005)",
+      "status": "PASS",
+      "evidence": "Header nav items show white dotted outline. Global cascade layer ordering confirmed intact."
+    }
+  ],
+  "unresolvedIssues": [],
+  "codeReviewNotes": [
+    "blocks/Header/block.json: supports has html, anchor, inserter — no multiple key. CONFIRMED.",
+    "blocks/Header/HeaderMain/block.json: supports has html, anchor — no multiple key. CONFIRMED.",
+    "HeaderMain.php line 142: menu-open:pt-8 menu-open:pb-8 — pt-8 confirmed (was pt-4). CONFIRMED.",
+    "HeaderMain.php line 142: max-md:transition-[max-height,opacity,padding] — padding transitions smoothly. CONFIRMED.",
+    "HeaderMain.js lines 59-73: updateMenuMaxHeight formula uses rect.top + headerPadding(32) + logoRowHeight + bottomSpacing(--side-gutter). CONFIRMED.",
+    "HeaderMain.js line 67: parseFloat(sideGutterRaw) where sideGutterRaw='1rem' yields 1, not 16. Informational note raised — not a blocker.",
+    "validate_all: PASS (0 errors, 9 warnings — all pre-existing in other blocks)"
+  ]
+}

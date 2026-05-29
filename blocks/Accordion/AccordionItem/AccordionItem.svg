@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+	<!-- Accordion item container -->
+	<path d="M1,6v12h22V6H1ZM22,17H2V7h20v10Z"/>
+
+	<!-- Title text -->
+	<rect x="4" y="9" width="10" height="2"/>
+
+	<!-- Plus icon -->
+	<rect x="17" y="10" width="4" height="1"/>
+	<rect x="18" y="9" width="2" height="3"/>
+
+	<!-- Content area (when expanded) -->
+	<rect x="4" y="13" width="8" height="1"/>
+	<rect x="4" y="15" width="6" height="1"/>
+</svg>

@@ -1,0 +1,434 @@
+document.addEventListener( 'DOMContentLoaded', function () {
+	var sectionSelector = '.archive';
+	var formSelector = '.archive-filters form';
+	var selectSelector = '.archive-filter-select:not(.archive-date-filter) select';
+	var activeFiltersSelector = '.archive-active-filters';
+	var resultsSelector = '.archive-results';
+	var loadingSelector = '.archive-loading';
+
+	var sections = document.querySelectorAll( sectionSelector );
+	if ( ! sections.length ) return;
+
+	sections.forEach( function ( section ) {
+		var form = section.querySelector( formSelector );
+		var results = section.querySelector( resultsSelector );
+		var loading = section.querySelector( loadingSelector );
+
+		if ( ! results ) return;
+
+		var paginationMode = section.dataset.paginationMode || 'load-more';
+		var postType = section.dataset.postType || 'post';
+		var perPageVar = 'show_per_page';
+
+		// Read preset filters from data attribute (set by PHP)
+		var presetFilters = {};
+		try {
+			presetFilters = JSON.parse( section.dataset.presetFilters || '{}' );
+		} catch ( e ) {
+			presetFilters = {};
+		}
+
+		// ── Form Serialization ──
+		function serializeForm( f ) {
+			var data = new FormData( f );
+			var params = new URLSearchParams();
+			for ( var pair of data.entries() ) {
+				if ( pair[ 1 ] !== null && pair[ 1 ] !== undefined && pair[ 1 ] !== '' ) {
+					params.append( pair[ 0 ], pair[ 1 ] );
+				}
+			}
+			return params.toString();
+		}
+
+		// ── State Management ──
+		function updateState( push ) {
+			if ( ! form ) return;
+			// Reset page to 1
+			var pagedInput = form.querySelector( 'input[name="paged"]' );
+			if ( pagedInput ) pagedInput.value = '1';
+
+			var query = serializeForm( form ).replace( /%2C/gi, ',' );
+			var url = window.location.pathname + ( query ? '?' + query : '' );
+			if ( push ) {
+				history.pushState( { query: query }, '', url );
+			}
+			buildButtons();
+			loadResults( url, false );
+		}
+
+		// ── AJAX Loading ──
+		function loadResults( url, append ) {
+			if ( ! append ) {
+				results.classList.add( 'hidden' );
+				results.setAttribute( 'aria-busy', 'true' );
+				if ( loading ) loading.classList.remove( 'hidden' );
+			}
+
+			fetch( url )
+				.then( function ( res ) {
+					return res.text().then( function ( html ) {
+						return { html: html, url: res.url };
+					} );
+				} )
+				.then( function ( data ) {
+					history.replaceState( {}, '', data.url );
+
+					var temp = document.createElement( 'div' );
+					temp.innerHTML = data.html;
+
+					// Scope queries to the matching archive block in the response
+					var responseSection = section.id
+						? temp.querySelector( '#' + section.id )
+						: temp.querySelector( '.archive[data-post-type="' + postType + '"]' );
+					if ( ! responseSection ) responseSection = temp;
+
+					var newResults = responseSection.querySelector( resultsSelector );
+
+					if ( newResults ) {
+						if ( append ) {
+							// Load More: append new cards to existing grid
+							var existingGrid = results.querySelector( '.grid' );
+							var newGrid = newResults.querySelector( '.grid' );
+							if ( existingGrid && newGrid ) {
+								var cards = newGrid.children;
+								while ( cards.length > 0 ) {
+									existingGrid.appendChild( cards[ 0 ] );
+								}
+							}
+							// Update load more button
+							var newLoadMore = responseSection.querySelector( '.archive-load-more' );
+							var oldLoadMore = section.querySelector( '.archive-load-more' );
+							if ( oldLoadMore ) {
+								if ( newLoadMore ) {
+									oldLoadMore.replaceWith( newLoadMore );
+								} else {
+									oldLoadMore.remove();
+								}
+							} else if ( newLoadMore ) {
+								// Restore button if it was removed but new content has it
+								var oldButton = section.querySelector( '.archive-load-more button' );
+								if ( oldButton ) {
+									oldButton.disabled = false;
+									oldButton.removeAttribute( 'aria-disabled' );
+									oldButton.removeAttribute( 'aria-busy' );
+									if ( oldButton.dataset.originalText ) {
+										oldButton.textContent = oldButton.dataset.originalText;
+									}
+								}
+							}
+						} else {
+							results.innerHTML = newResults.innerHTML;
+						}
+					}
+
+					// Rebuild active filter pills from current form state
+					buildButtons();
+
+					if ( ! append ) {
+						section.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+						// Move focus to results container for screen reader awareness
+						results.focus();
+					}
+				} )
+				.finally( function () {
+					results.classList.remove( 'hidden' );
+					results.setAttribute( 'aria-busy', 'false' );
+					if ( loading ) loading.classList.add( 'hidden' );
+				} );
+		}
+
+		// ── Filter Select Handlers ──
+		if ( form ) {
+			form.querySelectorAll( selectSelector ).forEach( function ( select ) {
+				select.addEventListener( 'change', function () {
+					var input = select.parentElement.querySelector( 'input' );
+					if ( ! input ) return;
+					var values = input.value.split( ',' ).filter( function ( v ) { return v; } );
+					values.push( select.value );
+					input.value = values.join( ',' );
+					select.value = '';
+					updateState( true );
+					select.blur();
+				} );
+			} );
+
+			// Per-page change
+			var perPageSelect = form.querySelector( 'select[data-type="per_page"]' );
+			if ( perPageSelect ) {
+				perPageSelect.addEventListener( 'change', function () {
+					updateState( true );
+				} );
+			}
+
+			// Date filter change
+			var dateFilterSelect = form.querySelector( 'select[data-type="date_filter"]' );
+			if ( dateFilterSelect ) {
+				dateFilterSelect.addEventListener( 'change', function () {
+					var input = dateFilterSelect.parentElement.querySelector( 'input' );
+					if ( ! input ) return;
+					var value = dateFilterSelect.value;
+					var isSince = /^since_/.test( value );
+
+					if ( isSince ) {
+						// "Since X" clears all date values and sets only itself
+						input.value = value;
+					} else {
+						// Month values are additive — remove any existing "since" values first
+						var values = input.value.split( ',' ).filter( function ( v ) {
+							return v && ! /^since_/.test( v );
+						} );
+						values.push( value );
+						input.value = values.join( ',' );
+					}
+					dateFilterSelect.value = '';
+					updateState( true );
+					dateFilterSelect.blur();
+				} );
+			}
+
+			// Form Submit
+			form.addEventListener( 'submit', function ( e ) {
+				e.preventDefault();
+				updateState( true );
+			} );
+		}
+
+		// ── Remove Filter / Clear All ──
+		function removeFilterFromButton( button ) {
+			var field = button.dataset.field;
+			var value = button.dataset.value;
+			if ( ! form ) return;
+			var input = form.querySelector( 'input[data-type="' + field + '"]' );
+			if ( ! input ) return;
+			var values = input.value.split( ',' ).filter( function ( v ) { return v && v !== value; } );
+			input.value = values.join( ',' );
+			button.remove();
+		}
+
+		// ── Keyboard Event Handlers for Filter Pills ──
+		function handleFilterPillKeyboard( e ) {
+			if ( e.key === 'Enter' || e.key === ' ' ) {
+				e.preventDefault();
+				e.target.click();
+			}
+		}
+
+		var activeFilters = section.querySelector( activeFiltersSelector );
+		if ( activeFilters ) {
+			activeFilters.addEventListener( 'click', function ( e ) {
+				var button = e.target.closest( 'button' );
+				if ( ! button ) return;
+				e.preventDefault();
+
+				if ( button.dataset.clearAll ) {
+					section.querySelectorAll( activeFiltersSelector + ' button[data-field]' ).forEach( removeFilterFromButton );
+				} else if ( button.dataset.field ) {
+					removeFilterFromButton( button );
+				}
+				updateState( true );
+			} );
+			// Add keyboard support for filter pills
+			activeFilters.addEventListener( 'keydown', handleFilterPillKeyboard );
+		}
+
+		// Also handle the form-level clear all
+		if ( form ) {
+			form.addEventListener( 'click', function ( e ) {
+				var button = e.target.closest( 'button[data-clear-all]' );
+				if ( ! button ) return;
+				e.preventDefault();
+				section.querySelectorAll( activeFiltersSelector + ' button[data-field]' ).forEach( removeFilterFromButton );
+				// Reset all hidden inputs to empty, then restore preset values
+				form.querySelectorAll( '.archive-filter-select input[type="hidden"]' ).forEach( function ( input ) {
+					input.value = '';
+				} );
+				// Restore preset filter values — presets persist through Clear All
+				Object.keys( presetFilters ).forEach( function ( key ) {
+					var presetInput = form.querySelector( 'input[data-type="' + key + '"]' );
+					if ( presetInput && presetFilters[ key ].length ) {
+						presetInput.value = presetFilters[ key ].join( ',' );
+					}
+				} );
+				// Reset search
+				var searchInput = form.querySelector( 'input[data-type="search"]' );
+				if ( searchInput ) searchInput.value = '';
+				updateState( true );
+			} );
+			// Add keyboard support for form-level clear all
+			form.addEventListener( 'keydown', function ( e ) {
+				var button = e.target.closest( 'button[data-clear-all]' );
+				if ( button ) {
+					handleFilterPillKeyboard( e );
+				}
+			} );
+		}
+
+		// ── Pagination Link Interception ──
+		section.addEventListener( 'click', function ( e ) {
+			var target = e.target.closest( '.pagination a' );
+			if ( target ) {
+				e.preventDefault();
+				history.pushState( {}, '', target.getAttribute( 'href' ) );
+				loadResults( target.getAttribute( 'href' ), false );
+			}
+		} );
+
+		// ── Load More Button ──
+		if ( paginationMode === 'load-more' ) {
+			section.addEventListener( 'click', function ( e ) {
+				var button = e.target.closest( '.archive-load-more button' );
+				if ( ! button ) return;
+				e.preventDefault();
+
+				var nextPage = parseInt( button.dataset.nextPage, 10 );
+				var url = new URL( window.location.href );
+				url.searchParams.set( 'paged', nextPage );
+				button.disabled = true;
+				button.setAttribute( 'aria-disabled', 'true' );
+				button.setAttribute( 'aria-busy', 'true' );
+				var originalText = button.textContent;
+				button.textContent = 'Loading...';
+
+				// Store original text to restore if needed
+				button.dataset.originalText = originalText;
+
+				loadResults( url.toString(), true );
+			} );
+		}
+
+		// ── Build Active Filter Buttons ──
+		function buildButtons() {
+			if ( ! form ) return;
+			var selects = form.querySelectorAll( selectSelector );
+			var activeFiltersEl = section.querySelector( activeFiltersSelector );
+			if ( ! activeFiltersEl ) return;
+
+			// Find the Clear All button to insert pills before it
+			var clearAllBtn = activeFiltersEl.querySelector( 'button[data-clear-all]' );
+
+			// Remove existing interactive pills and preset spans (but not Clear All button)
+			activeFiltersEl.querySelectorAll( 'button[data-field]' ).forEach( function ( btn ) { btn.remove(); } );
+			activeFiltersEl.querySelectorAll( '.archive-preset-pill' ).forEach( function ( span ) { span.remove(); } );
+
+			selects.forEach( function ( select ) {
+				select.querySelectorAll( 'option' ).forEach( function ( o ) { o.disabled = false; } );
+				select.querySelectorAll( 'option[value=""]' ).forEach( function ( o ) { o.disabled = true; } );
+
+				var field = select.dataset.type;
+				var input = select.parentElement.querySelector( 'input' );
+				if ( ! input ) return;
+				var values = input.value.split( ',' ).filter( function ( v ) { return v; } );
+
+				// Disable options for all selected values (preset and user)
+				values.forEach( function ( value ) {
+					var option = select.querySelector( 'option[value="' + value + '"]' );
+					if ( option ) option.disabled = true;
+				} );
+
+				// Render preset values as non-interactive <span> pills
+				var presetValues = presetFilters[ field ] || [];
+				presetValues.forEach( function ( value ) {
+					if ( values.indexOf( value ) === -1 ) return; // only render if currently active
+					var option = select.querySelector( 'option[value="' + value + '"]' );
+					var label = option ? option.innerText : value;
+					clearAllBtn.insertAdjacentHTML(
+						'beforebegin',
+						'<span class="archive-preset-pill inline-flex items-center border border-current rounded-full px-3 py-1 text-body-small uppercase font-medium tracking-wider">' +
+							label +
+						'</span>'
+					);
+				} );
+
+				// Render user-selected values (non-preset) as interactive <button> pills
+				var userValues = values.filter( function ( v ) {
+					return ! ( presetFilters[ field ] && presetFilters[ field ].indexOf( v ) !== -1 );
+				} );
+
+				userValues.forEach( function ( value ) {
+					var option = select.querySelector( 'option[value="' + value + '"]' );
+					var label = option ? option.innerText : value;
+					clearAllBtn.insertAdjacentHTML(
+						'beforebegin',
+						'<button type="button" class="inline-flex items-center gap-1 border border-current rounded-full px-3 py-1 text-body-small uppercase font-medium tracking-wider cursor-pointer" data-field="' + field + '" data-value="' + value + '">' +
+							'<span>' + label + '</span>' +
+							'<div class="archive-remove-filter"></div>' +
+						'</button>'
+					);
+				} );
+
+				select.disabled = Array.from( select.options ).every( function ( o ) { return o.disabled; } );
+			} );
+
+			// Render date filter pills
+			var dateInput = form.querySelector( 'input[data-type="date_filter"]' );
+			var dateSelect = form.querySelector( 'select[data-type="date_filter"]' );
+			if ( dateInput && dateSelect ) {
+				var dateValues = dateInput.value.split( ',' ).filter( function ( v ) { return v; } );
+
+				// Reset all date options to enabled, then disable selected ones
+				dateSelect.querySelectorAll( 'option' ).forEach( function ( o ) { o.disabled = false; } );
+				dateSelect.querySelectorAll( 'option[value=""]' ).forEach( function ( o ) { o.disabled = true; } );
+
+				dateValues.forEach( function ( value ) {
+					var option = dateSelect.querySelector( 'option[value="' + value + '"]' );
+					var label = option ? option.innerText.trim() : value;
+					if ( option ) option.disabled = true;
+					clearAllBtn.insertAdjacentHTML(
+						'beforebegin',
+						'<button type="button" class="inline-flex items-center gap-1 border border-current rounded-full px-3 py-1 text-body-small uppercase font-medium tracking-wider cursor-pointer" data-field="date_filter" data-value="' + value + '">' +
+							'<span>' + label + '</span>' +
+							'<div class="archive-remove-filter"></div>' +
+						'</button>'
+					);
+				} );
+
+				dateSelect.disabled = Array.from( dateSelect.options ).every( function ( o ) { return o.disabled; } );
+			}
+		}
+
+		// ── Load Filters from URL (for popstate) ──
+		function loadFiltersFromUrl( url ) {
+			if ( ! form ) return;
+			var urlObj = new URL( url, window.location.origin );
+			var params = new URLSearchParams( urlObj.search );
+
+			form.querySelectorAll( 'input[data-type]' ).forEach( function ( input ) {
+				var type = input.dataset.type;
+				var urlValue = params.get( type );
+				if ( urlValue !== null && urlValue !== '' ) {
+					input.value = urlValue;
+				} else if ( presetFilters[ type ] && presetFilters[ type ].length ) {
+					// Fall back to preset values when no URL param exists for this taxonomy
+					input.value = presetFilters[ type ].join( ',' );
+				} else {
+					input.value = '';
+				}
+			} );
+
+			// Update search input
+			var searchInput = form.querySelector( 'input[data-type="search"]' );
+			if ( searchInput ) searchInput.value = params.get( 'search' ) || '';
+
+			// Update per_page select
+			var perPageSel = form.querySelector( 'select[data-type="per_page"]' );
+			if ( perPageSel && params.get( perPageVar ) ) {
+				perPageSel.value = params.get( perPageVar );
+			}
+
+			buildButtons();
+		}
+
+		// ── Initialize Active Filter Pills on Page Load ──
+		// PHP pre-populates hidden inputs with preset filter values; call buildButtons
+		// so the active filter pill bar reflects the initial state.
+		if ( form ) {
+			buildButtons();
+		}
+
+		// ── Browser Back/Forward ──
+		window.addEventListener( 'popstate', function () {
+			loadFiltersFromUrl( window.location.href );
+			loadResults( window.location.href, false );
+		} );
+	} );
+} );

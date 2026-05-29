@@ -1,0 +1,42 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-20-140059",
+  "status": "complete",
+  "blockName": "EventHero",
+  "output": {
+    "mode": "edit",
+    "filesCreated": [
+      {
+        "path": "blocks/EventHero/EventHero.js",
+        "purpose": "Frontend JS — ResizeObserver caps .top-gradient max-height to <main> element height, scoped to .event-hero wrappers only"
+      }
+    ],
+    "filesModified": [],
+    "attributesAdded": [],
+    "attributesModified": [],
+    "componentModifications": [],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "Pre-existing react-hooks/exhaustive-deps warnings in EventHero.tsx and other blocks — not introduced by this change"
+      ]
+    },
+    "syncStatus": {
+      "verified": true,
+      "notes": "No TSX or PHP changes were required. The htmlStructureSync warning (root wrapper mismatch) is a pre-existing false positive caused by the validator seeing <InspectorControls> before <section> in the TSX — standard Gutenberg pattern."
+    },
+    "testPage": {
+      "created": false,
+      "existing": true,
+      "url": "https://ign.localhost/test-event-hero/",
+      "pageId": 248,
+      "notes": "Test page already existed with 5 block variations. No changes needed."
+    },
+    "blockers": [],
+    "fixesApplied": [],
+    "implementationNotes": "Created EventHero.js following the Hero.js pattern exactly. The only change from Hero.js is that querySelectorAll targets '.event-hero .top-gradient' instead of '.top-gradient', scoping the ResizeObserver logic to EventHero instances only. The file is auto-bundled into screen.js via the webpack glob pattern './blocks/**/!(*index).js' — no block.json viewScript registration needed."
+  },
+  "tokensUsed": 0,
+  "questionsForUser": []
+}

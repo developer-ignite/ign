@@ -1,0 +1,75 @@
+{
+  "agent": "developer",
+  "timestamp": "2026-02-13T17:15:00",
+  "status": "complete",
+  "severity": "none",
+  "output": {
+    "mode": "fix",
+    "qaIssuesAddressed": [
+      {
+        "issueId": "DQA-002",
+        "severity": "major",
+        "category": "color",
+        "description": "Base-state selectors forcing charcoal text on non-hovered dark cards, making 'VIEW RESOURCE' text invisible (charcoal-on-charcoal)",
+        "rootCause": "The previous fix (DQA-001) added base-state selectors `.archive.dark .card-resource .btn-tertiary` and `.archive.dark .card-policy .btn-tertiary` without any :hover or pseudo-class. These forced charcoal text color on ALL btn-tertiary elements in dark mode cards, including non-hovered cards with charcoal backgrounds.",
+        "fixApplied": "Removed the two base-state selectors. Kept ONLY the hover/focus/group-hover variants so that charcoal text is only applied when the card/button is in an interactive state (when background is accent-colored)."
+      }
+    ],
+    "filesModified": [
+      {
+        "path": "blocks/Archive/Archive.css",
+        "purpose": "Removed base-state selectors to fix charcoal-on-charcoal text issue in dark mode non-hovered cards",
+        "lineNumbers": "184-198",
+        "changes": [
+          "Removed: .archive.dark .card-resource .btn-tertiary (base state)",
+          "Removed: .archive.dark .card-policy .btn-tertiary (base state)",
+          "Kept: .archive.dark .card-resource .btn-tertiary:hover",
+          "Kept: .archive.dark .card-resource .btn-tertiary:focus",
+          "Kept: .archive.dark .card-resource .group:hover .btn-tertiary",
+          "Kept: .archive.dark .card-resource .group:hover .btn-tertiary:hover",
+          "Kept: .archive.dark .card-resource .group:hover .btn-tertiary:focus",
+          "Kept: .archive.dark .card-resource .group:focus-within .btn-tertiary",
+          "Kept: Same pattern for .card-policy"
+        ]
+      }
+    ],
+    "buildStatus": {
+      "passed": true,
+      "errors": [],
+      "warnings": [
+        "asset size limit warnings (expected)",
+        "webpack performance recommendations (expected)"
+      ]
+    },
+    "verification": {
+      "testUrl": "https://ign.localhost/test-archive/",
+      "instructions": [
+        "Navigate to any dark mode variation (Resources Archive - Full Content or Policies Archive - Full Content)",
+        "View non-hovered resource/policy cards - 'VIEW RESOURCE' text should be visible (light/off-white color on charcoal background)",
+        "Hover over a card - card background transitions to accent (neon-green)",
+        "While card is in hover state, the 'VIEW RESOURCE' text should turn charcoal (dark) for contrast against accent background",
+        "Move cursor directly over the 'VIEW RESOURCE' text - text should remain charcoal (not fade to cream/off-white)",
+        "Move cursor away from card - text should return to light/off-white color",
+        "Verify the behavior works correctly for both resource and policy cards",
+        "Test in all three browsers at all breakpoints"
+      ]
+    },
+    "technicalDetails": {
+      "beforeFix": "Base-state selectors applied charcoal color to btn-tertiary in ALL states (hovered and non-hovered), causing invisible text on non-hovered charcoal cards",
+      "afterFix": "Only hover/focus/group-hover selectors apply charcoal color, so btn-tertiary inherits its default light color on non-hovered cards (from btn-tertiary component or dark mode defaults)",
+      "colorFlow": {
+        "nonHoveredCard": "btn-tertiary uses default component styling (light/off-white in dark mode) - VISIBLE on charcoal background",
+        "hoveredCard": "btn-tertiary forced to charcoal via CSS override - VISIBLE on accent background",
+        "directButtonHover": "btn-tertiary forced to charcoal via :hover selector - VISIBLE on accent background (card is also hovered due to group)"
+      },
+      "specificity": "The :hover/:focus/:group-hover selectors have sufficient specificity to override component defaults when in interactive states, but don't affect the base non-interactive state"
+    },
+    "blockers": [],
+    "notes": [
+      "This fix corrects the regression introduced in the previous DQA-001 fix",
+      "The solution balances two constraints: (1) btn-tertiary must be visible on non-hovered dark cards (light text on charcoal), and (2) btn-tertiary must be visible on hovered cards (charcoal text on accent)",
+      "By removing base-state selectors and keeping only interactive-state selectors, we achieve the correct behavior",
+      "Light mode is unaffected - it already had correct base-state selectors because white cards need charcoal text in the base state"
+    ]
+  }
+}

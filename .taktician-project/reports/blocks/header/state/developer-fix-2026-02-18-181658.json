@@ -1,0 +1,46 @@
+{
+  "agent": "developer",
+  "mode": "edit",
+  "timestamp": "2026-02-18-181658",
+  "planningFile": "planning-2026-02-18-181122.json",
+  "status": "completed",
+  "fixes": [
+    {
+      "id": "CHANGE-001",
+      "title": "Fix mobile menu max-height calculation",
+      "description": "Added updateMenuMaxHeight() to HeaderMain.js. Computes window.innerHeight - header.getBoundingClientRect().top - header.offsetHeight, clamped to minimum 200px, and sets --menu-max-height on the header element. Called in openMenu(), on window resize when menu is open, and on scroll when menu is open (!isDesktop()). In HeaderMain.php and HeaderMain.tsx: replaced menu-open:max-h-[calc(100dvh-var(--fixed-offset,80px))] with menu-open:max-h-(--menu-max-height) (PHP) and max-md:max-h-(--menu-max-height) (TSX isMenuOpen branch).",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.js",
+        "blocks/Header/HeaderMain/HeaderMain.php",
+        "blocks/Header/HeaderMain/HeaderMain.tsx"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "CHANGE-002",
+      "title": "Fix hamburger toggle button visibility",
+      "description": "Removed **:w-full **:h-auto wildcard descendant selectors from the hamburger button className in both HeaderMain.php and HeaderMain.tsx. In PHP: added w-full to each span wrapper around the SVG (span class='w-full block menu-open:hidden' and span class='w-full hidden menu-open:block'). In TSX: added w-full directly to the SVG components (MainMenuOpen className='w-full text-white' and MainMenuClose className='w-full text-white') since the SVG components accept className props.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.php",
+        "blocks/Header/HeaderMain/HeaderMain.tsx"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "CHANGE-003",
+      "title": "Fix constant padding breaking closed menu state",
+      "description": "Reverted max-md:pt-4 max-md:pb-8 from always-on base classes back to menu-open: conditional (menu-open:pt-4 menu-open:pb-8 in PHP; max-md:pt-4 max-md:pb-8 in the isMenuOpen branch in TSX). Updated transition from max-md:transition-[max-height,opacity] to max-md:transition-[max-height,opacity,padding] in both PHP and TSX so padding animates alongside max-height, preventing a visual jump on open/close.",
+      "files": [
+        "blocks/Header/HeaderMain/HeaderMain.php",
+        "blocks/Header/HeaderMain/HeaderMain.tsx"
+      ],
+      "status": "done"
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "errors": 0,
+    "warnings": 9,
+    "warningDetails": "All warnings are in unrelated blocks (Accordion, Archive, ContentWithMedia, FullWidthMedia, PostHero, Tabs). The htmlStructureSync warning for HeaderMain is expected — TSX editor view intentionally differs from PHP frontend rendering."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "blockName": "Form",
+  "blockNameKebab": "form",
+  "blockPath": "blocks/Form",
+  "reportDir": ".taktician-project/reports/blocks/form",
+  "stateDir": ".taktician-project/reports/blocks/form/state",
+  "testPage": {
+    "url": "https://ign.localhost/test-form/",
+    "pageId": null
+  },
+  "latestOutputs": {
+    "planning": ".taktician-project/reports/blocks/form/state/planning-2026-02-13-200746.json",
+    "developer": ".taktician-project/reports/blocks/form/state/developer-2026-02-13-200746.json",
+    "functionalQa": ".taktician-project/reports/blocks/form/state/functional-qa-2026-02-13-201639.json",
+    "designQa": null
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "agent": "planning",
+  "status": "complete",
+  "timestamp": "2026-02-12T14:52:54Z",
+  "severity": "critical",
+  "output": {
+    "summary": "Remove the erroneous editorScript field from CardsGridItem/block.json. The child block's index.tsx is already compiled into the parent bundle via webpack's glob entry, so declaring editorScript causes WordPress to also try loading the raw .tsx file directly in the browser, resulting in a SyntaxError.",
+    "rootCause": "The CardsGridItem/block.json file contains \"editorScript\": \"file:./index.tsx\" on line 49. WordPress reads this field during block registration (via register_block_type in inc/helpers/blocks.php) and enqueues the file path as-is, pointing the browser to the raw TypeScript source file. The browser cannot parse TypeScript/JSX syntax natively, so it throws 'Uncaught SyntaxError: Cannot use import statement outside a module'. \n\nThe webpack configuration (webpack.config.js line 24) already compiles ALL block index files via the glob pattern: `...glob.sync('./blocks/**/index.{js,jsx,ts,tsx}')`. This means CardsGridItem/index.tsx is already bundled into the compiled public/js/editor.js output alongside every other block. The editorScript field is therefore redundant AND harmful — it causes the raw source to be loaded a second time.\n\nAll other working child blocks in this theme (AccordionItem, CardsCarouselItem, GalleryCarouselItem, TabsItem, Button, TextCard, ImageCard, QuickLinkItem, FooterInfo, FooterNav, FooterCredits, HeaderMain) do NOT have an editorScript field in their block.json. The parent block (CardsGrid) does have editorScript, but it also does not need it since webpack bundles everything — however, since CardsGrid is working without errors, it may be that WordPress handles the parent block's editorScript differently or the parent's file resolves correctly. The safest fix is to remove editorScript from the child block to match the established pattern of all other child blocks.",
+    "fileChanges": [
+      {
+        "file": "blocks/CardsGrid/CardsGridItem/block.json",
+        "action": "modify",
+        "description": "Remove the editorScript field from CardsGridItem block.json",
+        "details": "Delete line 49: \"editorScript\": \"file:./index.tsx\". This field is not present in any other child block in the theme. The child block's TypeScript is already compiled into public/js/editor.js via webpack's glob entry pattern (glob.sync('./blocks/**/index.{js,jsx,ts,tsx}')). Having editorScript causes WordPress to enqueue the raw .tsx file as a separate script, which the browser cannot parse.",
+        "affectsPhp": false
+      }
+    ],
+    "attributeChanges": [],
+    "designDecisions": [
+      {
+        "id": "DEC-001",
+        "category": "build",
+        "decision": "Remove editorScript from child block.json to match all other child blocks in the theme",
+        "source": "existing pattern",
+        "evidence": "All 11 other child blocks (AccordionItem, CardsCarouselItem, GalleryCarouselItem, TabsItem, Button, TextCard, ImageCard, QuickLinkItem, FooterInfo, FooterNav, FooterCredits, HeaderMain) omit editorScript from their block.json. The webpack config bundles all block index files into a single editor.js bundle via glob pattern."
+      }
+    ],
+    "requiresQA": true,
+    "qaScope": "functional",
+    "qaDetails": "After removing editorScript, verify: (1) No browser console errors on pages with CardsGrid blocks, (2) CardsGrid and CardsGridItem render correctly in the block editor, (3) CardsGridItem can be added/edited/removed within CardsGrid, (4) Frontend rendering is unaffected."
+  }
+}
