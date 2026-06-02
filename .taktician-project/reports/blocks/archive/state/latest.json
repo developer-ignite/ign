@@ -1,9 +1,0 @@
-{
-  "blockName": "Archive",
-  "blockNameKebab": "archive",
-  "blockPath": "blocks/Archive",
-  "reportDir": ".taktician-project/reports/blocks/archive",
-  "stateDir": ".taktician-project/reports/blocks/archive/state",
-  "testPage": { "url": "https://ign.localhost/test-archive/", "pageId": 118 },
-  "latestOutputs": { "planning": ".taktician-project/reports/blocks/archive/state/planning-2026-02-13-174038.json", "developer": ".taktician-project/reports/blocks/archive/state/developer-2026-02-13-174038.json", "functionalQa": null, "designQa": null }
-}

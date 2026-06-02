@@ -1,9 +1,0 @@
-{
-  "blockName": "Accordion",
-  "blockNameKebab": "accordion",
-  "blockPath": "blocks/Accordion",
-  "reportDir": ".taktician-project/reports/blocks/accordion",
-  "stateDir": ".taktician-project/reports/blocks/accordion/state",
-  "testPage": { "url": "https://ign.localhost/test-accordion/", "pageId": 164 },
-  "latestOutputs": { "planning": ".taktician-project/reports/blocks/accordion/state/planning-2026-02-13-200950.json", "developer": ".taktician-project/reports/blocks/accordion/state/developer-2026-02-13-200950.json", "functionalQa": ".taktician-project/reports/blocks/accordion/state/functional-qa-2026-02-13-201809.json", "designQa": null }
-}

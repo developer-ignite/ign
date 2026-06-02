@@ -1,9 +1,0 @@
-{
-  "blockName": "GalleryCarousel",
-  "blockNameKebab": "gallery-carousel",
-  "blockPath": "blocks/GalleryCarousel",
-  "reportDir": ".taktician-project/reports/blocks/gallery-carousel",
-  "stateDir": ".taktician-project/reports/blocks/gallery-carousel/state",
-  "testPage": { "url": "https://ign.localhost/test-gallery-carousel/", "pageId": 106 },
-  "latestOutputs": { "planning": ".taktician-project/reports/blocks/gallery-carousel/state/planning-2026-02-12-204257.json", "developer": ".taktician-project/reports/blocks/gallery-carousel/state/developer-2026-02-13-044954.json", "functionalQa": ".taktician-project/reports/blocks/gallery-carousel/state/functional-qa-2026-02-12-205249.json", "designQa": null }
-}

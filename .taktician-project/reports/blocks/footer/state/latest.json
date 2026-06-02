@@ -1,9 +1,0 @@
-{
-  "blockName": "Footer",
-  "blockNameKebab": "footer",
-  "blockPath": "blocks/Footer",
-  "reportDir": ".taktician-project/reports/blocks/footer",
-  "stateDir": ".taktician-project/reports/blocks/footer/state",
-  "testPage": { "url": "https://ign.localhost/test-footer/", "pageId": 108 },
-  "latestOutputs": { "planning": ".taktician-project/reports/blocks/footer/state/planning-2026-02-13-203400.json", "developer": ".taktician-project/reports/blocks/footer/state/developer-2026-02-13-204000.json", "functionalQa": null, "designQa": null }
-}

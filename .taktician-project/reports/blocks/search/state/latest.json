@@ -1,9 +1,0 @@
-{
-  "blockName": "Search",
-  "blockNameKebab": "search",
-  "blockPath": "blocks/Search",
-  "reportDir": ".taktician-project/reports/blocks/search",
-  "stateDir": ".taktician-project/reports/blocks/search/state",
-  "testPage": { "url": "https://ign.localhost/test-search/", "pageId": 180 },
-  "latestOutputs": { "planning": ".taktician-project/reports/blocks/search/state/planning-2026-02-12-205638.json", "developer": ".taktician-project/reports/blocks/search/state/developer-fix-2026-02-13-115000.json", "functionalQa": ".taktician-project/reports/blocks/search/state/functional-qa-2026-02-12-220819.json", "designQa": ".taktician-project/reports/blocks/search/state/design-qa-2026-02-12-220658.json" }
-}

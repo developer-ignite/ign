@@ -1,9 +1,0 @@
-{
-  "blockName": "CallToAction",
-  "blockNameKebab": "call-to-action",
-  "blockPath": "blocks/CallToAction",
-  "reportDir": ".taktician-project/reports/blocks/call-to-action",
-  "stateDir": ".taktician-project/reports/blocks/call-to-action/state",
-  "testPage": { "url": "https://ign.localhost/test-call-to-action/", "pageId": 42 },
-  "latestOutputs": { "planning": ".taktician-project/reports/blocks/call-to-action/state/planning-2026-02-12-224031.json", "developer": ".taktician-project/reports/blocks/call-to-action/state/developer-2026-02-12-224031.json", "functionalQa": null, "designQa": null }
-}
