@@ -14,6 +14,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 const glob = require('glob');
 
+//Normalizing path
+const normalizePath = (p) => p.replace(/\\/g, '/');
+
 // Site URL from .env or fallback
 const siteUrl = process.env.SITE_URL || 'http://localhost';
 
@@ -21,7 +24,7 @@ const siteUrl = process.env.SITE_URL || 'http://localhost';
 const entry = {
   'js/editor': [
     path.resolve(__dirname, 'resources/js/editor.js'),
-    ...glob.sync('./blocks/**/index.{js,jsx,ts,tsx}'),
+    ...glob.sync('./blocks/**/index.{js,jsx,ts,tsx}').map(normalizePath),
   ],
   'css/editor': path.resolve(__dirname, 'resources/css/editor.css'),
   'js/admin': [
@@ -30,11 +33,11 @@ const entry = {
   'css/admin': path.resolve(__dirname, 'resources/css/admin.css'),
   'js/screen': [
     path.resolve(__dirname, 'resources/js/screen.js'),
-    ...glob.sync('./blocks/**/!(*index).js'),
+    ...glob.sync('./blocks/**/!(*index).js').map(normalizePath),
   ],
   'css/screen': [
     path.resolve(__dirname, 'resources/css/screen.css'),
-    ...glob.sync('./blocks/**/*.css'),
+    ...glob.sync('./blocks/**/*.css').map(normalizePath),
   ],
 };
 
@@ -79,6 +82,7 @@ module.exports = {
     ...(glob.sync('./blocks/**/resources')?.length ? [
       new CopyWebpackPlugin({
         patterns: glob.sync('./blocks/**/resources').map((folder) => {
+          folder = normalizePath(folder);
           const relativePath = path.relative('./blocks', path.dirname(folder));
           return {
             from: folder,
