@@ -3,7 +3,7 @@ name: Deploy to WPEngine
 on:
   push:
     branches:
-      - main        # auto-deploys to staging
+      - main
   workflow_dispatch:
     inputs:
       environment:
@@ -58,27 +58,14 @@ jobs:
         with:
           name: built-theme
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.WPENGINE_SSH_KEY }}" > ~/.ssh/wpengine_rsa
-          chmod 600 ~/.ssh/wpengine_rsa
-          ssh-keyscan -t rsa git.wpengine.com >> ~/.ssh/known_hosts
-          cat >> ~/.ssh/config <<EOF
-          Host git.wpengine.com
-            IdentityFile ~/.ssh/wpengine_rsa
-            StrictHostKeyChecking no
-          EOF
-
-      - name: Push to WPEngine Staging
-        run: |
-          git config user.email "deploy@github-actions.com"
-          git config user.name "GitHub Actions"
-          git init
-          git add -A
-          git commit -m "Deploy: ${{ github.sha }}"
-          git remote add staging git@git.wpengine.com:ignitesustg.git
-          git push staging HEAD:main --force
+      - name: Deploy to WPEngine Staging
+        uses: wpengine/github-action-wpe-site-deploy@v3
+        with:
+          WPE_SSHG_KEY_PRIVATE: ${{ secrets.WPE_SSHG_KEY_PRIVATE }}
+          WPE_ENV: ignitesustg
+          REMOTE_PATH: "wp-content/themes/ign/"
+          FLAGS: -azvr --inplace --delete --exclude=.git --exclude=node_modules --exclude=.env
+          CACHE_CLEAR: TRUE
 
   deploy-production:
     name: Deploy → Production
@@ -94,24 +81,11 @@ jobs:
         with:
           name: built-theme
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.WPENGINE_SSH_KEY }}" > ~/.ssh/wpengine_rsa
-          chmod 600 ~/.ssh/wpengine_rsa
-          ssh-keyscan -t rsa git.wpengine.com >> ~/.ssh/known_hosts
-          cat >> ~/.ssh/config <<EOF
-          Host git.wpengine.com
-            IdentityFile ~/.ssh/wpengine_rsa
-            StrictHostKeyChecking no
-          EOF
-
-      - name: Push to WPEngine Production
-        run: |
-          git config user.email "deploy@github-actions.com"
-          git config user.name "GitHub Actions"
-          git init
-          git add -A
-          git commit -m "Deploy: ${{ github.sha }}"
-          git remote add production git@git.wpengine.com:ignitestudentu.git
-          git push production HEAD:main --force
+      - name: Deploy to WPEngine Production
+        uses: wpengine/github-action-wpe-site-deploy@v3
+        with:
+          WPE_SSHG_KEY_PRIVATE: ${{ secrets.WPE_SSHG_KEY_PRIVATE }}
+          WPE_ENV: ignitestudentu
+          REMOTE_PATH: "wp-content/themes/ign/"
+          FLAGS: -azvr --inplace --delete --exclude=.git --exclude=node_modules --exclude=.env
+          CACHE_CLEAR: TRUE
