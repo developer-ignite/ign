@@ -1,0 +1,117 @@
+name: Deploy to WPEngine
+
+on:
+  push:
+    branches:
+      - main        # auto-deploys to staging
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-theme
+          path: .
+          exclude: |
+            node_modules
+            .git
+
+  deploy-staging:
+    name: Deploy → Staging
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment:
+      name: staging
+      url: https://ignitesustg.wpengine.com
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: built-theme
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.WPENGINE_SSH_KEY }}" > ~/.ssh/wpengine_rsa
+          chmod 600 ~/.ssh/wpengine_rsa
+          ssh-keyscan -t rsa git.wpengine.com >> ~/.ssh/known_hosts
+          cat >> ~/.ssh/config <<EOF
+          Host git.wpengine.com
+            IdentityFile ~/.ssh/wpengine_rsa
+            StrictHostKeyChecking no
+          EOF
+
+      - name: Push to WPEngine Staging
+        run: |
+          git config user.email "deploy@github-actions.com"
+          git config user.name "GitHub Actions"
+          git init
+          git add -A
+          git commit -m "Deploy: ${{ github.sha }}"
+          git remote add staging git@git.wpengine.com:ignitesustg.git
+          git push staging HEAD:main --force
+
+  deploy-production:
+    name: Deploy → Production
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+    environment:
+      name: production
+      url: https://ignitestudentu.wpengine.com
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: built-theme
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.WPENGINE_SSH_KEY }}" > ~/.ssh/wpengine_rsa
+          chmod 600 ~/.ssh/wpengine_rsa
+          ssh-keyscan -t rsa git.wpengine.com >> ~/.ssh/known_hosts
+          cat >> ~/.ssh/config <<EOF
+          Host git.wpengine.com
+            IdentityFile ~/.ssh/wpengine_rsa
+            StrictHostKeyChecking no
+          EOF
+
+      - name: Push to WPEngine Production
+        run: |
+          git config user.email "deploy@github-actions.com"
+          git config user.name "GitHub Actions"
+          git init
+          git add -A
+          git commit -m "Deploy: ${{ github.sha }}"
+          git remote add production git@git.wpengine.com:ignitestudentu.git
+          git push production HEAD:main --force
