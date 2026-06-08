@@ -43,7 +43,7 @@ function theme_register_team_member_post_type() {
     'menu_icon'           => 'dashicons-groups',
     'capability_type'     => 'post',
     'hierarchical'        => false,
-    'supports'            => ['title', 'editor', 'excerpt', 'revisions', 'custom-fields'],
+    'supports'            => ['title', 'editor', 'excerpt', 'revisions', 'custom-fields', 'thumbnail'],
     'taxonomies'          => [],
     'has_archive'         => true,
     'rewrite'             => [

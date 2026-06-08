@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output (compiled, not source)
+public/
+
+# Git
+.git/
+
+# Taktician internal
+.taktician-project/
+
+# Package manager lockfiles (no need to read these)
+package-lock.json
+bun.lock
+composer.lock
+
+# Screenshots and images
+screenshot.png
+
+# Environment & secrets
+.env
+.env.local
+.npmrc
+.mcp.json
