@@ -39,3 +39,6 @@ function theme_disable_post_thumbnail(){
   remove_post_type_support('post', 'thumbnail');
 }
 add_action('init', 'theme_disable_post_thumbnail');
+
+add_filter( 'jpeg_quality', fn() => 90 );
+add_filter( 'wp_editor_set_quality', fn() => 90 );

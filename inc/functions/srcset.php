@@ -10,7 +10,7 @@ function takt_filter_image_srcset( $sources, $size_array, $image_src, $image_met
 			continue;
 		}
 
-		$srcset_size = min( $data['width'], $data['height'] );
+		$srcset_size = $data['width'];
 
 		$srcset[ $srcset_size ] = [
 			'url' => $image_url,
