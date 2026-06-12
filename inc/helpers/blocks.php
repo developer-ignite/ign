@@ -285,6 +285,11 @@ function theme_allow_blocks( $allowed_blocks, $editor_context ) {
 			'core/columns',
 			'core/spacer',
 			'core/group',
+			'tribe/event-datetime',
+			'tribe/featured-image',
+			'tribe/event-links',
+			'tribe/classic-event-details',
+			'tribe/event-venue',
 		)
 	);
 }
