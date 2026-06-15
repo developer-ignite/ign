@@ -1,21 +1,11 @@
 <?php
 
 /**
- * Dequeue The Events Calendar editor scripts and styles.
- * Prevents client-side block registration warnings (deprecated API version,
- * invalid category, incorrect iframe styles).
+ * Dequeue The Events Calendar editor styles.
+ * Prevents incorrect iframe styles in the block editor.
+ * Scripts are intentionally kept so tribe/* blocks remain registered and usable.
  */
 function takt_dequeue_tribe_editor_assets() {
-	// Common library scripts.
-	wp_dequeue_script( 'tribe-common-gutenberg-vendor' );
-	wp_dequeue_script( 'tribe-common-gutenberg-modules' );
-	wp_dequeue_script( 'tribe-common-gutenberg-main' );
-
-	// Main editor and widget scripts.
-	wp_dequeue_script( 'tribe-the-events-calendar-editor' );
-	wp_dequeue_script( 'tec-widget-blocks' );
-
-	// Editor styles.
 	wp_dequeue_style( 'tribe-common-gutenberg-vendor-styles' );
 	wp_dequeue_style( 'tribe-common-gutenberg-main-styles' );
 	wp_dequeue_style( 'tribe-block-editor-main' );
