@@ -1,25 +1,8 @@
 <?php
 
 /**
- * Disable the iframe canvas for tribe_events so API v1 TEC blocks render correctly.
- * WP 6.9 deprecated API v1 blocks in the iframe editor; this reverts to classic canvas mode.
- */
-add_filter(
-	'block_editor_settings_all',
-	static function ( $settings, $context ) {
-		if ( isset( $context->post ) && 'tribe_events' === $context->post->post_type ) {
-			$settings['iframeMode'] = false;
-		}
-		return $settings;
-	},
-	10,
-	2
-);
-
-/**
  * Dequeue The Events Calendar editor styles.
  * Prevents incorrect iframe styles in the block editor.
- * Scripts are intentionally kept so tribe/* blocks remain registered and usable.
  */
 function takt_dequeue_tribe_editor_assets() {
 	wp_dequeue_style( 'tribe-common-gutenberg-vendor-styles' );
