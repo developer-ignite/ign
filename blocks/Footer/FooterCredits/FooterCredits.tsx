@@ -59,20 +59,6 @@ export default function Edit({ attributes, setAttributes }: EditProps) {
 					/>
 				</div>
 
-				{/* Attribution */}
-				<div className="text-xs font-medium leading-normal font-sans text-center md:order-2 md:mx-auto">
-					<span>
-						{__("Website by", "takt")}{" "}
-						<a
-							href="https://takt.com"
-							target="_blank"
-							rel="noopener noreferrer"
-							onClick={(e) => e.preventDefault()}
-						>
-							<span className="underline">Takt</span>
-						</a>
-					</span>
-				</div>
 			</div>
 		</div>
 	);

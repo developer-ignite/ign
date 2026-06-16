@@ -29,9 +29,5 @@ $currentYear = date( 'Y' );
 			&copy; <?php echo esc_html( $currentYear ); ?> <?php echo esc_html( $copyrightText ); ?>
 		</div>
 
-		<?php // Attribution ?>
-		<div class="text-xs font-medium leading-normal font-sans text-center md:order-2 md:mx-auto">
-			<?php echo esc_html__( 'Website by', 'takt' ); ?> <a href="https://takt.com" target="_blank" rel="noopener noreferrer" class="underline hover:no-underline! hover:text-neon-green text-white transition-colors">Takt</a>
-		</div>
 	</div>
 </div>
