@@ -88,3 +88,31 @@ function theme_append_related_events_carousel( $html ) {
 	return $html . $carousel;
 }
 add_filter( 'tribe_events_views_v2_bootstrap_html', 'theme_append_related_events_carousel', 210, 1 );
+
+/**
+ * Strip the CampusGroups "— Event Details: URL" footer from event descriptions
+ * at save time, so the database stores clean content rather than filtering it
+ * on every page render.
+ *
+ * CampusGroups appends this to the ICS DESCRIPTION field automatically.
+ * The URL is already surfaced as the "Visit Event Website" button (via _EventURL),
+ * so the footer is purely redundant.
+ *
+ * Fires inside wp_insert_post() / wp_update_post(), which covers both
+ * Event Aggregator imports and manual wp-admin saves.
+ */
+add_filter( 'wp_insert_post_data', 'theme_strip_campusgroups_event_details_footer' );
+function theme_strip_campusgroups_event_details_footer( $data ) {
+	if ( $data['post_type'] !== 'tribe_events' ) {
+		return $data;
+	}
+
+	// Matches: optional whitespace · em dash (U+2014) or double hyphen · "Event Details:" · URL · trailing whitespace.
+	// The 'u' flag treats the string as UTF-8 so the em dash matches correctly.
+	$pattern = '/\s*(?:\x{2014}|-{1,2})\s*Event Details:\s*https?:\/\/\S+\s*$/u';
+
+	$data['post_content'] = preg_replace( $pattern, '', $data['post_content'] );
+	$data['post_excerpt'] = preg_replace( $pattern, '', $data['post_excerpt'] );
+
+	return $data;
+}

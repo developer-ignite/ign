@@ -375,6 +375,55 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			myignite_run_image_sync();
 			WP_CLI::success( 'Image sync run complete. Check wp-content/myignite-image-sync.log for details.' );
 		}
+
+		/**
+		 * Remove the "— Event Details: URL" footer that CampusGroups appends to
+		 * event descriptions in the ICS feed. New imports are cleaned automatically
+		 * by the wp_insert_post_data filter in tribe-events.php; this command is
+		 * a one-time cleanup for events already in the database.
+		 *
+		 * ## EXAMPLES
+		 *
+		 *     wp myignite clean-descriptions
+		 */
+		public function clean_descriptions( $args, $assoc_args ) {
+			$pattern = '/\s*(?:\x{2014}|-{1,2})\s*Event Details:\s*https?:\/\/\S+\s*$/u';
+
+			$query = new WP_Query( [
+				'post_type'      => 'tribe_events',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+			] );
+
+			$cleaned = 0;
+			$skipped = 0;
+
+			foreach ( $query->posts as $event_id ) {
+				$post    = get_post( $event_id );
+				$content = $post->post_content;
+				$excerpt = $post->post_excerpt;
+
+				$new_content = preg_replace( $pattern, '', $content );
+				$new_excerpt = preg_replace( $pattern, '', $excerpt );
+
+				if ( $new_content === $content && $new_excerpt === $excerpt ) {
+					$skipped++;
+					continue;
+				}
+
+				wp_update_post( [
+					'ID'           => $event_id,
+					'post_content' => $new_content,
+					'post_excerpt' => $new_excerpt,
+				] );
+
+				WP_CLI::log( "Event {$event_id}: cleaned." );
+				$cleaned++;
+			}
+
+			WP_CLI::success( "Done. Cleaned: {$cleaned}, Already clean: {$skipped}." );
+		}
 	}
 	WP_CLI::add_command( 'myignite', 'MyIGNITE_CLI_Commands' );
 }
