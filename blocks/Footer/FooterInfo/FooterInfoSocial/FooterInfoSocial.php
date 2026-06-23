@@ -11,7 +11,7 @@
 	<?php theme_block_props( 'relative' ); ?>
 	aria-label="<?php esc_attr_e( 'Social Media Links', 'takt' ); ?>"
 >
-	<ul class="flex flex-wrap gap-3 items-center">
+	<ul class="flex gap-3 items-center">
 		<?php echo $children; ?>
 	</ul>
 </nav>

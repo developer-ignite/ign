@@ -14,7 +14,7 @@ const TEMPLATE: [string, Record<string, unknown>][] = [
 export default function Edit() {
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8"
+			className: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-8"
 		},
 		{
 			allowedBlocks: ["takt/footer-nav-column"],

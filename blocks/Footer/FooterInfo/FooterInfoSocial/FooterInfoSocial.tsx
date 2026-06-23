@@ -14,7 +14,7 @@ export default function Edit() {
 			<ul
 				{...useInnerBlocksProps(
 					{
-						className: "flex flex-wrap gap-3 items-center"
+						className: "flex gap-3 items-center"
 					},
 					{
 						allowedBlocks: ["takt/footer-info-social-item"],
