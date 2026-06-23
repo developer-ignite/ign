@@ -126,7 +126,7 @@ echo class_name(
 			echo class_name(
 				[
 					'w-full aspect-[1.08] md:aspect-[624/600] overflow-hidden rounded-3xl' => true,
-					'default-mask' => ! $darkMode,
+					'default-mask' => true,
 				]
 			);
 			?>
