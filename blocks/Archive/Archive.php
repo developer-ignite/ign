@@ -425,7 +425,8 @@ $query = new WP_Query( $args );
 				<div class="archive-results" role="region" aria-live="polite" aria-label="<?php esc_attr_e( 'Archive results', 'takt' ); ?>" tabindex="-1">
 					<?php if ( $query->have_posts() ) : ?>
 						<?php
-						$grid_classes = 'grid grid-cols-1 gap-x-6 gap-y-8';
+						$grid_classes = 'grid gap-x-6 gap-y-8';
+						$grid_classes .= $post_type === 'team_member' ? ' grid-cols-2' : ' grid-cols-1';
 						if ( $post_type === 'post' ) { $grid_classes .= ' max-md:gap-y-16'; }
 						if ( $max_cols >= 2 ) { $grid_classes .= ' sm:grid-cols-2'; }
 						if ( $max_cols >= 3 ) { $grid_classes .= ' md:grid-cols-3'; }
