@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * ContentWithMedia frontend template.
  *
@@ -100,7 +100,7 @@ echo class_name(
 			[
 				'-order-1' => ! $reverseRows,
 				'relative py-6 md:py-8 before:absolute before:bg-charcoal before:rounded-3xl before:-z-1 before:-inset-x-[calc(var(--side-gutter)/2)] before:inset-y-0 md:before:-inset-x-(--bg-extend)' => $darkMode,
-				'md:order-none md:row-start-1' => true,
+				'flex items-center md:order-none md:row-start-1' => true,
 				'md:col-start-1' => ! $isReversed,
 				'md:col-start-2' => $isReversed,
 			]
@@ -112,7 +112,7 @@ echo class_name(
 		$isGallery = $mediaType === 'image' && $imageLayout === 'gallery';
 		echo class_name(
 			[
-				'md:sticky md:top-[calc(var(--fixed-elements-height,0px)+1rem)]' => true,
+				'w-full' => true,
 				'md:min-h-[450px] md:overflow-hidden md:rounded-3xl' => ! $isGallery,
 			]
 		);
