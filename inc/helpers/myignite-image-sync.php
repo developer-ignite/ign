@@ -271,10 +271,9 @@ function myignite_extract_og_image( $page_url, $event_id ) {
  * @return true|WP_Error True on success, WP_Error with a reason on failure.
  */
 function myignite_set_featured_image_from_url( $event_id, $image_url ) {
-	// media_sideload_image() isn't autoloaded outside wp-admin contexts
-	// (e.g. when this runs via WP-Cron or WP-CLI), so we explicitly
-	// load the file that defines it if it's not already available.
-	if ( ! function_exists( 'media_sideload_image' ) ) {
+	// These helpers aren't autoloaded outside wp-admin contexts
+	// (e.g. when this runs via WP-Cron or WP-CLI).
+	if ( ! function_exists( 'media_handle_sideload' ) ) {
 		require_once ABSPATH . 'wp-admin/includes/media.php';
 	}
 	if ( ! function_exists( 'download_url' ) ) {
@@ -284,11 +283,28 @@ function myignite_set_featured_image_from_url( $event_id, $image_url ) {
 		require_once ABSPATH . 'wp-admin/includes/image.php';
 	}
 
-	// 'id' return type gives us back the new attachment's post ID
-	// directly, which is exactly what set_post_thumbnail() needs.
-	$attachment_id = media_sideload_image( $image_url, $event_id, null, 'id' );
+	// Build a clean filename from the event title rather than inheriting
+	// whatever CampusGroups named the file (e.g. r3_image_upload_599695_…).
+	// Strip the query string before reading the extension so URLs like
+	// "…/photo.jpeg?v=2" still resolve to "jpeg".
+	$ext      = strtolower( pathinfo( strtok( $image_url, '?' ), PATHINFO_EXTENSION ) ) ?: 'jpg';
+	$filename = sanitize_title( get_the_title( $event_id ) ) . '_myignite_import.' . $ext;
+
+	$tmp = download_url( $image_url );
+	if ( is_wp_error( $tmp ) ) {
+		return $tmp;
+	}
+
+	$file_array = [
+		'name'     => $filename,
+		'tmp_name' => $tmp,
+	];
+
+	$attachment_id = media_handle_sideload( $file_array, $event_id );
 
 	if ( is_wp_error( $attachment_id ) ) {
+		// media_handle_sideload() doesn't clean up the temp file on failure.
+		@unlink( $tmp );
 		return $attachment_id;
 	}
 
@@ -297,7 +313,7 @@ function myignite_set_featured_image_from_url( $event_id, $image_url ) {
 	if ( false === $thumbnail_set ) {
 		return new WP_Error(
 			'myignite_thumbnail_set_failed',
-			"media_sideload_image succeeded (attachment {$attachment_id}) but set_post_thumbnail failed."
+			"media_handle_sideload succeeded (attachment {$attachment_id}) but set_post_thumbnail failed."
 		);
 	}
 

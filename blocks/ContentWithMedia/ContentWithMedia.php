@@ -173,20 +173,10 @@ echo class_name(
 			<?php endif; ?>
 
 			<?php if ( ! empty( $images[1]['id'] ) || ! empty( $images[2]['id'] ) ) : ?>
-				<?php // Secondary images row - portrait left + landscape right on mobile, small on outer edge at md+ ?>
+				<?php // Secondary images row - equal size ?>
 			  <div class="flex gap-4 items-start">
 				<?php if ( ! empty( $images[1]['id'] ) ) : ?>
-				  <div class="
-					<?php
-					echo class_name(
-						[
-							'w-[44%] aspect-[3/4] overflow-hidden rounded-xl md:rounded-3xl' => true,
-							'md:w-[35%] md:aspect-[206/123]' => $isReversed,
-							'md:flex-1 md:w-auto md:aspect-[366/203]' => ! $isReversed,
-						]
-					);
-					?>
-				  ">
+				  <div class="flex-1 aspect-[3/2] overflow-hidden rounded-xl md:rounded-3xl">
 					<?php
 					echo wp_get_attachment_image(
 						$images[1]['id'],
@@ -202,17 +192,7 @@ echo class_name(
 				<?php endif; ?>
 
 				<?php if ( ! empty( $images[2]['id'] ) ) : ?>
-				  <div class="
-					<?php
-					echo class_name(
-						[
-							'flex-1 aspect-[4/3] overflow-hidden rounded-xl md:rounded-3xl' => true,
-							'md:w-[35%] md:flex-none md:aspect-[206/123]' => ! $isReversed,
-							'md:aspect-[366/203]' => $isReversed,
-						]
-					);
-					?>
-				  ">
+				  <div class="flex-1 aspect-[3/2] overflow-hidden rounded-xl md:rounded-3xl">
 					<?php
 					echo wp_get_attachment_image(
 						$images[2]['id'],
