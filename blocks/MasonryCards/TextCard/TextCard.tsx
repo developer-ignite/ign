@@ -120,7 +120,7 @@ export default function Edit({ attributes, setAttributes, context }) {
 							"text-base relative z-1": true,
 							"md:pt-8": masonryStyle && isTall
 						})}
-						allowedFormats={[]}
+						allowedFormats={["core/bold", "core/italic"]}
 					/>
 				)}
 			</div>
