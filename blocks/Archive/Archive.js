@@ -1,3 +1,5 @@
+import flatpickr from 'flatpickr';
+
 document.addEventListener( 'DOMContentLoaded', function () {
 	var sectionSelector = '.archive';
 	var formSelector = '.archive-filters form';
@@ -160,29 +162,37 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				} );
 			}
 
-			// Date filter change
-			var dateFilterSelect = form.querySelector( 'select[data-type="date_filter"]' );
-			if ( dateFilterSelect ) {
-				dateFilterSelect.addEventListener( 'change', function () {
-					var input = dateFilterSelect.parentElement.querySelector( 'input' );
-					if ( ! input ) return;
-					var value = dateFilterSelect.value;
-					var isSince = /^since_/.test( value );
+			// Date range picker (Flatpickr)
+			var dateRangeInput = form.querySelector( '.archive-date-range-input' );
+			if ( dateRangeInput ) {
+				var dateFromInput = form.querySelector( 'input[data-type="date_from"]' );
+				var dateToInput   = form.querySelector( 'input[data-type="date_to"]' );
 
-					if ( isSince ) {
-						// "Since X" clears all date values and sets only itself
-						input.value = value;
-					} else {
-						// Month values are additive — remove any existing "since" values first
-						var values = input.value.split( ',' ).filter( function ( v ) {
-							return v && ! /^since_/.test( v );
-						} );
-						values.push( value );
-						input.value = values.join( ',' );
-					}
-					dateFilterSelect.value = '';
-					updateState( true );
-					dateFilterSelect.blur();
+				flatpickr( dateRangeInput, {
+					mode: 'range',
+					dateFormat: 'Y-m-d',
+					altInput: false,
+					allowInput: false,
+					showMonths: 2,
+					customClass: 'archive-datepicker',
+					defaultDate: [
+						dateFromInput && dateFromInput.value ? dateFromInput.value : null,
+						dateToInput   && dateToInput.value   ? dateToInput.value   : null,
+					].filter( Boolean ),
+					onClose: function ( selectedDates ) {
+						if ( ! dateFromInput || ! dateToInput ) return;
+						if ( selectedDates.length >= 1 ) {
+							dateFromInput.value = selectedDates[ 0 ].toISOString().slice( 0, 10 );
+						} else {
+							dateFromInput.value = '';
+						}
+						if ( selectedDates.length >= 2 ) {
+							dateToInput.value = selectedDates[ 1 ].toISOString().slice( 0, 10 );
+						} else {
+							dateToInput.value = '';
+						}
+						updateState( true );
+					},
 				} );
 			}
 
@@ -196,8 +206,22 @@ document.addEventListener( 'DOMContentLoaded', function () {
 		// ── Remove Filter / Clear All ──
 		function removeFilterFromButton( button ) {
 			var field = button.dataset.field;
-			var value = button.dataset.value;
 			if ( ! form ) return;
+
+			if ( field === 'date_range' ) {
+				var dateFromInput = form.querySelector( 'input[data-type="date_from"]' );
+				var dateToInput   = form.querySelector( 'input[data-type="date_to"]' );
+				if ( dateFromInput ) dateFromInput.value = '';
+				if ( dateToInput )   dateToInput.value   = '';
+				var dateRangeInput = form.querySelector( '.archive-date-range-input' );
+				if ( dateRangeInput && dateRangeInput._flatpickr ) {
+					dateRangeInput._flatpickr.clear();
+				}
+				button.remove();
+				return;
+			}
+
+			var value = button.dataset.value;
 			var input = form.querySelector( 'input[data-type="' + field + '"]' );
 			if ( ! input ) return;
 			var values = input.value.split( ',' ).filter( function ( v ) { return v && v !== value; } );
@@ -242,6 +266,13 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				form.querySelectorAll( '.archive-filter-select input[type="hidden"]' ).forEach( function ( input ) {
 					input.value = '';
 				} );
+				// Clear date range picker
+				var clearDri = form.querySelector( '.archive-date-range-input' );
+				if ( clearDri && clearDri._flatpickr ) clearDri._flatpickr.clear();
+				var clearDfrom = form.querySelector( 'input[data-type="date_from"]' );
+				var clearDto   = form.querySelector( 'input[data-type="date_to"]' );
+				if ( clearDfrom ) clearDfrom.value = '';
+				if ( clearDto )   clearDto.value   = '';
 				// Restore preset filter values — presets persist through Clear All
 				Object.keys( presetFilters ).forEach( function ( key ) {
 					var presetInput = form.querySelector( 'input[data-type="' + key + '"]' );
@@ -359,30 +390,37 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				select.disabled = Array.from( select.options ).every( function ( o ) { return o.disabled; } );
 			} );
 
-			// Render date filter pills
-			var dateInput = form.querySelector( 'input[data-type="date_filter"]' );
-			var dateSelect = form.querySelector( 'select[data-type="date_filter"]' );
-			if ( dateInput && dateSelect ) {
-				var dateValues = dateInput.value.split( ',' ).filter( function ( v ) { return v; } );
+			// Render date range pill
+			var dateFromInput   = form.querySelector( 'input[data-type="date_from"]' );
+			var dateToInput     = form.querySelector( 'input[data-type="date_to"]' );
+			var dateRangeInput  = form.querySelector( '.archive-date-range-input' );
+			if ( dateFromInput || dateToInput ) {
+				var from = dateFromInput ? dateFromInput.value : '';
+				var to   = dateToInput   ? dateToInput.value   : '';
 
-				// Reset all date options to enabled, then disable selected ones
-				dateSelect.querySelectorAll( 'option' ).forEach( function ( o ) { o.disabled = false; } );
-				dateSelect.querySelectorAll( 'option[value=""]' ).forEach( function ( o ) { o.disabled = true; } );
+				if ( from || to ) {
+					function formatDate( iso ) {
+						if ( ! iso ) return '';
+						var d = new Date( iso + 'T00:00:00' );
+						return d.toLocaleDateString( undefined, { month: 'short', day: 'numeric', year: 'numeric' } );
+					}
+					var label = '';
+					if ( from && to )   label = formatDate( from ) + ' – ' + formatDate( to );
+					else if ( from )    label = formatDate( from ) + ' –';
+					else                label = '– ' + formatDate( to );
 
-				dateValues.forEach( function ( value ) {
-					var option = dateSelect.querySelector( 'option[value="' + value + '"]' );
-					var label = option ? option.innerText.trim() : value;
-					if ( option ) option.disabled = true;
+					if ( dateRangeInput ) dateRangeInput.value = label;
+
 					clearAllBtn.insertAdjacentHTML(
 						'beforebegin',
-						'<button type="button" class="inline-flex items-center gap-1 border border-current rounded-full px-3 py-1 text-body-small uppercase font-medium tracking-wider cursor-pointer" data-field="date_filter" data-value="' + value + '">' +
+						'<button type="button" class="inline-flex items-center gap-1 border border-current rounded-full px-3 py-1 text-body-small uppercase font-medium tracking-wider cursor-pointer" data-field="date_range">' +
 							'<span>' + label + '</span>' +
 							'<div class="archive-remove-filter"></div>' +
 						'</button>'
 					);
-				} );
-
-				dateSelect.disabled = Array.from( dateSelect.options ).every( function ( o ) { return o.disabled; } );
+				} else if ( dateRangeInput ) {
+					dateRangeInput.value = '';
+				}
 			}
 		}
 
@@ -404,6 +442,22 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					input.value = '';
 				}
 			} );
+
+			// Update date range inputs and picker
+			var dfrom = form.querySelector( 'input[data-type="date_from"]' );
+			var dto   = form.querySelector( 'input[data-type="date_to"]' );
+			var dri   = form.querySelector( '.archive-date-range-input' );
+			if ( dfrom ) dfrom.value = params.get( 'date_from' ) || '';
+			if ( dto )   dto.value   = params.get( 'date_to' )   || '';
+			if ( dri && dri._flatpickr ) {
+				var fromVal = params.get( 'date_from' );
+				var toVal   = params.get( 'date_to' );
+				if ( fromVal || toVal ) {
+					dri._flatpickr.setDate( [ fromVal, toVal ].filter( Boolean ) );
+				} else {
+					dri._flatpickr.clear();
+				}
+			}
 
 			// Update search input
 			var searchInput = form.querySelector( 'input[data-type="search"]' );

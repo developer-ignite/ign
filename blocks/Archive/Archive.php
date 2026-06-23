@@ -160,39 +160,11 @@ if ( $url_per_page > 0 ) {
 }
 
 // ── Date filter ──
-$date_filter_value    = sanitize_text_field( get_query_var( 'date_filter' ) );
-$date_filter_options  = [];
-$date_selected_values = array_filter( explode( ',', $date_filter_value ) );
+$date_from = sanitize_text_field( get_query_var( 'date_from' ) );
+$date_to   = sanitize_text_field( get_query_var( 'date_to' ) );
 
-if ( $show_date_filter ) {
-	$date_filter_options = [
-		'since_1'  => __( 'Since Yesterday', 'takt' ),
-		'since_2'  => __( 'Since 2 Days Ago', 'takt' ),
-		'since_5'  => __( 'Since 5 Days Ago', 'takt' ),
-		'since_10' => __( 'Since 10 Days Ago', 'takt' ),
-	];
-
-	// Build month options from posts that exist
-	global $wpdb;
-	$months = $wpdb->get_results(
-		$wpdb->prepare(
-			"SELECT DISTINCT YEAR(post_date) AS year, MONTH(post_date) AS month
-			 FROM {$wpdb->posts}
-			 WHERE post_type = %s AND post_status = 'publish'
-			 ORDER BY post_date DESC",
-			$post_type
-		)
-	);
-
-	foreach ( $months as $m ) {
-		$key   = sprintf( '%04d-%02d', $m->year, $m->month );
-		$label = date_i18n( 'F Y', mktime( 0, 0, 0, $m->month, 1, $m->year ) );
-		$date_filter_options[ $key ] = $label;
-	}
-
-	if ( $date_filter_value ) {
-		$has_selected_option = true;
-	}
+if ( $show_date_filter && ( $date_from || $date_to ) ) {
+	$has_selected_option = true;
 }
 
 // ── Build WP_Query ──
@@ -232,33 +204,16 @@ if ( $search_query ) {
 	$args['s'] = sanitize_text_field( $search_query );
 }
 
-// Apply date filter (supports comma-separated values for multiple months)
-if ( $date_filter_value ) {
-	$date_values = array_filter( explode( ',', $date_filter_value ) );
-	$first       = $date_values[0];
-
-	if ( preg_match( '/^since_(\d+)$/', $first, $matches ) ) {
-		$days_ago = intval( $matches[1] );
-		$args['date_query'] = [
-			[
-				'after'     => $days_ago . ' days ago',
-				'inclusive' => true,
-			],
-		];
-	} else {
-		$month_clauses = [ 'relation' => 'OR' ];
-		foreach ( $date_values as $val ) {
-			if ( preg_match( '/^(\d{4})-(\d{2})$/', $val, $matches ) ) {
-				$month_clauses[] = [
-					'year'  => intval( $matches[1] ),
-					'month' => intval( $matches[2] ),
-				];
-			}
-		}
-		if ( count( $month_clauses ) > 1 ) {
-			$args['date_query'] = $month_clauses;
-		}
+// Apply date range filter
+if ( $date_from || $date_to ) {
+	$date_clause = [ 'inclusive' => true ];
+	if ( $date_from && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_from ) ) {
+		$date_clause['after'] = $date_from;
 	}
+	if ( $date_to && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_to ) ) {
+		$date_clause['before'] = $date_to;
+	}
+	$args['date_query'] = [ $date_clause ];
 }
 
 // Apply taxonomy filters
@@ -355,22 +310,28 @@ $query = new WP_Query( $args );
 								<?php endforeach; ?>
 							<?php endif; ?>
 
-							<?php if ( $show_date_filter && ! empty( $date_filter_options ) ) : ?>
-								<div class="archive-filter-select archive-date-filter max-sm:w-full">
+							<?php if ( $show_date_filter ) : ?>
+								<div class="archive-date-filter max-sm:w-full">
+									<input type="hidden" name="date_from" data-type="date_from" value="<?php echo esc_attr( $date_from ); ?>">
+									<input type="hidden" name="date_to" data-type="date_to" value="<?php echo esc_attr( $date_to ); ?>">
 									<input
-										data-type="date_filter"
-										type="hidden"
-										name="date_filter"
-										value="<?php echo esc_attr( $date_filter_value ); ?>"
+										type="text"
+										class="archive-date-range-input min-w-58 cursor-pointer"
+										readonly
+										aria-label="<?php esc_attr_e( 'Filter by date range', 'takt' ); ?>"
+										placeholder="<?php esc_attr_e( 'Filter by Date', 'takt' ); ?>"
+										value="<?php
+											if ( $date_from && $date_to ) {
+												echo esc_attr(
+													date_i18n( 'M j, Y', strtotime( $date_from ) ) . ' – ' . date_i18n( 'M j, Y', strtotime( $date_to ) )
+												);
+											} elseif ( $date_from ) {
+												echo esc_attr( date_i18n( 'M j, Y', strtotime( $date_from ) ) . ' –' );
+											} elseif ( $date_to ) {
+												echo esc_attr( '– ' . date_i18n( 'M j, Y', strtotime( $date_to ) ) );
+											}
+										?>"
 									>
-									<select data-type="date_filter" class="min-w-58" aria-label="<?php esc_attr_e( 'Filter by date', 'takt' ); ?>">
-										<option value="" disabled selected><?php esc_html_e( 'Filter by Date', 'takt' ); ?></option>
-										<?php foreach ( $date_filter_options as $value => $label ) : ?>
-											<option value="<?php echo esc_attr( $value ); ?>" <?php if ( in_array( $value, $date_selected_values, true ) ) { echo 'disabled'; } ?>>
-												<?php echo esc_html( $label ); ?>
-											</option>
-										<?php endforeach; ?>
-									</select>
 								</div>
 							<?php endif; ?>
 
@@ -405,7 +366,7 @@ $query = new WP_Query( $args );
 							<?php endif; ?>
 						</form>
 
-						<?php if ( ( $show_filters && $displayFilters ) || $show_date_filter ) : ?>
+						<?php if ( ( $show_filters && $displayFilters ) || ( $show_date_filter && ( $date_from || $date_to ) ) ) : ?>
 							<div class="archive-active-filters flex flex-wrap items-center gap-3">
 								<?php if ( $show_filters && $displayFilters ) : ?>
 									<?php foreach ( $enabled_taxonomies as $taxonomy_name => $taxonomy_slug ) : ?>
@@ -429,16 +390,23 @@ $query = new WP_Query( $args );
 										<?php endif; ?>
 									<?php endforeach; ?>
 								<?php endif; ?>
-								<?php if ( $show_date_filter && ! empty( $date_selected_values ) ) : ?>
-									<?php foreach ( $date_selected_values as $dval ) : ?>
-										<?php $dlabel = $date_filter_options[ $dval ] ?? ''; ?>
-										<?php if ( ! empty( $dlabel ) ) : ?>
-											<button type="button" class="inline-flex items-center gap-1 border border-current rounded-full px-3 py-1 text-body-small uppercase font-medium tracking-wider cursor-pointer" data-field="date_filter" data-value="<?php echo esc_attr( $dval ); ?>">
-												<span><?php echo esc_html( $dlabel ); ?></span>
-												<div class="archive-remove-filter"></div>
-											</button>
-										<?php endif; ?>
-									<?php endforeach; ?>
+								<?php if ( $show_date_filter && ( $date_from || $date_to ) ) : ?>
+									<button type="button" class="inline-flex items-center gap-1 border border-current rounded-full px-3 py-1 text-body-small uppercase font-medium tracking-wider cursor-pointer" data-field="date_range">
+										<span>
+											<?php
+											if ( $date_from && $date_to ) {
+												echo esc_html(
+													date_i18n( 'M j, Y', strtotime( $date_from ) ) . ' – ' . date_i18n( 'M j, Y', strtotime( $date_to ) )
+												);
+											} elseif ( $date_from ) {
+												echo esc_html( date_i18n( 'M j, Y', strtotime( $date_from ) ) . ' –' );
+											} elseif ( $date_to ) {
+												echo esc_html( '– ' . date_i18n( 'M j, Y', strtotime( $date_to ) ) );
+											}
+											?>
+										</span>
+										<div class="archive-remove-filter"></div>
+									</button>
 								<?php endif; ?>
 								<button type="button" data-clear-all="1" class="text-body-small uppercase font-medium tracking-wider cursor-pointer hover:underline focus:underline" aria-label="<?php esc_attr_e( 'Clear all filters', 'takt' ); ?>">
 									<?php esc_html_e( 'Clear All', 'takt' ); ?>

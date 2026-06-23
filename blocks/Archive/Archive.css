@@ -1,5 +1,138 @@
 /* Archive block styles */
 
+@import 'flatpickr/dist/flatpickr.min.css';
+
+/* ── Flatpickr date range picker: dark theme overrides ── */
+.archive-datepicker {
+	background: var(--color-charcoal);
+	border-color: rgba(255, 255, 255, 0.15);
+	border-radius: 1rem;
+	color: white;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.archive-datepicker::before {
+	border-bottom-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.archive-datepicker::after {
+	border-bottom-color: var(--color-charcoal) !important;
+}
+
+.archive-datepicker.arrowBottom::before {
+	border-top-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.archive-datepicker.arrowBottom::after {
+	border-top-color: var(--color-charcoal) !important;
+}
+
+.archive-datepicker .flatpickr-months {
+	background: transparent;
+}
+
+.archive-datepicker .flatpickr-month {
+	background: transparent;
+	color: white;
+	fill: white;
+}
+
+.archive-datepicker .flatpickr-current-month input.cur-year {
+	color: white;
+}
+
+.archive-datepicker .flatpickr-current-month .flatpickr-monthDropdown-months {
+	background: var(--color-charcoal);
+	color: white;
+}
+
+.archive-datepicker .flatpickr-monthDropdown-month {
+	background: var(--color-charcoal);
+}
+
+.archive-datepicker .flatpickr-weekdays {
+	background: transparent;
+}
+
+.archive-datepicker .flatpickr-weekday {
+	background: transparent;
+	color: rgba(255, 255, 255, 0.45);
+}
+
+.archive-datepicker .flatpickr-days {
+	border-color: rgba(255, 255, 255, 0.1);
+}
+
+.archive-datepicker .flatpickr-day {
+	color: white;
+	border-color: transparent;
+}
+
+.archive-datepicker .flatpickr-day:hover,
+.archive-datepicker .flatpickr-day:focus {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: transparent;
+	color: white;
+}
+
+.archive-datepicker .flatpickr-day.selected,
+.archive-datepicker .flatpickr-day.startRange,
+.archive-datepicker .flatpickr-day.endRange,
+.archive-datepicker .flatpickr-day.selected:hover,
+.archive-datepicker .flatpickr-day.startRange:hover,
+.archive-datepicker .flatpickr-day.endRange:hover {
+	background: #d4ff45;
+	border-color: #d4ff45;
+	color: var(--color-charcoal);
+}
+
+.archive-datepicker .flatpickr-day.inRange {
+	background: rgba(212, 255, 69, 0.15);
+	border-color: transparent;
+	box-shadow: -5px 0 0 rgba(212, 255, 69, 0.15), 5px 0 0 rgba(212, 255, 69, 0.15);
+	color: white;
+}
+
+.archive-datepicker .flatpickr-day.startRange.endRange {
+	border-radius: 50%;
+}
+
+.archive-datepicker .flatpickr-day.prevMonthDay,
+.archive-datepicker .flatpickr-day.nextMonthDay {
+	color: rgba(255, 255, 255, 0.25);
+}
+
+.archive-datepicker .flatpickr-day.flatpickr-disabled,
+.archive-datepicker .flatpickr-day.flatpickr-disabled:hover {
+	color: rgba(255, 255, 255, 0.2);
+}
+
+.archive-datepicker .flatpickr-prev-month,
+.archive-datepicker .flatpickr-next-month {
+	fill: white;
+	color: white;
+}
+
+.archive-datepicker .flatpickr-prev-month:hover svg path,
+.archive-datepicker .flatpickr-next-month:hover svg path {
+	fill: #d4ff45;
+}
+
+.archive-datepicker .numInputWrapper span.arrowUp::after {
+	border-bottom-color: white;
+}
+
+.archive-datepicker .numInputWrapper span.arrowDown::after {
+	border-top-color: white;
+}
+
+/* Separator between the two months */
+.archive-datepicker .flatpickr-innerContainer {
+	border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Date range trigger input ── */
+
 /* Filter remove button (X icon) */
 .archive-remove-filter {
 	display: inline-block;
