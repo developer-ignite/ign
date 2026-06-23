@@ -33,6 +33,10 @@
       "type": "boolean",
       "default": true
     },
+    "displayDateFilter": {
+      "type": "boolean",
+      "default": true
+    },
     "displaySearch": {
       "type": "boolean",
       "default": false

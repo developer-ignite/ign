@@ -29,6 +29,7 @@ type ArchiveAttributes = {
 		label?: string;
 	}>;
 	displayFilters: boolean;
+	displayDateFilter: boolean;
 	displaySearch: boolean;
 	displayPerPage: boolean;
 	postsPerPage: number;
@@ -130,6 +131,12 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 						label={__("Display filters", "takt")}
 						checked={attributes.displayFilters}
 						onChange={(value) => setAttributes({ displayFilters: value })}
+						__nextHasNoMarginBottom
+					/>
+					<ToggleControl
+						label={__("Display date filter", "takt")}
+						checked={attributes.displayDateFilter}
+						onChange={(value) => setAttributes({ displayDateFilter: value })}
 						__nextHasNoMarginBottom
 					/>
 					<ToggleControl

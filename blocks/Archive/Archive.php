@@ -12,6 +12,7 @@
  * @var string      $description
  * @var array       $buttons
  * @var bool        $displayFilters
+ * @var bool        $displayDateFilter
  * @var bool        $displaySearch
  * @var bool        $displayPerPage
  * @var int         $postsPerPage
@@ -91,7 +92,7 @@ $posts_per          = $postsPerPage;
 $show_filters       = ! empty( $displayFilters ) && ! empty( $enabled_taxonomies );
 $show_search        = ! empty( $displaySearch ) && $active_config['has_search'];
 $show_per_page      = ! empty( $displayPerPage );
-$show_date_filter   = ! empty( $active_config['has_date_filter'] );
+$show_date_filter   = ! empty( $active_config['has_date_filter'] ) && ! empty( $displayDateFilter );
 
 // ── Compute per-page options based on the configured posts-per-page value ──
 $per_page_options = [];
