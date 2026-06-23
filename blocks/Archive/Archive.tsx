@@ -55,8 +55,8 @@ const VARIATION_TAXONOMIES: Record<string, Record<string, string>> = {
 export default function Edit({ attributes, setAttributes, clientId }: EditProps) {
 	// Compute column-aware base for postsPerPage
 	const base = attributes.maxColumns === 3 ? 9 : 10;
-	const step = base;
-	const min = base;
+	const step = 1;
+	const min = 3;
 	const max = base * 5;
 
 	// Reset presetFilters and enforce variation defaults when blockVariation changes
