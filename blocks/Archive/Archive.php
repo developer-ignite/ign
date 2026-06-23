@@ -93,11 +93,10 @@ $show_search        = ! empty( $displaySearch ) && $active_config['has_search'];
 $show_per_page      = ! empty( $displayPerPage );
 $show_date_filter   = ! empty( $active_config['has_date_filter'] );
 
-// ── Compute column-aware per-page options ──
-$base = ( $max_cols === 3 ) ? 9 : 10;
+// ── Compute per-page options based on the configured posts-per-page value ──
 $per_page_options = [];
 for ( $i = 1; $i <= 5; $i++ ) {
-	$per_page_options[] = $base * $i;
+	$per_page_options[] = $posts_per * $i;
 }
 
 // ── Collect Selected Filter Values ──
