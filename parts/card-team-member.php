@@ -33,7 +33,7 @@ $has_bio   = ! empty( $bio );
 						'full',
 						false,
 						[
-							'class' => 'w-full aspect-[395/634] object-cover',
+							'class' => 'w-full aspect-[395/317] object-cover',
 							'style' => 'object-position: ' . theme_image_position( $focal_point ) . ';',
 						]
 					);

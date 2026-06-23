@@ -137,8 +137,8 @@ export default function TeamMemberCPT() {
 								})
 							}
 							className="w-full!"
-							imageClassName="w-full! aspect-[395/634]! object-cover!"
-							placeholderClassName="w-full aspect-[395/634]"
+							imageClassName="w-full! aspect-[395/317]! object-cover!"
+							placeholderClassName="w-full aspect-[395/317]"
 						/>
 					</div>
 				</div>
