@@ -29,12 +29,16 @@
 
 .archive-datepicker .flatpickr-months {
 	background: transparent;
+	padding-bottom: 0.5rem;
+	height: auto;
 }
 
 .archive-datepicker .flatpickr-month {
 	background: transparent;
 	color: white;
 	fill: white;
+	height: auto;
+	padding: 0.75rem 0 0.25rem;
 }
 
 .archive-datepicker .flatpickr-current-month input.cur-year {
