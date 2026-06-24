@@ -19,7 +19,7 @@ echo class_name(
 		'parts/ThemeHeading',
 		null,
 		[
-			'className'   => $headingPosition === 'beside' ? 'md:sticky md:top-[calc(var(--fixed-elements-height)+24px)] self-start' : '',
+			'className'   => '',
 			'alignment'   => $headingPosition === 'above' ? 'center' : 'left',
 			'eyebrow'     => $eyebrow ?? '',
 			'heading'     => $heading ?? '',

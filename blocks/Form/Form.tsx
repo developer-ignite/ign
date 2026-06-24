@@ -109,10 +109,7 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 					})}
 				>
 					<ThemeHeading
-						className={cn({
-							"md:sticky md:top-[calc(var(--fixed-elements-height)+24px)] self-start":
-								attributes.headingPosition === "beside"
-						})}
+						className=""
 						alignment={attributes.headingPosition === "above" ? "center" : "left"}
 						eyebrow={attributes.eyebrow}
 						heading={attributes.heading}
