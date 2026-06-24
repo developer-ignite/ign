@@ -26,7 +26,7 @@ $tabId   = 'tab-' . $baseId . '-' . $index;
         'tabs-item group transition-all overflow-hidden border border-charcoal rounded-3xl' => true,
         'open:bg-accent-lighter open:border open:border-charcoal'                             => true,
         'md:hidden md:open:block md:border-0 md:rounded-3xl md:bg-transparent'               => true,
-        'md:overflow-visible md:self-start md:open:sticky md:open:top-[var(--fixed-elements-height,0px)] md:open:p-6' => true,
+        'md:overflow-visible md:self-start md:open:p-6' => true,
         $tabColor                                                                            => ! empty( $tabColor ),
       ]
     );
