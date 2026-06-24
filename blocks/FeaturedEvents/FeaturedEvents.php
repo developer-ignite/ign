@@ -16,6 +16,7 @@
  * @var array       $selectedEventCategories
  * @var array       $selectedTags
  * @var bool        $hideIfEmpty
+ * @var array       $buttons
  * @var string      $buttonLabel
  *
  * @var WP_Block $block    Block instance
@@ -98,7 +99,9 @@ if ( $postsSource === 'manual' && ! empty( $selectedPosts ) ) {
 				'headingSize'       => 2,
 				'description'       => $description,
 				'columns'           => 2,
-				'enableButtons'     => false,
+				'enableButtons'     => true,
+				'buttons'           => $buttons ?? [],
+				'buttonVariations'  => [ 'primary' ],
 				'enableDescription' => true,
 			] );
 			?>

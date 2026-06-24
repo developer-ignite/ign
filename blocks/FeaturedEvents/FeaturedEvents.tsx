@@ -29,6 +29,15 @@ type FeaturedEventsAttributes = {
 	selectedEventCategories: number[];
 	selectedTags: number[];
 	hideIfEmpty: boolean;
+	buttons: Array<{
+		title?: string;
+		url?: string;
+		postId?: number | null;
+		postType?: string | null;
+		opensInNewTab?: boolean;
+		label?: string;
+		variation?: string;
+	}>;
 	buttonLabel: string;
 };
 
@@ -146,7 +155,9 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 						headingSize={2}
 						description={attributes.description}
 						columns={2}
-						enableButtons={false}
+						enableButtons={true}
+						buttons={attributes.buttons}
+						buttonVariations={["primary"]}
 						enableDescription={true}
 						onChange={(value: Partial<FeaturedEventsAttributes>) => {
 							renameBlock(value.heading, attributes.heading, clientId);

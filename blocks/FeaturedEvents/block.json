@@ -55,6 +55,20 @@
       "type": "boolean",
       "default": false
     },
+    "buttons": {
+      "type": "array",
+      "default": [
+        {
+          "url": "",
+          "postId": null,
+          "postType": null,
+          "opensInNewTab": false,
+          "variation": "primary",
+          "title": "",
+          "label": ""
+        }
+      ]
+    },
     "buttonLabel": {
       "type": "string",
       "default": "View Event"
