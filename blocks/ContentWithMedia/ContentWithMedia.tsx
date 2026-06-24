@@ -416,9 +416,9 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 											/>
 										</div>
 
-										{/* Secondary images row - equal size */}
+										{/* Secondary images row - left large, right always small */}
 										<div className="flex gap-4 items-start">
-											<div className="flex-1 aspect-[3/2] overflow-hidden rounded-xl md:rounded-3xl">
+											<div className="flex-1 aspect-[4/3] md:aspect-[366/203] overflow-hidden rounded-xl md:rounded-3xl">
 												<ImageDropUploader
 													image={attributes.images[1]}
 													onSelect={(image) => updateImage(1, image)}
@@ -427,7 +427,7 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 													placeholderClassName="w-full h-full"
 												/>
 											</div>
-											<div className="flex-1 aspect-[3/2] overflow-hidden rounded-xl md:rounded-3xl">
+											<div className="w-[44%] aspect-[3/4] md:w-[35%] md:flex-none md:aspect-[206/123] overflow-hidden rounded-xl md:rounded-3xl">
 												<ImageDropUploader
 													image={attributes.images[2]}
 													onSelect={(image) => updateImage(2, image)}

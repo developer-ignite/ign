@@ -173,10 +173,10 @@ echo class_name(
 			<?php endif; ?>
 
 			<?php if ( ! empty( $images[1]['id'] ) || ! empty( $images[2]['id'] ) ) : ?>
-				<?php // Secondary images row - equal size ?>
+				<?php // Secondary images row - left large, right always small ?>
 			  <div class="flex gap-4 items-start">
 				<?php if ( ! empty( $images[1]['id'] ) ) : ?>
-				  <div class="flex-1 aspect-[3/2] overflow-hidden rounded-xl md:rounded-3xl">
+				  <div class="flex-1 aspect-[4/3] md:aspect-[366/203] overflow-hidden rounded-xl md:rounded-3xl">
 					<?php
 					echo wp_get_attachment_image(
 						$images[1]['id'],
@@ -192,7 +192,7 @@ echo class_name(
 				<?php endif; ?>
 
 				<?php if ( ! empty( $images[2]['id'] ) ) : ?>
-				  <div class="flex-1 aspect-[3/2] overflow-hidden rounded-xl md:rounded-3xl">
+				  <div class="w-[44%] aspect-[3/4] md:w-[35%] md:flex-none md:aspect-[206/123] overflow-hidden rounded-xl md:rounded-3xl">
 					<?php
 					echo wp_get_attachment_image(
 						$images[2]['id'],
