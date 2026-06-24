@@ -55,11 +55,11 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				history.pushState( { query: query }, '', url );
 			}
 			buildButtons();
-			loadResults( url, false );
+			loadResults( url, false, true );
 		}
 
 		// ── AJAX Loading ──
-		function loadResults( url, append ) {
+		function loadResults( url, append, scrollToBlock ) {
 			if ( ! append ) {
 				results.classList.add( 'hidden' );
 				results.setAttribute( 'aria-busy', 'true' );
@@ -126,10 +126,12 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					// Rebuild active filter pills from current form state
 					buildButtons();
 
-					if ( ! append ) {
+					if ( ! append && scrollToBlock ) {
 						section.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+					}
+					if ( ! append ) {
 						// Move focus to results container for screen reader awareness
-						results.focus();
+						results.focus( { preventScroll: true } );
 					}
 				} )
 				.finally( function () {
@@ -300,7 +302,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			if ( target ) {
 				e.preventDefault();
 				history.pushState( {}, '', target.getAttribute( 'href' ) );
-				loadResults( target.getAttribute( 'href' ), false );
+				loadResults( target.getAttribute( 'href' ), false, true );
 			}
 		} );
 
