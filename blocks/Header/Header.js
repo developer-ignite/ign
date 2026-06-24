@@ -749,6 +749,11 @@
 				} );
 			} );
 
+			// Close all submenus when the user starts scrolling
+			window.addEventListener( 'scroll', () => {
+				closeAllSubmenus();
+			}, { passive: true } );
+
 			// Close submenus when clicking outside the dropdown panel or its trigger button
 			document.addEventListener( 'click', ( e ) => {
 				subMenuButtons.forEach( ( btn ) => {
