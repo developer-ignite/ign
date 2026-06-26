@@ -1,5 +1,3 @@
-import flatpickr from 'flatpickr';
-
 document.addEventListener( 'DOMContentLoaded', function () {
 	var sectionSelector = '.archive';
 	var formSelector = '.archive-filters form';
@@ -164,37 +162,11 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				} );
 			}
 
-			// Date range picker (Flatpickr)
-			var dateRangeInput = form.querySelector( '.archive-date-range-input' );
-			if ( dateRangeInput ) {
-				var dateFromInput = form.querySelector( 'input[data-type="date_from"]' );
-				var dateToInput   = form.querySelector( 'input[data-type="date_to"]' );
-
-				flatpickr( dateRangeInput, {
-					mode: 'range',
-					dateFormat: 'Y-m-d',
-					altInput: false,
-					allowInput: false,
-					showMonths: 2,
-					customClass: 'archive-datepicker',
-					defaultDate: [
-						dateFromInput && dateFromInput.value ? dateFromInput.value : null,
-						dateToInput   && dateToInput.value   ? dateToInput.value   : null,
-					].filter( Boolean ),
-					onClose: function ( selectedDates ) {
-						if ( ! dateFromInput || ! dateToInput ) return;
-						if ( selectedDates.length >= 1 ) {
-							dateFromInput.value = selectedDates[ 0 ].toISOString().slice( 0, 10 );
-						} else {
-							dateFromInput.value = '';
-						}
-						if ( selectedDates.length >= 2 ) {
-							dateToInput.value = selectedDates[ 1 ].toISOString().slice( 0, 10 );
-						} else {
-							dateToInput.value = '';
-						}
-						updateState( true );
-					},
+			// Sort order change
+			var sortSelect = form.querySelector( 'select[data-type="sort_order"]' );
+			if ( sortSelect ) {
+				sortSelect.addEventListener( 'change', function () {
+					updateState( true );
 				} );
 			}
 
@@ -209,19 +181,6 @@ document.addEventListener( 'DOMContentLoaded', function () {
 		function removeFilterFromButton( button ) {
 			var field = button.dataset.field;
 			if ( ! form ) return;
-
-			if ( field === 'date_range' ) {
-				var dateFromInput = form.querySelector( 'input[data-type="date_from"]' );
-				var dateToInput   = form.querySelector( 'input[data-type="date_to"]' );
-				if ( dateFromInput ) dateFromInput.value = '';
-				if ( dateToInput )   dateToInput.value   = '';
-				var dateRangeInput = form.querySelector( '.archive-date-range-input' );
-				if ( dateRangeInput && dateRangeInput._flatpickr ) {
-					dateRangeInput._flatpickr.clear();
-				}
-				button.remove();
-				return;
-			}
 
 			var value = button.dataset.value;
 			var input = form.querySelector( 'input[data-type="' + field + '"]' );
@@ -268,13 +227,6 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				form.querySelectorAll( '.archive-filter-select input[type="hidden"]' ).forEach( function ( input ) {
 					input.value = '';
 				} );
-				// Clear date range picker
-				var clearDri = form.querySelector( '.archive-date-range-input' );
-				if ( clearDri && clearDri._flatpickr ) clearDri._flatpickr.clear();
-				var clearDfrom = form.querySelector( 'input[data-type="date_from"]' );
-				var clearDto   = form.querySelector( 'input[data-type="date_to"]' );
-				if ( clearDfrom ) clearDfrom.value = '';
-				if ( clearDto )   clearDto.value   = '';
 				// Restore preset filter values — presets persist through Clear All
 				Object.keys( presetFilters ).forEach( function ( key ) {
 					var presetInput = form.querySelector( 'input[data-type="' + key + '"]' );
@@ -392,38 +344,6 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				select.disabled = Array.from( select.options ).every( function ( o ) { return o.disabled; } );
 			} );
 
-			// Render date range pill
-			var dateFromInput   = form.querySelector( 'input[data-type="date_from"]' );
-			var dateToInput     = form.querySelector( 'input[data-type="date_to"]' );
-			var dateRangeInput  = form.querySelector( '.archive-date-range-input' );
-			if ( dateFromInput || dateToInput ) {
-				var from = dateFromInput ? dateFromInput.value : '';
-				var to   = dateToInput   ? dateToInput.value   : '';
-
-				if ( from || to ) {
-					function formatDate( iso ) {
-						if ( ! iso ) return '';
-						var d = new Date( iso + 'T00:00:00' );
-						return d.toLocaleDateString( undefined, { month: 'short', day: 'numeric', year: 'numeric' } );
-					}
-					var label = '';
-					if ( from && to )   label = formatDate( from ) + ' – ' + formatDate( to );
-					else if ( from )    label = formatDate( from ) + ' –';
-					else                label = '– ' + formatDate( to );
-
-					if ( dateRangeInput ) dateRangeInput.value = label;
-
-					clearAllBtn.insertAdjacentHTML(
-						'beforebegin',
-						'<button type="button" class="inline-flex items-center gap-1 border border-current rounded-full px-3 py-1 text-body-small uppercase font-medium tracking-wider cursor-pointer" data-field="date_range">' +
-							'<span>' + label + '</span>' +
-							'<div class="archive-remove-filter"></div>' +
-						'</button>'
-					);
-				} else if ( dateRangeInput ) {
-					dateRangeInput.value = '';
-				}
-			}
 		}
 
 		// ── Load Filters from URL (for popstate) ──
@@ -445,22 +365,6 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				}
 			} );
 
-			// Update date range inputs and picker
-			var dfrom = form.querySelector( 'input[data-type="date_from"]' );
-			var dto   = form.querySelector( 'input[data-type="date_to"]' );
-			var dri   = form.querySelector( '.archive-date-range-input' );
-			if ( dfrom ) dfrom.value = params.get( 'date_from' ) || '';
-			if ( dto )   dto.value   = params.get( 'date_to' )   || '';
-			if ( dri && dri._flatpickr ) {
-				var fromVal = params.get( 'date_from' );
-				var toVal   = params.get( 'date_to' );
-				if ( fromVal || toVal ) {
-					dri._flatpickr.setDate( [ fromVal, toVal ].filter( Boolean ) );
-				} else {
-					dri._flatpickr.clear();
-				}
-			}
-
 			// Update search input
 			var searchInput = form.querySelector( 'input[data-type="search"]' );
 			if ( searchInput ) searchInput.value = params.get( 'search' ) || '';
@@ -469,6 +373,12 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			var perPageSel = form.querySelector( 'select[data-type="per_page"]' );
 			if ( perPageSel && params.get( perPageVar ) ) {
 				perPageSel.value = params.get( perPageVar );
+			}
+
+			// Update sort select
+			var sortSel = form.querySelector( 'select[data-type="sort_order"]' );
+			if ( sortSel && params.get( 'sort_order' ) ) {
+				sortSel.value = params.get( 'sort_order' );
 			}
 
 			buildButtons();

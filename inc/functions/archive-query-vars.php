@@ -11,8 +11,7 @@ function theme_archive_query_vars( $vars ) {
 	$vars[] = 'policy-topic';
 	$vars[] = 'show_per_page';
 	$vars[] = 'post_type_filter';
-	$vars[] = 'date_from';
-	$vars[] = 'date_to';
+	$vars[] = 'sort_order';
 
 	return $vars;
 }

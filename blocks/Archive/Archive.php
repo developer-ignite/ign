@@ -12,7 +12,7 @@
  * @var string      $description
  * @var array       $buttons
  * @var bool        $displayFilters
- * @var bool        $displayDateFilter
+ * @var bool        $displaySort
  * @var bool        $displaySearch
  * @var bool        $displayPerPage
  * @var int         $postsPerPage
@@ -40,7 +40,7 @@ $post_type_config = [
 		'order'          => 'desc',
 		'card'           => 'post',
 		'has_search'     => true,
-		'has_date_filter' => true,
+		'has_sort'       => true,
 	],
 	'team_member' => [
 		'post_type'  => 'team_member',
@@ -89,10 +89,10 @@ $default_order      = $active_config['order'];
 $max_cols           = $maxColumns;
 $pagination_mode    = $paginationMode;
 $posts_per          = $postsPerPage;
-$show_filters       = ! empty( $displayFilters ) && ! empty( $enabled_taxonomies );
-$show_search        = ! empty( $displaySearch ) && $active_config['has_search'];
-$show_per_page      = ! empty( $displayPerPage );
-$show_date_filter   = ! empty( $active_config['has_date_filter'] ) && ! empty( $displayDateFilter );
+$show_filters  = ! empty( $displayFilters ) && ! empty( $enabled_taxonomies );
+$show_search   = ! empty( $displaySearch ) && $active_config['has_search'];
+$show_per_page = ! empty( $displayPerPage );
+$show_sort     = ! empty( $active_config['has_sort'] ) && ! empty( $displaySort );
 
 // ── Compute per-page options based on the configured posts-per-page value ──
 $per_page_options = [];
@@ -159,13 +159,9 @@ if ( $url_per_page > 0 ) {
 	$posts_per = $url_per_page;
 }
 
-// ── Date filter ──
-$date_from = sanitize_text_field( get_query_var( 'date_from' ) );
-$date_to   = sanitize_text_field( get_query_var( 'date_to' ) );
-
-if ( $show_date_filter && ( $date_from || $date_to ) ) {
-	$has_selected_option = true;
-}
+// ── Sort order ──
+$sort_order_var = sanitize_text_field( get_query_var( 'sort_order' ) );
+$current_order  = in_array( $sort_order_var, [ 'asc', 'desc' ], true ) ? $sort_order_var : $default_order;
 
 // ── Build WP_Query ──
 $paged = get_query_var( 'paged' ) ? intval( get_query_var( 'paged' ) ) : 1;
@@ -204,16 +200,9 @@ if ( $search_query ) {
 	$args['s'] = sanitize_text_field( $search_query );
 }
 
-// Apply date range filter
-if ( $date_from || $date_to ) {
-	$date_clause = [ 'inclusive' => true ];
-	if ( $date_from && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_from ) ) {
-		$date_clause['after'] = $date_from;
-	}
-	if ( $date_to && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_to ) ) {
-		$date_clause['before'] = $date_to;
-	}
-	$args['date_query'] = [ $date_clause ];
+// Apply sort order
+if ( $show_sort && in_array( $sort_order_var, [ 'asc', 'desc' ], true ) ) {
+	$args['order'] = strtoupper( $sort_order_var );
 }
 
 // Apply taxonomy filters
@@ -254,7 +243,7 @@ $query = new WP_Query( $args );
 			?>
 
 			<div class="archive-inner grid grid-cols-1 gap-gap-4">
-				<?php if ( $show_filters || $show_search || $show_per_page || $show_date_filter ) : ?>
+				<?php if ( $show_filters || $show_search || $show_per_page || $show_sort ) : ?>
 					<div class="archive-filters grid grid-cols-1 gap-4">
 						<form method="get" class="flex flex-wrap items-center gap-4" role="<?php echo $show_search ? 'search' : 'form'; ?>" aria-label="<?php esc_attr_e( 'Archive filters', 'takt' ); ?>">
 							<input type="hidden" name="paged" value="1" />
@@ -310,31 +299,6 @@ $query = new WP_Query( $args );
 								<?php endforeach; ?>
 							<?php endif; ?>
 
-							<?php if ( $show_date_filter ) : ?>
-								<div class="archive-date-filter max-sm:w-full">
-									<input type="hidden" name="date_from" data-type="date_from" value="<?php echo esc_attr( $date_from ); ?>">
-									<input type="hidden" name="date_to" data-type="date_to" value="<?php echo esc_attr( $date_to ); ?>">
-									<input
-										type="text"
-										class="archive-date-range-input min-w-58 cursor-pointer"
-										readonly
-										aria-label="<?php esc_attr_e( 'Filter by date range', 'takt' ); ?>"
-										placeholder="<?php esc_attr_e( 'Filter by Date', 'takt' ); ?>"
-										value="<?php
-											if ( $date_from && $date_to ) {
-												echo esc_attr(
-													date_i18n( 'M j, Y', strtotime( $date_from ) ) . ' – ' . date_i18n( 'M j, Y', strtotime( $date_to ) )
-												);
-											} elseif ( $date_from ) {
-												echo esc_attr( date_i18n( 'M j, Y', strtotime( $date_from ) ) . ' –' );
-											} elseif ( $date_to ) {
-												echo esc_attr( '– ' . date_i18n( 'M j, Y', strtotime( $date_to ) ) );
-											}
-										?>"
-									>
-								</div>
-							<?php endif; ?>
-
 							<?php if ( $show_search ) : ?>
 								<div class="max-sm:w-full min-w-58 grid">
 									<input
@@ -351,22 +315,32 @@ $query = new WP_Query( $args );
 								</div>
 							<?php endif; ?>
 
-							<?php if ( $show_per_page ) : ?>
-								<div class="ml-auto flex items-center gap-2 whitespace-nowrap shrink-0 max-sm:hidden">
-									<span class="text-body-small uppercase font-medium tracking-wider"><?php esc_html_e( 'Show', 'takt' ); ?></span>
-									<select data-type="per_page" name="<?php echo esc_attr( $per_page_var ); ?>" class="w-20" aria-label="<?php esc_attr_e( 'Items per page', 'takt' ); ?>">
-										<?php foreach ( $per_page_options as $option ) : ?>
-											<option value="<?php echo esc_attr( $option ); ?>" <?php selected( $posts_per, $option ); ?>>
-												<?php echo esc_html( $option ); ?>
-											</option>
-										<?php endforeach; ?>
-									</select>
-									<span class="text-body-small uppercase font-medium tracking-wider"><?php esc_html_e( 'Per Page', 'takt' ); ?></span>
+							<?php if ( $show_sort || $show_per_page ) : ?>
+								<div class="ml-auto flex items-center gap-4 shrink-0 max-sm:hidden">
+									<?php if ( $show_sort ) : ?>
+										<select data-type="sort_order" name="sort_order" aria-label="<?php esc_attr_e( 'Sort order', 'takt' ); ?>">
+											<option value="desc" <?php selected( $current_order, 'desc' ); ?>><?php esc_html_e( 'Newest to Oldest', 'takt' ); ?></option>
+											<option value="asc" <?php selected( $current_order, 'asc' ); ?>><?php esc_html_e( 'Oldest to Newest', 'takt' ); ?></option>
+										</select>
+									<?php endif; ?>
+									<?php if ( $show_per_page ) : ?>
+										<div class="flex items-center gap-2 whitespace-nowrap">
+											<span class="text-body-small uppercase font-medium tracking-wider"><?php esc_html_e( 'Show', 'takt' ); ?></span>
+											<select data-type="per_page" name="<?php echo esc_attr( $per_page_var ); ?>" class="w-20" aria-label="<?php esc_attr_e( 'Items per page', 'takt' ); ?>">
+												<?php foreach ( $per_page_options as $option ) : ?>
+													<option value="<?php echo esc_attr( $option ); ?>" <?php selected( $posts_per, $option ); ?>>
+														<?php echo esc_html( $option ); ?>
+													</option>
+												<?php endforeach; ?>
+											</select>
+											<span class="text-body-small uppercase font-medium tracking-wider"><?php esc_html_e( 'Per Page', 'takt' ); ?></span>
+										</div>
+									<?php endif; ?>
 								</div>
 							<?php endif; ?>
 						</form>
 
-						<?php if ( ( $show_filters && $displayFilters ) || ( $show_date_filter && ( $date_from || $date_to ) ) ) : ?>
+						<?php if ( $show_filters && $displayFilters ) : ?>
 							<div class="archive-active-filters flex flex-wrap items-center gap-3">
 								<?php if ( $show_filters && $displayFilters ) : ?>
 									<?php foreach ( $enabled_taxonomies as $taxonomy_name => $taxonomy_slug ) : ?>
@@ -389,24 +363,6 @@ $query = new WP_Query( $args );
 											<?php endforeach; ?>
 										<?php endif; ?>
 									<?php endforeach; ?>
-								<?php endif; ?>
-								<?php if ( $show_date_filter && ( $date_from || $date_to ) ) : ?>
-									<button type="button" class="inline-flex items-center gap-1 border border-current rounded-full px-3 py-1 text-body-small uppercase font-medium tracking-wider cursor-pointer" data-field="date_range">
-										<span>
-											<?php
-											if ( $date_from && $date_to ) {
-												echo esc_html(
-													date_i18n( 'M j, Y', strtotime( $date_from ) ) . ' – ' . date_i18n( 'M j, Y', strtotime( $date_to ) )
-												);
-											} elseif ( $date_from ) {
-												echo esc_html( date_i18n( 'M j, Y', strtotime( $date_from ) ) . ' –' );
-											} elseif ( $date_to ) {
-												echo esc_html( '– ' . date_i18n( 'M j, Y', strtotime( $date_to ) ) );
-											}
-											?>
-										</span>
-										<div class="archive-remove-filter"></div>
-									</button>
 								<?php endif; ?>
 								<button type="button" data-clear-all="1" class="text-body-small uppercase font-medium tracking-wider cursor-pointer hover:underline focus:underline" aria-label="<?php esc_attr_e( 'Clear all filters', 'takt' ); ?>">
 									<?php esc_html_e( 'Clear All', 'takt' ); ?>

@@ -33,7 +33,7 @@
       "type": "boolean",
       "default": true
     },
-    "displayDateFilter": {
+    "displaySort": {
       "type": "boolean",
       "default": true
     },
