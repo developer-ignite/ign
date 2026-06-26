@@ -25,6 +25,11 @@
 	overflow-y: clip;
 }
 
+html,
+body {
+	overflow-x: clip;
+}
+
 html {
 	scroll-padding-top: calc(var(--fixed-elements-height) + 32px);
 	scroll-behavior: smooth;
