@@ -71,16 +71,6 @@
 		row-gap: 4rem;
 	}
 
-	/* First card spans 2 columns (featured) */
-	.archive[data-post-type="post"] .archive-results .grid > *:first-child {
-		grid-column: span 2;
-	}
-
-	/* Wider aspect ratio for the featured (first) card image */
-	.archive[data-post-type="post"] .archive-results .grid > *:first-child img {
-		aspect-ratio: 622 / 333;
-	}
-
 	/* Vertical dividers between cards via border-left + padding for 32px gap each side */
 	.archive[data-post-type="post"] .archive-results .grid > * {
 		padding-left: 2rem;
@@ -92,16 +82,14 @@
 		border-left-color: white;
 	}
 
-	/* First-in-row: no divider, flush left */
-	/* Row 1 = :first-child, rows 2+ = every 4th item starting at 4 */
-	.archive[data-post-type="post"] .archive-results .grid > *:first-child,
-	.archive[data-post-type="post"] .archive-results .grid > *:nth-child(4n) {
+	/* First-in-row: no divider, flush left (positions 1, 5, 9, 13…) */
+	.archive[data-post-type="post"] .archive-results .grid > *:nth-child(4n+1) {
 		border-left: none;
 		padding-left: 0;
 	}
 
-	/* Last-in-row: flush right (positions 3, 7, 11, 15…) */
-	.archive[data-post-type="post"] .archive-results .grid > *:nth-child(4n - 1) {
+	/* Last-in-row: flush right (positions 4, 8, 12, 16…) */
+	.archive[data-post-type="post"] .archive-results .grid > *:nth-child(4n) {
 		padding-right: 0;
 	}
 
