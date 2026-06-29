@@ -46,7 +46,7 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 		>
 			<div className="container grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-9 items-start">
 				<ThemeHeading
-					className="md:sticky md:top-8"
+					className=""
 					eyebrow={attributes.eyebrow}
 					heading={attributes.heading}
 					headingSize={2}

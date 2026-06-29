@@ -25,7 +25,7 @@ $hasContent = ! empty( $eyebrow ) || ! empty( $heading ) || ! empty( $descriptio
 			'parts/ThemeHeading',
 			null,
 			[
-				'className'         => 'md:sticky md:top-8',
+				'className'         => '',
 				'eyebrow'           => $eyebrow,
 				'heading'           => $heading,
 				'headingSize'       => 2,
