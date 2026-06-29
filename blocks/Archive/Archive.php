@@ -155,7 +155,7 @@ if ( is_tax() ) {
 // ── Per-page from URL (unified query var) ──
 $per_page_var = 'show_per_page';
 $url_per_page = intval( get_query_var( $per_page_var ) );
-if ( $url_per_page > 0 ) {
+if ( $url_per_page > 0 && in_array( $url_per_page, $per_page_options ) ) {
 	$posts_per = $url_per_page;
 }
 
