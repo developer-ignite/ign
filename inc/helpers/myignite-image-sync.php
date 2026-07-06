@@ -57,7 +57,7 @@ define( 'MYIGNITE_SYNC_CRON_INTERVAL', 'hourly' );
 // is NOT publicly web-accessible in a way that exposes raw PHP, but a
 // .log file sitting there IS fetchable by URL if someone guesses the path,
 // so we deny direct access to it via .htaccess-equivalent logic further
-// down (MYIGNITE_block_log_file_access).
+// down (myignite_block_log_file_access).
 define( 'MYIGNITE_SYNC_LOG_PATH', WP_CONTENT_DIR . '/myignite-image-sync.log' );
 
 // Safety cap: max events processed in a single run, so a feed problem or
@@ -260,11 +260,14 @@ function myignite_extract_og_image( $page_url, $event_id ) {
 
 /**
  * Download an image from a URL and set it as the featured image for a
- * given event post. Uses WordPress's own media-sideloading function,
- * which handles file-type detection and the media library upload
- * itself — so this works correctly whether CampusGroups serves jpg,
- * png, webp, or anything else, without needing to hardcode a content
- * type anywhere.
+ * given event post.
+ *
+ * Uses media_handle_sideload() (lower-level than media_sideload_image)
+ * so we can control the filename — the event title is used rather than
+ * inheriting whatever CampusGroups named the file (e.g. the long UUID
+ * strings like r3_image_upload_599695_EventPhoto_…). Works correctly
+ * whether CampusGroups serves jpg, png, webp, or anything else — file
+ * type is detected from the actual downloaded content, not hardcoded.
  *
  * @param int    $event_id  The WordPress post ID of the event.
  * @param string $image_url The image URL to download and attach.
@@ -295,10 +298,10 @@ function myignite_set_featured_image_from_url( $event_id, $image_url ) {
 		return $tmp;
 	}
 
-	$file_array = [
+	$file_array = array(
 		'name'     => $filename,
 		'tmp_name' => $tmp,
-	];
+	);
 
 	$attachment_id = media_handle_sideload( $file_array, $event_id );
 
@@ -367,21 +370,33 @@ function myignite_unschedule_image_sync() {
 // -----------------------------------------------------------------------
 
 /**
- * Registers `wp myignite sync-images` as a WP-CLI command, only when
- * running under WP-CLI (this class/registration would error if loaded
- * in a normal web request, since the WP_CLI base class wouldn't exist).
+ * Registers WP-CLI commands under `wp myignite`, only when running under
+ * WP-CLI (this class/registration would error if loaded in a normal web
+ * request, since the WP_CLI base class wouldn't exist).
  *
- * Usage once SSH'd in via WP Engine's SSH Gateway:
- *   wp myignite sync-images
- *
- * This calls the exact same myignite_run_image_sync() function as the
- * hourly cron does — so testing manually and waiting for the schedule
- * produce identical behavior, just triggered differently.
+ * Available commands:
+ *   wp myignite sync-images       — pull og:image from CampusGroups pages
+ *                                   and set as featured image for events
+ *                                   that don't have one yet.
+ *   wp myignite clean-descriptions — one-time cleanup to strip the
+ *                                   "--- Event Details: URL" footer that
+ *                                   CampusGroups appends to descriptions
+ *                                   in the ICS feed, from all existing events.
  */
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	class MyIGNITE_CLI_Commands {
+
 		/**
 		 * Sync event images from CampusGroups source pages.
+		 *
+		 * Finds published events with a CampusGroups URL in the Event Website
+		 * field but no featured image set. Fetches each event's page, extracts
+		 * the og:image URL if present, downloads it, and sets it as the
+		 * WordPress featured image. Events with no og:image (i.e. the
+		 * CampusGroups organizer didn't upload one) are silently skipped —
+		 * this is expected, not an error.
+		 *
+		 * All activity is logged to wp-content/myignite-image-sync.log.
 		 *
 		 * ## EXAMPLES
 		 *
@@ -393,24 +408,30 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		}
 
 		/**
-		 * Remove the "— Event Details: URL" footer that CampusGroups appends to
-		 * event descriptions in the ICS feed. New imports are cleaned automatically
-		 * by the wp_insert_post_data filter in tribe-events.php; this command is
-		 * a one-time cleanup for events already in the database.
+		 * Remove the "--- Event Details: URL" footer CampusGroups appends to
+		 * event descriptions in the ICS feed, from all existing events.
+		 *
+		 * New imports are cleaned automatically on save via a filter hook
+		 * elsewhere in the codebase. This command is a one-time cleanup for
+		 * events already in the database before that filter was in place.
+		 * Safe to run multiple times — events already clean are skipped.
 		 *
 		 * ## EXAMPLES
 		 *
 		 *     wp myignite clean-descriptions
 		 */
 		public function clean_descriptions( $args, $assoc_args ) {
+			// Matches " --- Event Details: https://..." at the end of the
+			// string, tolerant of em-dash or double-hyphen, and any amount
+			// of surrounding whitespace.
 			$pattern = '/\s*(?:\x{2014}|-{1,2})\s*Event Details:\s*https?:\/\/\S+\s*$/u';
 
-			$query = new WP_Query( [
+			$query = new WP_Query( array(
 				'post_type'      => 'tribe_events',
 				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
-			] );
+			) );
 
 			$cleaned = 0;
 			$skipped = 0;
@@ -428,11 +449,11 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 					continue;
 				}
 
-				wp_update_post( [
+				wp_update_post( array(
 					'ID'           => $event_id,
 					'post_content' => $new_content,
 					'post_excerpt' => $new_excerpt,
-				] );
+				) );
 
 				WP_CLI::log( "Event {$event_id}: cleaned." );
 				$cleaned++;
@@ -441,7 +462,126 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			WP_CLI::success( "Done. Cleaned: {$cleaned}, Already clean: {$skipped}." );
 		}
 	}
+
 	WP_CLI::add_command( 'myignite', 'MyIGNITE_CLI_Commands' );
+}
+
+
+// -----------------------------------------------------------------------
+// ICS IMPORT: RENAME CLUB ACRONYM TAGS
+// -----------------------------------------------------------------------
+
+/**
+ * Renames CampusGroups club_acronym tags from concatenated uppercase
+ * (e.g. IGNITEEVENTS) to a readable form (e.g. IGNITE Events) on import.
+ *
+ * Why this is needed:
+ * CampusGroups exports a CATEGORIES line with X-CG-CATEGORY=club_acronym
+ * containing the club acronym as a single concatenated uppercase string
+ * with no spaces. Event Aggregator imports this verbatim as a WordPress
+ * tag, producing unreadable tags like IGNITEEVENTS, IGNITEADVOCACY, etc.
+ *
+ * The other two CATEGORIES lines CampusGroups exports per event are:
+ *   X-CG-CATEGORY=event_type  e.g. "Social Event", "Orientation"
+ *   X-CG-CATEGORY=event_tags  e.g. "Campus - North", "Campus - Downtown"
+ * These are already human-readable and are left completely alone.
+ *
+ * TO ADD A NEW FEED IN FUTURE:
+ * If a new CampusGroups club feed is added and its club_acronym value
+ * isn't in $acronym_map below, it will import as-is (no breakage, no
+ * errors) — it'll just appear as the raw acronym string. To find the
+ * exact acronym for a new feed, run this WP-CLI command:
+ *
+ *   wp eval '
+ *   $body = wp_remote_retrieve_body(wp_remote_get("YOUR_ICS_URL_HERE"));
+ *   $lines = explode("\n", $body);
+ *   foreach($lines as $line) {
+ *     if(strpos($line, "club_acronym") !== false) echo $line . "\n";
+ *   }'
+ *
+ * Then add a new entry to $acronym_map below and redeploy.
+ *
+ * Confirmed acronyms from live feeds as of July 2026:
+ *   IGNITEEVENTS   — ical_club_35455.ics
+ *   IGNITEADVOCACY — ical_club_35458.ics
+ * The remaining three feeds (governance, services, promotions) had no
+ * events at time of writing — acronyms below are assumed from the naming
+ * pattern and should be verified when those feeds become active.
+ */
+add_filter( 'tribe_aggregator_save_event_args', 'myignite_fix_club_acronym_tags' );
+function myignite_fix_club_acronym_tags( $args ) {
+
+	$acronym_map = array(
+		'IGNITEEVENTS'      => 'IGNITE Events',
+		'IGNITEADVOCACY'    => 'IGNITE Advocacy',
+		'IGNITEGOVERNANCE'  => 'IGNITE Governance',
+		'IGNITESERVICES'    => 'IGNITE Services',
+		'IGNITEPROMOTIONS'  => 'IGNITE Promotions',
+	);
+
+	if ( empty( $args['tags'] ) ) {
+		return $args;
+	}
+
+	// Tags arrive as either a comma-separated string or an array
+	// depending on Event Aggregator version — handle both.
+	$was_string = ! is_array( $args['tags'] );
+	$tags = $was_string
+		? array_map( 'trim', explode( ',', $args['tags'] ) )
+		: $args['tags'];
+
+	$tags = array_map( function( $tag ) use ( $acronym_map ) {
+		$trimmed = trim( $tag );
+		return isset( $acronym_map[ $trimmed ] ) ? $acronym_map[ $trimmed ] : $tag;
+	}, $tags );
+
+	$args['tags'] = $was_string ? implode( ', ', $tags ) : $tags;
+
+	return $args;
+}
+
+
+// -----------------------------------------------------------------------
+// DISPLAY: REMOVE LINKS FROM VENUE AND ORGANIZER OUTPUT
+// -----------------------------------------------------------------------
+
+/**
+ * Makes venue names display as plain text instead of clickable links,
+ * everywhere The Events Calendar outputs them (list view, single event
+ * page, widgets, etc).
+ *
+ * Why this is needed:
+ * The Events Calendar wraps venue names in <a> tags pointing to venue
+ * archive pages by default. For this site, those archive pages aren't
+ * a useful destination — venues are imported from CampusGroups and their
+ * archive pages just list events at that location, which isn't meaningful
+ * to visitors. Removing the link keeps the venue name as useful context
+ * without sending visitors somewhere unhelpful.
+ *
+ * If this filter stops working after a plugin update, the hook name to
+ * check is tribe_get_venue_link — search the Events Calendar source for
+ * apply_filters( 'tribe_get_venue_link' to confirm it's still in use.
+ */
+add_filter( 'tribe_get_venue_link', 'myignite_remove_venue_link', 10, 3 );
+function myignite_remove_venue_link( $link, $deprecated, $venue_id ) {
+	return esc_html( get_the_title( $venue_id ) );
+}
+
+/**
+ * Makes organizer names display as plain text instead of clickable links,
+ * everywhere The Events Calendar outputs them.
+ *
+ * Same reasoning as the venue filter above — organizer archive pages
+ * aren't a useful destination on this site. The organizer value is
+ * imported from CampusGroups and represents the club/group that created
+ * the event there, not a meaningful internal taxonomy to navigate by.
+ *
+ * If this filter stops working after a plugin update, check the hook
+ * name tribe_get_organizer_link in the Events Calendar source.
+ */
+add_filter( 'tribe_get_organizer_link', 'myignite_remove_organizer_link', 10, 3 );
+function myignite_remove_organizer_link( $link, $deprecated, $organizer_id ) {
+	return esc_html( get_the_title( $organizer_id ) );
 }
 
 
@@ -471,57 +611,22 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
  *    Then check wp-content/myignite-image-sync.log to see exactly what
  *    happened, and check a real event in wp-admin to visually confirm
  *    the featured image actually landed.
+ *
+ * ---------------------------------------------------------------------
+ * WIPE AND REIMPORT PROCEDURE (if resetting all event data):
+ * ---------------------------------------------------------------------
+ *
+ * 1. Deploy this file with all changes FIRST, before wiping anything.
+ * 2. Delete all existing events, venues, organizers, and tags via WP-CLI:
+ *
+ *      wp post delete $(wp post list --post_type=tribe_events --format=ids) --force
+ *      wp post delete $(wp post list --post_type=tribe_venue --format=ids) --force
+ *      wp post delete $(wp post list --post_type=tribe_organizer --format=ids) --force
+ *      wp term delete $(wp term list post_tag --format=ids) --by=id
+ *
+ * 3. Manually trigger each Event Aggregator import from:
+ *    wp-admin → Events → Import → [each feed] → Import Now
+ * 4. Run the image sync immediately rather than waiting for the schedule:
+ *      wp myignite sync-images
+ * ---------------------------------------------------------------------
  */
-
-// -----------------------------------------------------------------------
-// ICS IMPORT: FIX CLUB ACRONYM TAGS
-// -----------------------------------------------------------------------
-
-/**
- * Renames CampusGroups club_acronym tags from concatenated uppercase
- * (e.g. IGNITEEVENTS) to readable form (e.g. IGNITE Events) on import.
- *
- * Why this is needed:
- * CampusGroups exports a CATEGORIES line with X-CG-CATEGORY=club_acronym
- * containing the club acronym as a single concatenated uppercase string.
- * Event Aggregator imports this verbatim as a WordPress tag, producing
- * unreadable tags like IGNITEEVENTS, IGNITEADVOCACY, etc.
- *
- * This filter intercepts the tag list before it's saved and swaps any
- * known acronym for its readable equivalent. Tags from the other two
- * CATEGORIES lines (event_type and event_tags) are left completely alone.
- *
- * If a new feed is added in future with a new club_acronym value that
- * isn't in the $acronym_map below, it will import as-is (no breakage),
- * and you just need to add a new line to $acronym_map to fix it.
- */
-add_filter( 'tribe_aggregator_save_event_args', 'myignite_fix_club_acronym_tags' );
-function myignite_fix_club_acronym_tags( $args ) {
-
-	// Map of every known CampusGroups club_acronym value to its readable label.
-	// Key   = exact string CampusGroups puts in the ICS feed (case-sensitive).
-	// Value = what you want it to appear as in WordPress tags.
-	$acronym_map = array(
-		'IGNITEEVENTS'      => 'IGNITE Events',
-		'IGNITEADVOCACY'    => 'IGNITE Advocacy',
-		'IGNITEGOVERNANCE'  => 'IGNITE Governance',
-		'IGNITESERVICES'    => 'IGNITE Services',
-		'IGNITEPROMOTIONS'  => 'IGNITE Promotions',
-	);
-
-	// Tags come in as a comma-separated string or an array depending on
-	// which version of Event Aggregator is running — handle both.
-	if ( ! empty( $args['tags'] ) ) {
-		$tags = is_array( $args['tags'] )
-			? $args['tags']
-			: array_map( 'trim', explode( ',', $args['tags'] ) );
-
-		$tags = array_map( function( $tag ) use ( $acronym_map ) {
-			return isset( $acronym_map[ $tag ] ) ? $acronym_map[ $tag ] : $tag;
-		}, $tags );
-
-		$args['tags'] = is_array( $args['tags'] ) ? $tags : implode( ', ', $tags );
-	}
-
-	return $args;
-}
