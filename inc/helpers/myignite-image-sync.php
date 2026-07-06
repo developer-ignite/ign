@@ -472,3 +472,56 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
  *    happened, and check a real event in wp-admin to visually confirm
  *    the featured image actually landed.
  */
+
+// -----------------------------------------------------------------------
+// ICS IMPORT: FIX CLUB ACRONYM TAGS
+// -----------------------------------------------------------------------
+
+/**
+ * Renames CampusGroups club_acronym tags from concatenated uppercase
+ * (e.g. IGNITEEVENTS) to readable form (e.g. IGNITE Events) on import.
+ *
+ * Why this is needed:
+ * CampusGroups exports a CATEGORIES line with X-CG-CATEGORY=club_acronym
+ * containing the club acronym as a single concatenated uppercase string.
+ * Event Aggregator imports this verbatim as a WordPress tag, producing
+ * unreadable tags like IGNITEEVENTS, IGNITEADVOCACY, etc.
+ *
+ * This filter intercepts the tag list before it's saved and swaps any
+ * known acronym for its readable equivalent. Tags from the other two
+ * CATEGORIES lines (event_type and event_tags) are left completely alone.
+ *
+ * If a new feed is added in future with a new club_acronym value that
+ * isn't in the $acronym_map below, it will import as-is (no breakage),
+ * and you just need to add a new line to $acronym_map to fix it.
+ */
+add_filter( 'tribe_aggregator_save_event_args', 'myignite_fix_club_acronym_tags' );
+function myignite_fix_club_acronym_tags( $args ) {
+
+	// Map of every known CampusGroups club_acronym value to its readable label.
+	// Key   = exact string CampusGroups puts in the ICS feed (case-sensitive).
+	// Value = what you want it to appear as in WordPress tags.
+	$acronym_map = array(
+		'IGNITEEVENTS'      => 'IGNITE Events',
+		'IGNITEADVOCACY'    => 'IGNITE Advocacy',
+		'IGNITEGOVERNANCE'  => 'IGNITE Governance',
+		'IGNITESERVICES'    => 'IGNITE Services',
+		'IGNITEPROMOTIONS'  => 'IGNITE Promotions',
+	);
+
+	// Tags come in as a comma-separated string or an array depending on
+	// which version of Event Aggregator is running — handle both.
+	if ( ! empty( $args['tags'] ) ) {
+		$tags = is_array( $args['tags'] )
+			? $args['tags']
+			: array_map( 'trim', explode( ',', $args['tags'] ) );
+
+		$tags = array_map( function( $tag ) use ( $acronym_map ) {
+			return isset( $acronym_map[ $tag ] ) ? $acronym_map[ $tag ] : $tag;
+		}, $tags );
+
+		$args['tags'] = is_array( $args['tags'] ) ? $tags : implode( ', ', $tags );
+	}
+
+	return $args;
+}
