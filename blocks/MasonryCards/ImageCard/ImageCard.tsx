@@ -81,7 +81,7 @@ export default function Edit({ attributes, setAttributes, context }) {
 				{...useBlockProps({
 					className: className({
 						"not-discourse": true,
-						"rounded-3xl overflow-hidden min-h-[298px] h-full relative after:!outline-none after:!shadow-none after:!border-none after:!hidden": true,
+						"rounded-3xl overflow-hidden min-h-[298px] h-full relative after:!outline-none after:!shadow-none after:!border-none after:!hidden default-mask": true,
 						"sm:min-h-[596px]": masonryStyle && isTall,
 						// sm: 2 columns - pattern 2,1,1,2
 						"nth-[4n+1]:sm:col-start-1 nth-[4n+2]:sm:col-start-2 nth-[4n+3]:sm:col-start-1 nth-[4n+4]:sm:col-start-2":

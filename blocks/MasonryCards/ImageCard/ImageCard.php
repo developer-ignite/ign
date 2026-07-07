@@ -24,7 +24,7 @@ data-animate="fade-left"
 <?php
 	theme_block_props(
 		[
-			'rounded-3xl overflow-hidden min-h-[298px] h-full relative' => true,
+			'rounded-3xl overflow-hidden min-h-[298px] h-full relative default-mask' => true,
 			'sm:min-h-[596px]' => $is_tall && $masonry_style,
 			// sm: 2 columns - pattern 2,1,1,2.
 			'nth-[4n+1]:sm:col-start-1 nth-[4n+2]:sm:col-start-2 nth-[4n+3]:sm:col-start-1 nth-[4n+4]:sm:col-start-2' => $masonry_style,
