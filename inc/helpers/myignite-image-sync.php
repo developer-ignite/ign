@@ -423,8 +423,10 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		public function clean_descriptions( $args, $assoc_args ) {
 			// Matches " --- Event Details: https://..." at the end of the
 			// string, tolerant of em-dash or double-hyphen, and any amount
-			// of surrounding whitespace.
-			$pattern = '/\s*(?:\x{2014}|-{1,2})\s*Event Details:\s*https?:\/\/\S+\s*$/u';
+			// of surrounding whitespace. The "Event Details: URL" part is
+			// optional — CampusGroups sometimes sends just the bare
+			// separator with no URL after it.
+			$pattern = '/\s*(?:\x{2014}|-{1,2})\s*(?:Event Details:\s*https?:\/\/\S+)?\s*$/u';
 
 			$query = new WP_Query( array(
 				'post_type'      => 'tribe_events',

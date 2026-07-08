@@ -107,9 +107,12 @@ function theme_strip_campusgroups_event_details_footer( $data ) {
 		return $data;
 	}
 
-	// Matches: optional whitespace · em dash (U+2014) or double hyphen · "Event Details:" · URL · trailing whitespace.
+	// Matches: optional whitespace · em dash (U+2014) or double hyphen · optionally "Event Details:" + URL · trailing whitespace.
+	// The "Event Details: URL" part is optional because CampusGroups sometimes emits just the bare
+	// separator with nothing after it (e.g. when an occurrence has no distinct detail-page URL to
+	// link back to) — without this, the lone trailing dash was leaking into post_content/post_excerpt.
 	// The 'u' flag treats the string as UTF-8 so the em dash matches correctly.
-	$pattern = '/\s*(?:\x{2014}|-{1,2})\s*Event Details:\s*https?:\/\/\S+\s*$/u';
+	$pattern = '/\s*(?:\x{2014}|-{1,2})\s*(?:Event Details:\s*https?:\/\/\S+)?\s*$/u';
 
 	$data['post_content'] = preg_replace( $pattern, '', $data['post_content'] );
 	$data['post_excerpt'] = preg_replace( $pattern, '', $data['post_excerpt'] );
