@@ -542,45 +542,190 @@ function myignite_fix_club_acronym_tags( $args ) {
 
 
 // -----------------------------------------------------------------------
-// DISPLAY: REMOVE LINKS FROM VENUE AND ORGANIZER OUTPUT
+// ICS IMPORT: STOP AUTO-CREATING/LINKING VENUE + ORGANIZER POSTS
 // -----------------------------------------------------------------------
 
 /**
- * Makes venue names display as plain text instead of clickable links,
- * everywhere The Events Calendar outputs them (list view, single event
- * page, widgets, etc).
- *
  * Why this is needed:
- * The Events Calendar wraps venue names in <a> tags pointing to venue
- * archive pages by default. For this site, those archive pages aren't
- * a useful destination — venues are imported from CampusGroups and their
- * archive pages just list events at that location, which isn't meaningful
- * to visitors. Removing the link keeps the venue name as useful context
- * without sending visitors somewhere unhelpful.
+ * Event Aggregator's ICS import auto-creates a `tribe_venue` and/or
+ * `tribe_organizer` post for every distinct venue/organizer name it sees,
+ * and links the event to them. CampusGroups' feed always sends the same
+ * one or two organizer names and a small set of venue names, so every
+ * import run was slowly accumulating archive-page posts nobody asked for.
+ * We want the venue/organizer name to survive as plain text on the event,
+ * with no linked post and no archive page created at all.
  *
- * If this filter stops working after a plugin update, the hook name to
- * check is tribe_get_venue_link — search the Events Calendar source for
- * apply_filters( 'tribe_get_venue_link' to confirm it's still in use.
+ * Where TEC actually creates these posts (confirmed against the installed
+ * plugin, TEC 6.16.5):
+ *   wp-content/plugins/the-events-calendar/src/Tribe/Aggregator/Record/Abstract.php
+ *   Venue post created ~line 1839, Organizer post created ~line 2023 —
+ *   BOTH happen *before* the `tribe_aggregator_before_save_event` /
+ *   `before_update_event` / `before_insert_event` filters (lines 2089,
+ *   2104, 2140). Hooking any of those three is too late — by then the
+ *   Venue/Organizer posts already exist in the database. The only point
+ *   that runs early enough is `tribe_aggregator_translate_service_data`,
+ *   applied in Tribe__Events__Aggregator__Event::translate_service_data()
+ *   (src/Tribe/Aggregator/Event.php:208) — this fires immediately after
+ *   the raw item is translated into the `$event` array and BEFORE
+ *   Abstract.php's venue/organizer creation blocks even check for data
+ *   to act on. Emptying `$event['Venue']` / `$event['Organizer']` there
+ *   means those blocks never run at all: no matching, no creation, no
+ *   linking.
+ *
+ * That filter only receives ($event, $item) — no origin/record info — so
+ * we pair it with `tribe_aggregator_before_insert_posts`, which fires once
+ * per import batch (Abstract.php ~line 1541, before its loop starts) and
+ * does receive $meta['origin']. We use it to flag "this batch is an ICS
+ * import" for the duration of that batch.
+ *
+ * Confirmed data shapes for ICS items (Event.php:67-207):
+ *   $item->venue->venue        — venue name, single object.
+ *   $item->organizer           — either a single stdClass or an array of
+ *                                 them (one per organizer); each has
+ *                                 ->organizer as the name.
+ *
+ * IMPORTANT — the real origin string is 'ical', not 'ics':
+ * Event Aggregator has two distinct origins that both read .ics-format
+ * calendar data:
+ *   - 'ics'  → Tribe__Events__Aggregator__Record__ICS (uploading a local
+ *              .ics FILE — a one-off, not what CampusGroups uses).
+ *   - 'ical' → Tribe__Events__Aggregator__Record__iCal (polling a live
+ *              .ics URL on a recurring schedule).
+ * The CampusGroups feeds on this site (e.g. .../ical_club_35455.ics,
+ * scheduled daily) are 'ical' origin, confirmed directly from an existing
+ * import record's postmeta (_tribe_aggregator_origin = ical) and its
+ * activity log (which shows a Venue and Organizer post actually being
+ * created on a real run). Both origins are handled below, since either
+ * could plausibly be used for a CampusGroups-style feed.
  */
-add_filter( 'tribe_get_venue_link', 'myignite_remove_venue_link', 10, 3 );
-function myignite_remove_venue_link( $link, $deprecated, $venue_id ) {
+
+$myignite_ea_is_ics_import = false;
+
+add_action( 'tribe_aggregator_before_insert_posts', 'myignite_flag_ics_import_batch', 10, 2 );
+function myignite_flag_ics_import_batch( $items, $meta ) {
+	global $myignite_ea_is_ics_import;
+	$myignite_ea_is_ics_import = isset( $meta['origin'] ) && in_array( $meta['origin'], array( 'ics', 'ical' ), true );
+}
+
+add_filter( 'tribe_aggregator_translate_service_data', 'myignite_strip_venue_organizer_for_ics', 10, 2 );
+function myignite_strip_venue_organizer_for_ics( $event, $item ) {
+	global $myignite_ea_is_ics_import;
+
+	if ( empty( $myignite_ea_is_ics_import ) ) {
+		return $event;
+	}
+
+	// Removing these keys entirely (not just the name) means TEC's venue/
+	// organizer matching-or-create blocks in Abstract.php never trigger —
+	// no post gets created, none gets linked.
+	unset( $event['Venue'] );
+	unset( $event['Organizer'] );
+
+	return $event;
+}
+
+/**
+ * Persists the venue/organizer name(s) as plain-text post meta on the
+ * event, once it has a real ID.
+ *
+ * Timing: `tribe_aggregator_after_insert_post` (Abstract.php line 2261)
+ * is the earliest point where $event['ID'] is reliably set for BOTH new
+ * events (just created via tribe_create_event()) and updated ones — the
+ * "before" filters above don't have an ID yet for new events. $item here
+ * is still the original raw item, untouched by our unset() above (that
+ * only modified the derived $event array), so the real names are intact.
+ *
+ * $record (3rd arg) is used instead of the global flag since this action
+ * gets the actual record object with ->origin directly.
+ */
+add_action( 'tribe_aggregator_after_insert_post', 'myignite_save_plain_venue_organizer_names', 10, 3 );
+function myignite_save_plain_venue_organizer_names( $event, $item, $record ) {
+	if ( empty( $record->origin ) || ! in_array( $record->origin, array( 'ics', 'ical' ), true ) ) {
+		return;
+	}
+
+	if ( empty( $event['ID'] ) ) {
+		return;
+	}
+
+	if ( ! empty( $item->venue->venue ) ) {
+		update_post_meta( $event['ID'], '_myignite_venue_name', sanitize_text_field( $item->venue->venue ) );
+	}
+
+	if ( ! empty( $item->organizer ) ) {
+		$organizer_entries = is_array( $item->organizer ) ? $item->organizer : array( $item->organizer );
+		$names             = array();
+
+		foreach ( $organizer_entries as $organizer_entry ) {
+			if ( ! empty( $organizer_entry->organizer ) ) {
+				$names[] = sanitize_text_field( $organizer_entry->organizer );
+			}
+		}
+
+		if ( ! empty( $names ) ) {
+			// Comma-separated plain text — good enough for however many
+			// organizers CampusGroups lists on one event.
+			update_post_meta( $event['ID'], '_myignite_organizer_names', implode( ', ', $names ) );
+		}
+	}
+}
+
+
+// -----------------------------------------------------------------------
+// DISPLAY: REMOVE LINKS FROM VENUE AND ORGANIZER OUTPUT (TEC TEMPLATES)
+// -----------------------------------------------------------------------
+
+/**
+ * Makes venue names display as plain text instead of clickable links, on
+ * any TEC-rendered surface that still calls tribe_get_venue_link() (e.g.
+ * widgets, embeds, the Venue block) — for events that DO have a real
+ * linked Venue post (manually created, or imported before this change).
+ *
+ * IMPORTANT — this does NOT cover the site's actual single-event and
+ * listing-card displays. Those are custom theme templates
+ * (blocks/EventHero/EventHero.php, parts/card-tribe_events.php) that read
+ * _EventVenueID postmeta directly and never call this TEC function at
+ * all — see the fallback added to those two files for ICS-imported
+ * events with no linked Venue post.
+ *
+ * Confirmed current signature (src/functions/template-tags/venue.php:321):
+ *   apply_filters( 'tribe_get_venue_link', $link, $venue_id, $full_link, $url )
+ * NOTE: the previous version of this filter used the WRONG argument
+ * order ($link, $deprecated, $venue_id) — a leftover from an older TEC
+ * signature. That meant get_the_title() was being called with the
+ * $full_link boolean instead of the real venue ID. Fixed here.
+ */
+add_filter( 'tribe_get_venue_link', 'myignite_remove_venue_link', 10, 4 );
+function myignite_remove_venue_link( $link, $venue_id, $full_link, $url ) {
 	return esc_html( get_the_title( $venue_id ) );
 }
 
 /**
  * Makes organizer names display as plain text instead of clickable links,
- * everywhere The Events Calendar outputs them.
+ * on any TEC-rendered surface that still calls tribe_get_organizer_link().
  *
- * Same reasoning as the venue filter above — organizer archive pages
- * aren't a useful destination on this site. The organizer value is
- * imported from CampusGroups and represents the club/group that created
- * the event there, not a meaningful internal taxonomy to navigate by.
+ * Same "doesn't cover the actual site templates" caveat as the venue
+ * filter above applies here too.
  *
- * If this filter stops working after a plugin update, check the hook
- * name tribe_get_organizer_link in the Events Calendar source.
+ * Confirmed current signature (src/functions/template-tags/organizer.php:319):
+ *   apply_filters( 'tribe_get_organizer_link', $link, $post_id, $full_link, $url )
+ * NOTE: $post_id here is the ORIGINAL argument passed into
+ * tribe_get_organizer_link() (often an event ID), NOT the resolved
+ * organizer post ID — unlike the venue equivalent. tribe_get_organizer_id()
+ * resolves it correctly. The previous version of this filter assumed the
+ * 3rd argument was the organizer ID; it was actually the $full_link
+ * boolean. Fixed here.
+ *
+ * Also note: tribe_get_organizer_link() only reaches this filter at all
+ * when Events Calendar Pro is active AND the organizer post is published
+ * (src/functions/template-tags/organizer.php:356-380) — true for existing
+ * linked organizers on this site, but irrelevant for ICS-imported events
+ * going forward since they won't have a linked organizer post to begin
+ * with.
  */
-add_filter( 'tribe_get_organizer_link', 'myignite_remove_organizer_link', 10, 3 );
-function myignite_remove_organizer_link( $link, $deprecated, $organizer_id ) {
+add_filter( 'tribe_get_organizer_link', 'myignite_remove_organizer_link', 10, 4 );
+function myignite_remove_organizer_link( $link, $post_id, $full_link, $url ) {
+	$organizer_id = tribe_get_organizer_id( $post_id );
 	return esc_html( get_the_title( $organizer_id ) );
 }
 

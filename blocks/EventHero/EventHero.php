@@ -3,7 +3,8 @@
  * Event Hero Block
  *
  * A full-width hero section for single event pages (The Events Calendar)
- * displaying event title, date/time, venue, excerpt, and optional external link.
+ * displaying event title, date/time, venue, organizer, excerpt, and
+ * optional external link.
  *
  * Available variables (auto-extracted from $attributes):
  * @var string|null $anchor
@@ -23,7 +24,15 @@ $start_date  = get_post_meta( $event_id, '_EventStartDate', true );
 $end_date    = get_post_meta( $event_id, '_EventEndDate', true );
 $all_day     = (bool) get_post_meta( $event_id, '_EventAllDay', true );
 $venue_id    = get_post_meta( $event_id, '_EventVenueID', true );
-$venue_name      = $venue_id ? get_the_title( $venue_id ) : '';
+// Falls back to the plain-text name captured at ICS import for events
+// with no linked Venue post (see inc/helpers/myignite-image-sync.php).
+$venue_name      = $venue_id ? get_the_title( $venue_id ) : get_post_meta( $event_id, '_myignite_venue_name', true );
+
+$organizer_ids   = get_post_meta( $event_id, '_EventOrganizerID' );
+$organizer_names = array_filter( array_map( 'get_the_title', (array) $organizer_ids ) );
+// Falls back to the plain-text name(s) captured at ICS import for events
+// with no linked Organizer post.
+$organizer_name  = $organizer_names ? implode( ', ', $organizer_names ) : get_post_meta( $event_id, '_myignite_organizer_names', true );
 $external_url    = get_post_meta( $event_id, '_EventURL', true );
 $event_cost      = get_post_meta( $event_id, '_EventCost', true );
 $currency_symbol = get_post_meta( $event_id, '_EventCurrencySymbol', true );
@@ -160,6 +169,13 @@ if ( $start_date ) {
 					<?php if ( $venue_name ) : ?>
 						<p class="text-lg font-medium leading-[1.2] text-charcoal">
 							<?php echo esc_html( $venue_name ); ?>
+						</p>
+					<?php endif; ?>
+
+					<?php // Organizer Line ?>
+					<?php if ( $organizer_name ) : ?>
+						<p class="text-lg font-medium leading-[1.2] text-charcoal">
+							<?php echo esc_html( $organizer_name ); ?>
 						</p>
 					<?php endif; ?>
 

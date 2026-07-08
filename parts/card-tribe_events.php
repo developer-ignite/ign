@@ -15,7 +15,16 @@ $permalink    = get_permalink( $event_id );
 
 $start_date    = get_post_meta( $event_id, '_EventStartDate', true );
 $venue_id      = get_post_meta( $event_id, '_EventVenueID', true );
-$venue_name    = $venue_id ? get_the_title( $venue_id ) : '';
+// Falls back to the plain-text name captured at ICS import for events
+// with no linked Venue post (see inc/helpers/myignite-image-sync.php).
+$venue_name    = $venue_id ? get_the_title( $venue_id ) : get_post_meta( $event_id, '_myignite_venue_name', true );
+
+$organizer_ids   = get_post_meta( $event_id, '_EventOrganizerID' );
+$organizer_names = array_filter( array_map( 'get_the_title', (array) $organizer_ids ) );
+// Falls back to the plain-text name(s) captured at ICS import for events
+// with no linked Organizer post.
+$organizer_name  = $organizer_names ? implode( ', ', $organizer_names ) : get_post_meta( $event_id, '_myignite_organizer_names', true );
+
 $event_excerpt = get_the_excerpt();
 
 $day_of_week = '';
@@ -64,6 +73,10 @@ if ( $start_date ) {
 
 				<?php if ( $venue_name ) : ?>
 					<p class="font-sans font-medium text-base leading-[1.5]"><?php echo esc_html( $venue_name ); ?></p>
+				<?php endif; ?>
+
+				<?php if ( $organizer_name ) : ?>
+					<p class="font-sans font-medium text-base leading-[1.5]"><?php echo esc_html( $organizer_name ); ?></p>
 				<?php endif; ?>
 
 				<?php if ( $event_excerpt ) : ?>
