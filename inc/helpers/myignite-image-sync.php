@@ -416,6 +416,15 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		 * events already in the database before that filter was in place.
 		 * Safe to run multiple times — events already clean are skipped.
 		 *
+		 * Queries wp_posts directly via $wpdb rather than WP_Query: The
+		 * Events Calendar's Custom Tables V1 layer substitutes real post IDs
+		 * with "occurrence" pseudo-IDs on WP_Query results for tribe_events
+		 * (confirmed even with 'suppress_filters' => true — it happens below
+		 * that stage), and wp_update_post() against one of those pseudo-IDs
+		 * silently matches zero rows instead of erroring. A WP_Query-based
+		 * version of this command reported "cleaned" on every single run
+		 * without ever actually changing anything.
+		 *
 		 * ## EXAMPLES
 		 *
 		 *     wp myignite clean-descriptions
@@ -428,36 +437,32 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			// separator with no URL after it.
 			$pattern = '/\s*(?:\x{2014}|-{1,2})\s*(?:Event Details:\s*https?:\/\/\S+)?\s*$/u';
 
-			$query = new WP_Query( array(
-				'post_type'      => 'tribe_events',
-				'post_status'    => 'publish',
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-			) );
+			global $wpdb;
+			$rows = $wpdb->get_results(
+				"SELECT ID, post_content, post_excerpt FROM {$wpdb->posts}
+				 WHERE post_type = 'tribe_events' AND post_status = 'publish'"
+			);
 
 			$cleaned = 0;
 			$skipped = 0;
 
-			foreach ( $query->posts as $event_id ) {
-				$post    = get_post( $event_id );
-				$content = $post->post_content;
-				$excerpt = $post->post_excerpt;
+			foreach ( $rows as $row ) {
+				$new_content = preg_replace( $pattern, '', $row->post_content );
+				$new_excerpt = preg_replace( $pattern, '', $row->post_excerpt );
 
-				$new_content = preg_replace( $pattern, '', $content );
-				$new_excerpt = preg_replace( $pattern, '', $excerpt );
-
-				if ( $new_content === $content && $new_excerpt === $excerpt ) {
+				if ( $new_content === $row->post_content && $new_excerpt === $row->post_excerpt ) {
 					$skipped++;
 					continue;
 				}
 
-				wp_update_post( array(
-					'ID'           => $event_id,
-					'post_content' => $new_content,
-					'post_excerpt' => $new_excerpt,
-				) );
+				$wpdb->update(
+					$wpdb->posts,
+					array( 'post_content' => $new_content, 'post_excerpt' => $new_excerpt ),
+					array( 'ID' => $row->ID )
+				);
+				clean_post_cache( $row->ID );
 
-				WP_CLI::log( "Event {$event_id}: cleaned." );
+				WP_CLI::log( "Event {$row->ID}: cleaned." );
 				$cleaned++;
 			}
 
@@ -650,6 +655,10 @@ function myignite_save_plain_venue_organizer_names( $event, $item, $record ) {
 		return;
 	}
 
+	if ( get_post_meta( $event['ID'], '_myignite_lock_from_import', true ) ) {
+		return;
+	}
+
 	if ( ! empty( $item->venue->venue ) ) {
 		update_post_meta( $event['ID'], '_myignite_venue_name', sanitize_text_field( $item->venue->venue ) );
 	}
@@ -671,6 +680,151 @@ function myignite_save_plain_venue_organizer_names( $event, $item, $record ) {
 		}
 	}
 }
+
+/**
+ * If an event is locked (see myignite_render_import_meta_box() below),
+ * CampusGroups' own tribe_create_event()/tribe_update_event() call has
+ * already overwritten post_title/post_content/post_excerpt by the time this
+ * fires — tribe_aggregator_after_insert_post is the earliest point with a
+ * reliable post ID for both new and updated events (see the long comment
+ * above myignite_save_plain_venue_organizer_names()), which is already too
+ * late to intercept TEC's own save. Rather than guessing at the exact
+ * earlier filter TEC uses internally to persist the event (undocumented and
+ * unconfirmed without the plugin source in this repo), we correct the
+ * content back to the locked snapshot immediately within the same import
+ * cycle instead.
+ *
+ * Deliberately does NOT restore event dates: TEC's Custom Tables V1 keeps
+ * date/time in a separate wp_tec_occurrences table, and a postmeta-only
+ * restore here would leave that table and the post disagreeing about when
+ * the event actually happens. If CampusGroups sends the wrong dates, fix
+ * them at the source rather than relying on this lock.
+ *
+ * Priority 20 (after myignite_save_plain_venue_organizer_names's default 10)
+ * so this always has the final say on venue/organizer meta for locked events.
+ */
+add_action( 'tribe_aggregator_after_insert_post', 'myignite_restore_locked_event_content', 20, 3 );
+function myignite_restore_locked_event_content( $event, $item, $record ) {
+	if ( empty( $event['ID'] ) ) {
+		return;
+	}
+
+	if ( ! get_post_meta( $event['ID'], '_myignite_lock_from_import', true ) ) {
+		return;
+	}
+
+	$snapshot = json_decode( get_post_meta( $event['ID'], '_myignite_import_lock_snapshot', true ), true );
+
+	if ( empty( $snapshot ) ) {
+		return;
+	}
+
+	wp_update_post( array(
+		'ID'           => $event['ID'],
+		'post_title'   => $snapshot['post_title'],
+		'post_content' => $snapshot['post_content'],
+		'post_excerpt' => $snapshot['post_excerpt'],
+	) );
+
+	update_post_meta( $event['ID'], '_myignite_venue_name', $snapshot['venue_name'] );
+	update_post_meta( $event['ID'], '_myignite_organizer_names', $snapshot['organizer'] );
+}
+
+
+// -----------------------------------------------------------------------
+// ADMIN UI: EDITABLE VENUE/ORGANIZER + LOCK FROM CAMPUSGROUPS IMPORT
+// -----------------------------------------------------------------------
+
+/**
+ * Exposes the plain-text venue/organizer fields in a real meta box.
+ *
+ * Without this, _myignite_venue_name and _myignite_organizer_names are
+ * invisible in wp-admin: WordPress hides `_`-prefixed postmeta keys from the
+ * default Custom Fields panel, and these are only ever written
+ * programmatically by myignite_save_plain_venue_organizer_names() above —
+ * there was previously no way to edit them by hand at all.
+ *
+ * Also exposes the "lock" checkbox that protects an event's title,
+ * description, venue, and organizer from being overwritten by the next
+ * scheduled CampusGroups import (see myignite_restore_locked_event_content()
+ * and the guard clause in myignite_save_plain_venue_organizer_names()).
+ */
+add_action( 'add_meta_boxes_tribe_events', 'myignite_register_import_meta_box' );
+function myignite_register_import_meta_box() {
+	add_meta_box(
+		'myignite-campusgroups-import',
+		'CampusGroups Import',
+		'myignite_render_import_meta_box',
+		'tribe_events',
+		'side',
+		'high'
+	);
+}
+
+function myignite_render_import_meta_box( $post ) {
+	wp_nonce_field( 'myignite_import_meta_box', 'myignite_import_meta_box_nonce' );
+
+	$venue     = get_post_meta( $post->ID, '_myignite_venue_name', true );
+	$organizer = get_post_meta( $post->ID, '_myignite_organizer_names', true );
+	$locked    = get_post_meta( $post->ID, '_myignite_lock_from_import', true );
+	?>
+	<p>
+		<label for="myignite_venue_name"><strong>Venue name</strong></label><br />
+		<input type="text" id="myignite_venue_name" name="myignite_venue_name" class="widefat" value="<?php echo esc_attr( $venue ); ?>" />
+	</p>
+	<p>
+		<label for="myignite_organizer_names"><strong>Organizer name(s)</strong></label><br />
+		<input type="text" id="myignite_organizer_names" name="myignite_organizer_names" class="widefat" value="<?php echo esc_attr( $organizer ); ?>" />
+	</p>
+	<p>
+		<label>
+			<input type="checkbox" name="myignite_lock_from_import" value="1" <?php checked( $locked, '1' ); ?> />
+			Lock title, description, venue &amp; organizer against the next CampusGroups import
+		</label>
+	</p>
+	<p class="description">
+		Dates are never locked — TEC stores those separately from this post,
+		so a lock here can't keep them in sync. Fix wrong dates at the
+		CampusGroups source instead.
+	</p>
+	<?php
+}
+
+function myignite_save_import_meta_box( $post_id, $post ) {
+	if ( ! isset( $_POST['myignite_import_meta_box_nonce'] ) || ! wp_verify_nonce( $_POST['myignite_import_meta_box_nonce'], 'myignite_import_meta_box' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	$venue     = isset( $_POST['myignite_venue_name'] ) ? sanitize_text_field( wp_unslash( $_POST['myignite_venue_name'] ) ) : '';
+	$organizer = isset( $_POST['myignite_organizer_names'] ) ? sanitize_text_field( wp_unslash( $_POST['myignite_organizer_names'] ) ) : '';
+	$locked    = ! empty( $_POST['myignite_lock_from_import'] );
+
+	update_post_meta( $post_id, '_myignite_venue_name', $venue );
+	update_post_meta( $post_id, '_myignite_organizer_names', $organizer );
+	update_post_meta( $post_id, '_myignite_lock_from_import', $locked ? '1' : '' );
+
+	// Refresh the protected snapshot every time a locked event is saved, so
+	// the lock always protects the admin's latest edit rather than whatever
+	// was on the post the moment the checkbox was first ticked.
+	if ( $locked ) {
+		update_post_meta( $post_id, '_myignite_import_lock_snapshot', wp_json_encode( array(
+			'post_title'   => $post->post_title,
+			'post_content' => $post->post_content,
+			'post_excerpt' => $post->post_excerpt,
+			'venue_name'   => $venue,
+			'organizer'    => $organizer,
+		) ) );
+	}
+}
+add_action( 'save_post_tribe_events', 'myignite_save_import_meta_box', 10, 2 );
 
 
 // -----------------------------------------------------------------------
