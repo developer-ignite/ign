@@ -23,6 +23,7 @@ type PostHeroAttributes = {
 	anchor?: string;
 	showExcerpt: boolean;
 	useTopicColor: boolean;
+	showAuthorDate: boolean;
 };
 
 type EditProps = {
@@ -114,6 +115,16 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 						onChange={(value) => setAttributes({ useTopicColor: value })}
 						__nextHasNoMarginBottom
 					/>
+					<ToggleControl
+						label={__("Show Author & Date", "takt")}
+						help={__(
+							"Display the author name and publish date below the title.",
+							"takt"
+						)}
+						checked={attributes.showAuthorDate}
+						onChange={(value) => setAttributes({ showAuthorDate: value })}
+						__nextHasNoMarginBottom
+					/>
 				</PanelBody>
 			</InspectorControls>
 
@@ -193,25 +204,27 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 							)}
 
 							{/* Lower Group: Author + Date */}
-							<div className="mt-12 flex flex-col gap-1">
-								{/* Author Line */}
-								<p className="text-lg font-medium leading-[1.2] text-charcoal">
-									{sprintf(
-										/* translators: %s: author name */
-										__("By: %s", "takt"),
-										postAuthor
-									)}
-								</p>
+							{attributes.showAuthorDate && (
+								<div className="mt-12 flex flex-col gap-1">
+									{/* Author Line */}
+									<p className="text-lg font-medium leading-[1.2] text-charcoal">
+										{sprintf(
+											/* translators: %s: author name */
+											__("By: %s", "takt"),
+											postAuthor
+										)}
+									</p>
 
-								{/* Date Line */}
-								<p className="text-lg font-medium leading-[1.2] text-charcoal">
-									{sprintf(
-										/* translators: %s: publish date */
-										__("Published on: %s", "takt"),
-										postDate
-									)}
-								</p>
-							</div>
+									{/* Date Line */}
+									<p className="text-lg font-medium leading-[1.2] text-charcoal">
+										{sprintf(
+											/* translators: %s: publish date */
+											__("Published on: %s", "takt"),
+											postDate
+										)}
+									</p>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>

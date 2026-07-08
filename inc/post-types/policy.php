@@ -61,3 +61,4 @@ function theme_register_policy_post_type() {
 add_action('init', 'theme_register_policy_post_type');
 
 require_once get_template_directory() . '/inc/post-types/policy-order.php';
+require_once get_template_directory() . '/inc/post-types/policy-link.php';

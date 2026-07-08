@@ -6,6 +6,7 @@
  * @var string|null $anchor
  * @var bool $showExcerpt
  * @var bool $useTopicColor
+ * @var bool $showAuthorDate
  *
  * @var string $content Block content.
  * @var WP_Block $block Block instance.
@@ -97,6 +98,7 @@ $firstAccentColor    = $firstCategory ? get_term_meta( $firstCategory->term_id, 
 				<?php endif; ?>
 
 				<?php // Lower Group: Author + Date ?>
+				<?php if ( $showAuthorDate ?? true ) : ?>
 				<div class="mt-12 flex flex-col gap-1" data-animate="fade-up" data-animate-delay="750">
 					<?php // Author Line ?>
 					<p class="text-lg font-medium leading-[1.2] text-charcoal">
@@ -124,6 +126,7 @@ $firstAccentColor    = $firstCategory ? get_term_meta( $firstCategory->term_id, 
 						?>
 					</p>
 				</div>
+				<?php endif; ?>
 			</div>
 		</div>
 	</div>

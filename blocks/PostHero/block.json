@@ -20,6 +20,10 @@
     "useTopicColor": {
       "type": "boolean",
       "default": false
+    },
+    "showAuthorDate": {
+      "type": "boolean",
+      "default": true
     }
   },
   "textdomain": "takt",
