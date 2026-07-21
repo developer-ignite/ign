@@ -167,7 +167,7 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 
 					<FilteredServerSideRender
 						querySelector=".featured-events-list"
-						className="featured-events-list flex flex-col gap-6"
+						className="featured-events-list grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8"
 					/>
 				</div>
 			</section>

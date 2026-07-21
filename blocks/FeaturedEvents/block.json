@@ -4,7 +4,7 @@
   "name": "takt/featured-events",
   "title": "Featured Events",
   "category": "takt-theme",
-  "description": "Displays dynamically queried events from The Events Calendar in a vertically stacked layout with image and content panels, supporting automatic and manual selection modes.",
+  "description": "Displays dynamically queried events from The Events Calendar: the first event as a featured card with image, alongside a compact text-only list of the remaining events, supporting automatic and manual selection modes.",
   "supports": {
     "html": false,
     "anchor": true

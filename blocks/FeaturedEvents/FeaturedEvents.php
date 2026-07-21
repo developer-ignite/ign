@@ -2,8 +2,9 @@
 /**
  * Featured Events block template.
  *
- * Renders a vertically stacked list of events from The Events Calendar
- * with image/content panels, supporting automatic and manual selection modes.
+ * Renders the first upcoming/past event as a featured card (image + full
+ * details) alongside a compact, text-only list of the remaining events,
+ * supporting automatic and manual selection modes.
  *
  * @var string|null $anchor
  * @var string      $eyebrow
@@ -108,15 +109,32 @@ if ( $postsSource === 'manual' && ! empty( $selectedPosts ) ) {
 			</div>
 
 			<?php if ( $has_posts ) : ?>
-				<div class="featured-events-list flex flex-col gap-16" data-animate-stagger>
-					<?php while ( $query->have_posts() ) : ?>
-						<?php $query->the_post(); ?>
-						<?php
-						get_template_part( 'parts/card', 'tribe_events', [
-							'buttonLabel' => $buttonLabel,
-						] );
-						?>
-					<?php endwhile; ?>
+				<?php
+				$events           = $query->posts;
+				$featured_event   = array_shift( $events );
+				$remaining_events = $events;
+				?>
+				<div class="featured-events-list grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8 items-start" data-animate-stagger>
+					<?php
+					global $post;
+					$post = $featured_event;
+					setup_postdata( $post );
+					get_template_part( 'parts/card', 'tribe_events', [
+						'buttonLabel' => $buttonLabel,
+					] );
+					?>
+
+					<?php if ( ! empty( $remaining_events ) ) : ?>
+						<div class="relative p-4 md:p-8 flex flex-col divide-y divide-white/20 before:absolute before:bg-charcoal before:rounded-3xl before:-z-1 before:-inset-x-[calc(var(--side-gutter)/2)] before:-inset-y-4 md:before:inset-y-0 md:before:-inset-x-(--bg-extend)">
+							<?php foreach ( $remaining_events as $event ) : ?>
+								<?php
+								$post = $event;
+								setup_postdata( $post );
+								get_template_part( 'parts/card', 'tribe_events-compact' );
+								?>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
 				</div>
 			<?php endif; ?>
 		</div>
