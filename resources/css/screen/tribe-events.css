@@ -1173,6 +1173,22 @@
 	color: color-mix(in srgb, var(--color-charcoal) 70%, transparent);
 }
 
+/* List view title + date tag + description: TEC ships these with its own
+   default font stack rather than consuming --tec-font-family-sans-serif,
+   so the theme's fonts (Anton for headings, General Sans for body text)
+   don't come through automatically. !important because TEC's own rules
+   are injected in <body>, after our <head> stylesheet, and win any
+   equal-specificity tie without it. */
+.tribe-events .tribe-events-calendar-list__event-title {
+	font-family: var(--font-heading) !important;
+}
+
+.tribe-events .tribe-events-calendar-list__event-date-tag-weekday,
+.tribe-events .tribe-events-calendar-list__event-date-tag-datetime,
+.tribe-events .tribe-events-calendar-list__event-description {
+	font-family: var(--font-sans) !important;
+}
+
 /* Category chip: TEC reserves a 14×14 box on every chip for an icon
    SVG. When the category has no icon the box still takes up space
    and reads as leading whitespace before the chip label. Hide the

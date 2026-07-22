@@ -431,11 +431,12 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		 */
 		public function clean_descriptions( $args, $assoc_args ) {
 			// Matches " --- Event Details: https://..." at the end of the
-			// string, tolerant of em-dash or double-hyphen, and any amount
-			// of surrounding whitespace. The "Event Details: URL" part is
+			// string, tolerant of em-dash, en-dash, or double-hyphen (CampusGroups
+			// isn't consistent about which one it emits), and any amount of
+			// surrounding whitespace. The "Event Details: URL" part is
 			// optional — CampusGroups sometimes sends just the bare
 			// separator with no URL after it.
-			$pattern = '/\s*(?:\x{2014}|-{1,2})\s*(?:Event Details:\s*https?:\/\/\S+)?\s*$/u';
+			$pattern = '/\s*(?:\x{2013}|\x{2014}|-{1,2})\s*(?:Event Details:\s*https?:\/\/\S+)?\s*$/u';
 
 			global $wpdb;
 			$rows = $wpdb->get_results(

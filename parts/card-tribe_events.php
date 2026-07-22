@@ -4,27 +4,24 @@
  *
  * Called within a WP_Query loop (the_post()/setup_postdata() already called).
  * Renders a single stacked card: image with date badge overlay on top,
- * full event details (title, venue, organizer, description, CTA) below.
+ * event details (title, venue, description, CTA) below. Organizer is
+ * intentionally omitted to match the compact list rows alongside it.
  *
- * @var array  $args        Template args passed via get_template_part().
- * @var string $buttonLabel CTA button text (passed from parent block via $args).
+ * @var array  $args         Template args passed via get_template_part().
+ * @var string $buttonLabel  CTA button text (passed from parent block via $args).
+ * @var bool   $isFullWidth  Whether to span the full module width (no list alongside it).
  */
 
-$button_label = $args['buttonLabel'] ?? __( 'View Event', 'takt' );
-$event_id     = get_the_ID();
-$permalink    = get_permalink( $event_id );
+$button_label  = $args['buttonLabel'] ?? __( 'View Event', 'takt' );
+$is_full_width = $args['isFullWidth'] ?? false;
+$event_id      = get_the_ID();
+$permalink     = get_permalink( $event_id );
 
 $start_date    = get_post_meta( $event_id, '_EventStartDate', true );
 $venue_id      = get_post_meta( $event_id, '_EventVenueID', true );
 // Falls back to the plain-text name captured at ICS import for events
 // with no linked Venue post (see inc/helpers/myignite-image-sync.php).
 $venue_name    = $venue_id ? get_the_title( $venue_id ) : get_post_meta( $event_id, '_myignite_venue_name', true );
-
-$organizer_ids   = get_post_meta( $event_id, '_EventOrganizerID' );
-$organizer_names = array_filter( array_map( 'get_the_title', (array) $organizer_ids ) );
-// Falls back to the plain-text name(s) captured at ICS import for events
-// with no linked Organizer post.
-$organizer_name  = $organizer_names ? implode( ', ', $organizer_names ) : get_post_meta( $event_id, '_myignite_organizer_names', true );
 
 $event_excerpt = get_the_excerpt();
 
@@ -42,7 +39,7 @@ if ( $start_date ) {
 }
 ?>
 
-<div data-animate="fade-up">
+<div data-animate="fade-up" class="<?php echo class_name( [ 'md:col-span-2' => $is_full_width ] ); ?>">
 	<a href="<?php echo esc_url( $permalink ); ?>" class="relative flex flex-col gap-6 p-4 md:p-8 text-white group no-underline! w-full before:absolute before:bg-charcoal before:rounded-3xl before:-z-1 before:-inset-x-[calc(var(--side-gutter)/2)] before:-inset-y-4 md:before:inset-y-0 md:before:-inset-x-(--bg-extend)">
 		<?php /* Image */ ?>
 		<div class="relative flex flex-col items-end w-full overflow-hidden rounded-xl p-2 aspect-[4/3]">
@@ -59,7 +56,7 @@ if ( $start_date ) {
 				<div class="relative ml-auto w-[104px] bg-charcoal rounded-lg py-3 px-1 text-center text-white flex flex-col items-center">
 					<span class="sr-only"><?php echo esc_html( $accessible_date ); ?></span>
 					<span class="font-sans font-medium text-base leading-[1.5]" aria-hidden="true"><?php echo esc_html( $day_of_week ); ?></span>
-					<span class="font-heading text-[2.5rem] leading-[1.1]" aria-hidden="true"><?php echo esc_html( $day_number ); ?></span>
+					<span class="font-sans font-bold text-[2.5rem] leading-[1.1]" aria-hidden="true"><?php echo esc_html( $day_number ); ?></span>
 					<span class="font-sans font-medium text-base leading-[1.5]" aria-hidden="true"><?php echo esc_html( $month_year ); ?></span>
 				</div>
 			<?php endif; ?>
@@ -73,12 +70,8 @@ if ( $start_date ) {
 				<p class="font-sans font-medium text-base leading-[1.5]"><?php echo esc_html( $venue_name ); ?></p>
 			<?php endif; ?>
 
-			<?php if ( $organizer_name ) : ?>
-				<p class="font-sans font-medium text-base leading-[1.5]"><?php echo esc_html( $organizer_name ); ?></p>
-			<?php endif; ?>
-
 			<?php if ( $event_excerpt ) : ?>
-				<p class="font-sans font-medium text-base leading-[1.5]"><?php echo wp_kses_post( $event_excerpt ); ?></p>
+				<p class="font-sans font-medium text-base leading-[1.5] text-white/70"><?php echo wp_kses_post( $event_excerpt ); ?></p>
 			<?php endif; ?>
 		</div>
 

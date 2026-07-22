@@ -121,6 +121,7 @@ if ( $postsSource === 'manual' && ! empty( $selectedPosts ) ) {
 					setup_postdata( $post );
 					get_template_part( 'parts/card', 'tribe_events', [
 						'buttonLabel' => $buttonLabel,
+						'isFullWidth' => empty( $remaining_events ),
 					] );
 					?>
 

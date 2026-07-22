@@ -39,7 +39,7 @@ if ( $start_date ) {
 			<div class="shrink-0 w-[72px] bg-white/20 rounded-lg py-2 px-1 text-center text-white flex flex-col items-center">
 				<span class="sr-only"><?php echo esc_html( $accessible_date ); ?></span>
 				<span class="font-sans font-medium text-sm leading-[1.5]" aria-hidden="true"><?php echo esc_html( $day_of_week ); ?></span>
-				<span class="font-heading text-[1.75rem] leading-[1.1]" aria-hidden="true"><?php echo esc_html( $day_number ); ?></span>
+				<span class="font-sans font-bold text-[1.75rem] leading-[1.1]" aria-hidden="true"><?php echo esc_html( $day_number ); ?></span>
 				<span class="font-sans font-medium text-sm leading-[1.5]" aria-hidden="true"><?php echo esc_html( $month_year ); ?></span>
 			</div>
 		<?php endif; ?>
