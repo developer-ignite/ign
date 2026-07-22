@@ -3,12 +3,13 @@
  * Event Hero Block
  *
  * A full-width hero section for single event pages (The Events Calendar)
- * displaying event title, date/time, venue, organizer, excerpt, and
- * optional external link.
+ * displaying event title, date/time, venue, organizer, and optional
+ * external link. Intentionally does not display the event excerpt/
+ * description — that only appears in the details section further
+ * down the page.
  *
  * Available variables (auto-extracted from $attributes):
  * @var string|null $anchor
- * @var bool        $showExcerpt
  *
  * @var WP_Block $block   Block instance.
  * @var string   $content Block content.
@@ -16,7 +17,6 @@
 
 $event_id        = get_the_ID();
 $event_title     = get_the_title();
-$event_excerpt   = get_the_excerpt();
 $featured_img_id = get_post_thumbnail_id();
 
 // Event-specific meta from The Events Calendar
@@ -145,13 +145,6 @@ if ( $start_date ) {
 						</h1>
 					<?php endif; ?>
 				</div>
-
-				<?php // Excerpt (Optional) ?>
-				<?php if ( $showExcerpt && ! empty( $event_excerpt ) ) : ?>
-					<p class="text-body-large text-charcoal mt-6" data-animate="fade-up" data-animate-delay="600">
-						<?php echo wp_kses_post( $event_excerpt ); ?>
-					</p>
-				<?php endif; ?>
 
 				<?php // Lower Group: Date/Time, Venue, External Link ?>
 				<div class="mt-12 flex flex-col gap-1" data-animate="fade-up" data-animate-delay="750">

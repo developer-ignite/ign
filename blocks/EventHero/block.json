@@ -4,7 +4,7 @@
   "name": "takt/event-hero",
   "title": "Event Hero",
   "category": "takt-theme",
-  "description": "A full-width hero section for single event pages (The Events Calendar) that displays the event title, start/end date and time, venue name, excerpt, and an optional external link button with gradient background.",
+  "description": "A full-width hero section for single event pages (The Events Calendar) that displays the event title, start/end date and time, venue name, and an optional external link button with gradient background.",
   "supports": {
     "html": false,
     "anchor": true
@@ -12,17 +12,11 @@
   "attributes": {
     "anchor": {
       "type": "string"
-    },
-    "showExcerpt": {
-      "type": "boolean",
-      "default": true
     }
   },
   "textdomain": "takt",
   "example": {
     "viewportWidth": 1440,
-    "attributes": {
-      "showExcerpt": true
-    }
+    "attributes": {}
   }
 }

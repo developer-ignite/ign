@@ -1,7 +1,6 @@
 import { __ } from "@wordpress/i18n";
 import { useEffect, useRef } from "@wordpress/element";
-import { useBlockProps, InspectorControls } from "@wordpress/block-editor";
-import { PanelBody, ToggleControl } from "@wordpress/components";
+import { useBlockProps } from "@wordpress/block-editor";
 import {
 	shouldDisplay,
 	cn,
@@ -19,14 +18,7 @@ type EventCategoryTerm = {
 	taxonomy: string;
 };
 
-type EventHeroAttributes = {
-	anchor?: string;
-	showExcerpt: boolean;
-};
-
 type EditProps = {
-	attributes: EventHeroAttributes;
-	setAttributes: (attrs: Partial<EventHeroAttributes>) => void;
 	clientId: string;
 };
 
@@ -117,7 +109,7 @@ function formatEventDateRange(
 	return `${startDateStr}, ${startTimeStr} – ${endDateStr}, ${endTimeStr}`;
 }
 
-export default function Edit({ attributes, setAttributes, clientId }: EditProps) {
+export default function Edit({ clientId }: EditProps) {
 	const { displayContent } = shouldDisplay();
 	const hasHeader = isTemplatePreview() || isTemplateEdit();
 
@@ -133,9 +125,6 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 
 	// Extract event data
 	const eventTitle = post?.title?.rendered || __("Event Title", "takt");
-	const eventExcerpt = post?.excerpt?.rendered
-		? post.excerpt.rendered.replace(/<[^>]+>/g, "").trim()
-		: "";
 	const featuredMediaUrl = post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url || null;
 
 	// tribe_events_cat terms come from wp:term embedded data
@@ -199,18 +188,6 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 
 	return (
 		<>
-			<InspectorControls>
-				<PanelBody title={__("Settings", "takt")} initialOpen={true}>
-					<ToggleControl
-						label={__("Show Excerpt", "takt")}
-						help={__("Display the event excerpt below the title.", "takt")}
-						checked={attributes.showExcerpt}
-						onChange={(value) => setAttributes({ showExcerpt: value })}
-						__nextHasNoMarginBottom
-					/>
-				</PanelBody>
-			</InspectorControls>
-
 			<section
 				{...useBlockProps({
 					className: cn({
@@ -281,13 +258,6 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 									<h1 className="text-header-0 text-charcoal">{eventTitle}</h1>
 								)}
 							</div>
-
-							{/* Excerpt (Optional) */}
-							{attributes.showExcerpt && (displayContent || eventExcerpt) && (
-								<p className="text-body-large text-charcoal mt-6">
-									{eventExcerpt || __("Event excerpt will appear here…", "takt")}
-								</p>
-							)}
 
 							{/* Lower Group: Date/Time, Venue, External Link */}
 							<div className="mt-12 flex flex-col gap-1">
