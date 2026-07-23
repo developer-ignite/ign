@@ -540,10 +540,12 @@ body .gform-theme--framework.gform-theme--framework *::after {
 		}
 	}
 
-	/* Submit button styling */
-	.gform_button,
-	input[type="submit"],
-	button[type="submit"] {
+	/* Submit button styling (fallback for buttons without .btn-primary/.btn-secondary,
+	   which theme_gform_input_to_button() applies to actual Gravity Forms buttons -
+	   see inc/functions/gforms.php) */
+	.gform_button:not(.btn-primary):not(.btn-secondary),
+	input[type="submit"]:not(.btn-primary):not(.btn-secondary),
+	button[type="submit"]:not(.btn-primary):not(.btn-secondary) {
 		@apply appearance-none
 	  bg-black
 	  text-white
