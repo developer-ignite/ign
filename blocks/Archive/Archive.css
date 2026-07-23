@@ -134,31 +134,24 @@
 }
 
 /* Light mode: when card hovers to accent, keep btn-tertiary charcoal */
+/* Hover-only (not :focus/:focus-within) so a lingering click-focus doesn't keep the */
+/* link locked to this color after the pointer leaves and the card bg/title revert */
 .archive:not(.dark) .card-resource .group:hover .btn-tertiary,
 .archive:not(.dark) .card-resource .group:hover .btn-tertiary:hover,
-.archive:not(.dark) .card-resource .group:hover .btn-tertiary:focus,
-.archive:not(.dark) .card-resource .group:focus-within .btn-tertiary,
 .archive:not(.dark) .card-policy .group:hover .btn-tertiary,
-.archive:not(.dark) .card-policy .group:hover .btn-tertiary:hover,
-.archive:not(.dark) .card-policy .group:hover .btn-tertiary:focus,
-.archive:not(.dark) .card-policy .group:focus-within .btn-tertiary {
+.archive:not(.dark) .card-policy .group:hover .btn-tertiary:hover {
 	color: var(--color-charcoal) !important;
 }
 
 /* Dark mode: override btn-tertiary component hover to prevent contrast issues */
-/* Cover hover, focus, and group-hover states (but NOT base state to avoid charcoal-on-charcoal) */
+/* Hover-only (see light-mode comment above); base/focus states fall back to the */
+/* component's own dark:focus:text-off-white, matching the title's hover-only behavior */
 .archive.dark .card-resource .btn-tertiary:hover,
-.archive.dark .card-resource .btn-tertiary:focus,
 .archive.dark .card-resource .group:hover .btn-tertiary,
 .archive.dark .card-resource .group:hover .btn-tertiary:hover,
-.archive.dark .card-resource .group:hover .btn-tertiary:focus,
-.archive.dark .card-resource .group:focus-within .btn-tertiary,
 .archive.dark .card-policy .btn-tertiary:hover,
-.archive.dark .card-policy .btn-tertiary:focus,
 .archive.dark .card-policy .group:hover .btn-tertiary,
-.archive.dark .card-policy .group:hover .btn-tertiary:hover,
-.archive.dark .card-policy .group:hover .btn-tertiary:focus,
-.archive.dark .card-policy .group:focus-within .btn-tertiary {
+.archive.dark .card-policy .group:hover .btn-tertiary:hover {
 	color: var(--color-charcoal) !important;
 }
 
