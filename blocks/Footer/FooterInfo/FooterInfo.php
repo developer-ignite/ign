@@ -46,7 +46,7 @@ foreach ( $addresses as $addr ) {
 	<?php endif; ?>
 
 	<?php // Info row ?>
-	<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8">
+	<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 sm:gap-x-8 gap-y-8">
 		<?php // Address section ?>
 		<div class="flex flex-col gap-3 col-span-2 sm:col-span-3 lg:col-span-3">
 			<?php if ( ! empty( $addressLabel ) ) : ?>
