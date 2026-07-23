@@ -61,6 +61,22 @@
 	}
 }
 
+.hero-image-reveal img {
+	object-position: var(--hero-image-position-mobile);
+}
+
+@media (min-width: 768px) {
+	.hero-image-reveal img {
+		object-position: var(--hero-image-position-tablet);
+	}
+}
+
+@media (min-width: 1168px) {
+	.hero-image-reveal img {
+		object-position: var(--hero-image-position-desktop);
+	}
+}
+
 /* Distance the gradient element is shifted up at the start of the entrance
    animation — large enough for its top edge to reach the top of the hero,
    covering the image area during the mask-reveal so there's no "hole". */

@@ -17,8 +17,10 @@
  */
 $isPrimary       = $blockVariation === 'primary';
 $isSecondary     = $blockVariation === 'secondary';
-$hasImage        = ! empty( $image['id'] );
 $hasBreadcrumbs  = ! empty( $showBreadcrumbs );
+
+$resolvedImage = theme_resolve_responsive_image( $image ?? [] );
+$hasImage      = ! empty( $resolvedImage['desktop']['id'] );
 ?>
 
 <section <?php
@@ -35,17 +37,34 @@ $hasBreadcrumbs  = ! empty( $showBreadcrumbs );
 	<div class="hero-image-reveal col-start-1 row-start-1 overflow-hidden bg-accent h-[calc(var(--header-height)+300px)] md:h-[calc(var(--header-height)+450px)]">
 		<?php if ( $hasImage ) : ?>
 			<?php
-			echo wp_get_attachment_image(
-				$image['id'],
-				'full',
-				false,
-				[
-					'class' => 'w-full h-full object-cover',
-					'style' => 'object-position: ' . theme_image_position( $image['focalPoint'] ?? null ) . ';',
-					'alt'   => '',
-				]
+			$desktopId = $resolvedImage['desktop']['id'];
+			$tabletId  = $resolvedImage['tablet']['id'];
+			$mobileId  = $resolvedImage['mobile']['id'];
+			$positionStyle = esc_attr(
+				'--hero-image-position-mobile: ' . theme_image_position( $resolvedImage['mobile']['focalPoint'] ?? null ) . ';' .
+				'--hero-image-position-tablet: ' . theme_image_position( $resolvedImage['tablet']['focalPoint'] ?? null ) . ';' .
+				'--hero-image-position-desktop: ' . theme_image_position( $resolvedImage['desktop']['focalPoint'] ?? null ) . ';'
 			);
 			?>
+			<picture style="<?php echo $positionStyle; ?>">
+				<?php if ( ! empty( $mobileId ) && $mobileId !== $desktopId ) : ?>
+					<source media="(max-width: 767px)" srcset="<?php echo esc_url( wp_get_attachment_image_url( $mobileId, 'full' ) ); ?>">
+				<?php endif; ?>
+				<?php if ( ! empty( $tabletId ) && $tabletId !== $desktopId ) : ?>
+					<source media="(min-width: 768px) and (max-width: 1167px)" srcset="<?php echo esc_url( wp_get_attachment_image_url( $tabletId, 'full' ) ); ?>">
+				<?php endif; ?>
+				<?php
+				echo wp_get_attachment_image(
+					$desktopId,
+					'full',
+					false,
+					[
+						'class' => 'w-full h-full object-cover',
+						'alt'   => '',
+					]
+				);
+				?>
+			</picture>
 		<?php endif; ?>
 	</div>
 

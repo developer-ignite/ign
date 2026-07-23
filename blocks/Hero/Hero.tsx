@@ -1,6 +1,13 @@
 import { __ } from "@wordpress/i18n";
+import { useState } from "@wordpress/element";
 import { useBlockProps, useInnerBlocksProps, InspectorControls } from "@wordpress/block-editor";
-import { PanelBody, ToggleControl } from "@wordpress/components";
+import {
+	PanelBody,
+	ToggleControl,
+	Button,
+	__experimentalToggleGroupControl as ToggleGroupControl,
+	__experimentalToggleGroupControlOption as ToggleGroupControlOption
+} from "@wordpress/components";
 import {
 	shouldDisplay,
 	cn,
@@ -22,6 +29,38 @@ type ImageAttribute = {
 	focalPoint?: { x: number; y: number };
 };
 
+type ResponsiveImageAttribute = {
+	desktop?: ImageAttribute;
+	tablet?: ImageAttribute | null;
+	mobile?: ImageAttribute | null;
+};
+
+type Tier = "desktop" | "tablet" | "mobile";
+
+const DEFAULT_IMAGE: ImageAttribute = { id: null, focalPoint: { x: 0.5, y: 0.5 } };
+
+// Legacy shape was a flat `{ id, focalPoint }`; treat it as desktop-only.
+function normalizeImage(image: ResponsiveImageAttribute | ImageAttribute | undefined) {
+	const isLegacy = !!image && "id" in image && !("desktop" in image);
+	if (isLegacy) {
+		return { desktop: image as ImageAttribute, tablet: null as ImageAttribute | null, mobile: null as ImageAttribute | null };
+	}
+	const responsive = (image || {}) as ResponsiveImageAttribute;
+	return {
+		desktop: responsive.desktop || DEFAULT_IMAGE,
+		tablet: responsive.tablet || null,
+		mobile: responsive.mobile || null
+	};
+}
+
+// Mobile inherits tablet, tablet inherits desktop, when not overridden.
+function resolveResponsiveImage(image: ResponsiveImageAttribute | ImageAttribute | undefined) {
+	const { desktop, tablet, mobile } = normalizeImage(image);
+	const resolvedTablet = tablet || desktop;
+	const resolvedMobile = mobile || resolvedTablet;
+	return { desktop, tablet: resolvedTablet, mobile: resolvedMobile };
+}
+
 type HeroAttributes = {
 	anchor?: string;
 	blockVariation: "primary" | "secondary";
@@ -35,7 +74,7 @@ type HeroAttributes = {
 		opensInNewTab?: boolean;
 		label?: string;
 	}>;
-	image: ImageAttribute;
+	image: ResponsiveImageAttribute;
 	enableQuickNav: boolean;
 	showBreadcrumbs: boolean;
 };
@@ -52,8 +91,35 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 	const isPrimary = attributes.blockVariation === "primary";
 	const isSecondary = attributes.blockVariation === "secondary";
 
-	const mediaImage = fetchMedia(attributes.image?.id || null);
+	const [activeTier, setActiveTier] = useState<Tier>("desktop");
+	const normalizedImage = normalizeImage(attributes.image);
+	const resolvedImage = resolveResponsiveImage(attributes.image);
+	const activeImage = resolvedImage[activeTier];
+	const isOverridden = activeTier !== "desktop" && !!normalizedImage[activeTier];
+
+	const mediaImage = fetchMedia(activeImage?.id || null);
 	const hasImage = !!mediaImage?.source_url;
+
+	const setTierImage = (image: ImageAttribute) => {
+		setAttributes({
+			image: {
+				desktop: normalizedImage.desktop,
+				tablet: normalizedImage.tablet,
+				mobile: normalizedImage.mobile,
+				[activeTier]: image
+			}
+		});
+	};
+
+	const resetTierToInherited = () => {
+		setAttributes({
+			image: {
+				desktop: normalizedImage.desktop,
+				tablet: activeTier === "tablet" ? null : normalizedImage.tablet,
+				mobile: activeTier === "mobile" ? null : normalizedImage.mobile
+			}
+		});
+	};
 
 	// Limit to one QuickNavigation block
 	uniqueBlocks("takt/quick-navigation", clientId);
@@ -99,10 +165,28 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 				)}
 
 				<PanelBody title={__("Media", "takt")} initialOpen={true}>
+					<ToggleGroupControl
+						label={__("Editing", "takt")}
+						value={activeTier}
+						onChange={(value) => setActiveTier(value as Tier)}
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
+					>
+						<ToggleGroupControlOption value="desktop" label={__("Desktop", "takt")} />
+						<ToggleGroupControlOption value="tablet" label={__("Tablet", "takt")} />
+						<ToggleGroupControlOption value="mobile" label={__("Mobile", "takt")} />
+					</ToggleGroupControl>
+					{isOverridden && (
+						<Button variant="link" onClick={resetTierToInherited}>
+							{activeTier === "tablet"
+								? __("Reset to Desktop image", "takt")
+								: __("Reset to Tablet image", "takt")}
+						</Button>
+					)}
 					<MediaUploadPanel
-						media={attributes.image}
+						media={activeImage}
 						label={__("Background Image", "takt")}
-						onSelect={(image) => setAttributes({ image })}
+						onSelect={(image) => setTierImage(image)}
 					/>
 				</PanelBody>
 			</InspectorControls>
@@ -122,8 +206,8 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps)
 				<div className="col-start-1 row-start-1 overflow-hidden bg-accent h-[calc(var(--header-height)+300px)] md:h-[calc(var(--header-height)+450px)] mask-b-from-65% mask-b-to-90%">
 					{(displayContent || hasImage) && (
 						<ImageDropUploader
-							image={attributes.image}
-							onSelect={(image) => setAttributes({ image })}
+							image={activeImage}
+							onSelect={(image) => setTierImage(image)}
 							className="w-full! h-full!"
 							imageClassName="w-full! h-full! object-cover"
 							imageStyle={{ pointerEvents: "none", cursor: "default" }}

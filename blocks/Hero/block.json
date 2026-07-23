@@ -62,8 +62,9 @@
     "image": {
       "type": "object",
       "default": {
-        "id": null,
-        "focalPoint": { "x": 0.5, "y": 0.5 }
+        "desktop": { "id": null, "focalPoint": { "x": 0.5, "y": 0.5 } },
+        "tablet": null,
+        "mobile": null
       }
     },
     "enableQuickNav": {
@@ -84,8 +85,9 @@
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.",
       "enableQuickNav": true,
       "image": {
-        "id": "https://picsum.photos/id/957/1440/800",
-        "focalPoint": { "x": 0.5, "y": 0.5 }
+        "desktop": { "id": "https://picsum.photos/id/957/1440/800", "focalPoint": { "x": 0.5, "y": 0.5 } },
+        "tablet": null,
+        "mobile": null
       }
     },
     "innerBlocks": [
