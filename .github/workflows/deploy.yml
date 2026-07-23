@@ -9,11 +9,11 @@ on:
       environment:
         description: 'Deploy to'
         required: true
-        default: 'staging'
+        default: 'production'
         type: choice
         options:
-          - staging
           - production
+          # - staging  # staging environment no longer exists; re-enable when recreated
 
 jobs:
   build:
@@ -44,34 +44,37 @@ jobs:
             node_modules
             .git
 
-  deploy-staging:
-    name: Deploy → Staging
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
-    environment:
-      name: staging
-      url: https://ignitesustg.wpengine.com
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: built-theme
-
-      - name: Deploy to WPEngine Staging
-        uses: wpengine/github-action-wpe-site-deploy@v3
-        with:
-          WPE_SSHG_KEY_PRIVATE: ${{ secrets.WPE_SSHG_KEY_PRIVATE }}
-          WPE_ENV: ignitesustg
-          REMOTE_PATH: "wp-content/themes/ign/"
-          FLAGS: -azvr --inplace --delete --exclude=.git --exclude=node_modules --exclude=.env
-          CACHE_CLEAR: TRUE
+  # Staging environment no longer exists (decommissioned). Kept here, disabled,
+  # in case it gets recreated later — re-enable the job and the workflow_dispatch
+  # 'staging' option above if so.
+  # deploy-staging:
+  #   name: Deploy → Staging
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging'
+  #   environment:
+  #     name: staging
+  #     url: https://ignitesustg.wpengine.com
+  #   steps:
+  #     - name: Download build artifact
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: built-theme
+  #
+  #     - name: Deploy to WPEngine Staging
+  #       uses: wpengine/github-action-wpe-site-deploy@v3
+  #       with:
+  #         WPE_SSHG_KEY_PRIVATE: ${{ secrets.WPE_SSHG_KEY_PRIVATE }}
+  #         WPE_ENV: ignitesustg
+  #         REMOTE_PATH: "wp-content/themes/ign/"
+  #         FLAGS: -azvr --inplace --delete --exclude=.git --exclude=node_modules --exclude=.env
+  #         CACHE_CLEAR: TRUE
 
   deploy-production:
     name: Deploy → Production
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
     environment:
       name: production
       url: https://ignitestudentu.wpengine.com
