@@ -34,34 +34,6 @@
 	display: none;
 }
 
-/* Blog card alternating layout: swap image below text, CTA stays at bottom */
-/* Text-first starts at position 3 and alternates: 3, 5, 7, 9... */
-/* Only on desktop — on mobile all cards use default image-on-top layout */
-@media (min-width: 48rem) {
-	.archive[data-post-type="post"]
-		.archive-results
-		.grid
-		> *:nth-child(2n + 3)
-		article
-		> :first-child {
-		order: 1;
-	}
-
-	.archive[data-post-type="post"]
-		.archive-results
-		.grid
-		> *:nth-child(2n + 3)
-		article
-		> :last-child {
-		order: 2;
-	}
-
-	/* Text-first cards: remove content top padding so pill is flush */
-	.archive[data-post-type="post"] .archive-results .grid > *:nth-child(2n + 3) .card-post-content {
-		padding-top: 0;
-	}
-}
-
 /* ── Blog post type: xl desktop layout overrides ── */
 @media (min-width: 1280px) {
 	/* 4-column grid with increased row gap; padding handles column spacing */
