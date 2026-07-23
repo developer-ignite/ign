@@ -4,8 +4,8 @@
  *
  * Called within a WP_Query loop (the_post()/setup_postdata() already called).
  * Renders a single stacked card: image with date badge overlay on top,
- * event details (title, venue, description, CTA) below. Organizer is
- * intentionally omitted to match the compact list rows alongside it.
+ * event details (title, venue, CTA) below. Organizer and description
+ * are intentionally omitted to match the compact list rows alongside it.
  *
  * @var array  $args         Template args passed via get_template_part().
  * @var string $buttonLabel  CTA button text (passed from parent block via $args).
@@ -22,8 +22,6 @@ $venue_id      = get_post_meta( $event_id, '_EventVenueID', true );
 // Falls back to the plain-text name captured at ICS import for events
 // with no linked Venue post (see inc/helpers/myignite-image-sync.php).
 $venue_name    = $venue_id ? get_the_title( $venue_id ) : get_post_meta( $event_id, '_myignite_venue_name', true );
-
-$event_excerpt = get_the_excerpt();
 
 $day_of_week = '';
 $day_number  = '';
@@ -68,10 +66,6 @@ if ( $start_date ) {
 
 			<?php if ( $venue_name ) : ?>
 				<p class="font-sans font-medium text-base leading-[1.5]"><?php echo esc_html( $venue_name ); ?></p>
-			<?php endif; ?>
-
-			<?php if ( $event_excerpt ) : ?>
-				<p class="font-sans font-medium text-base leading-[1.5] text-white/70"><?php echo wp_kses_post( $event_excerpt ); ?></p>
 			<?php endif; ?>
 		</div>
 

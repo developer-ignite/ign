@@ -4,8 +4,8 @@
  *
  * Called within a WP_Query loop (setup_postdata() already called).
  * Renders a text-only row for events after the featured (first) one:
- * a small date badge, title, venue, and description excerpt. No
- * featured image, no organizer, no CTA button.
+ * a small date badge, title, and venue. No featured image, no
+ * organizer, no description excerpt, no CTA button.
  */
 
 $event_id  = get_the_ID();
@@ -16,8 +16,6 @@ $venue_id   = get_post_meta( $event_id, '_EventVenueID', true );
 // Falls back to the plain-text name captured at ICS import for events
 // with no linked Venue post (see inc/helpers/myignite-image-sync.php).
 $venue_name = $venue_id ? get_the_title( $venue_id ) : get_post_meta( $event_id, '_myignite_venue_name', true );
-
-$event_excerpt = get_the_excerpt();
 
 $day_of_week = '';
 $day_number  = '';
@@ -36,7 +34,7 @@ if ( $start_date ) {
 <div data-animate="fade-up" class="py-4 first:pt-0 last:pb-0">
 	<a href="<?php echo esc_url( $permalink ); ?>" class="flex gap-4 group no-underline! text-white">
 		<?php if ( $start_date ) : ?>
-			<div class="shrink-0 w-[72px] bg-white/20 rounded-lg py-2 px-1 text-center text-white flex flex-col items-center">
+			<div class="shrink-0 w-[72px] bg-charcoal rounded-lg py-2 px-1 text-center text-white flex flex-col items-center">
 				<span class="sr-only"><?php echo esc_html( $accessible_date ); ?></span>
 				<span class="font-sans font-medium text-sm leading-[1.5]" aria-hidden="true"><?php echo esc_html( $day_of_week ); ?></span>
 				<span class="font-sans font-bold text-[1.75rem] leading-[1.1]" aria-hidden="true"><?php echo esc_html( $day_number ); ?></span>
@@ -49,10 +47,6 @@ if ( $start_date ) {
 
 			<?php if ( $venue_name ) : ?>
 				<p class="font-sans font-medium text-sm leading-[1.5]"><?php echo esc_html( $venue_name ); ?></p>
-			<?php endif; ?>
-
-			<?php if ( $event_excerpt ) : ?>
-				<p class="font-sans font-medium text-sm leading-[1.5] text-white/70"><?php echo wp_kses_post( $event_excerpt ); ?></p>
 			<?php endif; ?>
 		</div>
 	</a>
