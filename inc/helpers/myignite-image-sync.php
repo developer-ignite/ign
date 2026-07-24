@@ -382,11 +382,11 @@ function myignite_unschedule_image_sync() {
  *                                   "--- Event Details: URL" footer that
  *                                   CampusGroups appends to descriptions
  *                                   in the ICS feed, from all existing events.
- *   wp myignite fix-club-tags     — one-time cleanup to rename/merge
+ *   wp myignite fix-club-categories — one-time cleanup to rename/merge
  *                                   existing concatenated club_acronym
- *                                   tags (e.g. IGNITECLUBS) already sitting
- *                                   in the database from before the import
- *                                   fix existed.
+ *                                   categories (e.g. IGNITECLUBS) already
+ *                                   sitting in the database from before the
+ *                                   import fix existed.
  */
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	class MyIGNITE_CLI_Commands {
@@ -476,41 +476,42 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		}
 
 		/**
-		 * Rename or merge existing post_tag terms that are still in the
-		 * concatenated club_acronym form (e.g. IGNITECLUBS) from before
-		 * myignite_fix_club_acronym_tags() existed, or from a club feed
-		 * that wasn't yet covered by it.
+		 * Rename or merge existing tribe_events_cat terms that are still in
+		 * the concatenated club_acronym form (e.g. IGNITECLUBS) from before
+		 * myignite_fix_club_acronym_categories() existed, or from a club
+		 * feed that wasn't yet covered by it.
 		 *
 		 * New imports are already corrected automatically going forward
-		 * (see myignite_fix_club_acronym_tags() below) — this command only
-		 * cleans up terms that were created before that fix was in place,
-		 * or before the fix was generalized to cover every IGNITE+word
-		 * acronym rather than a fixed list. Safe to run multiple times —
-		 * terms already correct are left untouched.
+		 * (see myignite_fix_club_acronym_categories() below) — this command
+		 * only cleans up terms that were created before that fix was in
+		 * place, or before the fix was generalized to cover every
+		 * IGNITE+word acronym rather than a fixed list. Safe to run
+		 * multiple times — terms already correct are left untouched.
 		 *
 		 * Two cases per bad term found:
 		 *   - Corrected name doesn't exist as a term yet: rename the bad
 		 *     term in place (wp_update_term) — same term_id, so every
-		 *     event already tagged with it keeps the tag, just readable.
+		 *     event already categorized with it keeps the category, just
+		 *     readable.
 		 *   - Corrected name already exists as its own term (e.g. some
-		 *     events got tagged "IGNITE Clubs" after the fix went in,
+		 *     events got categorized "IGNITE Clubs" after the fix went in,
 		 *     while older events still carry "IGNITECLUBS" from before):
-		 *     re-tag every event under the bad term with the correct
-		 *     term, then delete the bad term, so the two don't sit side
-		 *     by side as duplicate tags.
+		 *     re-categorize every event under the bad term with the
+		 *     correct term, then delete the bad term, so the two don't sit
+		 *     side by side as duplicate categories.
 		 *
 		 * ## EXAMPLES
 		 *
-		 *     wp myignite fix-club-tags
+		 *     wp myignite fix-club-categories
 		 */
-		public function fix_club_tags( $args, $assoc_args ) {
+		public function fix_club_categories( $args, $assoc_args ) {
 			$terms = get_terms( array(
-				'taxonomy'   => 'post_tag',
+				'taxonomy'   => 'tribe_events_cat',
 				'hide_empty' => false,
 			) );
 
 			if ( is_wp_error( $terms ) ) {
-				WP_CLI::error( 'Could not fetch post_tag terms: ' . $terms->get_error_message() );
+				WP_CLI::error( 'Could not fetch tribe_events_cat terms: ' . $terms->get_error_message() );
 				return;
 			}
 
@@ -519,36 +520,36 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			$skipped = 0;
 
 			foreach ( $terms as $term ) {
-				$corrected = myignite_correct_club_acronym_tag( $term->name );
+				$corrected = myignite_correct_club_acronym_name( $term->name );
 
 				if ( $corrected === $term->name ) {
 					$skipped++;
 					continue;
 				}
 
-				$existing = get_term_by( 'name', $corrected, 'post_tag' );
+				$existing = get_term_by( 'name', $corrected, 'tribe_events_cat' );
 
 				if ( $existing && $existing->term_id !== $term->term_id ) {
-					$post_ids = get_objects_in_term( $term->term_id, 'post_tag' );
+					$post_ids = get_objects_in_term( $term->term_id, 'tribe_events_cat' );
 					$post_ids = is_wp_error( $post_ids ) ? array() : $post_ids;
 
 					foreach ( $post_ids as $post_id ) {
 						// Third arg `true` appends rather than replacing,
-						// so any other tags on the event are left alone.
-						wp_set_object_terms( $post_id, array( (int) $existing->term_id ), 'post_tag', true );
+						// so any other categories on the event are left alone.
+						wp_set_object_terms( $post_id, array( (int) $existing->term_id ), 'tribe_events_cat', true );
 					}
 
-					wp_delete_term( $term->term_id, 'post_tag' );
+					wp_delete_term( $term->term_id, 'tribe_events_cat' );
 
-					WP_CLI::log( "Tag \"{$term->name}\": merged " . count( $post_ids ) . " event(s) into existing \"{$corrected}\" and removed the old tag." );
+					WP_CLI::log( "Category \"{$term->name}\": merged " . count( $post_ids ) . " event(s) into existing \"{$corrected}\" and removed the old category." );
 					$merged++;
 				} else {
-					wp_update_term( $term->term_id, 'post_tag', array(
+					wp_update_term( $term->term_id, 'tribe_events_cat', array(
 						'name' => $corrected,
 						'slug' => sanitize_title( $corrected ),
 					) );
 
-					WP_CLI::log( "Tag \"{$term->name}\": renamed to \"{$corrected}\"." );
+					WP_CLI::log( "Category \"{$term->name}\": renamed to \"{$corrected}\"." );
 					$renamed++;
 				}
 			}
@@ -562,18 +563,19 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
 
 // -----------------------------------------------------------------------
-// ICS IMPORT: RENAME CLUB ACRONYM TAGS
+// ICS IMPORT: RENAME CLUB ACRONYM CATEGORIES
 // -----------------------------------------------------------------------
 
 /**
- * Renames CampusGroups club_acronym tags from concatenated uppercase
+ * Renames CampusGroups club_acronym categories from concatenated uppercase
  * (e.g. IGNITEEVENTS) to a readable form (e.g. IGNITE Events) on import.
  *
  * Why this is needed:
  * CampusGroups exports a CATEGORIES line with X-CG-CATEGORY=club_acronym
  * containing the club acronym as a single concatenated uppercase string
- * with no spaces. Event Aggregator imports this verbatim as a WordPress
- * tag, producing unreadable tags like IGNITEEVENTS, IGNITEADVOCACY, etc.
+ * with no spaces. Event Aggregator imports this verbatim as a
+ * tribe_events_cat term, producing unreadable categories like
+ * IGNITEEVENTS, IGNITEADVOCACY, IGNITECLUBS, etc.
  *
  * The other two CATEGORIES lines CampusGroups exports per event are:
  *   X-CG-CATEGORY=event_type  e.g. "Social Event", "Orientation"
@@ -586,8 +588,11 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
  * PROMOTIONS, CLUBS, ...). Rather than maintaining a hardcoded list that
  * has to be updated (and redeployed) every time a new club feed shows up
  * — which is exactly how IGNITECLUBS slipped through uncaught — this
- * splits any tag matching /^IGNITE([A-Z]+)$/ into "IGNITE " + Title Case
- * automatically, so a brand-new club feed is fixed the moment it imports.
+ * splits any category matching /^IGNITE([A-Z]+)$/ into "IGNITE " + Title
+ * Case automatically, so a brand-new club feed is fixed the moment it
+ * imports, with no category named IGNITEEVENTS, IGNITEADVOCACY,
+ * IGNITECLUBS, or any other IGNITE+word variant ever landing in the
+ * database going forward.
  *
  * $acronym_map below is now only a fallback for exceptions that don't fit
  * "IGNITE" + one plain word (e.g. an acronym that should stay all-caps
@@ -595,21 +600,21 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
  * only when the generic rule gets a specific case wrong.
  */
 /**
- * Corrects a single club_acronym tag if it needs it, otherwise returns it
+ * Corrects a single club_acronym name if it needs it, otherwise returns it
  * unchanged. Shared by the live import filter below and the
- * `wp myignite fix-club-tags` cleanup command, so both apply exactly the
- * same rule and can't drift apart.
+ * `wp myignite fix-club-categories` cleanup command, so both apply exactly
+ * the same rule and can't drift apart.
  *
- * @param string $tag Raw tag name, e.g. "IGNITECLUBS".
- * @return string Corrected tag name, e.g. "IGNITE Clubs" — or the
+ * @param string $name Raw term name, e.g. "IGNITECLUBS".
+ * @return string Corrected term name, e.g. "IGNITE Clubs" — or the
  *                original string unchanged if it didn't match.
  */
-function myignite_correct_club_acronym_tag( $tag ) {
+function myignite_correct_club_acronym_name( $name ) {
 	// Exceptions only — cases the generic IGNITE+word split below would
 	// get wrong. Empty for now; every acronym seen so far fits the rule.
 	$acronym_map = array();
 
-	$trimmed = trim( $tag );
+	$trimmed = trim( $name );
 
 	if ( isset( $acronym_map[ $trimmed ] ) ) {
 		return $acronym_map[ $trimmed ];
@@ -619,26 +624,26 @@ function myignite_correct_club_acronym_tag( $tag ) {
 		return 'IGNITE ' . ucfirst( strtolower( $matches[1] ) );
 	}
 
-	return $tag;
+	return $name;
 }
 
-add_filter( 'tribe_aggregator_save_event_args', 'myignite_fix_club_acronym_tags' );
-function myignite_fix_club_acronym_tags( $args ) {
+add_filter( 'tribe_aggregator_save_event_args', 'myignite_fix_club_acronym_categories' );
+function myignite_fix_club_acronym_categories( $args ) {
 
-	if ( empty( $args['tags'] ) ) {
+	if ( empty( $args['categories'] ) ) {
 		return $args;
 	}
 
-	// Tags arrive as either a comma-separated string or an array
+	// Categories arrive as either a comma-separated string or an array
 	// depending on Event Aggregator version — handle both.
-	$was_string = ! is_array( $args['tags'] );
-	$tags = $was_string
-		? array_map( 'trim', explode( ',', $args['tags'] ) )
-		: $args['tags'];
+	$was_string = ! is_array( $args['categories'] );
+	$categories = $was_string
+		? array_map( 'trim', explode( ',', $args['categories'] ) )
+		: $args['categories'];
 
-	$tags = array_map( 'myignite_correct_club_acronym_tag', $tags );
+	$categories = array_map( 'myignite_correct_club_acronym_name', $categories );
 
-	$args['tags'] = $was_string ? implode( ', ', $tags ) : $tags;
+	$args['categories'] = $was_string ? implode( ', ', $categories ) : $categories;
 
 	return $args;
 }
