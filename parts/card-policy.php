@@ -10,6 +10,8 @@ $show_tags    = $args['showTags'] ?? true;
 $topics       = get_the_terms( get_the_ID(), 'policy_topic' );
 $custom_link  = get_post_meta( get_the_ID(), '_policy_custom_link', true );
 $card_link    = ! empty( $custom_link ) ? $custom_link : get_permalink();
+$link_text    = get_post_meta( get_the_ID(), '_policy_link_text', true );
+$link_text    = ! empty( $link_text ) ? $link_text : __( 'View Resource', 'takt' );
 ?>
 <div class="card-policy">
 	<a
@@ -34,7 +36,7 @@ $card_link    = ! empty( $custom_link ) ? $custom_link : get_permalink();
 
 			<div class="mt-auto">
 				<span class="btn-tertiary group-hover:text-charcoal!">
-					<?php esc_html_e( 'View Resource', 'takt' ); ?>
+					<?php echo esc_html( $link_text ); ?>
 					<span class="btn-tertiary-arrow w-5 h-4 *:w-full *:h-full"><?php theme_asset( 'images/tertiary-arrow.svg' ); ?></span>
 				</span>
 			</div>
